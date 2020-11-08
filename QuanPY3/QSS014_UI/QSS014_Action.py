@@ -36,7 +36,7 @@ class qss014Action(QObject):
         self.COM = usb.FT232(loggername)
         self.logger = logging.getLogger(loggername)
         self.paramInit()
-        self.loadPreset()
+        # self.loadPreset()
         # self.status = True
 
     def usbConnect(self):

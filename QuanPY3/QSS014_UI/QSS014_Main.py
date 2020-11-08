@@ -21,7 +21,7 @@ VERSION_TEXT = TITLE_TEXT + "\n" + \
 ERROR_TEXT = "COM port return error, \n\n" + \
 "please press START button again."
 
-class MyThread(QThread):
+class MyThread(QThread): #此thread運行後每隔0.5s 送出trigger一次
     temp = pyqtSignal()
 
     def __init__(self):
@@ -43,16 +43,16 @@ class mainWindow(QMainWindow):
         self.setWindowTitle(TITLE_TEXT)
         self.move(50,50)
         self.loggername = "Total"
-        self.addAccesoryFlag(self.loggername) # Add logger
+        # self.addAccesoryFlag(self.loggername) # Add logger
         self.top = UI.mainWidget()
         self.act = ACT.qss014Action(self.loggername)
         self.adcThread = MyThread() #開一個thread
         self.mainUI()
         self.mainMenu()
         self.linkFunction()
-        self.loadUIpreset()
+        # self.loadUIpreset()
         
-        # self.usbConnect()
+        self.usbConnect()
 
     def mainUI(self):
         mainLayout = QGridLayout()
@@ -73,13 +73,13 @@ class mainWindow(QMainWindow):
         #Btn connect
         self.top.test.timeBtn.clicked.connect(self.callTimeDialog)
         self.top.test.send.clicked.connect(self.sendButton)
-        self.top.adc.start_rd.clicked.connect(self.adcThreadStart)
+        self.top.adc.start_rd.clicked.connect(self.adcThreadStart) #run thread
         self.top.adc.stop_rd.clicked.connect(self.adcThreadStop)
         
         #emit connect
-        self.act.update_text.connect(self.print_ADC_value)
-        self.adcThread.temp.connect(self.rdButton_action)
-        self.act.update_adcArray.connect(self.plotAdcArray)
+        self.act.update_text.connect(self.print_ADC_value) #更新ADC讀到的值
+        self.adcThread.temp.connect(self.rdButton_action) #讓thread 去觸發rdButton_action
+        self.act.update_adcArray.connect(self.plotAdcArray) #更新作圖的ADC array
 
     def addAccesoryFlag(self, loggername):
         self.logger = logging.getLogger(loggername)
@@ -114,8 +114,8 @@ class mainWindow(QMainWindow):
         # self.act.writePreset()
         self.act.sendComCmd()
 
-    def rdButton_action(self):
-        self.act.sendRdAdcCmd(False)
+    def rdButton_action(self): 
+        self.act.sendRdAdcCmd(False) #PC送出READ_ADC cmd, 然後讀回傳值，再把此值append到adc_array，然後把回傳值與adc_array emit出來
         
     def adcThreadStart(self):
         self.adcThread.start()

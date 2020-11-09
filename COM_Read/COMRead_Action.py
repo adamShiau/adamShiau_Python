@@ -17,6 +17,8 @@ TEST_MODE = False
 class COMRead_Action(QObject):
     # update_data = pyqtSignal(float)
     update_COMArray = pyqtSignal(object)
+    fog_update = pyqtSignal(object,object)
+    fog_finished = pyqtSignal()
     com_array = np.zeros(0)
     def __init__(self, loggername):	
         super().__init__()
@@ -42,4 +44,74 @@ class COMRead_Action(QObject):
         self.update_COMArray.emit(self.com_array)
         if(stop_flag):
             self.com_array = np.zeros(0)
-        
+            
+    # def runFog(self):
+            # if self.runFlag:
+                    # dt_old = 0
+                    # while self.runFlag:
+                            # data = np.empty(0)
+                            # dt = np.empty(0)
+                            # for i in range(0,40): #更新40筆資料到data and dt array
+                                    # temp = self.COM.readLine()
+                                    # print('temp= ', temp)
+                                    # if (temp != "") and (temp != "ERROR"):
+                                            # temp = int(temp)
+                                            # data = np.append(data, temp)
+                                            # dt_new = dt_old + i*0.01
+                                            # dt = np.append(dt, dt_new)
+                            # self.fog_update.emit(data,dt)
+                            # dt_old = dt_new + 0.01
+                    # self.COM.port.flushInput()
+                    # self.fog_finished.emit()
+					
+    def runFog(self):
+        if self.runFlag:
+            dt_old = 0
+            data = np.empty(0)
+            dt = np.empty(0)
+            temp = 0
+            while self.runFlag:
+                data = np.empty(0)
+                # dt = np.empty(0)
+                while(not (self.COM.port.inWaiting()>64)) :
+                    pass
+                # temp = self.COM.read4Binary()
+                # temp = temp[0]<<24|temp[1]<<16|temp[2]<<8|temp[3]
+                # data = np.append(data, temp)
+                # print(self.COM.port.inWaiting(), end=',')
+                # print(temp)
+                # dt_new = dt_old + 0.01
+                # dt = np.append(dt, dt_new)
+                                        
+                    # if(self.COM.port.inWaiting() > 0):
+                            # temp = self.COM.read4Binary()
+                            # data = np.append(data, temp[0]<<24|temp[1]<<16|temp[2]<<8|temp[3])
+                            # dt_new = dt_old + 0.01
+                            # dt = np.append(dt, dt_new)
+                                                        
+                                                
+                for i in range(0,5): #更新40筆資料到data and dt array
+                    temp = self.COM.read4Binary()
+                    temp = temp[0]<<24|temp[1]<<16|temp[2]<<8|temp[3]
+                    data = np.append(data, temp)
+                    dt_new = dt_old + i*0.01
+                    dt = np.append(dt, dt_new)
+						# print('temp= ', temp)
+						# if (temp != "") and (temp != "ERROR"):
+								# temp = int(temp)
+								# data = np.append(data, temp)
+								# dt_new = dt_old + i*0.01
+
+                print(len(data), end=', ')
+                print(len(dt), end=', ')
+                print(self.COM.port.inWaiting())
+                self.fog_update.emit(data,dt)
+                # print(dt, end=', ')
+                # print(data)
+                dt_old = dt_new + 0.01
+                data = np.empty(0)
+                dt = np.empty(0)
+                
+                # self.COM.port.flushInput()
+            self.fog_finished.emit()
+

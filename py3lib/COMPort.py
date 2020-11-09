@@ -94,7 +94,17 @@ class FT232:
 	def readBinary(self):
 		#print("out")
 		try:
+			# count = self.port.inWaiting() 
+			# print(count)
 			temp = self.port.read()
+			
+			# print(len(temp))
+			
+			# print(temp[0])
+			# print(temp[1])
+			# print(temp[2])
+			# print(temp[3])
+			# print(temp[0]<<24|temp[1]<<16|temp[2]<<8|temp[3])
 		except:
 			self.logger.error("readBinary failed")
 			return "ERROR"
@@ -106,6 +116,15 @@ class FT232:
 				data = temp
 
 			self.logger.debug("read hex data failed")
+			return data
+			
+	def read4Binary(self):
+		try:
+			data = self.port.read(4)
+		except:
+			self.logger.error("readBinary failed")
+			return "ERROR"
+		else:
 			return data
 
 	def readBinaryMust(self, timeoutloop = 10):

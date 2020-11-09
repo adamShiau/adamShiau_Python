@@ -40,9 +40,9 @@ class mainWindow(QMainWindow):
 		self.usbConnect()
 
 		self.thread1 = QThread()
-		self.thread1.started.connect(self.act.runFog)
-		self.act.fog_update.connect(self.plotFog)
-		self.act.fog_finished.connect(self.fogFinished)
+		self.thread1.started.connect(self.act.runFog) #thread1啟動時會去trigger act.runfog
+		self.act.fog_update.connect(self.plotFog) #fog_update emit 最新40筆data and dt array
+		self.act.fog_finished.connect(self.fogFinished) #runFlag=0時fog_finished會emit，之後關掉thread1
 		self.data = np.empty(0)
 		self.dt = np.empty(0)
 
@@ -97,7 +97,7 @@ class mainWindow(QMainWindow):
 		self.top.fog.poBtn1.clicked.connect(self.set_Polarity)
 		self.top.fog.poBtn2.clicked.connect(self.set_Polarity)
 
-		self.top.start.clicked.connect(self.buttonStart)
+		self.top.start.clicked.connect(self.buttonStart) #會run thread1
 		self.top.getData.clicked.connect(self.buttonGetData)
 		self.top.stop.clicked.connect(self.buttonStop)
 
@@ -274,7 +274,7 @@ class mainWindow(QMainWindow):
 		out = self.act.setPiVth()
 		self.top.fog.twoPi.labelvalue.setText(str("%3.3f" % out))
 
-	def buttonStart(self):
+	def buttonStart(self):#run thread1()、設定runFlag=1、設參數、讓部分按鈕disable
 		if self.act.runFlag:
 			return
 		self.act.SaveFileName,_ = QFileDialog.getSaveFileName(self,
@@ -305,7 +305,7 @@ class mainWindow(QMainWindow):
 		else:
 			self.top.getData.setEnabled(False)
 
-	def buttonGetData(self):
+	def buttonGetData(self):#set runFlag=0
 		self.act.runFlag = False
 		self.top.enableSSHsetting(True)
 		self.top.start.setEnabled(False)
@@ -316,7 +316,7 @@ class mainWindow(QMainWindow):
 		self.top.plot.figure.canvas.draw()
 		self.top.plot.figure.canvas.flush_events()
 
-	def buttonStop(self):
+	def buttonStop(self):#set runFlag=0
 		self.act.setStop()
 		self.act.runFlag = False
 		self.top.enableSSHsetting(True)

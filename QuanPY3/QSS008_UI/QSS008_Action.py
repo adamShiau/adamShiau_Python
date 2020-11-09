@@ -342,7 +342,7 @@ class qss008Act(QObject):
 			while self.runFlag:
 				data = np.empty(0)
 				dt = np.empty(0)
-				for i in range(0,40):
+				for i in range(0,40): #更新40筆資料到data and dt array
 					# print("before")
 					temp = self.usb.readLine()
 					if (temp != "") and (temp != "ERROR"):

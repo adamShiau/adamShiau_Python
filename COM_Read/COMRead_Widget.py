@@ -12,8 +12,8 @@ class mainWidget(QWidget):
 		self.usb = connectBlock("USB Connection")
 		self.read_btn = Read_btn();
 		self.stop_btn = Stop_btn();
-		self.com_plot = outputPlot() 
-		# self.com_plot = output2Plot()
+		# self.com_plot = outputPlot() 
+		self.com_plot = output4Plot()
 		self.main_UI()
 
 	def main_UI(self):

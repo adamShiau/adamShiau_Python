@@ -9,6 +9,7 @@ arduino_name_in = "2341:0043"
 #ft232_name_in_mac = "0403:6001"
 #ft232_name_in_win = "VID_0403+PID_6001"
 #ft232_name_in_win = "USB VID:PID=2341:0043"	#Arduino Uno
+manual_comport = 'COM4'
 
 class FT232:
 	def __init__(self, loggername):
@@ -58,13 +59,19 @@ class FT232:
 	def checkCom(self):
 		find_com = False
 		portlist = serial.tools.list_ports.comports()
+		print('portlist: ', portlist)
 		os = platform.system()
 		#print(os)
-		for a in portlist:
-			#print(a[2])
-			if ft232_name_in in a[2] or arduino_name_in in a[2]:
-				self.cp = a[0]
-		#print( "cp = " + str(self.cp) )
+		# for a in portlist:
+			# print(type(a[0]))
+			# print('a[0]: ', a[0])
+			# print('a[1]: ', a[1])
+			# print('a[2]: ', a[2])
+			# if ft232_name_in in a[2] or arduino_name_in in a[2]:
+				# self.cp = a[0]
+		self.cp = manual_comport
+		print( "cp = " + str(self.cp) )
+		
 		if self.cp != 0:
 			find_com = True
 		else:
@@ -116,9 +123,9 @@ class FT232:
 		else:
 			return data
 			
-	def read8Binary(self):
+	def read2Binary(self):
 		try:
-			data = self.port.read(8)
+			data = self.port.read(2)
 		except:
 			self.logger.error("readBinary failed")
 			return "ERROR"

@@ -7,6 +7,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import * 
 from PyQt5.QtWidgets import *
 import numpy as np
+import py3lib.FileToArray as file
 # import py3lib.QuLogger as Qlogger 
 # import py3lib.FileToArray as fil2a 
 import COMRead_Widget as UI 
@@ -75,6 +76,10 @@ class mainWindow(QMainWindow):
 	def myThreadStart(self):
 		self.act.runFlag = True
 		self.thread1.start()
+		# self.act.SaveFileName,_ = QFileDialog.getSaveFileName(self,
+						# "Save Data",
+						# "./" + READOUT_FILENAME,
+						# "Text Files (*.txt)")
 		
 	def myThreadStop(self):
 		self.thread1.quit()
@@ -151,18 +156,18 @@ class mainWindow(QMainWindow):
 		self.top.com_plot.ax1.set_ylabel("fog")
 		self.top.com_plot.ax1.plot(self.dt, self.data, color = 'blue', linestyle = '-', marker = '')
 		self.top.com_plot.ax2.set_ylabel("ax")
-		# self.top.com_plot.ax2.plot(self.dt, self.data2, self.dt, self.data3,  self.dt, self.data4, color = 'red', linestyle = '-', marker = '')
-		self.top.com_plot.ax2.plot(self.dt, self.data2, color = 'red', linestyle = '-', marker = '')
-		self.top.com_plot.ax3.set_ylabel("ay")
-		self.top.com_plot.ax3.plot(self.dt, self.data3, color = 'red', linestyle = '-', marker = '')
-		self.top.com_plot.ax4.set_ylabel("az")
-		self.top.com_plot.ax4.plot(self.dt, self.data4, color = 'red', linestyle = '-', marker = '')
+		self.top.com_plot.ax2.plot(self.dt, self.data2, self.dt, self.data3,  self.dt, self.data4, color = 'red', linestyle = '-', marker = '')
+		# self.top.com_plot.ax2.plot(self.dt, self.data2, color = 'red', linestyle = '-', marker = '')
+		# self.top.com_plot.ax3.set_ylabel("ay")
+		# self.top.com_plot.ax3.plot(self.dt, self.data3, color = 'red', linestyle = '-', marker = '')
+		# self.top.com_plot.ax4.set_ylabel("az")
+		# self.top.com_plot.ax4.plot(self.dt, self.data4, color = 'red', linestyle = '-', marker = '')
 		
 		self.top.com_plot.figure.canvas.draw()
 		self.top.com_plot.ax1.clear()
 		self.top.com_plot.ax2.clear()
-		self.top.com_plot.ax3.clear()
-		self.top.com_plot.ax4.clear()
+		# self.top.com_plot.ax3.clear()
+		# self.top.com_plot.ax4.clear()
 		self.top.com_plot.figure.canvas.flush_events()
 
         

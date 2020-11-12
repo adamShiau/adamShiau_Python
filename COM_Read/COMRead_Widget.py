@@ -2,7 +2,7 @@ import os
 import sys
 import logging
 sys.path.append("../")
-from py3lib.QuGUIclass import *
+from py3lib.AdamGUIclass import *
 TITLE_TEXT = "COM_Read"
 
 class mainWidget(QWidget):
@@ -12,8 +12,8 @@ class mainWidget(QWidget):
 		self.usb = connectBlock("USB Connection")
 		self.read_btn = Read_btn();
 		self.stop_btn = Stop_btn();
-		# self.com_plot = outputPlot() 
-		self.com_plot = output4Plot()
+		self.com_plot = output2Plot() 
+		# self.com_plot = output4Plot()
 		self.main_UI()
 
 	def main_UI(self):

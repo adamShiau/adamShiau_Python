@@ -28,6 +28,7 @@ class COMRead_Action(QObject):
 		super().__init__()
 		self.COM = usb.FT232(loggername)
 		self.logger = logging.getLogger(loggername)
+		self.SaveFileName = ''
 
 	def usbConnect(self):
 		if (TEST_MODE):

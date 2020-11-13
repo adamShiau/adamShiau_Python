@@ -11,6 +11,8 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 import logging
+import py3lib
+from py3lib import *
 
 TEST_MODE = False
 DEBUG = 1
@@ -22,13 +24,15 @@ class COMRead_Action(QObject):
 	fog_update2 = pyqtSignal(object,object, object)
 	fog_update4 = pyqtSignal(object, object, object, object, object)
 	fog_finished = pyqtSignal()
-	com_array = np.zeros(0)
+	valid_flag = 0
+	valid_cnt = 0
 	data_frame_update_point = 20
+	check_byte = 170
 	def __init__(self, loggername):	
 		super().__init__()
 		self.COM = usb.FT232(loggername)
 		self.logger = logging.getLogger(loggername)
-		self.SaveFileName = ''
+		# self.SaveFileName = ''
 
 	def usbConnect(self):
 		if (TEST_MODE):
@@ -120,6 +124,8 @@ class COMRead_Action(QObject):
 			temp3 = np.empty(0)
 			# a = 0
 			while self.runFlag:
+				
+				
 				while(not (self.COM.port.inWaiting()>(self.data_frame_update_point*12))) : #rx buffer 不到 (self.data_frame_update_point*8) byte數目時不做任何事
 					pass
 				for i in range(0,self.data_frame_update_point): #更新data_frame_update_point筆資料到data and dt array
@@ -152,6 +158,9 @@ class COMRead_Action(QObject):
 			#end of while loop
 			self.fog_finished.emit()
 			
+			
+	
+				
 	def updateFOGnXLMD(self):
 		if self.runFlag:
 			self.COM.port.flushInput()
@@ -170,23 +179,37 @@ class COMRead_Action(QObject):
 				data_ax = np.empty(0)
 				data_ay = np.empty(0)
 				data_az = np.empty(0)
+				val = np.empty(0)
 				dt = np.empty(0)
-				
-				while(not (self.COM.port.inWaiting()>(self.data_frame_update_point*10))) : #rx buffer 不到 (self.data_frame_update_point*4) byte數目時不做任何事
+				while(not (self.COM.port.inWaiting()>(self.data_frame_update_point*11))) : #rx buffer 不到 (self.data_frame_update_point*4) byte數目時不做任何事
+					# print(self.COM.port.inWaiting())
 					pass
 				for i in range(0,self.data_frame_update_point): #更新data_frame_update_point筆資料到data and dt array
+					val = self.COM.read1Binary()
+					while(val[0] != self.check_byte):
+						val = self.COM.read1Binary()
 					temp_fog = self.COM.read4Binary()
 					temp_ax = self.COM.read2Binary()
 					temp_ay = self.COM.read2Binary()
 					temp_az = self.COM.read2Binary()
-
+					
+					# print(val[0], end=', ')
+					# print(temp_fog[0], end=', ')
+					# print(temp_fog[1], end=', ')
+					# print(temp_fog[2], end=', ')
+					# print(temp_fog[3], end=', ')
+					# print(temp_ax[0], end=', ')
+					# print(temp_ax[1], end=', ')
+					# print(temp_ay[0], end=', ')
+					# print(temp_ay[1], end=', ')
+					# print(temp_az[0], end=', ')
+					# print(temp_az[1])
+					
 					temp_fog =self.convert2Sign_4B(temp_fog)
 					temp_ax =self.convert2Sign_2B(temp_ax)
 					temp_ay =self.convert2Sign_2B(temp_ay)
 					temp_az =self.convert2Sign_2B(temp_az)
-					# print(temp_ax, end=', ')
-					# print(temp_ay, end=', ')
-					# print(temp_az)
+					
 					
 					data = np.append(data, temp_fog)
 					data_ax = np.append(data_ax, temp_ax)
@@ -194,7 +217,8 @@ class COMRead_Action(QObject):
 					data_az = np.append(data_az, temp_az)
 					dt_new = dt_old + i*TIME_PERIOD
 					dt = np.append(dt, dt_new)
-				
+					
+				self.valid_cnt = self.valid_cnt + 1
 				if(DEBUG):
 					# print(data, end=', ')
 					# print(data_ax, end=', ')
@@ -206,10 +230,15 @@ class COMRead_Action(QObject):
 					# print('len(data_az): ', len(data_az), end=', ')
 					# print('len(dt): ', len(dt), end=', ')
 					print(self.COM.port.inWaiting())
-				self.fog_update4.emit(data, data_ax, data_ay, data_az, dt)
-				dt_old = dt_new + TIME_PERIOD
+				if(self.valid_cnt == 5):
+					self.valid_flag = 1
+				if(self.valid_flag):
+					self.fog_update4.emit(data, data_ax, data_ay, data_az, dt)
+					dt_old = dt_new + TIME_PERIOD
 			#end of while loop
 			self.fog_finished.emit()
+			self.valid_flag = 0
+			self.valid_cnt = 0
 			
 	def convert2Sign_4B(self, datain) :
 		shift_data = (datain[0]<<24|datain[1]<<16|datain[2]<<8|datain[3])
@@ -237,4 +266,4 @@ class COMRead_Action(QObject):
 			return (datain - (1<<16))
 		else :
 			return datain
-
+			

@@ -37,7 +37,7 @@ class mainWindow(QMainWindow):
 		self.act = ACT.qss008Act(self.loggername)
 		self.top = UI.mainWidget()
 		self.sshStatus = False
-		self.usbConnect()
+		# self.usbConnect()
 
 		self.thread1 = QThread()
 		self.thread1.started.connect(self.act.runFog) #thread1啟動時會去trigger act.runfog

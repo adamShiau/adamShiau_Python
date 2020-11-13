@@ -114,6 +114,15 @@ class FT232:
 			self.logger.debug("read hex data failed")
 			return data
 			
+	def read1Binary(self):
+		try:
+			data = self.port.read(1)
+		except:
+			self.logger.error("readBinary failed")
+			return "ERROR"
+		else:
+			return data
+			
 	def read4Binary(self):
 		try:
 			data = self.port.read(4)

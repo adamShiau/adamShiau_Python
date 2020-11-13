@@ -2,17 +2,21 @@ import os
 import sys 
 sys.path.append("../") 
 import time 
+import datetime
 # import logging
 from PyQt5.QtGui import * 
 from PyQt5.QtCore import * 
 from PyQt5.QtWidgets import *
 import numpy as np
-import py3lib.FileToArray as file
+# import py3lib
+# import py3lib.FileToArray as file
 # import py3lib.QuLogger as Qlogger 
 # import py3lib.FileToArray as fil2a 
 import COMRead_Widget as UI 
 import COMRead_Action as ACT
 TITLE_TEXT = "COM_Read"
+VERSION_TEXT = 'Hello Adam，2020/11/13'
+READOUT_FILENAME = "Signal_Read_Out.txt"
 MAX_SAVE_INDEX = 3000
 DEBUG = 0
 w_factor = 0.01
@@ -34,13 +38,47 @@ class mainWindow(QMainWindow):
 		self.data4 = np.empty(0)
 		self.dt = np.empty(0)
 		self.mainUI()
+		self.mainMenu()
 		self.linkFunction()
+		
 
 	def mainUI(self):
 		mainLayout = QGridLayout()
 		self.setCentralWidget(QWidget(self))
 		mainLayout.addWidget(self.top,0,0,1,1)
 		self.centralWidget().setLayout(mainLayout)
+		
+	def mainMenu(self):
+		mainMenu = self.menuBar() #放menu的地方，一定要有
+
+		version_Menu = mainMenu.addMenu("version") #生成menu item
+		version = QAction("Version", self) #生成menu item裡面的細項，名稱叫"Version"
+		version.triggered.connect(self.versionBox)#把細項連接到要執行的動作
+		version_Menu.addAction(version)#把連接好動作的細項加回menu item
+		
+		# openFile_Menu = mainMenu.addMenu("open file")
+		# openFile = QAction("open", self)
+		# openFile.triggered.connect(self.openFileBox)
+		# openFile_Menu.addAction(openFile)
+		
+		
+	def versionBox(self):
+		versionBox = QMessageBox()
+		versionBox.about(self, "Version", VERSION_TEXT)
+		
+	def openFileBox(self):
+		saveBox = QMessageBox()
+		self.SaveFileName,_ = QFileDialog.getSaveFileName(self,
+						"Save Data to", #視窗名稱
+						"./", #起始路徑
+						"Text Files (*.txt)") #存檔類型
+		if (self.SaveFileName != ''):
+			# saveBox.about(self, "Save File", "File saving on " + self.SaveFileName)
+			self.open_file()
+			return (1, 1)
+		else :
+			saveBox.about(self, "Save File", "No file saving")
+			return (0, 1)
 
 	def linkFunction(self):
 		''' btn connect '''
@@ -56,7 +94,7 @@ class mainWindow(QMainWindow):
 		self.act.fog_finished.connect(self.myThreadStop) #runFlag=0時fog_finished會emit，之後關掉thread1
 		self.act.fog_update.connect(self.plotFog) #fog_update emit 接收最新data and dt array
 		self.act.fog_update2.connect(self.plotFog2) 
-		self.act.fog_update4.connect(self.plotFog4)
+		self.act.fog_update4.connect(self.plotFOGnXLMD)
 			
 		
 	def usbConnect(self):
@@ -74,16 +112,24 @@ class mainWindow(QMainWindow):
 		self.act.runFlag = False
 		
 	def myThreadStart(self):
+		self.save_status, done = self.openFileBox()
+		# file_name = self.top.save_edit.edit.text() 
+		# self.f=open(file_name,'a')
+		# self.f=open('er','a')
 		self.act.runFlag = True
 		self.thread1.start()
-		# self.act.SaveFileName,_ = QFileDialog.getSaveFileName(self,
-						# "Save Data",
-						# "./" + READOUT_FILENAME,
-						# "Text Files (*.txt)")
+		
+		
+		
+	def open_file(self):
+		self.f=open(self.SaveFileName, 'w')
+		self.time_header = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
+		self.f.writelines(self.time_header + '\n')
 		
 	def myThreadStop(self):
 		self.thread1.quit()
 		self.thread1.wait()
+		self.f.close()
 		self.data  = np.empty(0)
 		self.data2 = np.empty(0)
 		self.data3 = np.empty(0)
@@ -133,7 +179,7 @@ class mainWindow(QMainWindow):
 		# self.top.com_plot.ax2.clear()
 		# self.top.com_plot.figure.canvas.flush_events()
 		
-	def plotFog4(self, data_fog, data_ax, data_ay, data_az, dt):
+	def plotFOGnXLMD(self, data_fog, data_ax, data_ay, data_az, dt):
 
 		if (len(self.data) >= 1000):
 			self.data = self.data[self.act.data_frame_update_point:]
@@ -141,12 +187,16 @@ class mainWindow(QMainWindow):
 			self.data3 = self.data3[self.act.data_frame_update_point:]
 			self.data4 = self.data4[self.act.data_frame_update_point:]
 			self.dt = self.dt[self.act.data_frame_update_point:]
-
-		self.data = np.append(self.data, data_fog*w_factor)
-		self.data2 = np.append(self.data2, data_ax*xlm_factor)
-		self.data3 = np.append(self.data3, data_ay*xlm_factor)
-		self.data4 = np.append(self.data4, data_az*xlm_factor)
+		data_fog_f = data_fog*w_factor
+		data_ax_f = data_ax*xlm_factor
+		data_ay_f = data_ay*xlm_factor
+		data_az_f = data_az*xlm_factor
+		self.data = np.append(self.data, data_fog_f)
+		self.data2 = np.append(self.data2, data_ax_f)
+		self.data3 = np.append(self.data3, data_ay_f)
+		self.data4 = np.append(self.data4, data_az_f)
 		self.dt = np.append(self.dt, dt)
+		np.savetxt(self.f, (np.vstack([dt,data_fog_f, data_ax_f, data_ay_f, data_az_f])).T, fmt='%.2f,%.5f,%.5f,%.5f,%.5f')
 		if(DEBUG) :
 			print('len(data_fog)', len(self.data))
 			print('len(data_ax)', len(self.data2))

@@ -2,6 +2,8 @@ import os
 import sys
 import logging
 sys.path.append("../")
+import py3lib
+from py3lib import *
 from py3lib.AdamGUIclass import *
 TITLE_TEXT = "COM_Read"
 
@@ -12,6 +14,7 @@ class mainWidget(QWidget):
 		self.usb = connectBlock("USB Connection")
 		self.read_btn = Read_btn();
 		self.stop_btn = Stop_btn();
+		# self.save_edit = Save_edit();
 		self.com_plot = output2Plot() 
 		# self.com_plot = output4Plot()
 		self.main_UI()
@@ -21,12 +24,24 @@ class mainWidget(QWidget):
 		mainLayout.addWidget(self.usb.layout1(), 0,0,1,1)
 		mainLayout.addWidget(self.read_btn, 1,0,1,1)
 		mainLayout.addWidget(self.stop_btn, 1,1,1,1)
-		mainLayout.addWidget(self.com_plot, 2,0,3,3)
+		# mainLayout.addWidget(self.save_edit, 2,0,1,1)
+		mainLayout.addWidget(self.com_plot, 2,0,4,4)
 		# mainLayout.setRowStretch(0, 1)
 		# mainLayout.setRowStretch(1, 1)
 		# mainLayout.setColumnStretch(0, 1)
 		# mainLayout.setColumnStretch(1, 1)
 		self.setLayout(mainLayout)
+ 
+class Save_edit(QWidget):
+	def __init__(self, parent=None):
+		super(Save_edit, self).__init__(parent)
+		self.edit = QLineEdit()
+		self.Save_edit_UI()
+
+	def Save_edit_UI(self):
+		layout = QGridLayout()
+		layout.addWidget(self.edit, 0,0,1,1)
+		self.setLayout(layout)
  
 class Read_btn(QWidget):
 	def __init__(self, parent=None):

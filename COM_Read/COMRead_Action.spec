@@ -3,7 +3,7 @@
 block_cipher = None
 
 
-a = Analysis(['COMRead_Main.py'],
+a = Analysis(['COMRead_Action.py'],
              pathex=['C:\\Users\\adam\\Documents\\GitHub\\adamShiau_Python', 'C:\\Users\\adam\\Documents\\GitHub\\adamShiau_Python\\COM_Read'],
              binaries=[],
              datas=[],
@@ -23,7 +23,7 @@ exe = EXE(pyz,
           a.zipfiles,
           a.datas,
           [],
-          name='COMRead_Main',
+          name='COMRead_Action',
           debug=False,
           bootloader_ignore_signals=False,
           strip=False,

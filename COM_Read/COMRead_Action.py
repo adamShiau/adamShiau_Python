@@ -42,6 +42,17 @@ class COMRead_Action(QObject):
 			print(status)
 		return status
 		
+	def usbConnect_comboBox(self, cp):
+		if (TEST_MODE):
+			status = True
+		else:
+			status = self.COM.connect_comboBox(baudrate = 115200, timeout = 1, port_name=cp)
+			# print(status)
+		return status
+		
+	def comport_select(self):
+		self.COM.checkCom()
+		
 	def updateTwoData(self):
 		if self.runFlag:
 			self.COM.port.flushInput()

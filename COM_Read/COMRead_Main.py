@@ -27,7 +27,8 @@ class mainWindow(QMainWindow):
 	def __init__(self, parent = None):
 		super (mainWindow, self).__init__(parent)
 		self.setWindowTitle(TITLE_TEXT)
-		self.move(50,50)
+		self.resize(1100,800)
+		self.move(0,0)
 		self.loggername = "Total"
 		self.top = UI.mainWidget()
 		self.act = ACT.COMRead_Action(self.loggername)
@@ -40,8 +41,18 @@ class mainWindow(QMainWindow):
 		self.mainUI()
 		self.mainMenu()
 		self.linkFunction()
+		self.disableBtn()
+	
+	def disableBtn(self):
+		self.top.usb.btn.setEnabled(False)
+		self.top.read_btn.read.setEnabled(False)
+		self.top.stop_btn.stop.setEnabled(False)
 		
-
+	def enableBtn(self):
+		self.top.usb.btn.setEnabled(True)
+		self.top.read_btn.read.setEnabled(True)
+		self.top.stop_btn.stop.setEnabled(True)
+	
 	def mainUI(self):
 		mainLayout = QGridLayout()
 		self.setCentralWidget(QWidget(self))
@@ -68,23 +79,26 @@ class mainWindow(QMainWindow):
 		
 	def openFileBox(self):
 		saveBox = QMessageBox()
-		self.SaveFileName,_ = QFileDialog.getSaveFileName(self,
+		SaveFileName,_ = QFileDialog.getSaveFileName(self,
 						"Save Data to", #視窗名稱
 						"./", #起始路徑
 						"Text Files (*.txt)") #存檔類型
-		if (self.SaveFileName != ''):
+		if (SaveFileName != ''):
 			# saveBox.about(self, "Save File", "File saving on " + self.SaveFileName)
-			self.open_file()
-			return (1, 1)
+			self.open_file(SaveFileName)
+			return 1
 		else :
 			saveBox.about(self, "Save File", "No file saving")
-			return (0, 1)
+			return 0
 
 	def linkFunction(self):
 		''' btn connect '''
 		self.top.usb.btn.clicked.connect(self.usbConnect)
 		self.top.read_btn.read.clicked.connect(self.myThreadStart) # set runFlag=1
 		self.top.stop_btn.stop.clicked.connect(self.buttonStop) # set runFlag=0
+		self.top.updataCom.updata.clicked.connect(self.updata_comport)
+		self.top.updataCom.cs.currentIndexChanged.connect(self.uadate_comport_label)
+		self.top.updataCom.updata.clicked.connect(self.enableBtn)
 		''' thread connect '''
 		# self.thread1.started.connect(self.act.updateTwoData) #thread1啟動時會去trigger act.updateTwoData
 		# self.thread1.started.connect(self.act.updateThreeData) #thread1啟動時會去trigger act.updateThreeData 
@@ -95,10 +109,28 @@ class mainWindow(QMainWindow):
 		self.act.fog_update.connect(self.plotFog) #fog_update emit 接收最新data and dt array
 		self.act.fog_update2.connect(self.plotFog2) 
 		self.act.fog_update4.connect(self.plotFOGnXLMD)
-			
 		
+			
+	
+	def updata_comport(self):
+		self.act.COM.selectCom()
+		self.top.updataCom.cs.clear()
+		''' combo box '''
+		if(self.act.COM.portNum > 0):
+			for i in range(self.act.COM.portNum):
+				self.top.updataCom.cs.addItem(self.act.COM.comPort[i][0])
+			idx = self.top.updataCom.cs.currentIndex()
+			self.top.updataCom.lb.setText(self.act.COM.comPort[idx][1])
+	
+	def uadate_comport_label(self):
+		idx = self.top.updataCom.cs.currentIndex()
+		self.top.updataCom.lb.setText(self.act.COM.comPort[idx][1])
+		self.cp = self.act.COM.comPort[idx][0]
+	
 	def usbConnect(self):
-		usbConnStatus = self.act.usbConnect()
+		# usbConnStatus = self.act.usbConnect() 
+		print(self.cp);
+		usbConnStatus = self.act.usbConnect_comboBox(self.cp)
 		print("status:" + str(usbConnStatus))
 		if usbConnStatus:
 			self.top.usb.SetConnectText(Qt.black, self.act.COM.port.port + " Connection build", True)
@@ -112,7 +144,7 @@ class mainWindow(QMainWindow):
 		self.act.runFlag = False
 		
 	def myThreadStart(self):
-		self.save_status, done = self.openFileBox()
+		self.save_status = self.openFileBox()
 		# file_name = self.top.save_edit.edit.text() 
 		# self.f=open(file_name,'a')
 		# self.f=open('er','a')
@@ -121,22 +153,23 @@ class mainWindow(QMainWindow):
 		
 		
 		
-	def open_file(self):
-		self.f=open(self.SaveFileName, 'w')
-		self.time_header = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
-		self.f.writelines(self.time_header + '\n')
+	def open_file(self, filename):
+		self.f=open(filename, 'w')
+		start_time_header = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
+		self.f.writelines(start_time_header + '\n')
 		
 	def myThreadStop(self):
 		self.thread1.quit()
 		self.thread1.wait()
-		self.f.close()
+		stop_time_header = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
+		self.f.writelines(stop_time_header + '\n')
+		if(self.save_status):
+			self.f.close()
 		self.data  = np.empty(0)
 		self.data2 = np.empty(0)
 		self.data3 = np.empty(0)
 		self.data4 = np.empty(0)
 		self.dt = np.empty(0)
-		# self.top.com_plot.ax1.clear()
-		# self.top.com_plot.ax2.clear()
 		
 	def plotFog(self, data, dt):
 		if (len(self.data) >= 1000):
@@ -180,7 +213,11 @@ class mainWindow(QMainWindow):
 		# self.top.com_plot.figure.canvas.flush_events()
 		
 	def plotFOGnXLMD(self, data_fog, data_ax, data_ay, data_az, dt):
-
+		
+		if(self.act.runFlag):
+			self.top.com_plot.ax1.clear()
+			self.top.com_plot.ax2.clear()
+			
 		if (len(self.data) >= 1000):
 			self.data = self.data[self.act.data_frame_update_point:]
 			self.data2 = self.data2[self.act.data_frame_update_point:]
@@ -196,17 +233,24 @@ class mainWindow(QMainWindow):
 		self.data3 = np.append(self.data3, data_ay_f)
 		self.data4 = np.append(self.data4, data_az_f)
 		self.dt = np.append(self.dt, dt)
-		np.savetxt(self.f, (np.vstack([dt,data_fog_f, data_ax_f, data_ay_f, data_az_f])).T, fmt='%.2f,%.5f,%.5f,%.5f,%.5f')
+		if(self.save_status):
+			np.savetxt(self.f, (np.vstack([dt,data_fog_f, data_ax_f, data_ay_f, data_az_f])).T, fmt='%.2f,%.5f,%.5f,%.5f,%.5f')
 		if(DEBUG) :
 			print('len(data_fog)', len(self.data))
 			print('len(data_ax)', len(self.data2))
 			print('len(data_ay)', len(self.data3))
 			print('len(data_az)', len(self.data4))
 			print('len(dt)', len(self.dt))
-		self.top.com_plot.ax1.set_ylabel("fog")
-		self.top.com_plot.ax1.plot(self.dt, self.data, color = 'blue', linestyle = '-', marker = '')
-		self.top.com_plot.ax2.set_ylabel("ax")
-		self.top.com_plot.ax2.plot(self.dt, self.data2, self.dt, self.data3,  self.dt, self.data4, color = 'red', linestyle = '-', marker = '')
+		colors = np.array(['r','g','b'])
+		self.top.com_plot.ax1.set_ylabel("angular velocity(degree/hr)")
+		self.top.com_plot.ax1.plot(self.dt, self.data, color = 'k', linestyle = '-', marker = '')
+		self.top.com_plot.ax2.set_ylabel("acceleration(g)")
+		self.top.com_plot.ax2.set_xlabel("time(s)")
+		# self.top.com_plot.ax2.plot(self.dt, self.data2, self.dt, self.data3,  self.dt, self.data4, color = colors,linestyle = '-', marker = '')
+		self.top.com_plot.ax2.plot(self.dt, self.data2, color = 'r', linestyle = '-', marker = '', label="ax")
+		self.top.com_plot.ax2.plot(self.dt, self.data3, color = 'g', linestyle = '-', marker = '', label="ay")
+		self.top.com_plot.ax2.plot(self.dt, self.data4, color = 'b', linestyle = '-', marker = '', label="az")
+		self.top.com_plot.ax2.legend(bbox_to_anchor=(1.0, 1.0), loc='upper left', prop={'size': 10})
 		# self.top.com_plot.ax2.plot(self.dt, self.data2, color = 'red', linestyle = '-', marker = '')
 		# self.top.com_plot.ax3.set_ylabel("ay")
 		# self.top.com_plot.ax3.plot(self.dt, self.data3, color = 'red', linestyle = '-', marker = '')
@@ -214,8 +258,7 @@ class mainWindow(QMainWindow):
 		# self.top.com_plot.ax4.plot(self.dt, self.data4, color = 'red', linestyle = '-', marker = '')
 		
 		self.top.com_plot.figure.canvas.draw()
-		self.top.com_plot.ax1.clear()
-		self.top.com_plot.ax2.clear()
+		
 		# self.top.com_plot.ax3.clear()
 		# self.top.com_plot.ax4.clear()
 		self.top.com_plot.figure.canvas.flush_events()

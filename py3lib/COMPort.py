@@ -3,13 +3,14 @@ import serial.tools.list_ports
 import platform
 import logging
 import py3lib.QuLogger
+import numpy as np
 
 ft232_name_in = "0403:6001"
 arduino_name_in = "2341:0043"
 #ft232_name_in_mac = "0403:6001"
 #ft232_name_in_win = "VID_0403+PID_6001"
 #ft232_name_in_win = "USB VID:PID=2341:0043"	#Arduino Uno
-manual_comport = 'COM4'
+manual_comport = 'COM5'
 
 class FT232:
 	def __init__(self, loggername):
@@ -24,12 +25,39 @@ class FT232:
 	def connect(self, baudrate = 115200, timeout = 1):
 		self.baudrate = baudrate
 		self.timeout = timeout
-		self.find_com = self.checkCom()
+		self.find_com = self.checkCom() #決定cp (com port)
 		self.port = self.comDetect()
 		if (self.find_com == True):
 			self.port.flush()
 
 		return self.find_com
+		
+	def connect_comboBox(self, baudrate = 115200, timeout = 1, port_name = ''):
+		self.baudrate = baudrate
+		self.timeout = timeout
+		# self.find_com = self.checkCom() #決定cp (com port)
+		print('comboBox cp=', port_name)
+		self.cp = port_name
+		self.find_com = True
+		# print('find_com: ', self.find_com)
+		self.port = self.comDetect()
+		# self.port.flush()
+		
+		return 1
+		
+	def comDetect(self):
+		# print('enter1')
+		ser = serial.Serial()
+		# print('find_com: ', self.find_com)
+		if (self.find_com == True):
+			print('self.cp: ', self.cp)
+			ser = serial.Serial(self.cp)
+			print('port: ', ser.port)
+			ser.baudrate = self.baudrate
+			ser.timeout = self.timeout
+			
+
+		return ser
 
 	def portConnect(self, portid, baudrate = 115200, timeout = 1):
 		self.baudrate = baudrate;
@@ -56,20 +84,22 @@ class FT232:
 
 		return find_com
 
+	def selectCom(self):
+		self.comPort = np.empty(0)
+		portlist = serial.tools.list_ports.comports()
+		self.portNum = len(portlist)
+		
+		for i in range(self.portNum):
+			self.comPort = np.append(self.comPort, portlist[i])
+
 	def checkCom(self):
 		find_com = False
 		portlist = serial.tools.list_ports.comports()
-		print('portlist: ', portlist)
-		os = platform.system()
-		#print(os)
-		# for a in portlist:
-			# print(type(a[0]))
-			# print('a[0]: ', a[0])
-			# print('a[1]: ', a[1])
-			# print('a[2]: ', a[2])
-			# if ft232_name_in in a[2] or arduino_name_in in a[2]:
-				# self.cp = a[0]
-		self.cp = manual_comport
+		# os = platform.system()
+		# print(os)
+		for a in portlist:
+			if ft232_name_in in a[2] or arduino_name_in in a[2]:
+				self.cp = a[0]
 		print( "cp = " + str(self.cp) )
 		
 		if self.cp != 0:
@@ -79,14 +109,6 @@ class FT232:
 
 		return find_com
 
-	def comDetect(self):
-		ser = serial.Serial()
-		if (self.find_com == True):
-			ser = serial.Serial(self.cp)
-			ser.baudrate = self.baudrate
-			ser.timeout = self.timeout
-
-		return ser
 
 	def writeBinary(self, data):
 		#print("in")

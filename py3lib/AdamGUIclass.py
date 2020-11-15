@@ -26,7 +26,26 @@ class spinBlock(QGroupBox):
 		layout.addWidget(self.spin)     
 		self.setLayout(layout)
 
-
+class comportComboboxBlock():
+	def __init__(self, btn_name="updata", group_name='updata comport'):
+		# super(comportComboboxBlock, self).__init__(parent)
+		self.groupBox = QGroupBox(group_name)
+		self.updata = QPushButton(btn_name)
+		self.cs = QComboBox()
+		self.lb = QLabel("")
+		
+	def layout(self):   
+		# layout = QVBoxLayout() 
+		layout = QGridLayout()
+		layout.addWidget(self.updata, 0,0,1,1)
+		layout.addWidget(self.cs, 1,0,1,1)
+		layout.addWidget(self.lb, 2,0,1,3)
+		self.groupBox.setLayout(layout)
+		self.groupBox.show()
+		return self.groupBox
+		
+		
+		
 class spinLabelBlock(QGroupBox):
 	def __init__(self, title, labelname, labelvalue, minValue, maxValue, double = False, step = 1, Decimals = 2, parent=None):
 		super(spinLabelBlock, self).__init__(parent)
@@ -122,7 +141,7 @@ class outputPlotSize(QWidget):
 class output2Plot(QWidget):
 	def __init__(self, parent=None):
 		super(output2Plot, self).__init__(parent)
-		self.figure = Figure(figsize=(6,3))
+		self.figure = Figure(figsize=(3,6))
 		self.canvas = FigureCanvas(self.figure)
 		self.toolbar = NavigationToolbar(self.canvas, self)
 		plt.rcParams.update({'font.size': PLOT_FONTSIZE})
@@ -196,7 +215,7 @@ class connectBlock():
 		self.status = QLabel()
 		self.btn = QPushButton("Connect")
 		self.status.setAlignment(Qt.AlignLeft|Qt.AlignVCenter)
-		self.SetConnectText(Qt.red, "Connect first !", True)
+		self.SetConnectText(Qt.red, "update comport first !", True)
 
 	def layout1(self):   
 		layout = QVBoxLayout()

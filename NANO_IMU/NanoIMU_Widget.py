@@ -18,8 +18,8 @@ class mainWidget(QWidget):
 		self.updataCom = comportComboboxBlock(group_name='updata comport', btn_name='renew')
 		# self.updataCom = Updata_COM_btn()
 		# self.com_sel = Comport_sel()
-		# self.com_plot = output2Plot() 
-		self.com_plot = output3Plot() 
+		self.com_plot = output2Plot() 
+		# self.com_plot = output3Plot() 
 		# self.com_plot = output4Plot()
 		self.main_UI()
 

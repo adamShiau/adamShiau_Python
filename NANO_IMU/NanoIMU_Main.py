@@ -25,6 +25,7 @@ gyro_factor = 0.00763 #250 / 32768
 wx_offset = 107.065
 wy_offset = -513.717
 wz_offset = -152.685+10
+# wz_offset = 0
 
 
 class mainWindow(QMainWindow):
@@ -44,6 +45,7 @@ class mainWindow(QMainWindow):
 		self.data5 = np.empty(0)
 		self.data6 = np.empty(0)
 		self.thetaz = 0
+		self.thetaz_arr = np.empty(0)
 		self.dt = np.empty(0)
 		self.mainUI()
 		self.mainMenu()
@@ -149,6 +151,7 @@ class mainWindow(QMainWindow):
 	def buttonStop(self):#set runFlag=0
 		# self.act.setStop()
 		self.act.runFlag = False
+		self.thetaz_arr = np.empty(0)
 		
 	def open_file(self, filename):
 		self.f=open(filename, 'w')
@@ -291,7 +294,7 @@ class mainWindow(QMainWindow):
 		data_ax_f = data_ax*xlm_factor 
 		data_ay_f = data_ay*xlm_factor
 		data_az_f = data_az*xlm_factor
-		data_wx_f = data_wx*gyro_factor 
+		data_wx_f = data_wx*gyro_factor
 		data_wy_f = data_wy*gyro_factor
 		data_wz_f = data_wz*gyro_factor
 		self.data  = np.append(self.data,  data_ax_f)
@@ -336,11 +339,9 @@ class mainWindow(QMainWindow):
 		self.top.com_plot.figure.canvas.flush_events()
 		
 	def plotGYRO(self, data_ax, data_ay, data_az, data_wx, data_wy, data_wz, dt):
-		
 		if(self.act.runFlag):
 			self.top.com_plot.ax1.clear()
 			self.top.com_plot.ax2.clear()
-			self.top.com_plot.ax3.clear()
 			
 		if (len(self.data) >= 1000):
 			self.data = self.data[self.act.data_frame_update_point:]
@@ -358,7 +359,10 @@ class mainWindow(QMainWindow):
 		data_wz_f = (data_wz-wz_offset)*gyro_factor
 		# print("thez: ", end=', ')
 		# print(self.thetaz)
-		self.thetaz = self.thetaz + np.sum(data_wz_f)
+		self.thetaz = self.thetaz + np.sum(data_wz_f*0.01)
+		self.thetaz_arr = np.append(self.thetaz_arr, self.thetaz)
+		if (len(self.thetaz_arr) >= 100):
+			self.thetaz_arr = self.thetaz_arr[1:]
 		# print(np.sum(data_wz_f))
 		
 		self.data  = np.append(self.data,  data_ax_f)
@@ -377,22 +381,17 @@ class mainWindow(QMainWindow):
 			# print(np.average(self.data5))
 			# print('len(data_wz)', len(self.data6), end=', ')
 			# print(np.average(self.data6))
+			# print('len(dt)', len(self.dt))
 			print("thez: ", end=', ')
-			print(self.thetaz)
+			print(self.thetaz, end=', ')
+			print(len(self.thetaz_arr))
 			pass
 			
-			# print('len(dt)', len(self.dt))
+			
 		# self.top.com_plot.ax1.set_ylabel("angular velocity(dps)")
 		# self.top.com_plot.ax1.plot(self.dt, self.data4, color = 'r', linestyle = '-', marker = '', label="wx")
 		# self.top.com_plot.ax1.plot(self.dt, self.data5, color = 'g', linestyle = '-', marker = '', label="wy")
 		# self.top.com_plot.ax1.plot(self.dt, self.data6, color = 'b', linestyle = '-', marker = '', label="wz")
-		
-		self.top.com_plot.ax1.set_ylabel("wx(dps)")
-		self.top.com_plot.ax1.plot(self.dt, self.data4, color = 'r', linestyle = '-', marker = '', label="wx")
-		self.top.com_plot.ax2.set_ylabel("wy(dps)")
-		self.top.com_plot.ax2.plot(self.dt, self.data5, color = 'g', linestyle = '-', marker = '', label="wy")
-		self.top.com_plot.ax3.set_ylabel("wz(dps)")
-		self.top.com_plot.ax3.plot(self.dt, self.data6, color = 'b', linestyle = '-', marker = '', label="wz")
 		
 		# self.top.com_plot.ax2.set_ylabel("acceleration(g)")
 		# self.top.com_plot.ax2.set_xlabel("time(s)")
@@ -400,11 +399,20 @@ class mainWindow(QMainWindow):
 		# self.top.com_plot.ax2.plot(self.dt, self.data2, color = 'g', linestyle = '-', marker = '', label="ay")
 		# self.top.com_plot.ax2.plot(self.dt, self.data3, color = 'b', linestyle = '-', marker = '', label="az")
 		# self.top.com_plot.ax2.legend(bbox_to_anchor=(1.0, 1.0), loc='upper left', prop={'size': 10})
-		# self.top.com_plot.ax2.plot(self.dt, self.data2, color = 'red', linestyle = '-', marker = '')
-		# self.top.com_plot.ax3.set_ylabel("ay")
-		# self.top.com_plot.ax3.plot(self.dt, self.data3, color = 'red', linestyle = '-', marker = '')
-		# self.top.com_plot.ax4.set_ylabel("az")
-		# self.top.com_plot.ax4.plot(self.dt, self.data4, color = 'red', linestyle = '-', marker = '')
+		
+		''' three plot '''
+		# self.top.com_plot.ax1.set_ylabel("wx(dps)")
+		# self.top.com_plot.ax1.plot(self.dt, self.data4, color = 'r', linestyle = '-', marker = '', label="wx")
+		# self.top.com_plot.ax2.set_ylabel("wy(dps)")
+		# self.top.com_plot.ax2.plot(self.dt, self.data5, color = 'g', linestyle = '-', marker = '', label="wy")
+		# self.top.com_plot.ax3.set_ylabel("wz(dps)")
+		# self.top.com_plot.ax3.plot(self.dt, self.data6, color = 'b', linestyle = '-', marker = '', label="wz")
+		
+		''' thetz z plot '''
+		self.top.com_plot.ax1.set_ylabel("wz(dps)")
+		self.top.com_plot.ax1.plot(self.dt, self.data6, color = 'b', linestyle = '-', marker = '', label="wz")
+		self.top.com_plot.ax2.set_ylabel("thetaz")
+		self.top.com_plot.ax2.plot(self.thetaz_arr, color = 'g', linestyle = '-', marker = '', label="thetaz")
 		
 		self.top.com_plot.figure.canvas.draw()
 		

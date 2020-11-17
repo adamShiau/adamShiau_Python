@@ -18,10 +18,13 @@ TITLE_TEXT = "COM_Read"
 VERSION_TEXT = 'Hello Adam，2020/11/13'
 READOUT_FILENAME = "Signal_Read_Out.txt"
 MAX_SAVE_INDEX = 3000
-DEBUG = 0
+DEBUG = 1
 w_factor = 0.01
 xlm_factor = 0.000122 #4g / 32768
 gyro_factor = 0.00763 #250 / 32768 
+wx_offset = 107.065
+wy_offset = -513.717
+wz_offset = -152.685+10
 
 
 class mainWindow(QMainWindow):
@@ -40,6 +43,7 @@ class mainWindow(QMainWindow):
 		self.data4 = np.empty(0)
 		self.data5 = np.empty(0)
 		self.data6 = np.empty(0)
+		self.thetaz = 0
 		self.dt = np.empty(0)
 		self.mainUI()
 		self.mainMenu()
@@ -92,8 +96,9 @@ class mainWindow(QMainWindow):
 		''' emit connect '''
 		self.act.fog_finished.connect(self.myThreadStop) #runFlag=0時fog_finished會emit，之後關掉thread1
 		# self.act.fog_update.connect(self.plotFog) #fog_update emit 接收最新data and dt array
-		# self.act.fog_update2.connect(self.plotFog2) 
-		self.act.fog_update7.connect(self.plotXLMDnGYRO)
+		# self.act.fog_update2.connect(self.plotFog2)  
+		# self.act.fog_update7.connect(self.plotXLMDnGYRO)
+		self.act.fog_update7.connect(self.plotGYRO)
 		
 			
 	def versionBox(self):
@@ -174,6 +179,8 @@ class mainWindow(QMainWindow):
 		self.data5 = np.empty(0)
 		self.data6 = np.empty(0)
 		self.dt = np.empty(0)
+		self.thetaz = 0
+		
 		
 	def plotFog(self, data, dt):
 		if (len(self.data) >= 1000):
@@ -316,6 +323,83 @@ class mainWindow(QMainWindow):
 		self.top.com_plot.ax2.plot(self.dt, self.data2, color = 'g', linestyle = '-', marker = '', label="ay")
 		self.top.com_plot.ax2.plot(self.dt, self.data3, color = 'b', linestyle = '-', marker = '', label="az")
 		self.top.com_plot.ax2.legend(bbox_to_anchor=(1.0, 1.0), loc='upper left', prop={'size': 10})
+		# self.top.com_plot.ax2.plot(self.dt, self.data2, color = 'red', linestyle = '-', marker = '')
+		# self.top.com_plot.ax3.set_ylabel("ay")
+		# self.top.com_plot.ax3.plot(self.dt, self.data3, color = 'red', linestyle = '-', marker = '')
+		# self.top.com_plot.ax4.set_ylabel("az")
+		# self.top.com_plot.ax4.plot(self.dt, self.data4, color = 'red', linestyle = '-', marker = '')
+		
+		self.top.com_plot.figure.canvas.draw()
+		
+		# self.top.com_plot.ax3.clear()
+		# self.top.com_plot.ax4.clear()
+		self.top.com_plot.figure.canvas.flush_events()
+		
+	def plotGYRO(self, data_ax, data_ay, data_az, data_wx, data_wy, data_wz, dt):
+		
+		if(self.act.runFlag):
+			self.top.com_plot.ax1.clear()
+			self.top.com_plot.ax2.clear()
+			self.top.com_plot.ax3.clear()
+			
+		if (len(self.data) >= 1000):
+			self.data = self.data[self.act.data_frame_update_point:]
+			self.data2 = self.data2[self.act.data_frame_update_point:]
+			self.data3 = self.data3[self.act.data_frame_update_point:]
+			self.data4 = self.data4[self.act.data_frame_update_point:]
+			self.data5 = self.data5[self.act.data_frame_update_point:]
+			self.data6 = self.data6[self.act.data_frame_update_point:]
+			self.dt = self.dt[self.act.data_frame_update_point:]
+		data_ax_f = data_ax*xlm_factor 
+		data_ay_f = data_ay*xlm_factor
+		data_az_f = data_az*xlm_factor
+		data_wx_f = (data_wx-wx_offset)*gyro_factor
+		data_wy_f = (data_wy-wy_offset)*gyro_factor
+		data_wz_f = (data_wz-wz_offset)*gyro_factor
+		# print("thez: ", end=', ')
+		# print(self.thetaz)
+		self.thetaz = self.thetaz + np.sum(data_wz_f)
+		# print(np.sum(data_wz_f))
+		
+		self.data  = np.append(self.data,  data_ax_f)
+		self.data2 = np.append(self.data2, data_ay_f)
+		self.data3 = np.append(self.data3, data_az_f)
+		self.data4 = np.append(self.data4, data_wx_f)
+		self.data5 = np.append(self.data5, data_wy_f)
+		self.data6 = np.append(self.data6, data_wz_f)
+		self.dt = np.append(self.dt, dt)
+		if(self.save_status):
+			np.savetxt(self.f, (np.vstack([dt,data_ax_f, data_ay_f, data_az_f, data_wx_f, data_wy_f, data_wz_f])).T, fmt='%.2f,%.5f,%.5f,%.5f,%.5f,%.5f,%.5f')
+		if(DEBUG) :
+			# print('len(data_wx)', len(self.data4), end=', ')
+			# print(np.average(self.data4))
+			# print('len(data_wy)', len(self.data5), end=', ')
+			# print(np.average(self.data5))
+			# print('len(data_wz)', len(self.data6), end=', ')
+			# print(np.average(self.data6))
+			print("thez: ", end=', ')
+			print(self.thetaz)
+			pass
+			
+			# print('len(dt)', len(self.dt))
+		# self.top.com_plot.ax1.set_ylabel("angular velocity(dps)")
+		# self.top.com_plot.ax1.plot(self.dt, self.data4, color = 'r', linestyle = '-', marker = '', label="wx")
+		# self.top.com_plot.ax1.plot(self.dt, self.data5, color = 'g', linestyle = '-', marker = '', label="wy")
+		# self.top.com_plot.ax1.plot(self.dt, self.data6, color = 'b', linestyle = '-', marker = '', label="wz")
+		
+		self.top.com_plot.ax1.set_ylabel("wx(dps)")
+		self.top.com_plot.ax1.plot(self.dt, self.data4, color = 'r', linestyle = '-', marker = '', label="wx")
+		self.top.com_plot.ax2.set_ylabel("wy(dps)")
+		self.top.com_plot.ax2.plot(self.dt, self.data5, color = 'g', linestyle = '-', marker = '', label="wy")
+		self.top.com_plot.ax3.set_ylabel("wz(dps)")
+		self.top.com_plot.ax3.plot(self.dt, self.data6, color = 'b', linestyle = '-', marker = '', label="wz")
+		
+		# self.top.com_plot.ax2.set_ylabel("acceleration(g)")
+		# self.top.com_plot.ax2.set_xlabel("time(s)")
+		# self.top.com_plot.ax2.plot(self.dt, self.data, color = 'r', linestyle = '-', marker = '' , label="ax")
+		# self.top.com_plot.ax2.plot(self.dt, self.data2, color = 'g', linestyle = '-', marker = '', label="ay")
+		# self.top.com_plot.ax2.plot(self.dt, self.data3, color = 'b', linestyle = '-', marker = '', label="az")
+		# self.top.com_plot.ax2.legend(bbox_to_anchor=(1.0, 1.0), loc='upper left', prop={'size': 10})
 		# self.top.com_plot.ax2.plot(self.dt, self.data2, color = 'red', linestyle = '-', marker = '')
 		# self.top.com_plot.ax3.set_ylabel("ay")
 		# self.top.com_plot.ax3.plot(self.dt, self.data3, color = 'red', linestyle = '-', marker = '')

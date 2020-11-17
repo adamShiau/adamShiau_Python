@@ -204,9 +204,9 @@ class output3Plot(QWidget):
 		layout.addWidget(self.toolbar,1,0,1,1)
 		#layout.addWidget(self.button)
 		self.setLayout(layout)
-		self.ax1 = self.figure.add_subplot(211)
-		self.ax2 = self.figure.add_subplot(223)
-		self.ax3 = self.figure.add_subplot(224)
+		self.ax1 = self.figure.add_subplot(311)
+		self.ax2 = self.figure.add_subplot(312)
+		self.ax3 = self.figure.add_subplot(313)
 
 
 class connectBlock():

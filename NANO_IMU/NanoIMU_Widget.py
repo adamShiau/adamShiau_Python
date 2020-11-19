@@ -24,6 +24,23 @@ class mainWidget(QWidget):
 		self.wzOffset_lb = labelBlock('wz offset')
 		self.wzStd_lb = labelBlock('wz stdev')
 		self.diffwzStd_lb = labelBlock('diffWz stdev')
+		
+		self.wxOffset_lb = labelBlock('wx offset')
+		self.wxStd_lb = labelBlock('wx stdev')
+		self.diffwxStd_lb = labelBlock('diffWx stdev')
+		
+		self.wyOffset_lb = labelBlock('wy offset')
+		self.wyStd_lb = labelBlock('wy stdev')
+		self.diffwyStd_lb = labelBlock('diffWy stdev')
+		
+		self.axOffset_lb = labelBlock('ax offset')
+		self.axStd_lb = labelBlock('ax stdev')
+		self.diffaxStd_lb = labelBlock('diffax stdev')
+		
+		self.ayOffset_lb = labelBlock('ay offset')
+		self.ayStd_lb = labelBlock('ay stdev')
+		self.diffayStd_lb = labelBlock('diffay stdev')
+		
 		####line editor####
 		self.wzOffset_le = QLineEdit()
 		self.wzOffset_le.setFixedWidth(100)
@@ -32,6 +49,34 @@ class mainWidget(QWidget):
 		self.wzVth_le.setFixedWidth(100)
 		self.wzVth_le.setText('0')
 		
+		self.wxOffset_le = QLineEdit()
+		self.wxOffset_le.setFixedWidth(100)
+		self.wxOffset_le.setText('0')
+		self.wxVth_le = QLineEdit()
+		self.wxVth_le.setFixedWidth(100)
+		self.wxVth_le.setText('0')
+		
+		self.wyOffset_le = QLineEdit()
+		self.wyOffset_le.setFixedWidth(100)
+		self.wyOffset_le.setText('0')
+		self.wyVth_le = QLineEdit()
+		self.wyVth_le.setFixedWidth(100)
+		self.wyVth_le.setText('0')
+		
+		self.axOffset_le = QLineEdit()
+		self.axOffset_le.setFixedWidth(100)
+		self.axOffset_le.setText('0')
+		self.axVth_le = QLineEdit()
+		self.axVth_le.setFixedWidth(100)
+		self.axVth_le.setText('0')
+		
+		self.ayOffset_le = QLineEdit()
+		self.ayOffset_le.setFixedWidth(100)
+		self.ayOffset_le.setText('0')
+		self.ayVth_le = QLineEdit()
+		self.ayVth_le.setFixedWidth(100)
+		self.ayVth_le.setText('0')
+		
 		self.com_plot = output2Plot() 
 		# self.com_plot = output3Plot() 
 		# self.com_plot = output4Plot()
@@ -39,7 +84,7 @@ class mainWidget(QWidget):
 
 	def main_UI(self):
 		mainLayout = QGridLayout()
-		mainLayout.addWidget(self.com_plot, 0,0,5,1)
+		mainLayout.addWidget(self.com_plot, 0,0,13,1)
 		mainLayout.addWidget(self.updataCom.layout(), 0,1,1,3)
 		mainLayout.addWidget(self.usb.layout1(), 1,1,1,3)
 		# mainLayout.addWidget(self.com_sel, 0,1,1,1)
@@ -48,12 +93,37 @@ class mainWidget(QWidget):
 		mainLayout.addWidget(self.stop_btn, 2,2,1,1)
 		mainLayout.addWidget(self.cali_btn, 3,1,1,1)
 		mainLayout.addWidget(self.cali_stop_btn, 3,2,1,1)
+		
 		mainLayout.addWidget(self.wzOffset_lb, 4,1)
 		mainLayout.addWidget(self.wzStd_lb, 4,2)
+		mainLayout.addWidget(self.diffwzStd_lb, 4,3)
 		mainLayout.addWidget(self.wzOffset_le, 5,1,1,1)
 		mainLayout.addWidget(self.wzVth_le, 5,3,1,1)
-		# mainLayout.addWidget(self.diffwzOffset_lb, 4,3)
-		mainLayout.addWidget(self.diffwzStd_lb, 4,3)
+		
+		mainLayout.addWidget(self.wxOffset_lb, 6,1)
+		mainLayout.addWidget(self.wxStd_lb, 6,2)
+		mainLayout.addWidget(self.diffwxStd_lb, 6,3)
+		mainLayout.addWidget(self.wxOffset_le, 7,1,1,1)
+		mainLayout.addWidget(self.wxVth_le, 7,3,1,1)
+		
+		mainLayout.addWidget(self.wyOffset_lb, 8,1)
+		mainLayout.addWidget(self.wyStd_lb, 8,2)
+		mainLayout.addWidget(self.diffwyStd_lb, 8,3)
+		mainLayout.addWidget(self.wyOffset_le, 9,1,1,1)
+		mainLayout.addWidget(self.wyVth_le, 9,3,1,1)
+		
+		mainLayout.addWidget(self.axOffset_lb, 10,1)
+		mainLayout.addWidget(self.axStd_lb, 10,2)
+		mainLayout.addWidget(self.diffaxStd_lb, 10,3)
+		mainLayout.addWidget(self.axOffset_le, 11,1,1,1)
+		mainLayout.addWidget(self.axVth_le, 11,3,1,1)
+		
+		mainLayout.addWidget(self.ayOffset_lb, 12,1)
+		mainLayout.addWidget(self.ayStd_lb, 12,2)
+		mainLayout.addWidget(self.diffayStd_lb, 12,3)
+		mainLayout.addWidget(self.ayOffset_le, 13,1,1,1)
+		mainLayout.addWidget(self.ayVth_le, 13,3,1,1)
+		
 		# mainLayout.addWidget(self.save_edit, 2,0,1,1)
 		
 		# mainLayout.setRowStretch(0, 1)

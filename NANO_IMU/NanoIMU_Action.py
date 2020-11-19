@@ -33,10 +33,16 @@ class COMRead_Action(QObject):
 	data_frame_update_point = 15
 	runFlag = 0
 	#IMU 靜止時之offset
+	offset_wx = 0
+	wxVth = 0
+	offset_wy = 0
+	wyVth = 0
 	offset_wz = 0
-	# offset_ax =
-	# offset_ay =
-	#
+	wzVth = 0
+	offset_ax = 0
+	axVth = 0
+	offset_ay = 0
+	ayVth = 0
 	check_byte = 170
 	def __init__(self, loggername):	
 		super().__init__()
@@ -64,137 +70,53 @@ class COMRead_Action(QObject):
 		self.COM.checkCom()
 		
 	
-			
-	def updateXLMDnGYRO(self):
+	def updateXLMDnGYRO(self, MV_MODE=1):
+		print('act . offset_wz: ', end=', ') 
+		print(self.offset_wz)
+		print('act . self.wzVth: ', end=', ') 
+		print(self.wzVth)
+		print('act . offset_wy: ', end=', ') 
+		print(self.offset_wy)
+		print('act . self.wyVth: ', end=', ') 
+		print(self.wyVth)
+		print('act . offset_wx: ', end=', ') 
+		print(self.offset_wx)
+		print('act . self.wxVth: ', end=', ') 
+		print(self.wxVth)
+		print('act . offset_ax: ', end=', ') 
+		print(self.offset_ax)
+		print('act . self.axVth: ', end=', ') 
+		print(self.axVth)
+		print('act . offset_ay: ', end=', ') 
+		print(self.offset_ay)
+		print('act . self.ayVth: ', end=', ') 
+		print(self.ayVth)
+		
+		
+		data_ax = np.zeros(self.data_frame_update_point)
+		data_ay = np.zeros(self.data_frame_update_point)
+		data_az = np.zeros(self.data_frame_update_point)
+		data_wx = np.zeros(self.data_frame_update_point)
+		data_wy = np.zeros(self.data_frame_update_point)
+		data_wz = np.zeros(self.data_frame_update_point)
+		data_ax_vth = np.zeros(self.data_frame_update_point)
+		data_ay_vth = np.zeros(self.data_frame_update_point)
+		data_wx_vth = np.zeros(self.data_frame_update_point)
+		data_wy_vth = np.zeros(self.data_frame_update_point)
+		data_wz_vth = np.zeros(self.data_frame_update_point)
+		dt = np.empty(0)
+		data_ax_sum = 0
+		data_ay_sum = 0
+		data_az_sum = 0
+		data_wx_sum = 0
+		data_wy_sum = 0
+		data_wz_sum = 0
+		
 		if self.runFlag:
 			self.COM.port.flushInput()
 			dt_old = 0
 			
-			data_ax = np.empty(0)
-			data_ay = np.empty(0)
-			data_az = np.empty(0)
-			data_wx = np.empty(0)
-			data_wy = np.empty(0)
-			data_wz = np.empty(0)
-			dt = np.empty(0)
-			
-			temp_ax = np.empty(0)
-			temp_ay = np.empty(0)
-			temp_az = np.empty(0)
-			temp_wx = np.empty(0)
-			temp_wy = np.empty(0)
-			temp_wz = np.empty(0)
-			
 			while self.runFlag:
-				data_ax = np.empty(0)
-				data_ay = np.empty(0)
-				data_az = np.empty(0)
-				data_wx = np.empty(0)
-				data_wy = np.empty(0)
-				data_wz = np.empty(0)
-				val = np.empty(0)
-				dt = np.empty(0)
-				while(not (self.COM.port.inWaiting()>(self.data_frame_update_point*13))) : #rx buffer 不到 (self.data_frame_update_point*4) byte數目時不做任何事
-					# print(self.COM.port.inWaiting())
-					pass
-				for i in range(0,self.data_frame_update_point): #更新data_frame_update_point筆資料到data and dt array
-					val = self.COM.read1Binary()
-					while(val[0] != self.check_byte):
-						val = self.COM.read1Binary()
-					temp_ax = self.COM.read2Binary()
-					temp_ay = self.COM.read2Binary()
-					temp_az = self.COM.read2Binary()
-					temp_wx = self.COM.read2Binary()
-					temp_wy = self.COM.read2Binary()
-					temp_wz = self.COM.read2Binary()
-					
-					
-					# print(val[0], end=', ')
-					# print(temp_fog[0], end=', ')
-					# print(temp_fog[1], end=', ')
-					# print(temp_fog[2], end=', ')
-					# print(temp_fog[3], end=', ')
-					# print(temp_ax[0], end=', ')
-					# print(temp_ax[1], end=', ')
-					# print(temp_ay[0], end=', ')
-					# print(temp_ay[1], end=', ')
-					# print(temp_az[0], end=', ')
-					# print(temp_az[1])
-					
-					temp_ax =self.convert2Sign_2B(temp_ax)
-					temp_ay =self.convert2Sign_2B(temp_ay)
-					temp_az =self.convert2Sign_2B(temp_az)
-					temp_wx =self.convert2Sign_2B(temp_wx)
-					temp_wy =self.convert2Sign_2B(temp_wy)
-					temp_wz =self.convert2Sign_2B(temp_wz)
-					
-					
-					data_ax = np.append(data_ax, temp_ax)
-					data_ay = np.append(data_ay, temp_ay)
-					data_az = np.append(data_az, temp_az)
-					data_wx = np.append(data_wx, temp_wx)
-					data_wy = np.append(data_wy, temp_wy)
-					data_wz = np.append(data_wz, temp_wz)
-					dt_new = dt_old + i*TIME_PERIOD
-					dt = np.append(dt, dt_new)
-					
-				self.valid_cnt = self.valid_cnt + 1
-				if(DEBUG):
-					# print('ax: ', data_ax)
-					# print('ay: ', data_ay)
-					# print('az: ', data_az)
-					# print('wx: ', data_wx)
-					# print('wy: ', data_wy)
-					# print('wz: ', data_wz)
-					# print('len(data): ', len(data), end=', ')
-					# print('len(data_ax): ', len(data_ax), end=', ')
-					# print('len(data_ay): ', len(data_ay), end=', ')
-					# print('len(data_az): ', len(data_az), end=', ')
-					# print('len(dt): ', len(dt), end=', ')
-					print(self.COM.port.inWaiting())
-				if(self.valid_cnt == 5):
-					self.valid_flag = 1
-				if(self.valid_flag):
-					self.fog_update7.emit(data_ax, data_ay, data_az, data_wx, data_wy, data_wz, dt)
-					dt_old = dt_new + TIME_PERIOD
-			#end of while loop
-			self.fog_finished.emit()
-			self.valid_flag = 0
-			self.valid_cnt = 0
-			
-	def updateXLMDnGYRO_MV(self):
-		print('hello')
-		print(self.offset_wz);
-		if self.runFlag:
-			self.COM.port.flushInput()
-			dt_old = 0
-			
-			data_ax = np.empty(0)
-			data_ay = np.empty(0)
-			data_az = np.empty(0)
-			data_wx = np.empty(0)
-			data_wy = np.empty(0)
-			data_wz = np.zeros(self.data_frame_update_point)
-			data_wz_vth = np.zeros(self.data_frame_update_point)
-			dt = np.empty(0)
-			
-			temp_ax = np.empty(0)
-			temp_ay = np.empty(0)
-			temp_az = np.empty(0)
-			temp_wx = np.empty(0)
-			temp_wy = np.empty(0)
-			temp_wz = np.empty(0)
-			
-			data_wz_sum = 0
-			
-			while self.runFlag:
-				data_ax = np.empty(0)
-				data_ay = np.empty(0)
-				data_az = np.empty(0)
-				data_wx = np.empty(0)
-				data_wy = np.empty(0)
-				# data_wz = np.empty(0)
-				val = np.empty(0)
 				dt = np.empty(0)
 				while(not (self.COM.port.inWaiting()>(self.data_frame_update_point*13))) : #rx buffer 不到 (self.data_frame_update_point*4) byte數目時不做任何事
 					# print(self.COM.port.inWaiting())
@@ -219,26 +141,87 @@ class COMRead_Action(QObject):
 					temp_wy =self.convert2Sign_2B(temp_wy)
 					temp_wz =self.convert2Sign_2B(temp_wz)
 					
-					data_wz_sum = data_wz_sum - data_wz[0]
-					data_wz_sum = data_wz_sum + temp_wz
-					data_wz_MV = data_wz_sum/self.data_frame_update_point
-					if(abs(data_wz_MV-data_wz[-1])<10):
-						data_wz_MV_vth = self.offset_wz
-					else :
-						data_wz_MV_vth = data_wz_MV
-					# print(temp_wz, end=', ')
-					# print(data_wz_MV)
-					# print(abs(data_wz_MV-data_wz[-1]))
+					#calaculate MV value
+					if(MV_MODE):
+						data_ax_sum = data_ax_sum - data_ax[0]
+						data_ax_sum = data_ax_sum + temp_ax
+						data_ax_MV = data_ax_sum/self.data_frame_update_point
+						
+						data_ay_sum = data_ay_sum - data_ay[0]
+						data_ay_sum = data_ay_sum + temp_ay
+						data_ay_MV = data_ay_sum/self.data_frame_update_point
+						
+						data_az_sum = data_az_sum - data_az[0]
+						data_az_sum = data_az_sum + temp_az
+						data_az_MV = data_az_sum/self.data_frame_update_point
+						
+						data_wx_sum = data_wx_sum - data_wx[0]
+						data_wx_sum = data_wx_sum + temp_wx
+						data_wx_MV = data_wx_sum/self.data_frame_update_point
+						
+						data_wy_sum = data_wy_sum - data_wy[0]
+						data_wy_sum = data_wy_sum + temp_wy
+						data_wy_MV = data_wy_sum/self.data_frame_update_point
+						
+						data_wz_sum = data_wz_sum - data_wz[0]
+						data_wz_sum = data_wz_sum + temp_wz
+						data_wz_MV = data_wz_sum/self.data_frame_update_point
+						
+						val_ax = data_ax_MV
+						val_ay = data_ay_MV
+						val_az = data_az_MV
+						val_wx = data_wx_MV
+						val_wy = data_wy_MV
+						val_wz = data_wz_MV
+						
+					else: 
+						val_ax = temp_ax
+						val_ay = temp_ay
+						val_az = temp_az
+						val_wx = temp_wx
+						val_wy = temp_wy
+						val_wz = temp_wz
 					
-					data_ax = np.append(data_ax, temp_ax)
-					data_ay = np.append(data_ay, temp_ay)
-					data_az = np.append(data_az, temp_az)
-					data_wx = np.append(data_wx, temp_wx)
-					data_wy = np.append(data_wy, temp_wy)
-					data_wz = np.append(data_wz[1:], data_wz_MV)
-					data_wz_vth = np.append(data_wz_vth[1:], data_wz_MV_vth)
+					if(abs(val_wz-data_wz[-1]) < self.wzVth):
+						val_wz_vth = self.offset_wz
+					else :
+						val_wz_vth = val_wz
+						
+					if(abs(val_wx-data_wx[-1]) < self.wxVth):
+						val_wx_vth = self.offset_wx
+					else :
+						val_wx_vth = val_wx
+						
+					if(abs(val_wy-data_wy[-1]) < self.wyVth):
+						val_wy_vth = self.offset_wy
+					else :
+						val_wy_vth = val_wy
+						
+					if(abs(val_ax-data_ax[-1]) < self.axVth):
+						val_ax_vth = self.offset_ax
+					else :
+						val_ax_vth = val_ax
+						
+					if(abs(val_ay-data_ay[-1]) < self.ayVth):
+						val_ay_vth = self.offset_ay
+					else :
+						val_ay_vth = val_ay
+					
+					data_ax = np.append(data_ax[1:], val_ax)
+					data_ay = np.append(data_ay[1:], val_ay)
+					data_az = np.append(data_az[1:], val_az)
+					data_wx = np.append(data_wx[1:], val_wx)
+					data_wy = np.append(data_wy[1:], val_wy)
+					data_wz = np.append(data_wz[1:], val_wz)
+					
+					data_wx_vth = np.append(data_wx_vth[1:], val_wx_vth)
+					data_wy_vth = np.append(data_wy_vth[1:], val_wy_vth)
+					data_wz_vth = np.append(data_wz_vth[1:], val_wz_vth)
+					data_ax_vth = np.append(data_ax_vth[1:], val_ax_vth)
+					data_ay_vth = np.append(data_ay_vth[1:], val_ay_vth)
 					dt_new = dt_old + i*TIME_PERIOD
 					dt = np.append(dt, dt_new)
+					# print(data_wz_vth)
 					
 				self.valid_cnt = self.valid_cnt + 1
 				if(DEBUG):
@@ -253,12 +236,12 @@ class COMRead_Action(QObject):
 					# print('len(data_wy): ', len(data_wy), end=', ')
 					# print('len(data_wz): ', len(data_wz), end=', ')
 					# print('len(dt): ', len(dt), end=', ')
-					# print(self.COM.port.inWaiting())
+					print(self.COM.port.inWaiting())
 					pass
 				if(self.valid_cnt == 5):
 					self.valid_flag = 1
 				if(self.valid_flag):
-					self.fog_update7.emit(data_ax, data_ay, data_az, data_wx, data_wy, data_wz_vth, dt)
+					self.fog_update7.emit(data_ax_vth, data_ay_vth, data_az, data_wx_vth, data_wy_vth, data_wz_vth, dt)
 					dt_old = dt_new + TIME_PERIOD
 			#end of while loop
 			self.fog_finished.emit()
@@ -289,8 +272,6 @@ class COMRead_Action(QObject):
 			data_wz_sum = 0
 			
 			while self.runFlag:
-			
-				# val = np.empty(0)
 				
 				while(not (self.COM.port.inWaiting()>(self.data_frame_update_point*13))) : #rx buffer 不到 (self.data_frame_update_point*4) byte數目時不做任何事
 					# print(self.COM.port.inWaiting())
@@ -370,23 +351,7 @@ class COMRead_Action(QObject):
 					data_wx = np.append(data_wx[1:], val_wx)
 					data_wy = np.append(data_wy[1:], val_wy)
 					data_wz = np.append(data_wz[1:], val_wz)
-					
-					
-					
-					# if(abs(data_wz_MV-data_wz[-1])<10):
-						# data_wz_MV_vth = self.offset_wz
-					# else :
-						# data_wz_MV_vth = data_wz_MV
-					# print(temp_wz, end=', ')
-					
-					# print(abs(data_wz_MV-data_wz[-1]))
-					
-					
-					# print(data_wz)
-					# data_wz_vth = np.append(data_wz_vth[1:], data_wz_MV_vth)
-					# dt_new = dt_old + i*TIME_PERIOD
-					# dt = np.append(dt, dt_new)
-					
+								
 				self.valid_cnt = self.valid_cnt + 1
 				if(DEBUG):
 					# print('ax: ', data_ax)

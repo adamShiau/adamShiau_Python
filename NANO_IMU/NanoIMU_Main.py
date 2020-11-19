@@ -25,14 +25,22 @@ xlm_factor = 0.000122 #4g / 32768
 gyro_factor = 0.00763 #250 / 32768 
 # gyro_factor = 1
 
-wx_offset = 107.065
-wy_offset = -513.717
-# wz_offset = -147
+# wx_offset = 107.065
+# wy_offset = -513.717
+MV=0
 
 
 class mainWindow(QMainWindow):
 	wz_offset = 0
 	wzVth = 0
+	wx_offset = 0
+	wxVth = 0
+	wy_offset = 0
+	wyVth = 0
+	ax_offset = 0
+	axVth = 0
+	ay_offset = 0
+	ayVth = 0
 	def __init__(self, parent = None):
 		super (mainWindow, self).__init__(parent)
 		self.setWindowTitle(TITLE_TEXT)
@@ -56,7 +64,15 @@ class mainWindow(QMainWindow):
 		self.diffdata5 = np.empty(0)
 		self.diffdata6 = np.empty(0)
 		self.thetaz = 0
+		self.thetax = 0
+		self.thetay = 0
+		self.speedx = 0
+		self.speedy = 0
 		self.thetaz_arr = np.empty(0)
+		self.thetax_arr = np.empty(0)
+		self.thetay_arr = np.empty(0)
+		self.speedx_arr = np.empty(0)
+		self.speedy_arr = np.empty(0)
 		self.dt = np.empty(0)
 		self.mainUI()
 		self.mainMenu()
@@ -112,31 +128,60 @@ class mainWindow(QMainWindow):
 		# self.thread1.started.connect(self.act.updateTwoData) #thread1啟動時會去trigger act.updateTwoData
 		# self.thread1.started.connect(self.act.updateThreeData) #thread1啟動時會去trigger act.updateThreeData 
 		# self.thread1.started.connect(self.act.updateFOG) #thread1啟動時會去trigger act.updateFOG 
-		self.thread1.started.connect(self.act.updateXLMDnGYRO_MV)
-		# self.thread1.started.connect(self.act.updateXLMDnGYRO)
-		self.thread_cali.started.connect(lambda:self.act.calibrationGYRO(MV_MODE=1))
+		# self.thread1.started.connect(self.act.updateXLMDnGYRO_MV)
+		self.thread1.started.connect(lambda:self.act.updateXLMDnGYRO(MV_MODE=MV))
+		self.thread_cali.started.connect(lambda:self.act.calibrationGYRO(MV_MODE=MV))
 
 		''' emit connect '''
 		self.act.fog_finished.connect(self.myThreadStop) #runFlag=0時fog_finished會emit，之後關掉thread1
 		# self.act.fog_update.connect(self.plotFog) #fog_update emit 接收最新data and dt array
 		# self.act.fog_update2.connect(self.plotFog2)  
 		# self.act.fog_update7.connect(self.plotXLMDnGYRO)
-		# self.act.fog_update7.connect(self.plotGYRO)
+		self.act.fog_update7.connect(self.plotGYRO)
 		self.act.fog_update12.connect(self.calibGYRO)
 		
 		''' text connect '''
 		self.top.wzOffset_le.textChanged.connect(self.updata_para)
 		self.top.wzVth_le.textChanged.connect(self.updata_para)
+		self.top.wxOffset_le.textChanged.connect(self.updata_para)
+		self.top.wxVth_le.textChanged.connect(self.updata_para)
+		self.top.wyOffset_le.textChanged.connect(self.updata_para)
+		self.top.wyVth_le.textChanged.connect(self.updata_para)
+		self.top.axOffset_le.textChanged.connect(self.updata_para)
+		self.top.axVth_le.textChanged.connect(self.updata_para)
+		self.top.ayOffset_le.textChanged.connect(self.updata_para)
+		self.top.ayVth_le.textChanged.connect(self.updata_para)
 	
 	def updata_para(self):
 		self.wz_offset = float(self.top.wzOffset_le.text())
 		self.wzVth = float(self.top.wzVth_le.text())
-		self.act.offset_wz = self.wz_offset
+		self.act.offset_wz = self.wz_offset  
+		self.act.wzVth = self.wzVth
+		
+		self.wx_offset = float(self.top.wxOffset_le.text())
+		self.wxVth = float(self.top.wxVth_le.text())
+		self.act.offset_wx = self.wx_offset  
+		self.act.wxVth = self.wxVth
+		
+		self.wy_offset = float(self.top.wyOffset_le.text())
+		self.wyVth = float(self.top.wyVth_le.text())
+		self.act.offset_wy = self.wy_offset  
+		self.act.wyVth = self.wyVth
+		
+		self.ax_offset = float(self.top.axOffset_le.text())
+		self.axVth = float(self.top.axVth_le.text())
+		self.act.offset_ax = self.ax_offset  
+		self.act.axVth = self.axVth
+		
+		self.ay_offset = float(self.top.ayOffset_le.text())
+		self.ayVth = float(self.top.wyVth_le.text())
+		self.act.offset_ay = self.ay_offset  
+		self.act.ayVth = self.ayVth
 		print('change')
-		print(type(self.wz_offset), end=', ')
-		print(self.wz_offset)
-		print(type(self.wzVth), end=', ')
-		print(self.wzVth)
+		# print(type(self.wz_offset), end=', ')
+		# print(self.wz_offset)
+		# print(type(self.wzVth), end=', ')
+		# print(self.wzVth)
 	
 	def versionBox(self):
 		versionBox = QMessageBox()
@@ -186,6 +231,8 @@ class mainWindow(QMainWindow):
 	def buttonStop(self):#set runFlag=0
 		# self.act.setStop()
 		self.act.runFlag = False
+		self.thetax_arr = np.empty(0)
+		self.thetay_arr = np.empty(0)
 		self.thetaz_arr = np.empty(0)
 		
 	def open_file(self, filename):
@@ -201,15 +248,59 @@ class mainWindow(QMainWindow):
 		self.act.runFlag = False 
 		wzOffset_cp = float(self.top.wzOffset_lb.val.text())
 		wzVth_cp = round(float(self.top.diffwzStd_lb.val.text())*3,3)
+		wxOffset_cp = float(self.top.wxOffset_lb.val.text())
+		wxVth_cp = round(float(self.top.diffwxStd_lb.val.text())*3,3)
+		wyOffset_cp = float(self.top.wyOffset_lb.val.text())
+		wyVth_cp = round(float(self.top.diffwyStd_lb.val.text())*3,3)
+		
+		axOffset_cp = float(self.top.axOffset_lb.val.text())
+		axVth_cp = round(float(self.top.diffaxStd_lb.val.text())*3,3)
+		ayOffset_cp = float(self.top.ayOffset_lb.val.text())
+		ayVth_cp = round(float(self.top.diffayStd_lb.val.text())*3,3)
 		if(wzVth_cp < 1):
 			wzVth_cp = 1
+		if(wxVth_cp < 1):
+			wxVth_cp = 1
+		if(wyVth_cp < 1):
+			wyVth_cp = 1
+		if(axVth_cp < 1):
+			axVth_cp = 1
+		if(ayVth_cp < 1):
+			ayVth_cp = 1
+			
 		self.top.wzOffset_le.setText(str(wzOffset_cp))
 		self.top.wzVth_le.setText(str(wzVth_cp))
 		self.wz_offset = wzOffset_cp
 		self.wzVth = wzVth_cp
 		
+		self.top.wxOffset_le.setText(str(wxOffset_cp))
+		self.top.wxVth_le.setText(str(wxVth_cp))
+		self.wx_offset = wxOffset_cp
+		self.wxVth = wxVth_cp
+		
+		self.top.wyOffset_le.setText(str(wyOffset_cp))
+		self.top.wyVth_le.setText(str(wyVth_cp))
+		self.wy_offset = wyOffset_cp
+		self.wyVth = wyVth_cp
+		
+		self.top.axOffset_le.setText(str(axOffset_cp))
+		self.top.axVth_le.setText(str(axVth_cp))
+		self.ax_offset = axOffset_cp
+		self.axVth = axVth_cp
+		
+		self.top.ayOffset_le.setText(str(ayOffset_cp))
+		self.top.ayVth_le.setText(str(ayVth_cp))
+		self.ay_offset = ayOffset_cp
+		self.ayVth = ayVth_cp
+		
 		self.thread_cali.quit() 
 		self.thread_cali.wait()
+		self.data  = np.empty(0)
+		self.data2 = np.empty(0)
+		self.data3 = np.empty(0)
+		self.data4 = np.empty(0)
+		self.data5 = np.empty(0)
+		self.data6 = np.empty(0)
 		self.diffdata1 = np.empty(0)
 		self.diffdata2 = np.empty(0)
 		self.diffdata3 = np.empty(0)
@@ -240,56 +331,13 @@ class mainWindow(QMainWindow):
 		self.data4 = np.empty(0)
 		self.data5 = np.empty(0)
 		self.data6 = np.empty(0)
-		self.diffdata1 = np.empty(0)
-		self.diffdata2 = np.empty(0)
-		self.diffdata3 = np.empty(0)
-		self.diffdata4 = np.empty(0)
-		self.diffdata5 = np.empty(0)
-		self.diffdata6 = np.empty(0)
 		self.dt = np.empty(0)
 		self.thetaz = 0
+		self.thetax = 0
+		self.thetay = 0
+		self.speedx = 0
+		self.speedy = 0
 		
-		
-	def plotFog(self, data, dt):
-		if (len(self.data) >= 1000):
-			self.data = self.data[self.act.data_frame_update_point:]
-			self.dt = self.dt[self.act.data_frame_update_point:]
-
-		self.data = np.append(self.data, data*w_factor)
-		self.dt = np.append(self.dt, dt)
-		if(DEBUG) :
-			print('len(data)', len(self.data))
-			print('len(dt)', len(self.dt))
-			# print(self.data)
-		self.top.com_plot.ax.clear()
-		self.top.com_plot.ax.set_ylabel("")
-		self.top.com_plot.ax.plot(self.dt, self.data, color = 'blue', linestyle = '-', marker = '')
-		self.top.com_plot.figure.canvas.draw()
-		self.top.com_plot.figure.canvas.flush_events()
-		
-	def plotFog2(self, data1, data2, dt):
-
-		if (len(self.data) >= 3000):
-			self.data = self.data[self.act.data_frame_update_point:]
-			self.data2 = self.data2[self.act.data_frame_update_point:]
-			self.dt = self.dt[self.act.data_frame_update_point:]
-
-		self.data = np.append(self.data, data1)
-		self.data2 = np.append(self.data2, data2)
-		self.dt = np.append(self.dt, dt)
-		if(DEBUG) :
-			print('len(data1)', len(self.data))
-			print('len(data2)', len(self.data2))
-			print('len(dt)', len(self.dt))
-		# self.top.com_plot.ax1.set_ylabel("y1")
-		# self.top.com_plot.ax1.plot(self.dt, self.data, color = 'blue', linestyle = '-', marker = '*')
-		# self.top.com_plot.ax2.set_ylabel("y2")
-		# self.top.com_plot.ax2.plot(self.dt, self.data2, color = 'red', linestyle = '-', marker = '*')
-		
-		# self.top.com_plot.figure.canvas.draw()
-		# self.top.com_plot.ax1.clear()
-		# self.top.com_plot.ax2.clear()
-		# self.top.com_plot.figure.canvas.flush_events()
 		
 	def plotFOGnXLMD(self, data_fog, data_ax, data_ay, data_az, dt):
 		
@@ -416,22 +464,32 @@ class mainWindow(QMainWindow):
 			self.data5 = self.data5[self.act.data_frame_update_point:]
 			self.data6 = self.data6[self.act.data_frame_update_point:]
 			self.dt = self.dt[self.act.data_frame_update_point:]
-		data_ax_f = data_ax*1 
-		data_ay_f = data_ay*1
-		data_az_f = data_az*xlm_factor
-		data_wx_f = (data_wx-wx_offset)*gyro_factor
-		data_wy_f = (data_wy-wy_offset)*gyro_factor
+		data_ax_f = (data_ax-self.ax_offset)*xlm_factor
+		data_ay_f = (data_ay-self.ay_offset)*xlm_factor
+		data_az_f = (data_az-0)*xlm_factor
+		data_wx_f = (data_wx-self.wx_offset)*gyro_factor
+		data_wy_f = (data_wy-self.wy_offset)*gyro_factor
 		data_wz_f = (data_wz-self.wz_offset)*gyro_factor
 		''' filter '''
 		# sos = signal.butter(10, 0.1, 'hp', fs=100, output='sos')
 		# data_wz_f = signal.sosfilt(sos, data_wz_f)
 		''' '''
-		# print("thez: ", end=', ')
-		# print(self.thetaz)
 		self.thetaz = self.thetaz + np.sum(data_wz_f*0.01)
 		self.thetaz_arr = np.append(self.thetaz_arr, self.thetaz)
+		self.thetax = self.thetax + np.sum(data_wx_f*0.01)
+		self.thetax_arr = np.append(self.thetax_arr, self.thetax)
+		self.thetay = self.thetay + np.sum(data_wy_f*0.01)
+		self.thetay_arr = np.append(self.thetay_arr, self.thetay)
+		self.speedx = self.speedx + np.sum(data_ax_f*0.01)
+		self.speedx_arr = np.append(self.speedx_arr, self.speedx)
+		self.speedy = self.speedy + np.sum(data_ay_f*0.01)
+		self.speedy_arr = np.append(self.speedy_arr, self.speedy)
 		if (len(self.thetaz_arr) >= 100):
 			self.thetaz_arr = self.thetaz_arr[1:]
+			self.thetax_arr = self.thetax_arr[1:]
+			self.thetay_arr = self.thetay_arr[1:]
+			self.speedx_arr = self.speedx_arr[1:]
+			self.speedy_arr = self.speedy_arr[1:]
 		# print(np.sum(data_wz_f))
 		
 		self.data  = np.append(self.data,  data_ax_f)
@@ -451,15 +509,28 @@ class mainWindow(QMainWindow):
 			# print(np.average(self.data4))
 			# print('len(data_wy)', len(self.data5), end=', ')
 			# print(np.average(self.data5))
-			print('len(data_wz)', len(self.data6), end=', ')
-			print(np.round(np.average(self.data6), 3), end=', ')
-			print(np.round(np.std(self.data6), 3))
+			# print('len(data_wz)', len(self.data6), end=', ')
+			# print(np.round(np.average(self.data6), 3), end=', ')
+			# print(np.round(np.std(self.data6), 3))
 			# print(np.average(self.data6))
 			# print('len(dt)', len(self.dt))
 			print("thez: ", end=', ')
 			print(self.thetaz, end=', ')
 			print(len(self.thetaz_arr))
-			self.top.wzOffset_lb.setText(str(np.average(self.data6)))
+			print("thex: ", end=', ')
+			print(self.thetax, end=', ')
+			print(len(self.thetax_arr))
+			print("they: ", end=', ')
+			print(self.thetay, end=', ')
+			print(len(self.thetay_arr))
+			
+			print("vx: ", end=', ')
+			print(self.speedx, end=', ')
+			print(len(self.speedx_arr))
+			print("vy: ", end=', ')
+			print(self.speedy, end=', ')
+			print(len(self.speedy_arr))
+			# self.top.wzOffset_lb.setText(str(np.average(self.data6)))
 			pass
 			
 			
@@ -475,14 +546,18 @@ class mainWindow(QMainWindow):
 		# self.top.com_plot.ax2.plot(self.dt, self.data3, color = 'b', linestyle = '-', marker = '', label="az")
 		# self.top.com_plot.ax2.legend(bbox_to_anchor=(1.0, 1.0), loc='upper left', prop={'size': 10})
 		
-		''' three plot '''
-		# self.top.com_plot.ax1.set_ylabel("wx(dps)")
+		''' w plot '''
+		# self.top.com_plot.ax1.set_ylabel("w(dps)")
 		# self.top.com_plot.ax1.plot(self.dt, self.data4, color = 'r', linestyle = '-', marker = '', label="wx")
-		# self.top.com_plot.ax2.set_ylabel("wy(dps)")
-		# self.top.com_plot.ax2.plot(self.dt, self.data5, color = 'g', linestyle = '-', marker = '', label="wy")
-		# self.top.com_plot.ax3.set_ylabel("wz(dps)")
-		# self.top.com_plot.ax3.plot(self.dt, self.data6, color = 'b', linestyle = '-', marker = '', label="wz")
+		# self.top.com_plot.ax1.plot(self.dt, self.data5, color = 'g', linestyle = '-', marker = '', label="wy")
+		# self.top.com_plot.ax1.plot(self.dt, self.data6, color = 'b', linestyle = '-', marker = '', label="wz")
+		# self.top.com_plot.ax1.legend(bbox_to_anchor=(0.9, 1.0), loc='upper left', prop={'size': 10})
 		
+		# self.top.com_plot.ax2.set_ylabel("theta")
+		# self.top.com_plot.ax2.plot(self.thetax_arr, color = 'r', linestyle = '-', marker = '', label="thetax")
+		# self.top.com_plot.ax2.plot(self.thetay_arr, color = 'g', linestyle = '-', marker = '', label="thetay")
+		# self.top.com_plot.ax2.plot(self.thetaz_arr, color = 'b', linestyle = '-', marker = '', label="thetaz")
+		# self.top.com_plot.ax2.legend(bbox_to_anchor=(0.9, 1.0), loc='upper left', prop={'size': 10})
 		''' thetz z plot '''
 		# self.top.com_plot.ax1.set_ylabel("wz(dps)")
 		# self.top.com_plot.ax1.plot(self.dt, self.data6, color = 'b', linestyle = '-', marker = '', label="wz")
@@ -490,15 +565,15 @@ class mainWindow(QMainWindow):
 		# self.top.com_plot.ax2.plot(self.thetaz_arr, color = 'g', linestyle = '-', marker = '', label="thetaz")
 		
 		''' ax ay plot '''
-		self.top.com_plot.ax1.set_ylabel("ax(g)")
-		self.top.com_plot.ax1.plot(self.dt, self.data, color = 'b', linestyle = '-', marker = '', label="ax")
-		self.top.com_plot.ax2.set_ylabel("ay(g)")
-		self.top.com_plot.ax2.plot(self.dt, self.data2, color = 'g', linestyle = '-', marker = '', label="ay")
+		self.top.com_plot.ax1.set_ylabel("a(g)")
+		# self.top.com_plot.ax1.plot(self.dt, self.data, color = 'b', linestyle = '-', marker = '', label="ax")
+		self.top.com_plot.ax1.plot(self.dt, self.data2, color = 'g', linestyle = '-', marker = '', label="ay")
 		
-		self.top.com_plot.figure.canvas.draw()
+		self.top.com_plot.ax2.set_ylabel("v")
+		# self.top.com_plot.ax2.plot(self.speedx_arr, color = 'b', linestyle = '-', marker = '', label="vx")
+		self.top.com_plot.ax2.plot(self.speedy_arr, color = 'g', linestyle = '-', marker = '', label="vy")
 		
-		# self.top.com_plot.ax3.clear()
-		# self.top.com_plot.ax4.clear()
+		self.top.com_plot.figure.canvas.draw()		
 		self.top.com_plot.figure.canvas.flush_events()
 		
 	def calibGYRO(self, data_ax, data_ay, data_az, data_wx, data_wy, data_wz, 
@@ -541,14 +616,39 @@ class mainWindow(QMainWindow):
 		self.top.wzStd_lb.val.setText(str(wz_std))
 		self.top.diffwzStd_lb.val.setText(str(diffwz_std))
 		
-		# if(self.save_status):
-			# np.savetxt(self.f, (np.vstack([dt,data_ax_f, data_ay_f, data_az_f, data_wx_f, data_wy_f, data_wz_f])).T, fmt='%.2f,%.5f,%.5f,%.5f,%.5f,%.5f,%.5f')
+		wx_offset = np.round(np.average(self.data4),3)
+		wx_std = np.round(np.std(self.data4), 3)
+		diffwx_std = np.round(np.std(self.diffdata4), 3)
+		self.top.wxOffset_lb.val.setText(str(wx_offset))
+		self.top.wxStd_lb.val.setText(str(wx_std))
+		self.top.diffwxStd_lb.val.setText(str(diffwx_std))
+		
+		wy_offset = np.round(np.average(self.data5),3)
+		wy_std = np.round(np.std(self.data5), 3)
+		diffwy_std = np.round(np.std(self.diffdata5), 3)
+		self.top.wyOffset_lb.val.setText(str(wy_offset))
+		self.top.wyStd_lb.val.setText(str(wy_std))
+		self.top.diffwyStd_lb.val.setText(str(diffwy_std))
+		
+		ax_offset = np.round(np.average(self.data),3)
+		ax_std = np.round(np.std(self.data), 3)
+		diffax_std = np.round(np.std(self.diffdata1), 3)
+		self.top.axOffset_lb.val.setText(str(ax_offset))
+		self.top.axStd_lb.val.setText(str(ax_std))
+		self.top.diffaxStd_lb.val.setText(str(diffax_std))
+		
+		ay_offset = np.round(np.average(self.data2),3)
+		ay_std = np.round(np.std(self.data2), 3)
+		diffay_std = np.round(np.std(self.diffdata2), 3)
+		self.top.ayOffset_lb.val.setText(str(ay_offset))
+		self.top.ayStd_lb.val.setText(str(ay_std))
+		self.top.diffayStd_lb.val.setText(str(diffay_std))
 		
 		''' ax ay plot '''
 		self.top.com_plot.ax1.set_ylabel("acc(code)")
 		self.top.com_plot.ax1.plot(self.data, color = 'r', linestyle = '-', marker = '', label="ax")
 		self.top.com_plot.ax1.plot(self.data2, color = 'g', linestyle = '-', marker = '', label="ay")
-		self.top.com_plot.ax1.plot(self.data3, color = 'b', linestyle = '-', marker = '', label="az")
+		# self.top.com_plot.ax1.plot(self.data3, color = 'b', linestyle = '-', marker = '', label="az")
 		self.top.com_plot.ax1.legend(bbox_to_anchor=(1.0, 1.0), loc='upper left', prop={'size': 10})
 		self.top.com_plot.ax2.set_ylabel("w(code)")
 		self.top.com_plot.ax2.plot(self.data4, color = 'r', linestyle = '-', marker = '', label="wx")

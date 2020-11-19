@@ -3,6 +3,7 @@ import sys
 sys.path.append("../") 
 import time 
 import datetime
+from scipy import signal
 # import logging
 from PyQt5.QtGui import * 
 from PyQt5.QtCore import * 
@@ -22,13 +23,16 @@ DEBUG = 1
 w_factor = 0.01
 xlm_factor = 0.000122 #4g / 32768
 gyro_factor = 0.00763 #250 / 32768 
+# gyro_factor = 1
+
 wx_offset = 107.065
 wy_offset = -513.717
-wz_offset = -152.685+10
-# wz_offset = 0
+# wz_offset = -147
 
 
 class mainWindow(QMainWindow):
+	wz_offset = 0
+	wzVth = 0
 	def __init__(self, parent = None):
 		super (mainWindow, self).__init__(parent)
 		self.setWindowTitle(TITLE_TEXT)
@@ -38,12 +42,19 @@ class mainWindow(QMainWindow):
 		self.top = UI.mainWidget()
 		self.act = ACT.COMRead_Action(self.loggername)
 		self.thread1 = QThread() #開一個thread
+		self.thread_cali = QThread()
 		self.data = np.empty(0)
 		self.data2 = np.empty(0)
 		self.data3 = np.empty(0)
 		self.data4 = np.empty(0)
 		self.data5 = np.empty(0)
 		self.data6 = np.empty(0)
+		self.diffdata1 = np.empty(0)
+		self.diffdata2 = np.empty(0)
+		self.diffdata3 = np.empty(0)
+		self.diffdata4 = np.empty(0)
+		self.diffdata5 = np.empty(0)
+		self.diffdata6 = np.empty(0)
 		self.thetaz = 0
 		self.thetaz_arr = np.empty(0)
 		self.dt = np.empty(0)
@@ -51,16 +62,21 @@ class mainWindow(QMainWindow):
 		self.mainMenu()
 		self.linkFunction()
 		self.disableBtn()
+		# self.wz_offset = self.act.offset_wz
 	
 	def disableBtn(self):
 		self.top.usb.btn.setEnabled(False)
 		self.top.read_btn.read.setEnabled(False)
 		self.top.stop_btn.stop.setEnabled(False)
+		self.top.cali_btn.btn.setEnabled(False)
+		self.top.cali_stop_btn.btn.setEnabled(False)
 		
 	def enableBtn(self):
 		self.top.usb.btn.setEnabled(True)
 		self.top.read_btn.read.setEnabled(True)
 		self.top.stop_btn.stop.setEnabled(True)
+		self.top.cali_btn.btn.setEnabled(True)
+		self.top.cali_stop_btn.btn.setEnabled(True)
 	
 	def mainUI(self):
 		mainLayout = QGridLayout()
@@ -85,6 +101,8 @@ class mainWindow(QMainWindow):
 	def linkFunction(self):
 		''' btn connect '''
 		self.top.usb.btn.clicked.connect(self.usbConnect)
+		self.top.cali_btn.btn.clicked.connect(self.caliThreadStart)
+		self.top.cali_stop_btn.btn.clicked.connect(self.caliThreadStop)
 		self.top.read_btn.read.clicked.connect(self.myThreadStart) # set runFlag=1
 		self.top.stop_btn.stop.clicked.connect(self.buttonStop) # set runFlag=0
 		self.top.updataCom.updata.clicked.connect(self.updata_comport)
@@ -94,15 +112,32 @@ class mainWindow(QMainWindow):
 		# self.thread1.started.connect(self.act.updateTwoData) #thread1啟動時會去trigger act.updateTwoData
 		# self.thread1.started.connect(self.act.updateThreeData) #thread1啟動時會去trigger act.updateThreeData 
 		# self.thread1.started.connect(self.act.updateFOG) #thread1啟動時會去trigger act.updateFOG 
-		self.thread1.started.connect(self.act.updateXLMDnGYRO)
+		self.thread1.started.connect(self.act.updateXLMDnGYRO_MV)
+		# self.thread1.started.connect(self.act.updateXLMDnGYRO)
+		self.thread_cali.started.connect(lambda:self.act.calibrationGYRO(MV_MODE=1))
+
 		''' emit connect '''
 		self.act.fog_finished.connect(self.myThreadStop) #runFlag=0時fog_finished會emit，之後關掉thread1
 		# self.act.fog_update.connect(self.plotFog) #fog_update emit 接收最新data and dt array
 		# self.act.fog_update2.connect(self.plotFog2)  
 		# self.act.fog_update7.connect(self.plotXLMDnGYRO)
-		self.act.fog_update7.connect(self.plotGYRO)
+		# self.act.fog_update7.connect(self.plotGYRO)
+		self.act.fog_update12.connect(self.calibGYRO)
 		
-			
+		''' text connect '''
+		self.top.wzOffset_le.textChanged.connect(self.updata_para)
+		self.top.wzVth_le.textChanged.connect(self.updata_para)
+	
+	def updata_para(self):
+		self.wz_offset = float(self.top.wzOffset_le.text())
+		self.wzVth = float(self.top.wzVth_le.text())
+		self.act.offset_wz = self.wz_offset
+		print('change')
+		print(type(self.wz_offset), end=', ')
+		print(self.wz_offset)
+		print(type(self.wzVth), end=', ')
+		print(self.wzVth)
+	
 	def versionBox(self):
 		versionBox = QMessageBox()
 		versionBox.about(self, "Version", VERSION_TEXT)
@@ -157,7 +192,31 @@ class mainWindow(QMainWindow):
 		self.f=open(filename, 'w')
 		start_time_header = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
 		self.f.writelines(start_time_header + '\n')
+	
+	def caliThreadStart(self):
+		self.act.runFlag = True
+		self.thread_cali.start()
 		
+	def caliThreadStop(self):
+		self.act.runFlag = False 
+		wzOffset_cp = float(self.top.wzOffset_lb.val.text())
+		wzVth_cp = round(float(self.top.diffwzStd_lb.val.text())*3,3)
+		if(wzVth_cp < 1):
+			wzVth_cp = 1
+		self.top.wzOffset_le.setText(str(wzOffset_cp))
+		self.top.wzVth_le.setText(str(wzVth_cp))
+		self.wz_offset = wzOffset_cp
+		self.wzVth = wzVth_cp
+		
+		self.thread_cali.quit() 
+		self.thread_cali.wait()
+		self.diffdata1 = np.empty(0)
+		self.diffdata2 = np.empty(0)
+		self.diffdata3 = np.empty(0)
+		self.diffdata4 = np.empty(0)
+		self.diffdata5 = np.empty(0)
+		self.diffdata6 = np.empty(0)
+	
 	def myThreadStart(self):
 		self.save_status = self.openFileBox()
 		# file_name = self.top.save_edit.edit.text() 
@@ -181,6 +240,12 @@ class mainWindow(QMainWindow):
 		self.data4 = np.empty(0)
 		self.data5 = np.empty(0)
 		self.data6 = np.empty(0)
+		self.diffdata1 = np.empty(0)
+		self.diffdata2 = np.empty(0)
+		self.diffdata3 = np.empty(0)
+		self.diffdata4 = np.empty(0)
+		self.diffdata5 = np.empty(0)
+		self.diffdata6 = np.empty(0)
 		self.dt = np.empty(0)
 		self.thetaz = 0
 		
@@ -291,7 +356,7 @@ class mainWindow(QMainWindow):
 			self.data5 = self.data5[self.act.data_frame_update_point:]
 			self.data6 = self.data6[self.act.data_frame_update_point:]
 			self.dt = self.dt[self.act.data_frame_update_point:]
-		data_ax_f = data_ax*xlm_factor 
+		data_ax_f = data_ax*xlm_factor
 		data_ay_f = data_ay*xlm_factor
 		data_az_f = data_az*xlm_factor
 		data_wx_f = data_wx*gyro_factor
@@ -351,12 +416,16 @@ class mainWindow(QMainWindow):
 			self.data5 = self.data5[self.act.data_frame_update_point:]
 			self.data6 = self.data6[self.act.data_frame_update_point:]
 			self.dt = self.dt[self.act.data_frame_update_point:]
-		data_ax_f = data_ax*xlm_factor 
-		data_ay_f = data_ay*xlm_factor
+		data_ax_f = data_ax*1 
+		data_ay_f = data_ay*1
 		data_az_f = data_az*xlm_factor
 		data_wx_f = (data_wx-wx_offset)*gyro_factor
 		data_wy_f = (data_wy-wy_offset)*gyro_factor
-		data_wz_f = (data_wz-wz_offset)*gyro_factor
+		data_wz_f = (data_wz-self.wz_offset)*gyro_factor
+		''' filter '''
+		# sos = signal.butter(10, 0.1, 'hp', fs=100, output='sos')
+		# data_wz_f = signal.sosfilt(sos, data_wz_f)
+		''' '''
 		# print("thez: ", end=', ')
 		# print(self.thetaz)
 		self.thetaz = self.thetaz + np.sum(data_wz_f*0.01)
@@ -375,16 +444,22 @@ class mainWindow(QMainWindow):
 		if(self.save_status):
 			np.savetxt(self.f, (np.vstack([dt,data_ax_f, data_ay_f, data_az_f, data_wx_f, data_wy_f, data_wz_f])).T, fmt='%.2f,%.5f,%.5f,%.5f,%.5f,%.5f,%.5f')
 		if(DEBUG) :
+			# print(np.average(self.data))
+			# print(np.average(self.data2))
+			# print(np.average(self.data3))
 			# print('len(data_wx)', len(self.data4), end=', ')
 			# print(np.average(self.data4))
 			# print('len(data_wy)', len(self.data5), end=', ')
 			# print(np.average(self.data5))
-			# print('len(data_wz)', len(self.data6), end=', ')
+			print('len(data_wz)', len(self.data6), end=', ')
+			print(np.round(np.average(self.data6), 3), end=', ')
+			print(np.round(np.std(self.data6), 3))
 			# print(np.average(self.data6))
 			# print('len(dt)', len(self.dt))
 			print("thez: ", end=', ')
 			print(self.thetaz, end=', ')
 			print(len(self.thetaz_arr))
+			self.top.wzOffset_lb.setText(str(np.average(self.data6)))
 			pass
 			
 			
@@ -409,15 +484,79 @@ class mainWindow(QMainWindow):
 		# self.top.com_plot.ax3.plot(self.dt, self.data6, color = 'b', linestyle = '-', marker = '', label="wz")
 		
 		''' thetz z plot '''
-		self.top.com_plot.ax1.set_ylabel("wz(dps)")
-		self.top.com_plot.ax1.plot(self.dt, self.data6, color = 'b', linestyle = '-', marker = '', label="wz")
-		self.top.com_plot.ax2.set_ylabel("thetaz")
-		self.top.com_plot.ax2.plot(self.thetaz_arr, color = 'g', linestyle = '-', marker = '', label="thetaz")
+		# self.top.com_plot.ax1.set_ylabel("wz(dps)")
+		# self.top.com_plot.ax1.plot(self.dt, self.data6, color = 'b', linestyle = '-', marker = '', label="wz")
+		# self.top.com_plot.ax2.set_ylabel("thetaz")
+		# self.top.com_plot.ax2.plot(self.thetaz_arr, color = 'g', linestyle = '-', marker = '', label="thetaz")
+		
+		''' ax ay plot '''
+		self.top.com_plot.ax1.set_ylabel("ax(g)")
+		self.top.com_plot.ax1.plot(self.dt, self.data, color = 'b', linestyle = '-', marker = '', label="ax")
+		self.top.com_plot.ax2.set_ylabel("ay(g)")
+		self.top.com_plot.ax2.plot(self.dt, self.data2, color = 'g', linestyle = '-', marker = '', label="ay")
 		
 		self.top.com_plot.figure.canvas.draw()
 		
 		# self.top.com_plot.ax3.clear()
 		# self.top.com_plot.ax4.clear()
+		self.top.com_plot.figure.canvas.flush_events()
+		
+	def calibGYRO(self, data_ax, data_ay, data_az, data_wx, data_wy, data_wz, 
+					diff_ax, diff_ay, diff_az, diff_wx, diff_wy, diff_wz):
+		if(self.act.runFlag):
+			self.top.com_plot.ax1.clear()
+			self.top.com_plot.ax2.clear()
+			
+		if (len(self.data) >= 300):
+			self.data  = self.data[self.act.data_frame_update_point:]
+			self.data2 = self.data2[self.act.data_frame_update_point:]
+			self.data3 = self.data3[self.act.data_frame_update_point:]
+			self.data4 = self.data4[self.act.data_frame_update_point:]
+			self.data5 = self.data5[self.act.data_frame_update_point:]
+			self.data6 = self.data6[self.act.data_frame_update_point:]
+			self.diffdata1 = self.diffdata1[self.act.data_frame_update_point:]
+			self.diffdata2 = self.diffdata2[self.act.data_frame_update_point:]
+			self.diffdata3 = self.diffdata3[self.act.data_frame_update_point:]
+			self.diffdata4 = self.diffdata4[self.act.data_frame_update_point:]
+			self.diffdata5 = self.diffdata5[self.act.data_frame_update_point:]
+			self.diffdata6 = self.diffdata6[self.act.data_frame_update_point:]
+		
+		self.data  = np.append(self.data,  data_ax)
+		self.data2 = np.append(self.data2, data_ay)
+		self.data3 = np.append(self.data3, data_az)
+		self.data4 = np.append(self.data4, data_wx)
+		self.data5 = np.append(self.data5, data_wy)
+		self.data6 = np.append(self.data6, data_wz)
+		self.diffdata1 = np.append(self.diffdata1, diff_ax)
+		self.diffdata2 = np.append(self.diffdata2, diff_ay)
+		self.diffdata3 = np.append(self.diffdata3, diff_az)
+		self.diffdata4 = np.append(self.diffdata4, diff_wx)
+		self.diffdata5 = np.append(self.diffdata5, diff_wy)
+		self.diffdata6 = np.append(self.diffdata6, diff_wz)
+		
+		wz_offset = np.round(np.average(self.data6),3)
+		wz_std = np.round(np.std(self.data6), 3)
+		diffwz_std = np.round(np.std(self.diffdata6), 3)
+		self.top.wzOffset_lb.val.setText(str(wz_offset))
+		self.top.wzStd_lb.val.setText(str(wz_std))
+		self.top.diffwzStd_lb.val.setText(str(diffwz_std))
+		
+		# if(self.save_status):
+			# np.savetxt(self.f, (np.vstack([dt,data_ax_f, data_ay_f, data_az_f, data_wx_f, data_wy_f, data_wz_f])).T, fmt='%.2f,%.5f,%.5f,%.5f,%.5f,%.5f,%.5f')
+		
+		''' ax ay plot '''
+		self.top.com_plot.ax1.set_ylabel("acc(code)")
+		self.top.com_plot.ax1.plot(self.data, color = 'r', linestyle = '-', marker = '', label="ax")
+		self.top.com_plot.ax1.plot(self.data2, color = 'g', linestyle = '-', marker = '', label="ay")
+		self.top.com_plot.ax1.plot(self.data3, color = 'b', linestyle = '-', marker = '', label="az")
+		self.top.com_plot.ax1.legend(bbox_to_anchor=(1.0, 1.0), loc='upper left', prop={'size': 10})
+		self.top.com_plot.ax2.set_ylabel("w(code)")
+		self.top.com_plot.ax2.plot(self.data4, color = 'r', linestyle = '-', marker = '', label="wx")
+		self.top.com_plot.ax2.plot(self.data5, color = 'g', linestyle = '-', marker = '', label="wy")
+		self.top.com_plot.ax2.plot(self.data6, color = 'b', linestyle = '-', marker = '', label="wz")
+		self.top.com_plot.ax2.legend(bbox_to_anchor=(1.0, 1.0), loc='upper left', prop={'size': 10})
+		
+		self.top.com_plot.figure.canvas.draw()		
 		self.top.com_plot.figure.canvas.flush_events()
 
         

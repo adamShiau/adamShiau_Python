@@ -14,10 +14,24 @@ class mainWidget(QWidget):
 		self.usb = connectBlock("USB Connection")
 		self.read_btn = Read_btn()
 		self.stop_btn = Stop_btn()
+		self.cali_btn = Cali_btn()
+		self.cali_stop_btn = Cali_stop_btn()
 		# self.save_edit = Save_edit();
 		self.updataCom = comportComboboxBlock(group_name='updata comport', btn_name='renew')
 		# self.updataCom = Updata_COM_btn()
 		# self.com_sel = Comport_sel()
+		
+		self.wzOffset_lb = labelBlock('wz offset')
+		self.wzStd_lb = labelBlock('wz stdev')
+		self.diffwzStd_lb = labelBlock('diffWz stdev')
+		####line editor####
+		self.wzOffset_le = QLineEdit()
+		self.wzOffset_le.setFixedWidth(100)
+		self.wzOffset_le.setText('0')
+		self.wzVth_le = QLineEdit()
+		self.wzVth_le.setFixedWidth(100)
+		self.wzVth_le.setText('0')
+		
 		self.com_plot = output2Plot() 
 		# self.com_plot = output3Plot() 
 		# self.com_plot = output4Plot()
@@ -32,6 +46,14 @@ class mainWidget(QWidget):
 		
 		mainLayout.addWidget(self.read_btn, 2,1,1,1)
 		mainLayout.addWidget(self.stop_btn, 2,2,1,1)
+		mainLayout.addWidget(self.cali_btn, 3,1,1,1)
+		mainLayout.addWidget(self.cali_stop_btn, 3,2,1,1)
+		mainLayout.addWidget(self.wzOffset_lb, 4,1)
+		mainLayout.addWidget(self.wzStd_lb, 4,2)
+		mainLayout.addWidget(self.wzOffset_le, 5,1,1,1)
+		mainLayout.addWidget(self.wzVth_le, 5,3,1,1)
+		# mainLayout.addWidget(self.diffwzOffset_lb, 4,3)
+		mainLayout.addWidget(self.diffwzStd_lb, 4,3)
 		# mainLayout.addWidget(self.save_edit, 2,0,1,1)
 		
 		# mainLayout.setRowStretch(0, 1)
@@ -96,6 +118,28 @@ class Stop_btn(QWidget):
 	def Stop_btn_UI(self):
 		layout = QGridLayout()
 		layout.addWidget(self.stop, 0,0,1,1)
+		self.setLayout(layout)
+		
+class Cali_btn(QWidget):
+	def __init__(self, parent=None):
+		super(Cali_btn, self).__init__(parent)
+		self.btn = QPushButton("calibration start")
+		self.btn_UI()
+
+	def btn_UI(self):
+		layout = QGridLayout()
+		layout.addWidget(self.btn, 0,0,1,1)
+		self.setLayout(layout)
+		
+class Cali_stop_btn(QWidget):
+	def __init__(self, parent=None):
+		super(Cali_stop_btn, self).__init__(parent)
+		self.btn = QPushButton("calibration stop")
+		self.btn_UI()
+
+	def btn_UI(self):
+		layout = QGridLayout()
+		layout.addWidget(self.btn, 0,0,1,1)
 		self.setLayout(layout)
 
  

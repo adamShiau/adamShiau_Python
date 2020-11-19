@@ -81,6 +81,16 @@ class checkEditBlock(QWidget):
 		layout.addWidget(self.value)
 		self.setLayout(layout)
 
+class labelBlock(QWidget):
+	def __init__(self, title='title', parent=None):
+		super(labelBlock, self).__init__(parent)
+		self.title = QLabel(title)
+		self.val = QLabel()
+		
+		layout = QVBoxLayout()
+		layout.addWidget(self.title)
+		layout.addWidget(self.val)
+		self.setLayout(layout)
 
 class editBlock(QGroupBox):
 	def __init__(self, title, parent=None):

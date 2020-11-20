@@ -197,6 +197,10 @@ class COMRead_Action(QObject):
 					else :
 						val_wy_vth = val_wy
 						
+					# print(val_ax, end=', ')	
+					# print(data_ax[-1], end=', ')
+					# print(val_ax-data_ax[-1], end=', ')						
+					
 					if(abs(val_ax-data_ax[-1]) < self.axVth):
 						val_ax_vth = self.offset_ax
 					else :
@@ -219,6 +223,8 @@ class COMRead_Action(QObject):
 					data_wz_vth = np.append(data_wz_vth[1:], val_wz_vth)
 					data_ax_vth = np.append(data_ax_vth[1:], val_ax_vth)
 					data_ay_vth = np.append(data_ay_vth[1:], val_ay_vth)
+					# print(data_ax_vth[-1])
+					
 					dt_new = dt_old + i*TIME_PERIOD
 					dt = np.append(dt, dt_new)
 					# print(data_wz_vth)

@@ -44,7 +44,36 @@ class comportComboboxBlock():
 		self.groupBox.show()
 		return self.groupBox
 		
+class chkBoxBlock(QWidget):
+	def __init__(self, name1='', name2='', name3='', name4='', name5='', name6='', parent=None):
+		super(chkBoxBlock, self).__init__(parent)
+		self.groupBox = QGroupBox('show graph')
+		self.ax_cb = QCheckBox(name1)
+		self.ay_cb = QCheckBox(name2)
+		self.wz_cb = QCheckBox(name3)
+		self.vx_cb = QCheckBox(name4)
+		self.vy_cb = QCheckBox(name5)
+		self.v_cb = QCheckBox('v')
+		self.x_cb = QCheckBox('x')
+		self.y_cb = QCheckBox('y')
+		self.track_cb = QCheckBox('track')
+		self.thetaz_cb = QCheckBox(name6)
 		
+	def layout(self):
+		layout = QGridLayout()
+		layout.addWidget(self.ax_cb, 0,0)
+		layout.addWidget(self.ay_cb, 0,1)
+		layout.addWidget(self.wz_cb, 0,2)
+		layout.addWidget(self.x_cb, 0,3)
+		layout.addWidget(self.y_cb, 0,4)
+		layout.addWidget(self.vx_cb, 1,0)
+		layout.addWidget(self.vy_cb, 1,1)
+		layout.addWidget(self.thetaz_cb, 1,2)
+		layout.addWidget(self.v_cb, 1,3)
+		layout.addWidget(self.track_cb, 1,4)
+		self.groupBox.setLayout(layout)
+		self.groupBox.show()
+		return self.groupBox
 		
 class spinLabelBlock(QGroupBox):
 	def __init__(self, title, labelname, labelvalue, minValue, maxValue, double = False, step = 1, Decimals = 2, parent=None):

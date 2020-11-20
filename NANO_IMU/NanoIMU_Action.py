@@ -44,6 +44,7 @@ class COMRead_Action(QObject):
 	offset_ay = 0
 	ayVth = 0
 	check_byte = 170
+	bufferSize = 0
 	def __init__(self, loggername):	
 		super().__init__()
 		self.COM = usb.FT232(loggername)
@@ -230,6 +231,7 @@ class COMRead_Action(QObject):
 					# print(data_wz_vth)
 					
 				self.valid_cnt = self.valid_cnt + 1
+				self.bufferSize = self.COM.port.inWaiting()
 				if(DEBUG):
 					# print('ax: ', data_ax)
 					# print('ay: ', data_ay)
@@ -242,7 +244,7 @@ class COMRead_Action(QObject):
 					# print('len(data_wy): ', len(data_wy), end=', ')
 					# print('len(data_wz): ', len(data_wz), end=', ')
 					# print('len(dt): ', len(dt), end=', ')
-					print(self.COM.port.inWaiting())
+					print(self.bufferSize)
 					pass
 				if(self.valid_cnt == 5):
 					self.valid_flag = 1

@@ -43,6 +43,19 @@ class mainWidget(QWidget):
 		self.ayStd_lb = labelBlock('ay stdev')
 		self.diffayStd_lb = labelBlock('diffay stdev')
 		
+		pe = QPalette()
+		pe.setColor(QPalette.WindowText, Qt.blue)
+		
+		self.theta_lb = QLabel();
+		self.theta_lb.setPalette(pe)
+		self.theta_lb.setFont(QFont('Arial', 20)) 
+		self.theta_lb.setText('theta')
+		
+		self.buffer_lb = QLabel();
+		self.buffer_lb.setPalette(pe)
+		self.buffer_lb.setFont(QFont('Arial', 20)) 
+		self.buffer_lb.setText('buffer')
+		
 		
 		###check box###
 		self.cb = chkBoxBlock('ax','ay','wz','vx','vy','thetaz')
@@ -113,6 +126,10 @@ class mainWidget(QWidget):
 		mainLayout.addWidget(self.mv_rb, 3,3)
 		
 		###label and line editor###
+		
+		mainLayout.addWidget(self.theta_lb, 15,1)
+		mainLayout.addWidget(self.buffer_lb, 15,2)
+		
 		mainLayout.addWidget(self.wzOffset_lb, 12,1)
 		mainLayout.addWidget(self.wzStd_lb, 12,2)
 		mainLayout.addWidget(self.diffwzStd_lb, 12,3)

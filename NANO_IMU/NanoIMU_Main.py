@@ -595,8 +595,12 @@ class mainWindow(QMainWindow):
 		dy = np.sin(theta*np.pi/180)*0.15
 		self.x_sum = self.x_sum + dx
 		self.y_sum = self.y_sum + dy
-		print('theta: ', end=', ')
-		print(round(self.thetaz,2))
+		# print('theta: ', end=', ')
+		# print(round(self.thetaz,2))
+		
+		self.top.theta_lb.setText(str(round(self.thetaz,2)))
+		self.top.buffer_lb.setText(str(self.act.bufferSize))
+		
 		self.dx_arr = np.append(self.dx_arr, dx)
 		self.dy_arr = np.append(self.dy_arr, dy)
 		self.x_arr = np.append(self.x_arr, self.x_sum)

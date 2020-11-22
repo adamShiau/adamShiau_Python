@@ -22,7 +22,8 @@ MAX_SAVE_INDEX = 3000
 DEBUG = 1
 w_factor = 0.01
 xlm_factor = 0.000122 #4g / 32768
-gyro_factor = 0.00763 #250 / 32768 
+# gyro_factor = 0.00763 #250 / 32768 
+gyro_factor = 0.00900 #250 / 32768 
 # gyro_factor = 1
 
 # wx_offset = 107.065
@@ -337,7 +338,7 @@ class mainWindow(QMainWindow):
 	def open_file(self, filename):
 		self.f=open(filename, 'w')
 		start_time_header = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
-		self.f.writelines(start_time_header + '\n')
+		self.f.writelines('#' + start_time_header + '\n')
 	
 	def caliThreadStart(self):
 		self.act.runFlag = True
@@ -422,7 +423,7 @@ class mainWindow(QMainWindow):
 		self.thread1.wait()
 		if(self.save_status):
 			stop_time_header = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
-			self.f.writelines(stop_time_header + '\n')
+			self.f.writelines('#' + stop_time_header + '\n')
 			self.f.close()
 		self.data  = np.empty(0)
 		self.data2 = np.empty(0)
@@ -590,13 +591,12 @@ class mainWindow(QMainWindow):
 		self.speed = np.sqrt(np.square(self.speedx)+np.square(self.speedy))
 		self.speed_arr = np.append(self.speed_arr, self.speed)
 		
+		''' for track plot'''
 		theta = 90 - self.thetaz
-		dx = np.cos(theta*np.pi/180)*0.15
-		dy = np.sin(theta*np.pi/180)*0.15
+		dx = np.cos(theta*np.pi/180)*self.act.data_frame_update_point*self.act.TIME_PERIOD
+		dy = np.sin(theta*np.pi/180)*self.act.data_frame_update_point*self.act.TIME_PERIOD
 		self.x_sum = self.x_sum + dx
 		self.y_sum = self.y_sum + dy
-		# print('theta: ', end=', ')
-		# print(round(self.thetaz,2))
 		
 		self.top.theta_lb.setText(str(round(self.thetaz,2)))
 		self.top.buffer_lb.setText(str(self.act.bufferSize))
@@ -665,6 +665,7 @@ class mainWindow(QMainWindow):
 			self.top.com_plot.ax1.plot(self.dt, self.data, color = 'r', linestyle = '-', marker = '', label="ax")
 		if(self.ay_chk):
 			self.top.com_plot.ax1.plot(self.dt, self.data2, color = 'g', linestyle = '-', marker = '', label="ay")
+			self.top.com_plot.ax2.set_ylim([-10, 10])
 		if(self.wz_chk):
 			self.top.com_plot.ax1.plot(self.dt, self.data6, color = 'b', linestyle = '-', marker = '', label="wz")
 		if(self.x_chk):
@@ -681,8 +682,8 @@ class mainWindow(QMainWindow):
 			self.top.com_plot.ax2.plot(self.speed_arr, color = 'k', linestyle = '-', marker = '', label="speed")
 		if(self.track_chk):
 			self.top.com_plot.ax2.plot(self.x_arr, self.y_arr, color = 'k', linestyle = '-', marker = '', label="track")
-			self.top.com_plot.ax2.set_xlim([-20, 20])
-			self.top.com_plot.ax2.set_ylim([-20, 20])
+			self.top.com_plot.ax2.set_xlim([-50, 50])
+			self.top.com_plot.ax2.set_ylim([-50, 50])
 		
 		self.top.com_plot.ax1.legend(bbox_to_anchor=(0.9, 1.0), loc='upper left', prop={'size': 10})
 		self.top.com_plot.ax2.legend(bbox_to_anchor=(0.9, 1.0), loc='upper left', prop={'size': 10})

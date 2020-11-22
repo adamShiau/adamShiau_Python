@@ -16,7 +16,6 @@ from py3lib import *
 
 TEST_MODE = False
 DEBUG = 1
-TIME_PERIOD = 0.01
 # MV_MODE = 1
 
 class COMRead_Action(QObject):
@@ -30,6 +29,7 @@ class COMRead_Action(QObject):
 	fog_finished = pyqtSignal()
 	valid_flag = 0
 	valid_cnt = 0
+	TIME_PERIOD = 0.01
 	data_frame_update_point = 15
 	runFlag = 0
 	#IMU 靜止時之offset
@@ -226,7 +226,7 @@ class COMRead_Action(QObject):
 					data_ay_vth = np.append(data_ay_vth[1:], val_ay_vth)
 					# print(data_ax_vth[-1])
 					
-					dt_new = dt_old + i*TIME_PERIOD
+					dt_new = dt_old + i*self.TIME_PERIOD
 					dt = np.append(dt, dt_new)
 					# print(data_wz_vth)
 					
@@ -250,7 +250,7 @@ class COMRead_Action(QObject):
 					self.valid_flag = 1
 				if(self.valid_flag):
 					self.fog_update7.emit(data_ax_vth, data_ay_vth, data_az, data_wx_vth, data_wy_vth, data_wz_vth, dt)
-					dt_old = dt_new + TIME_PERIOD
+					dt_old = dt_new + self.TIME_PERIOD
 			#end of while loop
 			self.fog_finished.emit()
 			self.valid_flag = 0

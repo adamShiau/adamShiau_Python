@@ -578,15 +578,15 @@ class mainWindow(QMainWindow):
 		# sos = signal.butter(10, 0.1, 'hp', fs=100, output='sos')
 		# data_wz_f = signal.sosfilt(sos, data_wz_f)
 		''' '''
-		self.thetaz = self.thetaz - np.sum(data_wz_f*0.01)
+		self.thetaz = self.thetaz - np.sum(data_wz_f)*0.01 #負號是方向判斷的問題
 		self.thetaz_arr = np.append(self.thetaz_arr, self.thetaz)
-		self.thetax = self.thetax + np.sum(data_wx_f*0.01)
+		self.thetax = self.thetax + np.sum(data_wx_f)*0.01
 		self.thetax_arr = np.append(self.thetax_arr, self.thetax)
-		self.thetay = self.thetay + np.sum(data_wy_f*0.01)
+		self.thetay = self.thetay + np.sum(data_wy_f)*0.01
 		self.thetay_arr = np.append(self.thetay_arr, self.thetay)
-		self.speedx = self.speedx + np.sum(data_ax_f*0.01)
+		self.speedx = self.speedx + np.sum(data_ax_f)*9.8*0.01
 		self.speedx_arr = np.append(self.speedx_arr, self.speedx)
-		self.speedy = self.speedy + np.sum(data_ay_f*0.01)
+		self.speedy = self.speedy + np.sum(data_ay_f)*9.8*0.01
 		self.speedy_arr = np.append(self.speedy_arr, self.speedy)
 		self.speed = np.sqrt(np.square(self.speedx)+np.square(self.speedy))
 		self.speed_arr = np.append(self.speed_arr, self.speed)
@@ -665,7 +665,7 @@ class mainWindow(QMainWindow):
 			self.top.com_plot.ax1.plot(self.dt, self.data, color = 'r', linestyle = '-', marker = '', label="ax")
 		if(self.ay_chk):
 			self.top.com_plot.ax1.plot(self.dt, self.data2, color = 'g', linestyle = '-', marker = '', label="ay")
-			self.top.com_plot.ax2.set_ylim([-10, 10])
+			
 		if(self.wz_chk):
 			self.top.com_plot.ax1.plot(self.dt, self.data6, color = 'b', linestyle = '-', marker = '', label="wz")
 		if(self.x_chk):
@@ -674,8 +674,10 @@ class mainWindow(QMainWindow):
 			self.top.com_plot.ax1.plot(self.y_arr, color = 'g', linestyle = '-', marker = '', label="y")
 		if(self.vx_chk):
 			self.top.com_plot.ax2.plot(self.speedx_arr, color = 'r', linestyle = '-', marker = '', label="vx")
+			self.top.com_plot.ax2.set_ylim([-5, 5])
 		if(self.vy_chk):
 			self.top.com_plot.ax2.plot(self.speedy_arr, color = 'g', linestyle = '-', marker = '', label="vy")
+			self.top.com_plot.ax2.set_ylim([-5, 5])
 		if(self.thetaz_chk):
 			self.top.com_plot.ax2.plot(self.thetaz_arr, color = 'b', linestyle = '-', marker = '', label="thetaz")
 		if(self.v_chk):

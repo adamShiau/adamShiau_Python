@@ -16,7 +16,6 @@ import matplotlib.pyplot as plt
 def cal_oadev(data,rate,tauArray):
 	tau0 = 1/rate #Calculate the sampling period
 	dataLength = data.size #Calculate N, data length
-	print('n max =', dataLength/2)
 	dev = np.array([]) #Create empty array to store the output.
 	actualTau = np.array([])	
 	for i in tauArray:
@@ -36,31 +35,39 @@ def cal_oadev(data,rate,tauArray):
 dataRate = 100
 
 Var = np.loadtxt('20201111_SRS200.txt', comments='#', delimiter=None, skiprows=6)
+# Var = np.loadtxt('data2.txt', comments='#', delimiter=',', skiprows=0)
 t = Var[:,0]
 # ax = Var[:,1]
 # ay = Var[:,2]
 # az = Var[:,3]
 # wx = Var[:,4]
 # wy = Var[:,5]
-wz = Var[:,1]
-print('done')
+# wz = Var[:,6]
+wz = Var[:,1] #dps
+thetaz = wz.cumsum()/dataRate #degree
+dataLength = t.size
+
+print('load done')
+print('N =', dataLength, end=', ')
+print(thetaz.size)
+
+
 tau0 = 1/dataRate
 
 tauArray = np.array([tau0, 3*tau0, 5*tau0, 10*tau0, 30*tau0, 50*tau0, 
                      100*tau0, 300*tau0, 500*tau0, 1000*tau0, 3e3*tau0,
-                     5000*tau0, 10000*tau0, 3e4*tau0, 50000*tau0, 100000*tau0])
+                     5000*tau0, 10000*tau0, 3e4*tau0, 50000*tau0, 100000*tau0,
+					 5e5*tau0, 1e6*tau0, 2e6*tau0])
+# tauArray = np.array([tau0, 3*tau0, 5*tau0, 10*tau0, 30*tau0, 50*tau0, 
+					# 100*tau0, 300*tau0, 500*tau0, 1000*tau0, 3e3*tau0,
+					# 5000*tau0, 10000*tau0, 3e4*tau0, 50000*tau0, 100000*tau0,
+					# 5e5*tau0])
 
-x, y = cal_oadev(wz, dataRate, tauArray)
+x, y = cal_oadev(thetaz, dataRate, tauArray)
+y = y*3600
 
-fig, ax = plt.subplots()
-ax.loglog(x,y)
+plt.loglog(x,y, linestyle = '-', marker = '*')
+plt.xlabel('s')
+plt.ylabel('Degree/hour')
+plt.show()
 
-# ax.set_xscale("log")
-# ax.set_yscale("log")
-# ax.plot(x, y)
-
-# ax.show()
-
-
-
-# main();

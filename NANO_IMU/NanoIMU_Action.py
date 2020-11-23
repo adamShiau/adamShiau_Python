@@ -30,7 +30,7 @@ class COMRead_Action(QObject):
 	valid_flag = 0
 	valid_cnt = 0
 	TIME_PERIOD = 0.01
-	data_frame_update_point = 15
+	data_frame_update_point = 10
 	runFlag = 0
 	#IMU 靜止時之offset
 	offset_wx = 0

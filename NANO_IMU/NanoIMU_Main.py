@@ -14,7 +14,7 @@ import numpy as np
 # import py3lib.QuLogger as Qlogger 
 # import py3lib.FileToArray as fil2a 
 import NanoIMU_Widget as UI 
-import NanoIMU_Action as ACT
+import NanoIMU_Action_BT as ACT
 TITLE_TEXT = "COM_Read"
 VERSION_TEXT = 'Hello Adam，2020/11/13'
 READOUT_FILENAME = "Signal_Read_Out.txt"
@@ -321,6 +321,7 @@ class mainWindow(QMainWindow):
 	def buttonStop(self):#set runFlag=0
 		# self.act.setStop()
 		self.act.runFlag = False
+		self.act.dt_init_flag = 1
 		self.thetax_arr = np.empty(0)
 		self.thetay_arr = np.empty(0)
 		self.thetaz_arr = np.empty(0)
@@ -519,7 +520,7 @@ class mainWindow(QMainWindow):
 		self.data6 = np.append(self.data6, data_wz_f)
 		self.dt = np.append(self.dt, dt)
 		if(self.save_status):
-			np.savetxt(self.f, (np.vstack([dt,data_ax_f, data_ay_f, data_az_f, data_wx_f, data_wy_f, data_wz_f])).T, fmt='%.2f,%.5f,%.5f,%.5f,%.5f,%.5f,%.5f')
+			np.savetxt(self.f, (np.vstack([dt,data_ax_f, data_ay_f, data_az_f, data_wx_f, data_wy_f, data_wz_f])).T, fmt='%.5f,%.5f,%.5f,%.5f,%.5f,%.5f,%.5f')
 		if(DEBUG) :
 			print('len(data_ax)', len(self.data))
 			print('len(data_ay)', len(self.data2))
@@ -558,7 +559,7 @@ class mainWindow(QMainWindow):
 			self.top.com_plot.ax2.clear()
 			# if(not self.track_chk):
 				# self.top.com_plot.ax2.clear()
-			
+		dt = dt*1e-6
 		if (len(self.data) >= 1000):
 			self.data = self.data[self.act.data_frame_update_point:]
 			self.data2 = self.data2[self.act.data_frame_update_point:]
@@ -627,7 +628,7 @@ class mainWindow(QMainWindow):
 		self.data6 = np.append(self.data6, data_wz_f)
 		self.dt = np.append(self.dt, dt)
 		if(self.save_status):
-			np.savetxt(self.f, (np.vstack([dt,data_ax_f, data_ay_f, data_az_f, data_wx_f, data_wy_f, data_wz_f])).T, fmt='%.2f,%.5f,%.5f,%.5f,%.5f,%.5f,%.5f')
+			np.savetxt(self.f, (np.vstack([dt,data_ax_f, data_ay_f, data_az_f, data_wx_f, data_wy_f, data_wz_f])).T, fmt='%.5f,%.5f,%.5f,%.5f,%.5f,%.5f,%.5f')
 		if(DEBUG) :
 			# print(np.average(self.data))
 			# print(np.average(self.data2))

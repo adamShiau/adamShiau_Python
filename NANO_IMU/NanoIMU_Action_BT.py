@@ -13,6 +13,7 @@ from PyQt5.QtWidgets import *
 import logging
 import py3lib
 from py3lib import *
+import math
 
 TEST_MODE = False
 DEBUG = 0
@@ -30,7 +31,7 @@ class COMRead_Action(QObject):
 	valid_flag = 0
 	valid_cnt = 0
 	TIME_PERIOD = 0.01
-	data_frame_update_point = 20
+	data_frame_update_point = 10
 	runFlag = 0
 	#IMU 靜止時之offset
 	offset_wx = 0
@@ -113,6 +114,7 @@ class COMRead_Action(QObject):
 		data_wx_sum = 0
 		data_wy_sum = 0
 		data_wz_sum = 0
+		temp_dt_before = 0
 		
 		if self.runFlag:
 			self.COM.port.flushInput()
@@ -136,6 +138,7 @@ class COMRead_Action(QObject):
 					temp_wz = self.COM.read2Binary()
 					temp_dt = self.COM.read4Binary()
 					
+					
 					#conversion
 					temp_ax = self.convert2Sign_2B(temp_ax)
 					temp_ay = self.convert2Sign_2B(temp_ay)
@@ -144,6 +147,12 @@ class COMRead_Action(QObject):
 					temp_wy = self.convert2Sign_2B(temp_wy)
 					temp_wz = self.convert2Sign_2B(temp_wz)
 					temp_dt = self.convert2Unsign_4B(temp_dt)
+					
+					print(temp_dt, end=', ')
+					print(temp_dt_before)
+					if(temp_dt < temp_dt_before):
+						temp_dt = temp_dt + math.ceil(abs(temp_dt - temp_dt_before)/(1<<32))*(1<<32)
+						temp_dt_before = temp_dt
 					
 					# if(self.dt_init_flag):
 						# self.dt_init_flag = 0
@@ -254,6 +263,9 @@ class COMRead_Action(QObject):
 					# print('len(dt): ', len(dt))
 					# print(self.bufferSize)
 					pass
+				if(self.valid_cnt == 1):
+					temp_dt_before = dt[0]
+					
 				if(self.valid_cnt == 5):
 					self.valid_flag = 1
 				if(self.valid_flag):
@@ -264,6 +276,7 @@ class COMRead_Action(QObject):
 					# dt_old = dt_new + self.TIME_PERIOD
 			#end of while loop
 			self.fog_finished.emit()
+			temp_dt_before = 0
 			self.valid_flag = 0
 			self.valid_cnt = 0
 			

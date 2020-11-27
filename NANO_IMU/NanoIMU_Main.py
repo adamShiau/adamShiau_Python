@@ -416,6 +416,7 @@ class mainWindow(QMainWindow):
 		# self.f=open('er','a')
 		self.act.runFlag = True
 		self.thread1.start()
+		self.act.COM.port.flushInput()
 		# self.top.com_plot.ax1.legend(bbox_to_anchor=(1.0, 1.0), loc='upper left', prop={'size': 10})
 		# self.top.com_plot.ax2.legend(bbox_to_anchor=(1.0, 1.0), loc='upper left', prop={'size': 10})
 		
@@ -685,8 +686,8 @@ class mainWindow(QMainWindow):
 			self.top.com_plot.ax2.plot(self.speed_arr, color = 'k', linestyle = '-', marker = '', label="speed")
 		if(self.track_chk):
 			self.top.com_plot.ax2.plot(self.x_arr, self.y_arr, color = 'k', linestyle = '-', marker = '', label="track")
-			self.top.com_plot.ax2.set_xlim([-50, 50])
-			self.top.com_plot.ax2.set_ylim([-50, 50])
+			self.top.com_plot.ax2.set_xlim([-20, 20])
+			self.top.com_plot.ax2.set_ylim([-20, 20])
 		
 		self.top.com_plot.ax1.legend(bbox_to_anchor=(0.9, 1.0), loc='upper left', prop={'size': 10})
 		self.top.com_plot.ax2.legend(bbox_to_anchor=(0.9, 1.0), loc='upper left', prop={'size': 10})

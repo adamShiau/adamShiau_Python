@@ -17,6 +17,7 @@ import math
 
 TEST_MODE = False
 DEBUG = 0
+DEBUG2 = 1
 # MV_MODE = 1
 
 class COMRead_Action(QObject):
@@ -31,7 +32,7 @@ class COMRead_Action(QObject):
 	valid_flag = 0
 	valid_cnt = 0
 	TIME_PERIOD = 0.01
-	data_frame_update_point = 10
+	data_frame_update_point = 15
 	runFlag = 0
 	#IMU 靜止時之offset
 	offset_wx = 0
@@ -45,6 +46,7 @@ class COMRead_Action(QObject):
 	offset_ay = 0
 	ayVth = 0
 	check_byte = 170
+	check_byte2 = 171
 	bufferSize = 0
 	dt_init_flag = 1
 	def __init__(self, loggername):	
@@ -115,6 +117,8 @@ class COMRead_Action(QObject):
 		data_wy_sum = 0
 		data_wz_sum = 0
 		temp_dt_before = 0
+		temp_offset = 0
+		drop_flag = 0
 		
 		if self.runFlag:
 			self.COM.port.flushInput()
@@ -122,7 +126,12 @@ class COMRead_Action(QObject):
 			
 			while self.runFlag:
 				# dt = np.empty(0)
-				while(not (self.COM.port.inWaiting()>(self.data_frame_update_point*17))) : #rx buffer 不到 (self.data_frame_update_point*4) byte數目時不做任何事
+				valid_byte = 1
+				if(drop_flag):
+					drop_flag = 0
+					print("drop occurred!")
+					self.COM.port.flushInput()
+				while(not (self.COM.port.inWaiting()>(self.data_frame_update_point*18))) : #rx buffer 不到 (self.data_frame_update_point*4) byte數目時不做任何事
 					# print(self.COM.port.inWaiting())
 					pass
 				for i in range(0,self.data_frame_update_point): #更新data_frame_update_point筆資料到data and dt array
@@ -137,115 +146,143 @@ class COMRead_Action(QObject):
 					temp_wy = self.COM.read2Binary()
 					temp_wz = self.COM.read2Binary()
 					temp_dt = self.COM.read4Binary()
+					val2 = self.COM.read1Binary()
 					
-					
-					#conversion
-					temp_ax = self.convert2Sign_2B(temp_ax)
-					temp_ay = self.convert2Sign_2B(temp_ay)
-					temp_az = self.convert2Sign_2B(temp_az)
-					temp_wx = self.convert2Sign_2B(temp_wx)
-					temp_wy = self.convert2Sign_2B(temp_wy)
-					temp_wz = self.convert2Sign_2B(temp_wz)
-					temp_dt = self.convert2Unsign_4B(temp_dt)
-					
-					print(temp_dt, end=', ')
-					print(temp_dt_before)
-					if(temp_dt < temp_dt_before):
-						temp_dt = temp_dt + math.ceil(abs(temp_dt - temp_dt_before)/(1<<32))*(1<<32)
-						temp_dt_before = temp_dt
-					
-					# if(self.dt_init_flag):
-						# self.dt_init_flag = 0
-						# dt_init = temp_dt
-					
-					#calaculate MV value
-					if(MV_MODE):
-						data_ax_sum = data_ax_sum - data_ax[0]
-						data_ax_sum = data_ax_sum + temp_ax
-						data_ax_MV = data_ax_sum/self.data_frame_update_point
 						
-						data_ay_sum = data_ay_sum - data_ay[0]
-						data_ay_sum = data_ay_sum + temp_ay
-						data_ay_MV = data_ay_sum/self.data_frame_update_point
+					if(DEBUG2):
+						print(val[0], end='\t')
+						print(temp_ax[0], end='\t')
+						print(temp_ax[1], end='\t')
+						print(temp_ay[0], end='\t')
+						print(temp_ay[1], end='\t')
+						print(temp_az[0], end='\t')
+						print(temp_az[1], end='\t')
+						print(temp_wx[0], end='\t')
+						print(temp_wx[1], end='\t')
+						print(temp_wy[0], end='\t')
+						print(temp_wy[1], end='\t')
+						print(temp_wz[0], end='\t')
+						print(temp_wz[1], end='\t')
+						print(temp_dt[0], end='\t')
+						print(temp_dt[1], end='\t')
+						print(temp_dt[2], end='\t')
+						print(temp_dt[3], end='\t')
+						print(val2[0])
 						
-						data_az_sum = data_az_sum - data_az[0]
-						data_az_sum = data_az_sum + temp_az
-						data_az_MV = data_az_sum/self.data_frame_update_point
+					if(val2[0] != self.check_byte2):
+						valid_byte = 0
+						drop_flag = 1
+						break #break for loop
 						
-						data_wx_sum = data_wx_sum - data_wx[0]
-						data_wx_sum = data_wx_sum + temp_wx
-						data_wx_MV = data_wx_sum/self.data_frame_update_point
+					if(valid_byte): 
+						#conversion
+						temp_ax = self.convert2Sign_2B(temp_ax)
+						temp_ay = self.convert2Sign_2B(temp_ay)
+						temp_az = self.convert2Sign_2B(temp_az)
+						temp_wx = self.convert2Sign_2B(temp_wx)
+						temp_wy = self.convert2Sign_2B(temp_wy)
+						temp_wz = self.convert2Sign_2B(temp_wz)
+						temp_dt = self.convert2Unsign_4B(temp_dt)
 						
-						data_wy_sum = data_wy_sum - data_wy[0]
-						data_wy_sum = data_wy_sum + temp_wy
-						data_wy_MV = data_wy_sum/self.data_frame_update_point
+						# print(temp_dt, end=', ')
+						# print(temp_dt_before, end=', ')
+						if(temp_dt < temp_dt_before):
+							temp_offset = math.ceil(abs(temp_dt - temp_dt_before)/(1<<32))*(1<<32)
+							temp_dt = temp_dt + temp_offset
+							temp_dt_before = temp_dt
+						# print(temp_offset)
+						# if(self.dt_init_flag):
+							# self.dt_init_flag = 0
+							# dt_init = temp_dt
 						
-						data_wz_sum = data_wz_sum - data_wz[0]
-						data_wz_sum = data_wz_sum + temp_wz
-						data_wz_MV = data_wz_sum/self.data_frame_update_point
+						#calaculate MV value
+						if(MV_MODE):
+							data_ax_sum = data_ax_sum - data_ax[0]
+							data_ax_sum = data_ax_sum + temp_ax
+							data_ax_MV = data_ax_sum/self.data_frame_update_point
+							
+							data_ay_sum = data_ay_sum - data_ay[0]
+							data_ay_sum = data_ay_sum + temp_ay
+							data_ay_MV = data_ay_sum/self.data_frame_update_point
+							
+							data_az_sum = data_az_sum - data_az[0]
+							data_az_sum = data_az_sum + temp_az
+							data_az_MV = data_az_sum/self.data_frame_update_point
+							
+							data_wx_sum = data_wx_sum - data_wx[0]
+							data_wx_sum = data_wx_sum + temp_wx
+							data_wx_MV = data_wx_sum/self.data_frame_update_point
+							
+							data_wy_sum = data_wy_sum - data_wy[0]
+							data_wy_sum = data_wy_sum + temp_wy
+							data_wy_MV = data_wy_sum/self.data_frame_update_point
+							
+							data_wz_sum = data_wz_sum - data_wz[0]
+							data_wz_sum = data_wz_sum + temp_wz
+							data_wz_MV = data_wz_sum/self.data_frame_update_point
+							
+							val_ax = data_ax_MV
+							val_ay = data_ay_MV
+							val_az = data_az_MV
+							val_wx = data_wx_MV
+							val_wy = data_wy_MV
+							val_wz = data_wz_MV
+							
+						else: 
+							val_ax = temp_ax
+							val_ay = temp_ay
+							val_az = temp_az
+							val_wx = temp_wx
+							val_wy = temp_wy
+							val_wz = temp_wz
 						
-						val_ax = data_ax_MV
-						val_ay = data_ay_MV
-						val_az = data_az_MV
-						val_wx = data_wx_MV
-						val_wy = data_wy_MV
-						val_wz = data_wz_MV
+						if(abs(val_wz-data_wz[-1]) < self.wzVth):
+							val_wz_vth = self.offset_wz
+						else :
+							val_wz_vth = val_wz
+							
+						if(abs(val_wx-data_wx[-1]) < self.wxVth):
+							val_wx_vth = self.offset_wx
+						else :
+							val_wx_vth = val_wx
+							
+						if(abs(val_wy-data_wy[-1]) < self.wyVth):
+							val_wy_vth = self.offset_wy
+						else :
+							val_wy_vth = val_wy
+							
+						# print(val_ax, end=', ')	
+						# print(data_ax[-1], end=', ')
+						# print(val_ax-data_ax[-1], end=', ')						
 						
-					else: 
-						val_ax = temp_ax
-						val_ay = temp_ay
-						val_az = temp_az
-						val_wx = temp_wx
-						val_wy = temp_wy
-						val_wz = temp_wz
-					
-					if(abs(val_wz-data_wz[-1]) < self.wzVth):
-						val_wz_vth = self.offset_wz
-					else :
-						val_wz_vth = val_wz
+						if(abs(val_ax-data_ax[-1]) < self.axVth):
+							val_ax_vth = self.offset_ax
+						else :
+							val_ax_vth = val_ax
+							
+						if(abs(val_ay-data_ay[-1]) < self.ayVth):
+							val_ay_vth = self.offset_ay
+						else :
+							val_ay_vth = val_ay
 						
-					if(abs(val_wx-data_wx[-1]) < self.wxVth):
-						val_wx_vth = self.offset_wx
-					else :
-						val_wx_vth = val_wx
+						data_ax = np.append(data_ax[1:], val_ax)
+						data_ay = np.append(data_ay[1:], val_ay)
+						data_az = np.append(data_az[1:], val_az)
+						data_wx = np.append(data_wx[1:], val_wx)
+						data_wy = np.append(data_wy[1:], val_wy)
+						data_wz = np.append(data_wz[1:], val_wz)
 						
-					if(abs(val_wy-data_wy[-1]) < self.wyVth):
-						val_wy_vth = self.offset_wy
-					else :
-						val_wy_vth = val_wy
+						data_wx_vth = np.append(data_wx_vth[1:], val_wx_vth)
+						data_wy_vth = np.append(data_wy_vth[1:], val_wy_vth)
+						data_wz_vth = np.append(data_wz_vth[1:], val_wz_vth)
+						data_ax_vth = np.append(data_ax_vth[1:], val_ax_vth)
+						data_ay_vth = np.append(data_ay_vth[1:], val_ay_vth)
 						
-					# print(val_ax, end=', ')	
-					# print(data_ax[-1], end=', ')
-					# print(val_ax-data_ax[-1], end=', ')						
-					
-					if(abs(val_ax-data_ax[-1]) < self.axVth):
-						val_ax_vth = self.offset_ax
-					else :
-						val_ax_vth = val_ax
-						
-					if(abs(val_ay-data_ay[-1]) < self.ayVth):
-						val_ay_vth = self.offset_ay
-					else :
-						val_ay_vth = val_ay
-					
-					data_ax = np.append(data_ax[1:], val_ax)
-					data_ay = np.append(data_ay[1:], val_ay)
-					data_az = np.append(data_az[1:], val_az)
-					data_wx = np.append(data_wx[1:], val_wx)
-					data_wy = np.append(data_wy[1:], val_wy)
-					data_wz = np.append(data_wz[1:], val_wz)
-					
-					data_wx_vth = np.append(data_wx_vth[1:], val_wx_vth)
-					data_wy_vth = np.append(data_wy_vth[1:], val_wy_vth)
-					data_wz_vth = np.append(data_wz_vth[1:], val_wz_vth)
-					data_ax_vth = np.append(data_ax_vth[1:], val_ax_vth)
-					data_ay_vth = np.append(data_ay_vth[1:], val_ay_vth)
-					
-					# dt_new = dt_old + i*self.TIME_PERIOD
-					dt = np.append(dt[1:], temp_dt)
-					# print(temp_dt, end=', ')
-					# print(dt_init, end=', ')
-					# print(dt)
+						# dt_new = dt_old + i*self.TIME_PERIOD
+						dt = np.append(dt[1:], temp_dt)
+						# print(temp_dt, end=', ')
+						# print(dt_init, end=', ')
+						# print(dt)
 
 				self.valid_cnt = self.valid_cnt + 1
 				self.bufferSize = self.COM.port.inWaiting()
@@ -305,7 +342,7 @@ class COMRead_Action(QObject):
 			
 			while self.runFlag:
 				
-				while(not (self.COM.port.inWaiting()>(self.data_frame_update_point*17))) : #rx buffer 不到 (self.data_frame_update_point*4) byte數目時不做任何事
+				while(not (self.COM.port.inWaiting()>(self.data_frame_update_point*18))) : #rx buffer 不到 (self.data_frame_update_point*4) byte數目時不做任何事
 					# print(self.COM.port.inWaiting())
 					pass
 				

@@ -629,7 +629,7 @@ class mainWindow(QMainWindow):
 		self.data6 = np.append(self.data6, data_wz_f)
 		self.dt = np.append(self.dt, dt)
 		if(self.save_status):
-			np.savetxt(self.f, (np.vstack([dt,data_ax_f, data_ay_f, data_az_f, data_wx_f, data_wy_f, data_wz_f])).T, fmt='%.5f,%.5f,%.5f,%.5f,%.5f,%.5f,%.5f')
+			np.savetxt(self.f, (np.vstack([dt,data_ax_f, data_ay_f, data_az_f, data_wx_f, data_wy_f, data_wz_f])).T, fmt='%5.5f,%.5f,%.5f,%.5f,%4.5f,%4.5f,%4.5f')
 		if(DEBUG) :
 			# print(np.average(self.data))
 			# print(np.average(self.data2))

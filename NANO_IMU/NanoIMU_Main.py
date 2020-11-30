@@ -58,6 +58,7 @@ class mainWindow(QMainWindow):
 		self.data4 = np.empty(0)
 		self.data5 = np.empty(0)
 		self.data6 = np.empty(0)
+		self.data7 = np.empty(0)
 		self.diffdata1 = np.empty(0)
 		self.diffdata2 = np.empty(0)
 		self.diffdata3 = np.empty(0)
@@ -141,7 +142,8 @@ class mainWindow(QMainWindow):
 		# self.thread1.started.connect(self.act.updateFOG) #thread1啟動時會去trigger act.updateFOG 
 		# self.thread1.started.connect(self.act.updateXLMDnGYRO_MV)
 		self.thread1.started.connect(lambda:self.act.updateXLMDnGYRO(MV_MODE=self.MV_status))
-		self.thread_cali.started.connect(lambda:self.act.calibrationGYRO(MV_MODE=self.MV_status))
+		# self.thread_cali.started.connect(lambda:self.act.calibrationGYRO(MV_MODE=self.MV_status)) 
+		self.thread_cali.started.connect(lambda:self.act.calibrationIMUnGYRO(MV_MODE=self.MV_status))
 
 		''' emit connect '''
 		self.act.fog_finished.connect(self.myThreadStop) #runFlag=0時fog_finished會emit，之後關掉thread1
@@ -150,6 +152,7 @@ class mainWindow(QMainWindow):
 		# self.act.fog_update7.connect(self.plotXLMDnGYRO)
 		self.act.fog_update7.connect(self.plotGYRO)
 		self.act.fog_update12.connect(self.calibGYRO)
+		self.act.fog_update13.connect(self.calibIMUnGYRO)
 		
 		''' text connect '''
 		self.top.wzOffset_le.textChanged.connect(self.updata_para)
@@ -167,6 +170,7 @@ class mainWindow(QMainWindow):
 		self.top.cb.ax_cb.toggled.connect(lambda:self.cb_toogled(self.top.cb.ax_cb))
 		self.top.cb.ay_cb.toggled.connect(lambda:self.cb_toogled(self.top.cb.ay_cb))
 		self.top.cb.wz_cb.toggled.connect(lambda:self.cb_toogled(self.top.cb.wz_cb))
+		self.top.cb.wz200_cb.toggled.connect(lambda:self.cb_toogled(self.top.cb.wz200_cb))
 		self.top.cb.v_cb.toggled.connect(lambda:self.cb_toogled(self.top.cb.v_cb))
 		self.top.cb.vx_cb.toggled.connect(lambda:self.cb_toogled(self.top.cb.vx_cb))
 		self.top.cb.vy_cb.toggled.connect(lambda:self.cb_toogled(self.top.cb.vy_cb))
@@ -196,6 +200,9 @@ class mainWindow(QMainWindow):
 		elif(cb.text()=='wz'):
 			self.wz_chk = cb.isChecked()
 			print('wz:', self.wz_chk)
+		elif(cb.text()=='wz200'):
+			self.wz200_chk = cb.isChecked()
+			print('wz200:', self.wz200_chk)
 		elif(cb.text()=='vx'):
 			self.vx_chk = cb.isChecked()
 			print('vx:', self.vx_chk)
@@ -225,6 +232,8 @@ class mainWindow(QMainWindow):
 		print('ay:', self.ay_chk)
 		self.wz_chk = self.top.cb.wz_cb.isChecked()
 		print('wz:', self.wz_chk)
+		self.wz200_chk = self.top.cb.wz200_cb.isChecked()
+		print('wz200:', self.wz200_chk)
 		self.vx_chk = self.top.cb.vx_cb.isChecked()
 		print('vx:', self.vx_chk)
 		self.vy_chk = self.top.cb.vy_cb.isChecked()
@@ -349,6 +358,7 @@ class mainWindow(QMainWindow):
 		self.act.runFlag = False 
 		wzOffset_cp = float(self.top.wzOffset_lb.val.text())
 		wzVth_cp = round(float(self.top.diffwzStd_lb.val.text())*3,3)
+		wz200Offset_cp = float(self.top.wz200Offset_lb.val.text())
 		wxOffset_cp = float(self.top.wxOffset_lb.val.text())
 		wxVth_cp = round(float(self.top.diffwxStd_lb.val.text())*3,3)
 		wyOffset_cp = float(self.top.wyOffset_lb.val.text())
@@ -373,6 +383,9 @@ class mainWindow(QMainWindow):
 		self.top.wzVth_le.setText(str(wzVth_cp))
 		self.wz_offset = wzOffset_cp
 		self.wzVth = wzVth_cp
+		
+		self.top.wz200Offset_le.setText(str(wz200Offset_cp))
+		self.wz200_offset = wz200Offset_cp
 		
 		self.top.wxOffset_le.setText(str(wxOffset_cp))
 		self.top.wxVth_le.setText(str(wxVth_cp))
@@ -402,6 +415,7 @@ class mainWindow(QMainWindow):
 		self.data4 = np.empty(0)
 		self.data5 = np.empty(0)
 		self.data6 = np.empty(0)
+		self.data7 = np.empty(0)
 		self.diffdata1 = np.empty(0)
 		self.diffdata2 = np.empty(0)
 		self.diffdata3 = np.empty(0)
@@ -433,6 +447,7 @@ class mainWindow(QMainWindow):
 		self.data4 = np.empty(0)
 		self.data5 = np.empty(0)
 		self.data6 = np.empty(0)
+		self.data7 = np.empty(0)
 		self.dt = np.empty(0)
 		self.thetaz = 0
 		self.thetax = 0
@@ -779,6 +794,104 @@ class mainWindow(QMainWindow):
 			self.top.com_plot.ax1.plot(self.data, color = 'r', linestyle = '-', marker = '', label="ax")
 		if(self.ay_chk):
 			self.top.com_plot.ax1.plot(self.data2, color = 'g', linestyle = '-', marker = '', label="ay")
+		if(self.wz_chk):
+			self.top.com_plot.ax2.plot(self.data6, color = 'b', linestyle = '-', marker = '', label="wz")
+		
+		self.top.com_plot.ax1.legend(bbox_to_anchor=(0.9, 1.0), loc='upper left', prop={'size': 10})
+		self.top.com_plot.ax2.legend(bbox_to_anchor=(0.9, 1.0), loc='upper left', prop={'size': 10})
+		
+		self.top.com_plot.figure.canvas.draw()		
+		self.top.com_plot.figure.canvas.flush_events()
+		
+	def calibIMUnGYRO(self, data_ax, data_ay, data_az, data_wx, data_wy, data_wz, data_wz200,
+					diff_ax, diff_ay, diff_az, diff_wx, diff_wy, diff_wz):
+		if(self.act.runFlag):
+			self.top.com_plot.ax1.clear()
+			self.top.com_plot.ax2.clear()
+			
+		if (len(self.data) >= 300):
+			self.data  = self.data[self.act.data_frame_update_point:]
+			self.data2 = self.data2[self.act.data_frame_update_point:]
+			self.data3 = self.data3[self.act.data_frame_update_point:]
+			self.data4 = self.data4[self.act.data_frame_update_point:]
+			self.data5 = self.data5[self.act.data_frame_update_point:]
+			self.data6 = self.data6[self.act.data_frame_update_point:]
+			self.data7 = self.data7[self.act.data_frame_update_point:]
+			self.diffdata1 = self.diffdata1[self.act.data_frame_update_point:]
+			self.diffdata2 = self.diffdata2[self.act.data_frame_update_point:]
+			self.diffdata3 = self.diffdata3[self.act.data_frame_update_point:]
+			self.diffdata4 = self.diffdata4[self.act.data_frame_update_point:]
+			self.diffdata5 = self.diffdata5[self.act.data_frame_update_point:]
+			self.diffdata6 = self.diffdata6[self.act.data_frame_update_point:]
+		
+		self.data  = np.append(self.data,  data_ax)
+		self.data2 = np.append(self.data2, data_ay)
+		self.data3 = np.append(self.data3, data_az)
+		self.data4 = np.append(self.data4, data_wx)
+		self.data5 = np.append(self.data5, data_wy)
+		self.data6 = np.append(self.data6, data_wz)
+		self.data7 = np.append(self.data7, data_wz200)
+		self.diffdata1 = np.append(self.diffdata1, diff_ax)
+		self.diffdata2 = np.append(self.diffdata2, diff_ay)
+		self.diffdata3 = np.append(self.diffdata3, diff_az)
+		self.diffdata4 = np.append(self.diffdata4, diff_wx)
+		self.diffdata5 = np.append(self.diffdata5, diff_wy)
+		self.diffdata6 = np.append(self.diffdata6, diff_wz)
+		
+		wz_offset = np.round(np.average(self.data6),3)
+		wz_std = np.round(np.std(self.data6), 3)
+		diffwz_std = np.round(np.std(self.diffdata6), 3)
+		self.top.wzOffset_lb.val.setText(str(wz_offset))
+		self.top.wzStd_lb.val.setText(str(wz_std))
+		self.top.diffwzStd_lb.val.setText(str(diffwz_std))
+		
+		wz200_offset = np.round(np.average(self.data7),3)
+		wz200_std = np.round(np.std(self.data7), 3)
+		self.top.wz200Offset_lb.val.setText(str(wz200_offset))
+		self.top.wz200Std_lb.val.setText(str(wz200_std))
+		
+		wx_offset = np.round(np.average(self.data4),3)
+		wx_std = np.round(np.std(self.data4), 3)
+		diffwx_std = np.round(np.std(self.diffdata4), 3)
+		self.top.wxOffset_lb.val.setText(str(wx_offset))
+		self.top.wxStd_lb.val.setText(str(wx_std))
+		self.top.diffwxStd_lb.val.setText(str(diffwx_std))
+		
+		wy_offset = np.round(np.average(self.data5),3)
+		wy_std = np.round(np.std(self.data5), 3)
+		diffwy_std = np.round(np.std(self.diffdata5), 3)
+		self.top.wyOffset_lb.val.setText(str(wy_offset))
+		self.top.wyStd_lb.val.setText(str(wy_std))
+		self.top.diffwyStd_lb.val.setText(str(diffwy_std))
+		
+		ax_offset = np.round(np.average(self.data),3)
+		ax_std = np.round(np.std(self.data), 3)
+		diffax_std = np.round(np.std(self.diffdata1), 3)
+		self.top.axOffset_lb.val.setText(str(ax_offset))
+		self.top.axStd_lb.val.setText(str(ax_std))
+		self.top.diffaxStd_lb.val.setText(str(diffax_std))
+		
+		ay_offset = np.round(np.average(self.data2),3)
+		ay_std = np.round(np.std(self.data2), 3)
+		diffay_std = np.round(np.std(self.diffdata2), 3)
+		self.top.ayOffset_lb.val.setText(str(ay_offset))
+		self.top.ayStd_lb.val.setText(str(ay_std))
+		self.top.diffayStd_lb.val.setText(str(diffay_std))
+		
+		''' ax ay plot '''
+		# self.top.com_plot.ax1.set_ylabel("acc(code)")
+		# self.top.com_plot.ax1.plot(self.data, color = 'r', linestyle = '-', marker = '', label="ax")
+		# self.top.com_plot.ax1.legend(bbox_to_anchor=(1.0, 1.0), loc='upper left', prop={'size': 10})
+		# self.top.com_plot.ax2.set_ylabel("w(code)")
+		# self.top.com_plot.ax2.plot(self.data6, color = 'b', linestyle = '-', marker = '', label="wz")
+		# self.top.com_plot.ax2.legend(bbox_to_anchor=(1.0, 1.0), loc='upper left', prop={'size': 10})
+		
+		# if(self.ax_chk):
+			# self.top.com_plot.ax1.plot(self.data, color = 'r', linestyle = '-', marker = '', label="ax")
+		# if(self.ay_chk):
+			# self.top.com_plot.ax1.plot(self.data2, color = 'g', linestyle = '-', marker = '', label="ay")
+		if(self.wz200_chk):
+			self.top.com_plot.ax1.plot(self.data7, color = 'g', linestyle = '-', marker = '', label="wz200")
 		if(self.wz_chk):
 			self.top.com_plot.ax2.plot(self.data6, color = 'b', linestyle = '-', marker = '', label="wz")
 		

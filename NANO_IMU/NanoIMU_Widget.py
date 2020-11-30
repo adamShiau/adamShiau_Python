@@ -27,6 +27,9 @@ class mainWidget(QWidget):
 		self.wzStd_lb = labelBlock('wz stdev')
 		self.diffwzStd_lb = labelBlock('diffWz stdev')
 		
+		self.wz200Offset_lb = labelBlock('wz200 offset')
+		self.wz200Std_lb = labelBlock('wz200 stdev')
+		
 		self.wxOffset_lb = labelBlock('wx offset')
 		self.wxStd_lb = labelBlock('wx stdev')
 		self.diffwxStd_lb = labelBlock('diffWx stdev')
@@ -51,6 +54,11 @@ class mainWidget(QWidget):
 		self.theta_lb.setFont(QFont('Arial', 20)) 
 		self.theta_lb.setText('theta')
 		
+		self.theta200_lb = QLabel();
+		self.theta200_lb.setPalette(pe)
+		self.theta200_lb.setFont(QFont('Arial', 20)) 
+		self.theta200_lb.setText('theta200')
+		
 		self.buffer_lb = QLabel();
 		self.buffer_lb.setPalette(pe)
 		self.buffer_lb.setFont(QFont('Arial', 20)) 
@@ -60,7 +68,8 @@ class mainWidget(QWidget):
 		###check box###
 		self.cb = chkBoxBlock('ax','ay','wz','vx','vy','thetaz')
 		self.cb.wz_cb.setChecked(1)
-		self.cb.thetaz_cb.setChecked(1)
+		self.cb.wz200_cb.setChecked(1)
+		# self.cb.thetaz_cb.setChecked(1)
 		
 		###radio btn###
 		self.mv_rb = QRadioButton('MV')
@@ -73,6 +82,10 @@ class mainWidget(QWidget):
 		self.wzVth_le = QLineEdit()
 		self.wzVth_le.setFixedWidth(100)
 		self.wzVth_le.setText('0')
+		
+		self.wz200Offset_le = QLineEdit()
+		self.wz200Offset_le.setFixedWidth(100)
+		self.wz200Offset_le.setText('0')
 		
 		self.wxOffset_le = QLineEdit()
 		self.wxOffset_le.setFixedWidth(100)
@@ -109,7 +122,7 @@ class mainWidget(QWidget):
 
 	def main_UI(self):
 		mainLayout = QGridLayout()
-		mainLayout.addWidget(self.com_plot, 0,0,13,1)
+		mainLayout.addWidget(self.com_plot, 0,0,15,1)
 		mainLayout.addWidget(self.updataCom.layout(), 0,1,1,3)
 		mainLayout.addWidget(self.usb.layout1(), 1,1,1,3)
 		# mainLayout.addWidget(self.com_sel, 0,1,1,1) ax_rb
@@ -127,14 +140,19 @@ class mainWidget(QWidget):
 		
 		###label and line editor###
 		
-		mainLayout.addWidget(self.theta_lb, 15,1)
-		mainLayout.addWidget(self.buffer_lb, 15,2)
+		mainLayout.addWidget(self.theta_lb, 16,1)
+		mainLayout.addWidget(self.theta200_lb, 16,2)
+		mainLayout.addWidget(self.buffer_lb, 16,3)
 		
 		mainLayout.addWidget(self.wzOffset_lb, 12,1)
 		mainLayout.addWidget(self.wzStd_lb, 12,2)
 		mainLayout.addWidget(self.diffwzStd_lb, 12,3)
 		mainLayout.addWidget(self.wzOffset_le, 13,1,1,1)
 		mainLayout.addWidget(self.wzVth_le, 13,3,1,1)
+		
+		mainLayout.addWidget(self.wz200Offset_lb, 14,1)
+		mainLayout.addWidget(self.wz200Std_lb, 14,2)
+		mainLayout.addWidget(self.wz200Offset_le, 15,1,1,1)
 		
 		mainLayout.addWidget(self.wxOffset_lb, 8,1)
 		mainLayout.addWidget(self.wxStd_lb, 8,2)

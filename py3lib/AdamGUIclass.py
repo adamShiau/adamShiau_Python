@@ -51,12 +51,14 @@ class chkBoxBlock(QWidget):
 		self.ax_cb = QCheckBox(name1)
 		self.ay_cb = QCheckBox(name2)
 		self.wz_cb = QCheckBox(name3)
+		self.wz200_cb = QCheckBox('wz200')
 		self.vx_cb = QCheckBox(name4)
 		self.vy_cb = QCheckBox(name5)
 		self.v_cb = QCheckBox('v')
 		self.x_cb = QCheckBox('x')
 		self.y_cb = QCheckBox('y')
 		self.track_cb = QCheckBox('track')
+		# self.track200_cb = QCheckBox('track200')
 		self.thetaz_cb = QCheckBox(name6)
 		
 	def layout(self):
@@ -69,7 +71,7 @@ class chkBoxBlock(QWidget):
 		layout.addWidget(self.vx_cb, 1,0)
 		layout.addWidget(self.vy_cb, 1,1)
 		layout.addWidget(self.thetaz_cb, 1,2)
-		layout.addWidget(self.v_cb, 1,3)
+		layout.addWidget(self.wz200_cb, 1,3)
 		layout.addWidget(self.track_cb, 1,4)
 		self.groupBox.setLayout(layout)
 		self.groupBox.show()

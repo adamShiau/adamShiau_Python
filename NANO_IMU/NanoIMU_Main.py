@@ -595,7 +595,12 @@ class mainWindow(QMainWindow):
 		
 		''' for track plot'''
 		theta = 90 - self.thetaz
-		dx = np.cos(theta*np.pi/180)*self.act.data_frame_update_point*self.act.TIME_PERIOD
+		'''
+		dx = dr*cos(theta), dr = vdt
+		v = 1 m/s
+		dt = data_frame_update_point*self.act.TIME_PERIOD 
+		'''
+		dx = np.cos(theta*np.pi/180)*self.act.data_frame_update_point*self.act.TIME_PERIOD 
 		dy = np.sin(theta*np.pi/180)*self.act.data_frame_update_point*self.act.TIME_PERIOD
 		self.x_sum = self.x_sum + dx
 		self.y_sum = self.y_sum + dy

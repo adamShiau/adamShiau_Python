@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 dataRate = 100
 
 print(sys.path)
-Var = np.loadtxt('123.txt', comments='#', delimiter=',')
+Var = np.loadtxt('00.txt', comments='#', delimiter=',')
 print(Var.shape)
 print(Var[1,1])
 t = Var[:,0]

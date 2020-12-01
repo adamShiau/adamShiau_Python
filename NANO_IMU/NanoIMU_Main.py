@@ -25,8 +25,8 @@ track_min = -50
 w_factor = 0.01
 xlm_factor = 0.000122 #4g / 32768
 # gyro_factor = 0.00763 #250 / 32768 
-gyro_factor = 0.00900 #250 / 32768 
-gyro200_factor = 0.0117
+gyro_factor = 0.0090 #250 / 32768 
+gyro200_factor = 0.0121
 
 # wx_offset = 107.065
 # wy_offset = -513.717
@@ -754,9 +754,10 @@ class mainWindow(QMainWindow):
 			self.top.com_plot.ax2.plot(self.thetaz200_arr, color = 'r', linestyle = '-', marker = '', label="thetaz200")
 		if(self.v_chk):
 			self.top.com_plot.ax2.plot(self.speed_arr, color = 'k', linestyle = '-', marker = '', label="speed")
+			self.top.com_plot.ax2.set_ylim([0, 5])
 		if(self.track_chk):
 			self.top.com_plot.ax2.plot(self.x_arr, self.y_arr, color = 'b', linestyle = '-', marker = '', label="track")
-			self.top.com_plot.ax2.plot(self.x200_arr, self.y200_arr, color = 'k', linestyle = '-', marker = '', label="track200")
+			self.top.com_plot.ax2.plot(self.x200_arr, self.y200_arr, color = 'r', linestyle = '-', marker = '', label="track200")
 			self.top.com_plot.ax2.set_xlim([track_min, track_max])
 			self.top.com_plot.ax2.set_ylim([track_min, track_max])
 		

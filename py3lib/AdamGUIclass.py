@@ -71,6 +71,7 @@ class chkBoxBlock(QWidget):
 		# layout.addWidget(self.y_cb, 0,4)
 		# layout.addWidget(self.vx_cb, 1,0)
 		# layout.addWidget(self.vy_cb, 1,1)
+		layout.addWidget(self.v_cb, 1,0)
 		layout.addWidget(self.thetaz_cb, 1,2)
 		layout.addWidget(self.thetaz200_cb, 1,1)
 		layout.addWidget(self.wz200_cb, 0,3)

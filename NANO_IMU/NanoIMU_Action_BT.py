@@ -16,7 +16,7 @@ from py3lib import *
 import math
 
 TEST_MODE = False
-DEBUG = 0
+DEBUG = 1
 DEBUG2 = 1
 # MV_MODE = 1
 
@@ -41,6 +41,7 @@ class COMRead_Action(QObject):
 	offset_wy = 0
 	wyVth = 0
 	offset_wz = 0
+	offset_wz200 = 0
 	wzVth = 0
 	offset_ax = 0
 	axVth = 0
@@ -80,6 +81,8 @@ class COMRead_Action(QObject):
 		print(self.offset_wz)
 		print('act . self.wzVth: ', end=', ') 
 		print(self.wzVth)
+		print('act . offset_wz200: ', end=', ') 
+		print(self.offset_wz200)
 		print('act . offset_wy: ', end=', ') 
 		print(self.offset_wy)
 		print('act . self.wyVth: ', end=', ') 
@@ -167,6 +170,10 @@ class COMRead_Action(QObject):
 						print(temp_wy[1], end='\t')
 						print(temp_wz[0], end='\t')
 						print(temp_wz[1], end='\t')
+						print(temp_wz200[0], end='\t')
+						print(temp_wz200[1], end='\t')
+						print(temp_wz200[2], end='\t')
+						print(temp_wz200[3], end='\t')
 						print(temp_dt[0], end='\t')
 						print(temp_dt[1], end='\t')
 						print(temp_dt[2], end='\t')
@@ -311,7 +318,8 @@ class COMRead_Action(QObject):
 					# print('len(data): ', len(data), end=', ')
 					# print('len(data_wx): ', len(data_wx), end=', ')
 					# print('len(data_wy): ', len(data_wy), end=', ')
-					# print('len(data_ax_vth): ', len(data_ax_vth), end=', ')
+					# print('len(data_wz_vth): ', len(data_wz_vth), end=', ')
+					# print('len(data_wz200_vth): ', len(data_wz200_vth), end=', ')
 					# print('len(dt): ', len(dt))
 					# print(self.bufferSize)
 					pass
@@ -324,7 +332,7 @@ class COMRead_Action(QObject):
 					if(self.dt_init_flag):
 						self.dt_init_flag = 0
 						dt_init = dt[0]
-					self.fog_update8.emit(data_ax_vth, data_ay_vth, data_az, data_wx_vth, data_wy_vth, data_wz_vth, val_wz200_vth, dt-dt_init)
+					self.fog_update8.emit(data_ax_vth, data_ay_vth, data_az, data_wx_vth, data_wy_vth, data_wz_vth, data_wz200_vth, dt-dt_init)
 					# dt_old = dt_new + self.TIME_PERIOD
 			#end of while loop
 			self.fog_finished.emit()

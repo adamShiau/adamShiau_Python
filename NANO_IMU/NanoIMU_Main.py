@@ -15,16 +15,18 @@ import numpy as np
 # import py3lib.FileToArray as fil2a 
 import NanoIMU_Widget as UI 
 import NanoIMU_Action_BT as ACT
-TITLE_TEXT = "COM_Read"
-VERSION_TEXT = 'Hello Adam，2020/11/13'
+TITLE_TEXT = "IMU_PLOT"
+VERSION_TEXT = 'Compare FOG with MEMS，2020/12/01'
 READOUT_FILENAME = "Signal_Read_Out.txt"
 MAX_SAVE_INDEX = 3000
 DEBUG = 1
+track_max = 50
+track_min = -50
 w_factor = 0.01
 xlm_factor = 0.000122 #4g / 32768
 # gyro_factor = 0.00763 #250 / 32768 
 gyro_factor = 0.00900 #250 / 32768 
-# gyro_factor = 1
+gyro200_factor = 0.0117
 
 # wx_offset = 107.065
 # wy_offset = -513.717
@@ -33,6 +35,7 @@ gyro_factor = 0.00900 #250 / 32768
 class mainWindow(QMainWindow):
 	wz_offset = 0
 	wzVth = 0
+	wz200_offset = 0
 	wx_offset = 0
 	wxVth = 0
 	wy_offset = 0
@@ -66,12 +69,14 @@ class mainWindow(QMainWindow):
 		self.diffdata5 = np.empty(0)
 		self.diffdata6 = np.empty(0)
 		self.thetaz = 0
+		self.thetaz200 = 0
 		self.thetax = 0
 		self.thetay = 0
 		self.speed = 0
 		self.speedx = 0
 		self.speedy = 0
 		self.thetaz_arr = np.empty(0)
+		self.thetaz200_arr = np.empty(0)
 		self.thetax_arr = np.empty(0)
 		self.thetay_arr = np.empty(0)
 		self.dx_arr = np.zeros(0)
@@ -80,6 +85,12 @@ class mainWindow(QMainWindow):
 		self.y_arr = np.zeros(0)
 		self.x_sum = 0
 		self.y_sum = 0
+		self.dx200_arr = np.zeros(0)
+		self.dy200_arr = np.zeros(0)
+		self.x200_arr = np.zeros(0)
+		self.y200_arr = np.zeros(0)
+		self.x200_sum = 0
+		self.y200_sum = 0
 		self.speed_arr = np.empty(0)
 		self.speedx_arr = np.empty(0)
 		self.speedy_arr = np.empty(0)
@@ -137,11 +148,8 @@ class mainWindow(QMainWindow):
 		self.top.updataCom.cs.currentIndexChanged.connect(self.uadate_comport_label)
 		self.top.updataCom.updata.clicked.connect(self.enableBtn)
 		''' thread connect '''
-		# self.thread1.started.connect(self.act.updateTwoData) #thread1啟動時會去trigger act.updateTwoData
-		# self.thread1.started.connect(self.act.updateThreeData) #thread1啟動時會去trigger act.updateThreeData 
-		# self.thread1.started.connect(self.act.updateFOG) #thread1啟動時會去trigger act.updateFOG 
-		# self.thread1.started.connect(self.act.updateXLMDnGYRO_MV)
-		self.thread1.started.connect(lambda:self.act.updateXLMDnGYRO(MV_MODE=self.MV_status))
+		# self.thread1.started.connect(lambda:self.act.updateXLMDnGYRO(MV_MODE=self.MV_status)) 
+		self.thread1.started.connect(lambda:self.act.updateIMUnGYRO(MV_MODE=self.MV_status))
 		# self.thread_cali.started.connect(lambda:self.act.calibrationGYRO(MV_MODE=self.MV_status)) 
 		self.thread_cali.started.connect(lambda:self.act.calibrationIMUnGYRO(MV_MODE=self.MV_status))
 
@@ -151,12 +159,14 @@ class mainWindow(QMainWindow):
 		# self.act.fog_update2.connect(self.plotFog2)  
 		# self.act.fog_update7.connect(self.plotXLMDnGYRO)
 		self.act.fog_update7.connect(self.plotGYRO)
+		self.act.fog_update8.connect(self.plotIMUnGYRO)
 		self.act.fog_update12.connect(self.calibGYRO)
 		self.act.fog_update13.connect(self.calibIMUnGYRO)
 		
 		''' text connect '''
 		self.top.wzOffset_le.textChanged.connect(self.updata_para)
 		self.top.wzVth_le.textChanged.connect(self.updata_para)
+		self.top.wz200Offset_le.textChanged.connect(self.updata_para)
 		self.top.wxOffset_le.textChanged.connect(self.updata_para)
 		self.top.wxVth_le.textChanged.connect(self.updata_para)
 		self.top.wyOffset_le.textChanged.connect(self.updata_para)
@@ -175,6 +185,7 @@ class mainWindow(QMainWindow):
 		self.top.cb.vx_cb.toggled.connect(lambda:self.cb_toogled(self.top.cb.vx_cb))
 		self.top.cb.vy_cb.toggled.connect(lambda:self.cb_toogled(self.top.cb.vy_cb))
 		self.top.cb.thetaz_cb.toggled.connect(lambda:self.cb_toogled(self.top.cb.thetaz_cb))
+		self.top.cb.thetaz200_cb.toggled.connect(lambda:self.cb_toogled(self.top.cb.thetaz200_cb))
 		self.top.cb.x_cb.toggled.connect(lambda:self.cb_toogled(self.top.cb.x_cb))
 		self.top.cb.y_cb.toggled.connect(lambda:self.cb_toogled(self.top.cb.y_cb))
 		self.top.cb.track_cb.toggled.connect(lambda:self.cb_toogled(self.top.cb.track_cb))
@@ -221,6 +232,9 @@ class mainWindow(QMainWindow):
 		elif(cb.text()=='thetaz'):
 			self.thetaz_chk = cb.isChecked()
 			print('thetaz:', self.thetaz_chk)
+		elif(cb.text()=='thetaz200'):
+			self.thetaz200_chk = cb.isChecked()
+			print('thetaz200:', self.thetaz200_chk)
 		elif(cb.text()=='track'):
 			self.track_chk = cb.isChecked()
 			print('track:', self.track_chk)
@@ -242,6 +256,8 @@ class mainWindow(QMainWindow):
 		print('v:', self.v_chk)
 		self.thetaz_chk = self.top.cb.thetaz_cb.isChecked()
 		print('thetaz:', self.thetaz_chk)
+		self.thetaz200_chk = self.top.cb.thetaz200_cb.isChecked()
+		print('thetaz200:', self.thetaz200_chk)
 		self.x_chk = self.top.cb.x_cb.isChecked()
 		print('x:', self.x_chk)
 		self.y_chk = self.top.cb.y_cb.isChecked()
@@ -254,6 +270,9 @@ class mainWindow(QMainWindow):
 		self.wzVth = float(self.top.wzVth_le.text())
 		self.act.offset_wz = self.wz_offset  
 		self.act.wzVth = self.wzVth
+		
+		self.wz200_offset = float(self.top.wz200Offset_le.text())
+		self.act.offset_wz200 = self.wz200_offset  
 		
 		self.wx_offset = float(self.top.wxOffset_le.text())
 		self.wxVth = float(self.top.wxVth_le.text())
@@ -334,6 +353,7 @@ class mainWindow(QMainWindow):
 		self.thetax_arr = np.empty(0)
 		self.thetay_arr = np.empty(0)
 		self.thetaz_arr = np.empty(0)
+		self.thetaz200_arr = np.empty(0)
 		self.speedx_arr = np.empty(0)
 		self.speedy_arr = np.empty(0)
 		self.speed_arr = np.empty(0)
@@ -343,6 +363,12 @@ class mainWindow(QMainWindow):
 		self.y_sum = 0
 		self.dx_arr = np.zeros(0)
 		self.dy_arr = np.zeros(0)
+		self.x200_arr = np.zeros(0)
+		self.y200_arr = np.zeros(0)
+		self.x200_sum = 0
+		self.y200_sum = 0
+		self.dx200_arr = np.zeros(0)
+		self.dy200_arr = np.zeros(0)
 		self.top.com_plot.ax2.clear()
 		
 	def open_file(self, filename):
@@ -450,6 +476,7 @@ class mainWindow(QMainWindow):
 		self.data7 = np.empty(0)
 		self.dt = np.empty(0)
 		self.thetaz = 0
+		self.thetaz200 = 0
 		self.thetax = 0
 		self.thetay = 0
 		self.speed = 0
@@ -567,6 +594,175 @@ class mainWindow(QMainWindow):
 		
 		# self.top.com_plot.ax3.clear()
 		# self.top.com_plot.ax4.clear()
+		self.top.com_plot.figure.canvas.flush_events()
+		
+	def plotIMUnGYRO(self, data_ax, data_ay, data_az, data_wx, data_wy, data_wz, data_wz200, dt):
+		if(self.act.runFlag):
+			self.top.com_plot.ax1.clear()
+			self.top.com_plot.ax2.clear()
+			# if(not self.track_chk):
+				# self.top.com_plot.ax2.clear()
+		dt = dt*1e-6
+		if (len(self.data) >= 1000):
+			self.data = self.data[self.act.data_frame_update_point:]
+			self.data2 = self.data2[self.act.data_frame_update_point:]
+			self.data3 = self.data3[self.act.data_frame_update_point:]
+			self.data4 = self.data4[self.act.data_frame_update_point:]
+			self.data5 = self.data5[self.act.data_frame_update_point:]
+			self.data6 = self.data6[self.act.data_frame_update_point:]
+			self.data7 = self.data7[self.act.data_frame_update_point:]
+			self.dt = self.dt[self.act.data_frame_update_point:]
+		data_ax_f = (data_ax-self.ax_offset)*xlm_factor
+		data_ay_f = (data_ay-self.ay_offset)*xlm_factor
+		data_az_f = (data_az-0)*xlm_factor
+		data_wx_f = (data_wx-self.wx_offset)*gyro_factor
+		data_wy_f = (data_wy-self.wy_offset)*gyro_factor
+		data_wz_f = (data_wz-self.wz_offset)*gyro_factor
+		data_wz200_f = (data_wz200-self.wz200_offset)*gyro200_factor/3600 #convert to DPS
+		
+		self.thetaz = self.thetaz - np.sum(data_wz_f)*0.01 #負號是方向判斷的問題
+		self.thetaz_arr = np.append(self.thetaz_arr, self.thetaz)
+		self.thetaz200 = self.thetaz200 - np.sum(data_wz200_f)*0.01 #負號是方向判斷的問題
+		self.thetaz200_arr = np.append(self.thetaz200_arr, self.thetaz200)
+		self.thetax = self.thetax + np.sum(data_wx_f)*0.01
+		self.thetax_arr = np.append(self.thetax_arr, self.thetax)
+		self.thetay = self.thetay + np.sum(data_wy_f)*0.01
+		self.thetay_arr = np.append(self.thetay_arr, self.thetay)
+		self.speedx = self.speedx + np.sum(data_ax_f)*9.8*0.01
+		self.speedx_arr = np.append(self.speedx_arr, self.speedx)
+		self.speedy = self.speedy + np.sum(data_ay_f)*9.8*0.01
+		self.speedy_arr = np.append(self.speedy_arr, self.speedy)
+		self.speed = np.sqrt(np.square(self.speedx)+np.square(self.speedy))
+		self.speed_arr = np.append(self.speed_arr, self.speed)
+		
+		''' for track plot'''
+		theta = 90 - self.thetaz
+		theta200 = 90 - self.thetaz200
+		'''
+		dx = dr*cos(theta), dr = vdt
+		v = 1 m/s
+		dt = data_frame_update_point*self.act.TIME_PERIOD 
+		'''
+		dx = np.cos(theta*np.pi/180)*self.act.data_frame_update_point*self.act.TIME_PERIOD 
+		dy = np.sin(theta*np.pi/180)*self.act.data_frame_update_point*self.act.TIME_PERIOD
+		self.x_sum = self.x_sum + dx
+		self.y_sum = self.y_sum + dy
+		
+		dx200 = np.cos(theta200*np.pi/180)*self.act.data_frame_update_point*self.act.TIME_PERIOD 
+		dy200 = np.sin(theta200*np.pi/180)*self.act.data_frame_update_point*self.act.TIME_PERIOD
+		self.x200_sum = self.x200_sum + dx200
+		self.y200_sum = self.y200_sum + dy200
+		
+		self.top.theta_lb.setText(str(round(self.thetaz,2)))
+		self.top.theta_lb.setStyleSheet('color: blue')
+		self.top.theta200_lb.setText(str(round(self.thetaz200,2)))
+		self.top.theta200_lb.setStyleSheet('color: red')
+		self.top.buffer_lb.setText(str(self.act.bufferSize))
+		
+		self.dx_arr = np.append(self.dx_arr, dx)
+		self.dy_arr = np.append(self.dy_arr, dy)
+		self.x_arr = np.append(self.x_arr, self.x_sum)
+		self.y_arr = np.append(self.y_arr, self.y_sum)
+		
+		self.dx200_arr = np.append(self.dx200_arr, dx200)
+		self.dy200_arr = np.append(self.dy200_arr, dy200)
+		self.x200_arr = np.append(self.x200_arr, self.x200_sum)
+		self.y200_arr = np.append(self.y200_arr, self.y200_sum)
+		
+		if (len(self.thetaz_arr) >= 10):
+			self.thetaz_arr = self.thetaz_arr[1:]
+			self.thetaz200_arr = self.thetaz200_arr[1:]
+			self.thetax_arr = self.thetax_arr[1:]
+			self.thetay_arr = self.thetay_arr[1:]
+			self.speedx_arr = self.speedx_arr[1:]
+			self.speedy_arr = self.speedy_arr[1:]
+			self.speed_arr = self.speed_arr[1:]
+			self.dx_arr = self.dx_arr[1:]
+			self.dy_arr = self.dy_arr[1:]
+			self.dx200_arr = self.dx200_arr[1:]
+			self.dy200_arr = self.dy200_arr[1:]
+			# self.x_arr = self.x_arr[1:]
+			# self.y_arr = self.y_arr[1:]
+		# print(np.sum(data_wz_f))
+		
+		self.data  = np.append(self.data,  data_ax_f)
+		self.data2 = np.append(self.data2, data_ay_f)
+		self.data3 = np.append(self.data3, data_az_f)
+		self.data4 = np.append(self.data4, data_wx_f)
+		self.data5 = np.append(self.data5, data_wy_f)
+		self.data6 = np.append(self.data6, data_wz_f)
+		self.data7 = np.append(self.data7, data_wz200_f)
+		self.dt = np.append(self.dt, dt)
+		if(self.save_status):
+			np.savetxt(self.f, (np.vstack([dt,data_ax_f, data_ay_f, data_az_f, data_wx_f, data_wy_f, data_wz_f, data_wz200_f])).T, fmt='%5.5f,%.5f,%.5f,%.5f,%4.5f,%4.5f,%4.5f, %4.5f')
+		if(DEBUG) :
+			# print(np.average(self.data))
+			# print(np.average(self.data2))
+			# print(np.average(self.data3))
+			# print('len(data_wx)', len(self.data4), end=', ')
+			# print(np.average(self.data4))
+			# print('len(data_wy)', len(self.data5), end=', ')
+			# print(np.average(self.data5))
+			# print('len(data_wz)', len(self.data6), end=', ')
+			# print('len(data_wz200)', len(self.data7), end=', ')
+			# print(np.round(np.average(self.data6), 3), end=', ')
+			# print(np.round(np.std(self.data6), 3))
+			# print(np.average(self.data6))
+			# print('len(dt)', len(self.dt))
+			
+			# print("thez: ", end=', ')
+			# print(self.thetaz, end=', ')
+			# print(len(self.thetaz_arr))
+			# print("thex: ", end=', ')
+			# print(self.thetax, end=', ')
+			# print(len(self.thetax_arr))
+			# print("they: ", end=', ')
+			# print(self.thetay, end=', ')
+			# print(len(self.thetay_arr))
+			
+			# print("vx: ", end=', ')
+			# print(self.speedx, end=', ')
+			# print(len(self.speedx_arr))
+			# print("vy: ", end=', ')
+			# print(self.speedy, end=', ')
+			# print(len(self.speedy_arr))
+			# self.top.wzOffset_lb.setText(str(np.average(self.data6)))
+			pass
+					
+		if(self.ax_chk):
+			self.top.com_plot.ax1.plot(self.dt, self.data, color = 'r', linestyle = '-', marker = '', label="ax")
+		if(self.ay_chk):
+			self.top.com_plot.ax1.plot(self.dt, self.data2, color = 'g', linestyle = '-', marker = '', label="ay")
+			
+		if(self.wz_chk):
+			self.top.com_plot.ax1.plot(self.dt, self.data6, color = 'b', linestyle = '-', marker = '', label="wz")
+		if(self.wz200_chk):
+			self.top.com_plot.ax1.plot(self.dt, self.data7, color = 'r', linestyle = '-', marker = '', label="wz200")
+		if(self.x_chk):
+			self.top.com_plot.ax1.plot(self.x_arr, color = 'r', linestyle = '-', marker = '', label="x")
+		if(self.y_chk):
+			self.top.com_plot.ax1.plot(self.y_arr, color = 'g', linestyle = '-', marker = '', label="y")
+		if(self.vx_chk):
+			self.top.com_plot.ax2.plot(self.speedx_arr, color = 'r', linestyle = '-', marker = '', label="vx")
+			self.top.com_plot.ax2.set_ylim([-5, 5])
+		if(self.vy_chk):
+			self.top.com_plot.ax2.plot(self.speedy_arr, color = 'g', linestyle = '-', marker = '', label="vy")
+			self.top.com_plot.ax2.set_ylim([-5, 5])
+		if(self.thetaz_chk):
+			self.top.com_plot.ax2.plot(self.thetaz_arr, color = 'b', linestyle = '-', marker = '', label="thetaz")
+		if(self.thetaz200_chk):
+			self.top.com_plot.ax2.plot(self.thetaz200_arr, color = 'r', linestyle = '-', marker = '', label="thetaz200")
+		if(self.v_chk):
+			self.top.com_plot.ax2.plot(self.speed_arr, color = 'k', linestyle = '-', marker = '', label="speed")
+		if(self.track_chk):
+			self.top.com_plot.ax2.plot(self.x_arr, self.y_arr, color = 'b', linestyle = '-', marker = '', label="track")
+			self.top.com_plot.ax2.plot(self.x200_arr, self.y200_arr, color = 'k', linestyle = '-', marker = '', label="track200")
+			self.top.com_plot.ax2.set_xlim([track_min, track_max])
+			self.top.com_plot.ax2.set_ylim([track_min, track_max])
+		
+		self.top.com_plot.ax1.legend(bbox_to_anchor=(0.9, 1.0), loc='upper left', prop={'size': 10})
+		self.top.com_plot.ax2.legend(bbox_to_anchor=(0.9, 1.0), loc='upper left', prop={'size': 10})
+		self.top.com_plot.figure.canvas.draw()		
 		self.top.com_plot.figure.canvas.flush_events()
 		
 	def plotGYRO(self, data_ax, data_ay, data_az, data_wx, data_wy, data_wz, dt):
@@ -891,7 +1087,7 @@ class mainWindow(QMainWindow):
 		# if(self.ay_chk):
 			# self.top.com_plot.ax1.plot(self.data2, color = 'g', linestyle = '-', marker = '', label="ay")
 		if(self.wz200_chk):
-			self.top.com_plot.ax1.plot(self.data7, color = 'g', linestyle = '-', marker = '', label="wz200")
+			self.top.com_plot.ax1.plot(self.data7, color = 'r', linestyle = '-', marker = '', label="wz200")
 		if(self.wz_chk):
 			self.top.com_plot.ax2.plot(self.data6, color = 'b', linestyle = '-', marker = '', label="wz")
 		

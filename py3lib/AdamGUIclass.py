@@ -25,6 +25,25 @@ class spinBlock(QGroupBox):
 		layout = QHBoxLayout() 
 		layout.addWidget(self.spin)     
 		self.setLayout(layout)
+		
+class spinBlockOneLabel(QGroupBox):
+	def __init__(self, title, minValue, maxValue, double = False, step = 1, Decimals = 2, parent=None):
+		super(spinBlockOneLabel, self).__init__(parent)
+		if (double):
+			self.spin = QDoubleSpinBox()
+			self.spin.setDecimals(Decimals)
+		else:
+			self.spin = QSpinBox()
+
+		self.spin.setRange(minValue, maxValue)
+		self.spin.setSingleStep(step)
+		self.lb = QLabel('freq')
+		self.setTitle(title)
+
+		layout = QHBoxLayout() 
+		layout.addWidget(self.spin)    
+		layout.addWidget(self.lb)  		
+		self.setLayout(layout)
 
 class comportComboboxBlock():
 	def __init__(self, btn_name="updata", group_name='updata comport'):

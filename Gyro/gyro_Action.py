@@ -76,6 +76,9 @@ class gyro_Action(QObject):
 	def comport_select(self):
 		self.COM.checkCom()
 		
+	def updateOpenLoop(self):
+		print("ACT")
+		
 	def updateIMUnGYRO(self, MV_MODE=1):
 		print('act . offset_wz: ', end=', ') 
 		print(self.offset_wz)

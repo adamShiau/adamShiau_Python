@@ -32,28 +32,28 @@ gyro200_factor = 0.0121
 # wy_offset = -513.717
 
 '''define uart address '''
-MOD_FREQ = 0
-MOD_AMP_H = 1
-MOD_AMP_L = 2
-ERR_OFFSET = 3
-POLARITY = 4
-WAIT_CNT = 5
-ERR_TH = 6
-ERR_AVG = 7
+MOD_FREQ = '0 '
+MOD_AMP_H = '1 '
+MOD_AMP_L = '2 '
+ERR_OFFSET = '3 '
+POLARITY = '4 '
+WAIT_CNT = '5 '
+ERR_TH = '6 '
+ERR_AVG = '7 '
 
 class mainWindow(QMainWindow):
-	wz_offset = 0
-	wzVth = 0
-	wz200_offset = 0
-	wx_offset = 0
-	wxVth = 0
-	wy_offset = 0
-	wyVth = 0
-	ax_offset = 0
-	axVth = 0
-	ay_offset = 0
-	ayVth = 0
-	MV_status = 0
+	# wz_offset = 0
+	# wzVth = 0
+	# wz200_offset = 0
+	# wx_offset = 0
+	# wxVth = 0
+	# wy_offset = 0
+	# wyVth = 0
+	# ax_offset = 0
+	# axVth = 0
+	# ay_offset = 0
+	# ayVth = 0
+	# MV_status = 0
 	wait_cnt = 10
 	avg = 0
 	mod_H = 10000
@@ -69,14 +69,15 @@ class mainWindow(QMainWindow):
 		self.act = ACT.gyro_Action(self.loggername)
 		self.mainUI()
 		self.mainMenu()
+		self.thread1 = QThread() #開一個thread
 		self.linkFunction()
 		self.disableBtn()
-		self.get_cbVal()
-		self.get_rbVal()
+		# self.get_cbVal()
+		# self.get_rbVal()
 		# self.send_initial_value()
 		
 		
-		# self.thread1 = QThread() #開一個thread
+		
 		# self.thread_cali = QThread()
 		# self.data = np.empty(0)
 		# self.data2 = np.empty(0)
@@ -127,8 +128,8 @@ class mainWindow(QMainWindow):
 		self.top.usb.btn.setEnabled(False)
 		self.top.read_btn.read.setEnabled(False)
 		self.top.stop_btn.stop.setEnabled(False)
-		self.top.cali_btn.btn.setEnabled(False)
-		self.top.cali_stop_btn.btn.setEnabled(False)
+		# self.top.cali_btn.btn.setEnabled(False)
+		# self.top.cali_stop_btn.btn.setEnabled(False)
 		
 	def enableBtn(self):
 		self.top.usb.btn.setEnabled(True)
@@ -166,24 +167,27 @@ class mainWindow(QMainWindow):
 		self.top.updataCom.cs.currentIndexChanged.connect(self.uadate_comport_label)
 		self.top.updataCom.updata.clicked.connect(self.enableBtn)
 		''' thread connect '''
-		self.thread1.started.connect(lambda:self.act.updateIMUnGYRO(MV_MODE=self.MV_status))
+		# self.thread1.started.connect(lambda:self.act.updateIMUnGYRO(MV_MODE=self.MV_status))
+		self.thread1.started.connect(self.act.updateOpenLoop)
 
 		''' emit connect '''
-		self.act.fog_finished.connect(self.myThreadStop) #runFlag=0時fog_finished會emit，之後關掉thread1
+		# self.act.fog_finished.connect(self.myThreadStop) #runFlag=0時fog_finished會emit，之後關掉thread1
 		# self.act.fog_update.connect(self.plotFog) #fog_update emit 接收最新data and dt array
 		# self.act.fog_update2.connect(self.plotFog2)  
 		# self.act.fog_update7.connect(self.plotXLMDnGYRO)
-		self.act.fog_update7.connect(self.plotGYRO)
-		self.act.fog_update8.connect(self.plotIMUnGYRO)
-		self.act.fog_update12.connect(self.calibGYRO)
-		self.act.fog_update13.connect(self.calibIMUnGYRO)
+		# self.act.fog_update7.connect(self.plotGYRO)
+		# self.act.fog_update8.connect(self.plotIMUnGYRO)
+		# self.act.fog_update12.connect(self.calibGYRO)
+		# self.act.fog_update13.connect(self.calibIMUnGYRO)
 		
 		''' spin box connect'''
-		self.top.wait_cnt.ValueChanged.connect()
-		self.top.avg.ValueChanged.connect()
-		self.top.mod_H.ValueChanged.connect()
-		self.top.mod_L.ValueChanged.connect()
-		self.top.freq.ValueChanged.connect()
+		self.top.wait_cnt.spin.valueChanged.connect(self.send_WIT_CNT_CMD)
+		self.top.avg.spin.valueChanged.connect(self.send_AVG_CMD)
+		self.top.mod_H.spin.valueChanged.connect(self.send_MOD_H_CMD)
+		self.top.mod_L.spin.valueChanged.connect(self.send_MOD_L_CMD)
+		self.top.freq.spin.valueChanged.connect(self.send_FREQ_CMD)
+		self.top.err_offset.spin.valueChanged.connect(self.send_ERR_OFFSET_CMD)
+		self.top.polarity.spin.valueChanged.connect(self.send_POLARITY_CMD)
 
 		''' text connect '''
 		# self.top.wzOffset_le.textChanged.connect(self.updata_para)
@@ -214,7 +218,35 @@ class mainWindow(QMainWindow):
 		
 		''' radio btn'''
 		# self.top.mv_rb.toggled.connect(lambda:self.rb_toggled(self.top.mv_rb))
+
+	def send_ERR_OFFSET_CMD(self):
+		value = self.top.err_offset.spin.value()	
+		print(ERR_OFFSET + str(value))
+		
+	def send_POLARITY_CMD(self):
+		value = self.top.polarity.spin.value()	
+		print(POLARITY + str(value))
+		
+	def send_WIT_CNT_CMD(self):
+		value = self.top.wait_cnt.spin.value()	
+		print(WAIT_CNT + str(value))
+		
+	def send_AVG_CMD(self):
+		value = self.top.avg.spin.value()	
+		print(ERR_AVG + str(value))
 	
+	def send_MOD_H_CMD(self):
+		value = self.top.mod_H.spin.value()	
+		print(MOD_AMP_H + str(value))
+	
+	def send_MOD_L_CMD(self):
+		value = self.top.mod_L.spin.value()	
+		print(MOD_AMP_L+str(value))
+	
+	def send_FREQ_CMD(self):
+		value = self.top.freq.spin.value()	
+		print(MOD_FREQ + str(value))
+		
 	def rb_toggled(self, rb):
 		self.MV_status = rb.isChecked()
 		print('MV:', self.MV_status)

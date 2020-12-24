@@ -40,6 +40,7 @@ POLARITY = '4 '
 WAIT_CNT = '5 '
 ERR_TH = '6 '
 ERR_AVG = '7 '
+OPENLOOP_START = '12 '
 
 class mainWindow(QMainWindow):
 	# wz_offset = 0
@@ -58,7 +59,7 @@ class mainWindow(QMainWindow):
 	avg = 0
 	mod_H = 10000
 	mod_L = -10000
-	freq = 1000
+	freq = 100
 	def __init__(self, parent = None):
 		super (mainWindow, self).__init__(parent)
 		self.setWindowTitle(TITLE_TEXT)
@@ -79,7 +80,7 @@ class mainWindow(QMainWindow):
 		
 		
 		# self.thread_cali = QThread()
-		# self.data = np.empty(0)
+		self.data = np.empty(0)
 		# self.data2 = np.empty(0)
 		# self.data3 = np.empty(0)
 		# self.data4 = np.empty(0)
@@ -135,8 +136,8 @@ class mainWindow(QMainWindow):
 		self.top.usb.btn.setEnabled(True)
 		self.top.read_btn.read.setEnabled(True)
 		self.top.stop_btn.stop.setEnabled(True)
-		self.top.cali_btn.btn.setEnabled(True)
-		self.top.cali_stop_btn.btn.setEnabled(True)
+		# self.top.cali_btn.btn.setEnabled(True)
+		# self.top.cali_stop_btn.btn.setEnabled(True)
 	
 	def mainUI(self):
 		mainLayout = QGridLayout()
@@ -171,14 +172,15 @@ class mainWindow(QMainWindow):
 		self.thread1.started.connect(self.act.updateOpenLoop)
 
 		''' emit connect '''
-		# self.act.fog_finished.connect(self.myThreadStop) #runFlag=0時fog_finished會emit，之後關掉thread1
+		self.act.fog_finished.connect(self.myThreadStop) #runFlag=0時fog_finished會emit，之後關掉thread1
 		# self.act.fog_update.connect(self.plotFog) #fog_update emit 接收最新data and dt array
 		# self.act.fog_update2.connect(self.plotFog2)  
 		# self.act.fog_update7.connect(self.plotXLMDnGYRO)
 		# self.act.fog_update7.connect(self.plotGYRO)
 		# self.act.fog_update8.connect(self.plotIMUnGYRO)
 		# self.act.fog_update12.connect(self.calibGYRO)
-		# self.act.fog_update13.connect(self.calibIMUnGYRO)
+		# self.act.fog_update13.connect(self.calibIMUnGYRO) 
+		self.act.openLoop_updata1.connect(self.plotOpenLoop)
 		
 		''' spin box connect'''
 		self.top.wait_cnt.spin.valueChanged.connect(self.send_WIT_CNT_CMD)
@@ -218,42 +220,52 @@ class mainWindow(QMainWindow):
 		
 		''' radio btn'''
 		# self.top.mv_rb.toggled.connect(lambda:self.rb_toggled(self.top.mv_rb))
-
+		
+	''' UART command '''
 	def send_ERR_OFFSET_CMD(self):
 		value = self.top.err_offset.spin.value()	
-		print(ERR_OFFSET + str(value))
+		cmd = ERR_OFFSET + str(value) + '\n'
+		print(cmd)
+		self.act.COM.writeLine(cmd)
 		
 	def send_POLARITY_CMD(self):
 		value = self.top.polarity.spin.value()	
-		print(POLARITY + str(value))
+		cmd = POLARITY + str(value) + '\n'
+		print(cmd)
+		self.act.COM.writeLine(cmd)
 		
 	def send_WIT_CNT_CMD(self):
 		value = self.top.wait_cnt.spin.value()	
-		print(WAIT_CNT + str(value))
+		cmd = WAIT_CNT + str(value) + '\n'
+		print(cmd)
+		self.act.COM.writeLine(cmd)
 		
 	def send_AVG_CMD(self):
 		value = self.top.avg.spin.value()	
-		print(ERR_AVG + str(value))
+		cmd = ERR_AVG + str(value) + '\n'
+		print(cmd)
+		self.act.COM.writeLine(cmd)
 	
 	def send_MOD_H_CMD(self):
 		value = self.top.mod_H.spin.value()	
-		print(MOD_AMP_H + str(value))
+		cmd = MOD_AMP_H + str(value) + '\n'
+		print(cmd)
+		self.act.COM.writeLine(cmd)
 	
 	def send_MOD_L_CMD(self):
 		value = self.top.mod_L.spin.value()	
-		print(MOD_AMP_L+str(value))
+		cmd = MOD_AMP_L + str(value) + '\n'
+		print(cmd)
+		self.act.COM.writeLine(cmd)
 	
 	def send_FREQ_CMD(self):
 		value = self.top.freq.spin.value()	
-		print(MOD_FREQ + str(value))
+		self.top.freq.lb.setText(str(round(1/(2*value*10e-6),2))+' KHz')
+		cmd = MOD_FREQ + str(value) + '\n'
+		print(cmd)
+		self.act.COM.writeLine(cmd)
 		
-	def rb_toggled(self, rb):
-		self.MV_status = rb.isChecked()
-		print('MV:', self.MV_status)
-		
-	def get_rbVal(self):
-		self.MV_status = self.top.mv_rb.isChecked()
-		print('MV:', self.MV_status)
+	'''------------------------------------------------- '''
 		
 	def cb_toogled(self, cb):
 		if(cb.text()=='ax'):
@@ -402,6 +414,10 @@ class mainWindow(QMainWindow):
 			
 	def buttonStop(self):#set runFlag=0
 		# self.act.setStop()
+		cmd = OPENLOOP_START + str(0) + '\n'
+		print(cmd)
+		self.act.COM.writeLine(cmd)
+		
 		self.act.runFlag = False
 		self.act.dt_init_flag = 1
 		# self.thetax_arr = np.empty(0)
@@ -504,38 +520,42 @@ class mainWindow(QMainWindow):
 		self.diffdata6 = np.empty(0)
 	
 	def thread1Start(self):
-		self.save_status = self.openFileBox()
+		# self.save_status = self.openFileBox()
+		cmd = OPENLOOP_START + str(1) + '\n'
+		print(cmd)
+		self.act.COM.writeLine(cmd)
 		# file_name = self.top.save_edit.edit.text() 
 		# self.f=open(file_name,'a')
 		# self.f=open('er','a')
 		self.act.runFlag = True
 		self.thread1.start()
 		self.act.COM.port.flushInput()
+		
 		# self.top.com_plot.ax1.legend(bbox_to_anchor=(1.0, 1.0), loc='upper left', prop={'size': 10})
 		# self.top.com_plot.ax2.legend(bbox_to_anchor=(1.0, 1.0), loc='upper left', prop={'size': 10})
 		
 	def myThreadStop(self):
 		self.thread1.quit() 
 		self.thread1.wait()
-		if(self.save_status):
-			stop_time_header = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
-			self.f.writelines('#' + stop_time_header + '\n')
-			self.f.close()
+		# if(self.save_status):
+			# stop_time_header = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
+			# self.f.writelines('#' + stop_time_header + '\n')
+			# self.f.close()
 		self.data  = np.empty(0)
-		self.data2 = np.empty(0)
-		self.data3 = np.empty(0)
-		self.data4 = np.empty(0)
-		self.data5 = np.empty(0)
-		self.data6 = np.empty(0)
-		self.data7 = np.empty(0)
-		self.dt = np.empty(0)
-		self.thetaz = 0
-		self.thetaz200 = 0
-		self.thetax = 0
-		self.thetay = 0
-		self.speed = 0
-		self.speedx = 0
-		self.speedy = 0
+		# self.data2 = np.empty(0)
+		# self.data3 = np.empty(0)
+		# self.data4 = np.empty(0)
+		# self.data5 = np.empty(0)
+		# self.data6 = np.empty(0)
+		# self.data7 = np.empty(0)
+		# self.dt = np.empty(0)
+		# self.thetaz = 0
+		# self.thetaz200 = 0
+		# self.thetax = 0
+		# self.thetay = 0
+		# self.speed = 0
+		# self.speedx = 0
+		# self.speedy = 0
 		
 		
 	def plotFOGnXLMD(self, data_fog, data_ax, data_ay, data_az, dt):
@@ -962,6 +982,15 @@ class mainWindow(QMainWindow):
 		
 		self.top.com_plot.ax1.legend(bbox_to_anchor=(0.9, 1.0), loc='upper left', prop={'size': 10})
 		self.top.com_plot.ax2.legend(bbox_to_anchor=(0.9, 1.0), loc='upper left', prop={'size': 10})
+		self.top.com_plot.figure.canvas.draw()		
+		self.top.com_plot.figure.canvas.flush_events()
+		
+	def plotOpenLoop(self, data):
+		if(self.act.runFlag):
+			self.top.com_plot.ax.clear()
+		self.data  = np.append(self.data, data)
+		
+		self.top.com_plot.ax.plot(self.data, color = 'r', linestyle = '-', marker = '', label="open")
 		self.top.com_plot.figure.canvas.draw()		
 		self.top.com_plot.figure.canvas.flush_events()
 		

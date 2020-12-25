@@ -93,9 +93,15 @@ class gyro_Action(QObject):
 					temp = self.convert2Sign_4B(temp)
 					data = np.append(data[1:], temp)
 					
+				self.valid_cnt = self.valid_cnt + 1
 				print(self.COM.port.inWaiting(), end=', ')
 				print(data)
-				self.openLoop_updata1.emit(data)
+				if(self.valid_cnt == 2):
+					self.valid_flag = 1
+				if(self.valid_flag):
+					self.openLoop_updata1.emit(data)
+		self.valid_flag = 0
+		self.valid_cnt = 0
 		self.fog_finished.emit()
 			
 	def convert2Sign_4B(self, datain) :

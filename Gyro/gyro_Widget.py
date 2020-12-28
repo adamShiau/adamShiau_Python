@@ -16,7 +16,7 @@ class mainWidget(QWidget):
 		self.read_btn = Read_btn()
 		self.stop_btn = Stop_btn()
 		''' spin box'''
-		self.wait_cnt = spinBlock(title='Wait cnt', minValue=0, maxValue=50, double=False, step=1)
+		self.wait_cnt = spinBlock(title='Wait cnt', minValue=0, maxValue=100, double=False, step=1)
 		self.avg = spinBlock(title='avg', minValue=0, maxValue=6, double=False, step=1)
 		self.err_offset = spinBlock(title='Err offset', minValue=-50, maxValue=50, double=False, step=1)
 		self.polarity = spinBlock(title='polarity', minValue=0, maxValue=1, double=False, step=1)

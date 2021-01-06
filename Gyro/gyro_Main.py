@@ -43,6 +43,7 @@ ERR_AVG = '7 '
 OPENLOOP_START = '12 '
 '''adc conversion '''
 ADC_COEFFI = (2.5/8192)
+TIME_COEFFI = 0.0001
 
 class mainWindow(QMainWindow):
 	# wz_offset = 0
@@ -75,53 +76,8 @@ class mainWindow(QMainWindow):
 		self.thread1 = QThread() #開一個thread
 		self.linkFunction()
 		self.disableBtn()
-		# self.get_cbVal()
-		# self.get_rbVal()
-		# self.send_initial_value()
-		
-		
-		
-		# self.thread_cali = QThread()
 		self.data = np.empty(0)
-		# self.data2 = np.empty(0)
-		# self.data3 = np.empty(0)
-		# self.data4 = np.empty(0)
-		# self.data5 = np.empty(0)
-		# self.data6 = np.empty(0)
-		# self.data7 = np.empty(0)
-		# self.diffdata1 = np.empty(0)
-		# self.diffdata2 = np.empty(0)
-		# self.diffdata3 = np.empty(0)
-		# self.diffdata4 = np.empty(0)
-		# self.diffdata5 = np.empty(0)
-		# self.diffdata6 = np.empty(0)
-		# self.thetaz = 0
-		# self.thetaz200 = 0
-		# self.thetax = 0
-		# self.thetay = 0
-		# self.speed = 0
-		# self.speedx = 0
-		# self.speedy = 0
-		# self.thetaz_arr = np.empty(0)
-		# self.thetaz200_arr = np.empty(0)
-		# self.thetax_arr = np.empty(0)
-		# self.thetay_arr = np.empty(0)
-		# self.dx_arr = np.zeros(0)
-		# self.dy_arr = np.zeros(0)
-		# self.x_arr = np.zeros(0)
-		# self.y_arr = np.zeros(0)
-		# self.x_sum = 0
-		# self.y_sum = 0
-		# self.dx200_arr = np.zeros(0)
-		# self.dy200_arr = np.zeros(0)
-		# self.x200_arr = np.zeros(0)
-		# self.y200_arr = np.zeros(0)
-		# self.x200_sum = 0
-		# self.y200_sum = 0
-		# self.speed_arr = np.empty(0)
-		# self.speedx_arr = np.empty(0)
-		# self.speedy_arr = np.empty(0)
-		# self.dt = np.empty(0)
+		self.time = np.empty(0)
 		
 	
 	# def send_initial_value(self):
@@ -131,8 +87,6 @@ class mainWindow(QMainWindow):
 		self.top.usb.btn.setEnabled(False)
 		self.top.read_btn.read.setEnabled(False)
 		self.top.stop_btn.stop.setEnabled(False)
-		# self.top.cali_btn.btn.setEnabled(False)
-		# self.top.cali_stop_btn.btn.setEnabled(False)
 		
 	def enableBtn(self):
 		self.top.usb.btn.setEnabled(True)
@@ -171,6 +125,7 @@ class mainWindow(QMainWindow):
 		self.top.updataCom.updata.clicked.connect(self.enableBtn)
 		''' thread connect '''
 		# self.thread1.started.connect(lambda:self.act.updateIMUnGYRO(MV_MODE=self.MV_status))
+		# self.thread1.started.connect(self.act.updateOpenLoop_old)
 		self.thread1.started.connect(self.act.updateOpenLoop)
 
 		''' emit connect '''
@@ -182,7 +137,8 @@ class mainWindow(QMainWindow):
 		# self.act.fog_update8.connect(self.plotIMUnGYRO)
 		# self.act.fog_update12.connect(self.calibGYRO)
 		# self.act.fog_update13.connect(self.calibIMUnGYRO) 
-		self.act.openLoop_updata1.connect(self.plotOpenLoop)
+		self.act.openLoop_updata2.connect(self.plotOpenLoop)
+		# self.act.openLoop_updata1.connect(self.plotOpenLoop_old)
 		
 		''' spin box connect'''
 		self.top.wait_cnt.spin.valueChanged.connect(self.send_WIT_CNT_CMD)
@@ -522,7 +478,7 @@ class mainWindow(QMainWindow):
 		self.diffdata6 = np.empty(0)
 	
 	def thread1Start(self):
-		# self.save_status = self.openFileBox()
+		self.save_status = self.openFileBox()
 		cmd = OPENLOOP_START + str(1) + '\n'
 		print(cmd)
 		self.act.COM.writeLine(cmd)
@@ -539,11 +495,12 @@ class mainWindow(QMainWindow):
 	def myThreadStop(self):
 		self.thread1.quit() 
 		self.thread1.wait()
-		# if(self.save_status):
-			# stop_time_header = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
-			# self.f.writelines('#' + stop_time_header + '\n')
-			# self.f.close()
+		if(self.save_status):
+			stop_time_header = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
+			self.f.writelines('#' + stop_time_header + '\n')
+			self.f.close()
 		self.data  = np.empty(0)
+		self.time  = np.empty(0)
 		# self.data2 = np.empty(0)
 		# self.data3 = np.empty(0)
 		# self.data4 = np.empty(0)
@@ -561,12 +518,37 @@ class mainWindow(QMainWindow):
 		
 		
 		
-	def plotOpenLoop(self, data):
+	def plotOpenLoop(self, time, data):
 		if(self.act.runFlag):
 			self.top.com_plot.ax.clear()
-		self.data  = np.append(self.data, data*ADC_COEFFI)
+		data_f = data*ADC_COEFFI 
+		time_f = time*TIME_COEFFI
+		self.data  = np.append(self.data, data_f)
+		self.time  = np.append(self.time, time_f)
 		if (len(self.data) >= 1000):
 			self.data = self.data[self.act.data_frame_update_point:]
+			self.time = self.time[self.act.data_frame_update_point:]
+		
+		if(self.save_status):
+			np.savetxt(self.f, (np.vstack([time_f, data_f])).T, fmt='%5.5f, %5.5f')
+		# print(time)
+		# print('len(time):', len(time))
+		# print('len(data):', len(data))
+		self.top.com_plot.ax.plot(self.time, self.data, color = 'r', linestyle = '-', marker = '*', label="open")
+		self.top.com_plot.figure.canvas.draw()		
+		self.top.com_plot.figure.canvas.flush_events()
+		
+	def plotOpenLoop_old(self, data):
+		if(self.act.runFlag):
+			self.top.com_plot.ax.clear()
+		data_f = data*ADC_COEFFI
+		self.data  = np.append(self.data, data_f)
+		if (len(self.data) >= 1000):
+			self.data = self.data[self.act.data_frame_update_point:]
+			self.time = self.time[self.act.data_frame_update_point:]
+		
+		if(self.save_status):
+			np.savetxt(self.f, (np.vstack([data_f])).T, fmt='%5.5f')
 		
 		self.top.com_plot.ax.plot(self.data, color = 'r', linestyle = '-', marker = '*', label="open")
 		self.top.com_plot.figure.canvas.draw()		

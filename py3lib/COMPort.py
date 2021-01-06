@@ -154,6 +154,15 @@ class FT232:
 		else:
 			return data
 			
+	def read3Binary(self):
+		try:
+			data = self.port.read(3)
+		except:
+			self.logger.error("readBinary failed")
+			return "ERROR"
+		else:
+			return data
+			
 	def read2Binary(self):
 		try:
 			data = self.port.read(2)

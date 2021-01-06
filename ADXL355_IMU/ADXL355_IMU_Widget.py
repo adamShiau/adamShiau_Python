@@ -38,13 +38,19 @@ class mainWidget(QWidget):
 		self.wyStd_lb = labelBlock('wy stdev')
 		self.diffwyStd_lb = labelBlock('diffWy stdev')
 		
-		self.axOffset_lb = labelBlock('ax offset')
-		self.axStd_lb = labelBlock('ax stdev')
+		self.axOffset_lb = labelBlock('ax offset_nano')
+		self.axStd_lb = labelBlock('ax stdev_nano')
 		self.diffaxStd_lb = labelBlock('diffax stdev')
 		
-		self.ayOffset_lb = labelBlock('ay offset')
-		self.ayStd_lb = labelBlock('ay stdev')
+		self.ayOffset_lb = labelBlock('ay offset_nano')
+		self.ayStd_lb = labelBlock('ay stdev_nano')
 		self.diffayStd_lb = labelBlock('diffay stdev')
+		
+		self.axOffsetAD_lb = labelBlock('ax offset_355')
+		self.axStdAD_lb = labelBlock('ax stdev_355')
+		
+		self.ayOffsetAD_lb = labelBlock('ay offset_355')
+		self.ayStdAD_lb = labelBlock('ay stdev_355')
 		
 		pe = QPalette()
 		pe.setColor(QPalette.WindowText, Qt.blue)
@@ -108,12 +114,20 @@ class mainWidget(QWidget):
 		self.axVth_le.setFixedWidth(100)
 		self.axVth_le.setText('0')
 		
+		self.axOffsetAD_le = QLineEdit()
+		self.axOffsetAD_le.setFixedWidth(100)
+		self.axOffsetAD_le.setText('0')
+		
 		self.ayOffset_le = QLineEdit()
 		self.ayOffset_le.setFixedWidth(100)
 		self.ayOffset_le.setText('0')
 		self.ayVth_le = QLineEdit()
 		self.ayVth_le.setFixedWidth(100)
 		self.ayVth_le.setText('0')
+		
+		self.ayOffsetAD_le = QLineEdit()
+		self.ayOffsetAD_le.setFixedWidth(100)
+		self.ayOffsetAD_le.setText('0')
 		
 		self.com_plot = output2Plot() 
 		# self.com_plot = output3Plot() 
@@ -168,15 +182,19 @@ class mainWidget(QWidget):
 		
 		mainLayout.addWidget(self.axOffset_lb, 4,1)
 		mainLayout.addWidget(self.axStd_lb, 4,2)
-		# mainLayout.addWidget(self.diffaxStd_lb, 4,3)
 		mainLayout.addWidget(self.axOffset_le, 5,1,1,1)
-		# mainLayout.addWidget(self.axVth_le, 5,3,1,1)
+		
+		mainLayout.addWidget(self.axOffsetAD_lb, 4,3)
+		mainLayout.addWidget(self.axStdAD_lb, 4,4)
+		mainLayout.addWidget(self.axOffsetAD_le, 5,3,1,1)
 		
 		mainLayout.addWidget(self.ayOffset_lb, 6,1)
 		mainLayout.addWidget(self.ayStd_lb, 6,2)
-		# mainLayout.addWidget(self.diffayStd_lb, 6,3)
 		mainLayout.addWidget(self.ayOffset_le, 7,1,1,1)
-		# mainLayout.addWidget(self.ayVth_le, 7,3,1,1)
+		
+		mainLayout.addWidget(self.ayOffsetAD_lb, 6,3)
+		mainLayout.addWidget(self.ayStdAD_lb, 6,4)
+		mainLayout.addWidget(self.ayOffsetAD_le, 7,3,1,1)
 		
 		# mainLayout.addWidget(self.save_edit, 2,0,1,1)
 		

@@ -416,7 +416,7 @@ class COMRead_Action(QObject):
 					drop_flag = 0
 					print("drop occurred!")
 					self.COM.port.flushInput()
-				while(not (self.COM.port.inWaiting()>(self.data_frame_update_point*22))) : #rx buffer 不到 (self.data_frame_update_point*4) byte數目時不做任何事
+				while(not (self.COM.port.inWaiting()>(self.data_frame_update_point*31))) : #rx buffer 不到 (self.data_frame_update_point*4) byte數目時不做任何事
 					# print(self.COM.port.inWaiting())
 					pass
 				for i in range(0,self.data_frame_update_point): #更新data_frame_update_point筆資料到data and dt array
@@ -512,7 +512,7 @@ class COMRead_Action(QObject):
 							
 							data_ADay_sum = data_ADay_sum - data_ADay[0]
 							data_ADay_sum = data_ADay_sum + temp_ADay
-							data_ADay_MV = data_aADy_sum/self.data_frame_update_point
+							data_ADay_MV = data_ADay_sum/self.data_frame_update_point
 							
 							data_ADaz_sum = data_ADaz_sum - data_ADaz[0]
 							data_ADaz_sum = data_ADaz_sum + temp_ADaz
@@ -737,7 +737,7 @@ class COMRead_Action(QObject):
 						
 						data_ADay_sum = data_ADay_sum - data_ADay[0]
 						data_ADay_sum = data_ADay_sum + temp_ADay
-						data_ADay_MV = data_aADy_sum/self.data_frame_update_point
+						data_ADay_MV = data_ADay_sum/self.data_frame_update_point
 						
 						data_ADaz_sum = data_ADaz_sum - data_ADaz[0]
 						data_ADaz_sum = data_ADaz_sum + temp_ADaz

@@ -897,10 +897,10 @@ class mainWindow(QMainWindow):
 		self.data2 = np.append(self.data2, data_ay_f)
 		self.data3 = np.append(self.data3, data_ADax_f)
 		self.data4 = np.append(self.data4, data_ADay_f)
-		self.data5 = np.append(self.data4, data_wx_f)
-		self.data6 = np.append(self.data5, data_wy_f)
-		self.data7 = np.append(self.data6, data_wz_f)
-		self.data8 = np.append(self.data7, data_wz200_f)
+		self.data5 = np.append(self.data5, data_wx_f)
+		self.data6 = np.append(self.data6, data_wy_f)
+		self.data7 = np.append(self.data7, data_wz_f)
+		self.data8 = np.append(self.data8, data_wz200_f)
 		self.dt = np.append(self.dt, dt)
 		if(self.save_status):
 			np.savetxt(self.f, (np.vstack([dt,data_ax_f, data_ay_f, data_ADax_f, data_ADay_f, data_wx_f, data_wy_f, data_wz_f, data_wz200_f])).T, fmt='%5.5f,%.5f,%.5f,%.5f,%.5f,%4.5f,%4.5f,%4.5f, %4.5f')
@@ -936,6 +936,14 @@ class mainWindow(QMainWindow):
 			# print(self.speedy, end=', ')
 			# print(len(self.speedy_arr))
 			# self.top.wzOffset_lb.setText(str(np.average(self.data6)))
+			
+			# print('len(dt): ', len(self.dt))
+			# print('len(ax_33): ', len(self.data))
+			# print('len(ay_33): ', len(self.data2))
+			# print('len(ADax): ', len(self.data3))
+			# print('len(ADay): ', len(self.data4))
+			# print('len(wz): ', len(self.data7))
+			# print('len(wz200): ', len(self.data8))
 			pass
 					
 		if(self.ax_chk):

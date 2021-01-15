@@ -1,14 +1,234 @@
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
+from PyQt5 import QtCore, QtGui
 from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT as NavigationToolbar
+from PyQt5.QtWidgets import (QGraphicsView,QGraphicsScene,QApplication)
 
 PLOT_FONTSIZE = 14
 PLOT_FONTSIZE_S = 10
 
+class btn(QWidget):
+	def __init__(self, name='name', parent=None):
+		super(btn, self).__init__(parent)
+		self.bt = QPushButton(name)
+		layout = QGridLayout()
+		layout.addWidget(self.bt, 0,0,1,1)
+		self.setLayout(layout)
+
+class displayOneBlock(QGroupBox):
+	def __init__(self, name='name', parent=None):
+		super(displayOneBlock, self).__init__(parent)
+		self.setTitle(name)
+		self.setFont(QFont('',10)) 
+		pe = QPalette()
+		pe.setColor(QPalette.WindowText,Qt.yellow)
+		pe.setColor(QPalette.Window,Qt.black)
+		self.lb = QLabel();
+		self.lb.setPalette(pe)
+		self.lb.setFont(QFont('Arial', 20)) 
+		self.lb.setAutoFillBackground(True)
+		self.lb.setText('buffer')
+		
+		layout = QVBoxLayout()
+		layout.addWidget(self.lb)
+		self.setLayout(layout)
+		
+class displayTwoBlock(QGroupBox):
+	def __init__(self, title='title', name1='name1', name2='name2', parent=None):
+		super(displayTwoBlock, self).__init__(parent)
+		# self.groupBox = QGroupBox(title)
+		self.setTitle(title)
+		self.setFont(QFont('',20)) 
+		pe = QPalette()
+		pe.setColor(QPalette.WindowText,Qt.yellow)
+		pe.setColor(QPalette.Window,Qt.black)
+		self.lb1 = QLabel();
+		self.lb1.setPalette(pe)
+		self.lb1.setFont(QFont('Arial', 30)) 
+		self.lb1.setAutoFillBackground(True)
+		self.lb1.setText('label1')
+		self.lb1name = QLabel();
+		self.lb1name.setText(name1)
+		
+		self.lb2 = QLabel(name2);
+		self.lb2.setPalette(pe)
+		self.lb2.setFont(QFont('Arial', 30)) 
+		self.lb2.setAutoFillBackground(True)
+		self.lb2.setText('lab1l2')
+		self.lb2name = QLabel();
+		self.lb2name.setText(name2)
+		
+		layout = QGridLayout()
+		layout.addWidget(self.lb1name, 0, 0, 1, 1)
+		layout.addWidget(self.lb1, 1, 0, 3, 5)
+		layout.addWidget(self.lb2name, 4, 0, 1, 1)
+		layout.addWidget(self.lb2, 5, 0, 3, 5)
+		self.setLayout(layout)
+		
+class displaySixBlock(QGroupBox):
+	def __init__(self, groupName='groupName', title1='title1', name1_1='name1_1', name1_2='name1_2',
+											  title2='title2', name2_1='name2_1', name2_2='name2_2', 
+											  title3='title3', name3_1='name3_1', name3_2='name3_2', parent=None):
+		super(displaySixBlock, self).__init__(parent)
+		self.setTitle(groupName)
+		self.setFont(QFont('',20)) 
+		pe = QPalette()
+		pe.setColor(QPalette.WindowText,Qt.yellow)
+		pe.setColor(QPalette.Window,Qt.black)
+		
+		self.lb1_title = QLabel();
+		self.lb1_title.setText(title1)
+		self.lb1_1 = QLabel();
+		self.lb1_1.setPalette(pe)
+		self.lb1_1.setFont(QFont('Arial', 30)) 
+		self.lb1_1.setAutoFillBackground(True)
+		self.lb1_1.setText('label1_1')
+		self.lb1_1name = QLabel();
+		self.lb1_1name.setText(name1_1)		
+		self.lb1_2 = QLabel();
+		self.lb1_2.setPalette(pe)
+		self.lb1_2.setFont(QFont('Arial', 30)) 
+		self.lb1_2.setAutoFillBackground(True)
+		self.lb1_2.setText('label1_2')
+		self.lb1_2name = QLabel();
+		self.lb1_2name.setText(name1_2)
+		
+		self.lb2_title = QLabel();
+		self.lb2_title.setText(title2)
+		self.lb2_1 = QLabel();
+		self.lb2_1.setPalette(pe)
+		self.lb2_1.setFont(QFont('Arial', 30)) 
+		self.lb2_1.setAutoFillBackground(True)
+		self.lb2_1.setText('label2_1')
+		self.lb2_1name = QLabel();
+		self.lb2_1name.setText(name2_1)		
+		self.lb2_2 = QLabel();
+		self.lb2_2.setPalette(pe)
+		self.lb2_2.setFont(QFont('Arial', 30)) 
+		self.lb2_2.setAutoFillBackground(True)
+		self.lb2_2.setText('label2_2')
+		self.lb2_2name = QLabel();
+		self.lb2_2name.setText(name2_2)
+		
+		self.lb3_title = QLabel();
+		self.lb3_title.setText(title3)
+		self.lb3_1 = QLabel();
+		self.lb3_1.setPalette(pe)
+		self.lb3_1.setFont(QFont('Arial', 30)) 
+		self.lb3_1.setAutoFillBackground(True)
+		self.lb3_1.setText('label3_1')
+		self.lb3_1name = QLabel();
+		self.lb3_1name.setText(name3_1)		
+		self.lb3_2 = QLabel();
+		self.lb3_2.setPalette(pe)
+		self.lb3_2.setFont(QFont('Arial', 30)) 
+		self.lb3_2.setAutoFillBackground(True)
+		self.lb3_2.setText('label3_2')
+		self.lb3_2name = QLabel();
+		self.lb3_2name.setText(name3_2)
+		
+		# layout1 = QGridLayout()
+		# layout1.addWidget(self.lb1_title, 2, 0, 1, 1)
+		# layout1.addWidget(self.lb1_1name, 1, 1, 1, 2)
+		# layout1.addWidget(self.lb1_1, 2, 1, 2, 2)
+		# layout1.addWidget(self.lb1_2name, 1, 3, 1, 1)
+		# layout1.addWidget(self.lb1_2, 2, 3, 2, 2)
+		# layout1.setRowStretch(1, 1)
+		# layout1.setRowStretch(2, 5)
+		# layout1.setRowStretch(3, 5) 
+		# layout1.setColumnStretch(0, 2)
+		# layout1.setColumnStretch(1, 5)
+		# layout1.setColumnStretch(2, 5)
+		# layout1.setColumnStretch(3, 5)
+		# layout1.setColumnStretch(4, 5)
+		
+		# layout2 = QGridLayout()
+		# layout2.addWidget(self.lb2_title, 2, 0, 1, 1)
+		# layout2.addWidget(self.lb2_1name, 1, 1, 1, 2)
+		# layout2.addWidget(self.lb2_1, 2, 1, 2, 2)
+		# layout2.addWidget(self.lb2_2name, 1, 3, 1, 1)
+		# layout2.addWidget(self.lb2_2, 2, 3, 2, 2)
+		# layout2.setRowStretch(1, 1)
+		# layout2.setRowStretch(2, 5)
+		# layout2.setRowStretch(3, 5) 
+		# layout2.setColumnStretch(0, 2)
+		# layout2.setColumnStretch(1, 5)
+		# layout2.setColumnStretch(2, 5)
+		# layout2.setColumnStretch(3, 5)
+		# layout2.setColumnStretch(4, 5)
+		
+		# layout3 = QGridLayout()
+		# layout3.addWidget(self.lb3_title, 2, 0, 1, 1)
+		# layout3.addWidget(self.lb3_1name, 1, 1, 1, 2)
+		# layout3.addWidget(self.lb3_1, 2, 1, 2, 2)
+		# layout3.addWidget(self.lb3_2name, 1, 3, 1, 1)
+		# layout3.addWidget(self.lb3_2, 2, 3, 2, 2)
+		# layout3.setRowStretch(1, 1)
+		# layout3.setRowStretch(2, 5)
+		# layout3.setRowStretch(3, 5) 
+		# layout3.setColumnStretch(0, 2)
+		# layout3.setColumnStretch(1, 5)
+		# layout3.setColumnStretch(2, 5)
+		# layout3.setColumnStretch(3, 5)
+		# layout3.setColumnStretch(4, 5)
+		
+		# layout = QVBoxLayout()
+		layout = QGridLayout()
+		layout.addWidget(self.lb1_title, 2, 0, 2, 1)
+		layout.addWidget(self.lb1_1name, 1, 2, 1, 2)
+		layout.addWidget(self.lb1_1, 2, 1, 2, 4)
+		layout.addWidget(self.lb1_2name, 1, 8, 1, 2)
+		layout.addWidget(self.lb1_2, 2, 7, 2, 4)
+		
+		layout.addWidget(self.lb2_title, 7, 0, 2, 1)
+		layout.addWidget(self.lb2_1name, 6, 2, 1, 2)
+		layout.addWidget(self.lb2_1, 7, 1, 2, 4)
+		layout.addWidget(self.lb2_2name, 6, 8, 1, 2)
+		layout.addWidget(self.lb2_2, 7, 7, 2, 4)
+		
+		layout.addWidget(self.lb3_title, 12, 0, 2, 1)
+		layout.addWidget(self.lb3_1name, 11, 2, 1, 2)
+		layout.addWidget(self.lb3_1, 12, 1, 2, 4)
+		layout.addWidget(self.lb3_2name, 11, 8, 1, 2)
+		layout.addWidget(self.lb3_2, 12, 7, 2, 4)
+		# layout.addLayout(layout1)
+		# layout.addLayout(layout2)
+		# layout.addLayout(layout3)
+		self.setLayout(layout)
+
+class gaugePlot(QGraphicsView):
+	def __init__(self, parent=None):
+		super(gaugePlot, self).__init__(parent)
+		pen = QPen(Qt.red)
+		pen.setWidth(3) #改變指針寬度
+		pen.setCapStyle(Qt.RoundCap)   #指針末端的形狀, Qt.RoundCap, Qt.SquareCap, Qt.RoundCap
+		# scene = QtWidgets.QGraphicsScene() #https://my.oschina.net/golang/blog/209554
+		scene = QGraphicsScene() #https://my.oschina.net/golang/blog/209554
+								#https://www.itread01.com/content/1548416194.html
+
+		pen.setCosmetic(True)  
+		scene.addPixmap(QPixmap('DPS_guage.png'))
+		# scene.addPixmap(QPixmap('back.png'))
+		self.item = scene.addLine(60, 170, 97, 97, pen) #addLine(x1, x2, y1, y2, pen)
+		pen = QtGui.QPen(QtGui.QColor(QtCore.Qt.gray))
+		brush = QtGui.QBrush(pen.color().darker(100))
+		scene.addEllipse(87, 87, 20, 20, pen, brush)
+		self.item.setTransformOriginPoint(97, 97)
+		self.setScene(scene)
+		# self.Grafik.setScene(scene)
+		
+		# lb = QLabel()
+		# lb.setPixmap(QPixmap('back.png'))
+		# lb.addLine(60, 170, 97, 97, pen)
+		# layout = QHBoxLayout() 
+		# layout.addWidget(lb)     
+		# self.setLayout(layout)
+		
+		
 class spinBlock(QGroupBox):
 	def __init__(self, title, minValue, maxValue, double = False, step = 1, Decimals = 2, parent=None):
 		super(spinBlock, self).__init__(parent)
@@ -44,21 +264,18 @@ class spinBlockOneLabel(QGroupBox):
 		layout.addWidget(self.spin)    
 		layout.addWidget(self.lb)  		
 		self.setLayout(layout)
-
-class comportComboboxBlock():
-	def __init__(self, btn_name="updata", group_name='updata comport'):
-		# super(comportComboboxBlock, self).__init__(parent)
-		self.groupBox = QGroupBox(group_name)
-		self.updata = QPushButton(btn_name)
-		self.cs = QComboBox()
-		self.lb = QLabel("")
+	
+class chkBoxBlock_2(QWidget):
+	def __init__(self, title='', name1='', name2='', parent=None):
+		super(chkBoxBlock_2, self).__init__(parent)
+		self.groupBox = QGroupBox(title)
+		self.cb1 = QCheckBox(name1)
+		self.cb2 = QCheckBox(name2)
 		
-	def layout(self):   
-		# layout = QVBoxLayout() 
-		layout = QGridLayout()
-		layout.addWidget(self.updata, 0,0,1,1)
-		layout.addWidget(self.cs, 1,0,1,1)
-		layout.addWidget(self.lb, 2,0,1,3)
+	def layout(self):
+		layout = QVBoxLayout()
+		layout.addWidget(self.cb1)
+		layout.addWidget(self.cb2)
 		self.groupBox.setLayout(layout)
 		self.groupBox.show()
 		return self.groupBox
@@ -154,6 +371,18 @@ class editBlock(QGroupBox):
 		layout = QHBoxLayout() 
 		layout.addWidget(self.edit)     
 		self.setLayout(layout)
+		
+class editBlockwBtn(QGroupBox):
+	def __init__(self, title='', val='10', parent=None):
+		super(editBlockwBtn, self).__init__(parent)
+		self.setTitle(title)
+		self.bt = QPushButton('set')
+		self.le = QLineEdit(val)
+
+		layout = QGridLayout() 
+		layout.addWidget(self.bt, 0, 0, 1, 1)  
+		layout.addWidget(self.le, 1, 0, 2, 2)  		
+		self.setLayout(layout)
 
 
 class comboBlock(QGroupBox):
@@ -186,19 +415,20 @@ class outputPlot(QWidget):
 
 
 class outputPlotSize(QWidget):
-	def __init__(self, fontsize, parent=None):
+	def __init__(self, fontsize, title='', parent=None):
 		super(outputPlotSize, self).__init__(parent)
 		self.figure = Figure(figsize=(6,3))
 		self.canvas = FigureCanvas(self.figure)
 		self.toolbar = NavigationToolbar(self.canvas, self)
 		plt.rcParams.update({'font.size': fontsize})
-
+		
 		layout = QGridLayout()
 		layout.addWidget(self.canvas,0,0,1,2)
 		layout.addWidget(self.toolbar,1,0,1,1)
 		#layout.addWidget(self.button)
 		self.setLayout(layout)
 		self.ax = self.figure.add_subplot(111)
+		self.ax.set_title(title)
 
 
 class output2Plot(QWidget):
@@ -271,7 +501,53 @@ class output3Plot(QWidget):
 		self.ax2 = self.figure.add_subplot(312)
 		self.ax3 = self.figure.add_subplot(313)
 
+class usbConnect():
+	def __init__(self, btn_name="COM update", group_name='Connect COM port'):
+		self.groupBox = QGroupBox(group_name)
+		self.bt_update = QPushButton(btn_name)
+		self.bt_connect = QPushButton('connect')
+		self.cs = QComboBox()
+		self.lb = QLabel(" ")
+		self.lb_com = QLabel(" ")
+			
+		
+	def layoutG(self):
+		layout = QGridLayout()
+		layout.addWidget(self.bt_update, 0,0,1,1)
+		layout.addWidget(self.cs, 0,1,1,1)
+		layout.addWidget(self.bt_connect, 0,2,1,1)
+		layout.addWidget(self.lb, 1,0,1,2)
+		layout.addWidget(self.lb_com, 1,2,1,1)
+		self.groupBox.setLayout(layout)
+		self.groupBox.show()
+		return self.groupBox
+		
+	def SetConnectText(self, color, text):
+		pe = QPalette()
+		pe.setColor(QPalette.WindowText, color)
+		self.lb_com.setPalette(pe)
+		self.lb_com.setText(text)
+		self.lb_com.show()
+		# self.btn.setEnabled(flag)
 
+class comportComboboxBlock():
+	def __init__(self, btn_name="updata", group_name='updata comport'):
+		# super(comportComboboxBlock, self).__init__(parent)
+		self.groupBox = QGroupBox(group_name)
+		self.updata = QPushButton(btn_name)
+		self.cs = QComboBox()
+		self.lb = QLabel("")
+		
+	def layout(self):   
+		# layout = QVBoxLayout() 
+		layout = QGridLayout()
+		layout.addWidget(self.updata, 0,0,1,1)
+		layout.addWidget(self.cs, 1,0,1,1)
+		layout.addWidget(self.lb, 2,0,1,3)
+		self.groupBox.setLayout(layout)
+		self.groupBox.show()
+		return self.groupBox
+		
 class connectBlock():
 	def __init__(self, name):
 		self.groupBox = QGroupBox(name)

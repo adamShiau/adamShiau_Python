@@ -8,13 +8,14 @@ from scipy import signal
 from PyQt5.QtGui import * 
 from PyQt5.QtCore import * 
 from PyQt5.QtWidgets import *
+# from py3lib.COMPort import UART 
 import numpy as np
 # import py3lib
 # import py3lib.FileToArray as file
 # import py3lib.QuLogger as Qlogger 
 # import py3lib.FileToArray as fil2a 
-import ADXL355_IMU_Widget as UI 
-import ADXL355_IMU_Action_BT as ACT
+import ADXL355_IMU_Widget2 as UI 
+import ADXL355_IMU_Action2_BT as ACT
 TITLE_TEXT = "IMU_PLOT"
 VERSION_TEXT = 'Compare FOG with MEMS，2020/12/01'
 READOUT_FILENAME = "Signal_Read_Out.txt"
@@ -23,6 +24,7 @@ DEBUG = 1
 track_max = 50
 track_min = -50
 w_factor = 0.01
+TEST_MODE = 0
 xlm_factor = 0.000122 #4g / 32768
 ADxlm_factor = 0.0000156 #8g
 # gyro_factor = 0.00763 #250 / 32768 
@@ -50,6 +52,7 @@ class mainWindow(QMainWindow):
 	MV_status = 0
 	def __init__(self, parent = None):
 		super (mainWindow, self).__init__(parent)
+		# self.COM = act.UART()
 		self.setWindowTitle(TITLE_TEXT)
 		self.resize(1100,800)
 		self.move(0,0)
@@ -110,14 +113,14 @@ class mainWindow(QMainWindow):
 		# self.wz_offset = self.act.offset_wz
 	
 	def disableBtn(self):
-		self.top.usb.btn.setEnabled(False)
+		# self.top.usb.btn.setEnabled(False)
 		self.top.read_btn.read.setEnabled(False)
 		self.top.stop_btn.stop.setEnabled(False)
 		self.top.cali_btn.btn.setEnabled(False)
 		self.top.cali_stop_btn.btn.setEnabled(False)
 		
 	def enableBtn(self):
-		self.top.usb.btn.setEnabled(True)
+		# self.top.usb.btn.setEnabled(True)
 		self.top.read_btn.read.setEnabled(True)
 		self.top.stop_btn.stop.setEnabled(True)
 		self.top.cali_btn.btn.setEnabled(True)
@@ -145,14 +148,16 @@ class mainWindow(QMainWindow):
 
 	def linkFunction(self):
 		''' btn connect '''
-		self.top.usb.btn.clicked.connect(self.usbConnect)
+		
 		self.top.cali_btn.btn.clicked.connect(self.caliThreadStart)
 		self.top.cali_stop_btn.btn.clicked.connect(self.caliThreadStop)
 		self.top.read_btn.read.clicked.connect(self.myThreadStart) # set runFlag=1
 		self.top.stop_btn.stop.clicked.connect(self.buttonStop) # set runFlag=0
-		self.top.updataCom.updata.clicked.connect(self.updata_comport)
-		self.top.updataCom.cs.currentIndexChanged.connect(self.uadate_comport_label)
-		self.top.updataCom.updata.clicked.connect(self.enableBtn)
+		#usb connect
+		self.top.usb.bt_update.clicked.connect(self.update_comport)
+		self.top.usb.cs.currentIndexChanged.connect(self.uadate_comport_label)
+		self.top.usb.bt_connect.clicked.connect(self.usbConnect)
+		self.top.usb.bt_connect.clicked.connect(self.enableBtn)
 		''' thread connect '''
 		self.thread1.started.connect(lambda:self.act.updateADXL_IMUnGYRO(MV_MODE=self.MV_status)) 
 		# self.thread1.started.connect(lambda:self.act.updateIMUnGYRO(MV_MODE=self.MV_status))
@@ -338,33 +343,37 @@ class mainWindow(QMainWindow):
 			saveBox.about(self, "Save File", "No file saving")
 			return 0
 			
-	def updata_comport(self):
+# """ comport functin """
+	def update_comport(self):
 		self.act.COM.selectCom()
-		self.top.updataCom.cs.clear()
-		''' combo box '''
+		self.top.usb.cs.clear()
 		if(self.act.COM.portNum > 0):
 			for i in range(self.act.COM.portNum):
-				self.top.updataCom.cs.addItem(self.act.COM.comPort[i][0])
-			idx = self.top.updataCom.cs.currentIndex()
-			self.top.updataCom.lb.setText(self.act.COM.comPort[idx][1])
+				self.top.usb.cs.addItem(self.act.COM.comPort[i][0])
+			idx = self.top.usb.cs.currentIndex()
+			self.top.usb.lb.setText(self.act.COM.comPort[idx][1])
 	
 	def uadate_comport_label(self):
-		idx = self.top.updataCom.cs.currentIndex()
-		self.top.updataCom.lb.setText(self.act.COM.comPort[idx][1])
+		idx = self.top.usb.cs.currentIndex()
+		self.top.usb.lb.setText(self.act.COM.comPort[idx][1])
 		self.cp = self.act.COM.comPort[idx][0]
 	
 	def usbConnect(self):
-		# usbConnStatus = self.act.usbConnect() 
 		print(self.cp);
-		usbConnStatus = self.act.usbConnect_comboBox(self.cp)
+		if (TEST_MODE):
+			usbConnStatus = True
+		else:
+			usbConnStatus = self.act.COM.connect_comboBox(baudrate = 115200, timeout = 1, port_name=self.cp)
 		print("status:" + str(usbConnStatus))
 		if usbConnStatus:
-			self.top.usb.SetConnectText(Qt.black, self.act.COM.port.port + " Connection build", True)
+			self.top.usb.SetConnectText(Qt.blue, self.cp + " Connect")
 			print("Connect build")
 		else:
 			self.top.usb.SetConnectText(Qt.red,"Connect failed", True)
 			print("Connect failed")
 			
+# """ end of comport functin """
+
 	def buttonStop(self):#set runFlag=0
 		# self.act.setStop()
 		self.act.runFlag = False

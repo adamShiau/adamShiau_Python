@@ -21,6 +21,8 @@ class mainWidget(QWidget):
 		# self.updataCom = Updata_COM_btn()
 		# self.com_sel = Comport_sel()
 		
+		###guage###
+		self.wz_gauge = gaugePlot()
 		
 		###label###
 		self.wzOffset_lb = labelBlock('wz offset')
@@ -141,6 +143,8 @@ class mainWidget(QWidget):
 		mainLayout.addWidget(self.usb.layout1(), 1,1,1,3)
 		# mainLayout.addWidget(self.com_sel, 0,1,1,1) ax_rb
 		
+		###gauge###
+		mainLayout.addWidget(self.wz_gauge, 0,4,3,3)
 		
 		###check box###
 		mainLayout.addWidget(self.cb.layout(), 15,0)

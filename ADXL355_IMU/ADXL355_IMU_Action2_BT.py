@@ -20,10 +20,10 @@ import math
 
 TEST_MODE = False
 DEBUG = 1
-DEBUG2 = 0
+DEBUG_COM = 0
 # MV_MODE = 1
 
-class COMRead_Action(QObject):
+class IMU_Action(QObject):
 	update_COMArray = pyqtSignal(object)
 	fog_update = pyqtSignal(object,object)
 	fog_update2 = pyqtSignal(object,object, object)
@@ -37,152 +37,146 @@ class COMRead_Action(QObject):
 	valid_flag = 0
 	valid_cnt = 0
 	TIME_PERIOD = 0.01
+	''' 計算一定的點數後再傳到main作圖，點數太小的話buffer會累積造成lag'''
 	data_frame_update_point = 15
+	''' run glag 初始值'''
 	runFlag = 0
-	#IMU 靜止時之offset
-	offset_wx = 0
-	wxVth = 0
-	offset_wy = 0
-	wyVth = 0
-	offset_wz = 0
-	offset_wz200 = 0
-	wzVth = 0
-	offset_ax = 0
-	offset_ADax = 0
-	axVth = 0
-	offset_ay = 0
-	offset_ADay = 0
-	ayVth = 0
+	'''IMU 靜止時之offset, 需先run calibration才會有值，否則為0'''
+	offset_SRS200_wz = 0
+	offset_PP_wz = 0
+	offset_Nano33_wz = 0
+	offset_Nano33_ax = 0
+	offset_Nano33_ay = 0
+	offset_Nano33_az = 0
+	offset_Adxl355_ax = 0
+	offset_Adxl355_ay = 0
+	offset_Adxl355_az = 0
+	''' check byte '''
 	check_byte = 170
 	check_byte2 = 171
+	# wxVth = 0
+	# offset_wy = 0
+	# wyVth = 0
+	# offset_wz = 0
+	# offset_wz200 = 0
+	# wzVth = 0
+	# offset_ax = 0
+	# offset_ADax = 0
+	# axVth = 0
+	# offset_ay = 0
+	# offset_ADay = 0
+	# ayVth = 0
+	''' buffer size 會傳到main做monitor'''
 	bufferSize = 0
 	dt_init_flag = 1
 	def __init__(self, loggername):	
 		super().__init__()
-		# self.COM = usb.FT232(loggername)
 		self.COM = UART()
 		self.logger = logging.getLogger(loggername)
 		# self.SaveFileName = ''
 		
 	def updateADXL_IMUnGYRO(self, MV_MODE=1):
-		print('act . offset_wz: ', end=', ') 
-		print(self.offset_wz)
-		print('act . self.wzVth: ', end=', ') 
-		print(self.wzVth)
-		print('act . offset_wz200: ', end=', ') 
-		print(self.offset_wz200)
-		print('act . offset_wy: ', end=', ') 
-		print(self.offset_wy)
-		print('act . self.wyVth: ', end=', ') 
-		print(self.wyVth)
-		print('act . offset_wx: ', end=', ') 
-		print(self.offset_wx)
-		print('act . self.wxVth: ', end=', ') 
-		print(self.wxVth)
-		print('act . offset_ax_nano33: ', end=', ') 
-		print(self.offset_ax)
-		print('act . self.axVth: ', end=', ') 
-		print(self.axVth)
-		print('act . offset_ay_nano33: ', end=', ') 
-		print(self.offset_ay)
-		print('act . self.ayVth: ', end=', ') 
-		print(self.ayVth)
-		print('act . offset_ax_ADXL: ', end=', ') 
-		print(self.offset_ADax)
-		print('act . offset_ay_ADXL: ', end=', ') 
-		print(self.offset_ADay)
+		print('act . offset_SRS200_wz: ', offset_SRS200_wz) 
+		print('act . offset_PP_wz: ', offset_PP_wz) 
+		print('act . offset_Nano33_wz: ', offset_Nano33_wz) 
+		print('act . offset_Nano33_ax: ', offset_Nano33_ax) 
+		print('act . offset_Nano33_ay: ', offset_Nano33_ay) 
+		print('act . offset_Nano33_az: ', offset_Nano33_az) 
+		print('act . offset_Adxl355_ax: ', offset_Adxl355_ax) 
+		print('act . offset_Adxl355_ay: ', offset_Adxl355_ay) 
+		print('act . offset_Adxl355_az: ', offset_Adxl355_az) 		
 		
-		
-		data_ax = np.zeros(self.data_frame_update_point)
-		data_ay = np.zeros(self.data_frame_update_point)
-		data_az = np.zeros(self.data_frame_update_point)
-		data_ADax = np.zeros(self.data_frame_update_point)
-		data_ADay = np.zeros(self.data_frame_update_point)
-		data_ADaz = np.zeros(self.data_frame_update_point)
-		data_wx = np.zeros(self.data_frame_update_point)
-		data_wy = np.zeros(self.data_frame_update_point)
-		data_wz = np.zeros(self.data_frame_update_point)
-		data_wz200 = np.zeros(self.data_frame_update_point)
-		data_ax_vth = np.zeros(self.data_frame_update_point)
-		data_ay_vth = np.zeros(self.data_frame_update_point)
-		data_ADax_vth = np.zeros(self.data_frame_update_point)
-		data_ADay_vth = np.zeros(self.data_frame_update_point)
-		data_wx_vth = np.zeros(self.data_frame_update_point)
-		data_wy_vth = np.zeros(self.data_frame_update_point)
-		data_wz_vth = np.zeros(self.data_frame_update_point)
-		data_wz200_vth = np.zeros(self.data_frame_update_point)
+		data_Nano33_ax = np.zeros(self.data_frame_update_point)
+		data_Nano33_ay = np.zeros(self.data_frame_update_point)
+		data_Nano33_az = np.zeros(self.data_frame_update_point)
+		data_Adxl355_ax = np.zeros(self.data_frame_update_point)
+		data_Adxl355_ay = np.zeros(self.data_frame_update_point)
+		data_Adxl355_az = np.zeros(self.data_frame_update_point)
+		data_Nano33_wx = np.zeros(self.data_frame_update_point)
+		data_Nano33_wy = np.zeros(self.data_frame_update_point)
+		data_Nano33_wz = np.zeros(self.data_frame_update_point)
+		data_SRS200_wz = np.zeros(self.data_frame_update_point)
 		dt = np.zeros(self.data_frame_update_point)
-		data_ax_sum = 0
-		data_ay_sum = 0
-		data_az_sum = 0
-		data_ADax_sum = 0
-		data_ADay_sum = 0
-		data_ADaz_sum = 0
-		data_wx_sum = 0
-		data_wy_sum = 0
-		data_wz_sum = 0
-		data_wz200_sum = 0
+		data_Nano33_ax_sum = 0
+		data_Nano33_ay_sum = 0
+		data_Nano33_az_sum = 0
+		data_Adxl355_ax_sum = 0
+		data_Adxl355_ay_sum = 0
+		data_Adxl355_az_sum = 0
+		data_Nano33_wx_sum = 0
+		data_Nano33_wy_sum = 0
+		data_Nano33_wz_sum = 0
+		data_SRS200_wz_sum = 0
 		temp_dt_before = 0
 		temp_offset = 0
 		drop_flag = 0
 		
 		if self.runFlag:
 			self.COM.port.flushInput()
-			# dt_old = 0
 			
 			while self.runFlag:
-				# dt = np.empty(0)
 				valid_byte = 1
 				if(drop_flag):
 					drop_flag = 0
 					print("drop occurred!")
 					self.COM.port.flushInput()
-				while(not (self.COM.port.inWaiting()>(self.data_frame_update_point*31))) : #rx buffer 不到 (self.data_frame_update_point*4) byte數目時不做任何事
+				while(not (self.COM.port.inWaiting()>(self.data_frame_update_point*31))) : #rx buffer 不到 arduino傳來的總byte數*data_frame_update_point時不做任何事
 					# print(self.COM.port.inWaiting())
 					pass
 				for i in range(0,self.data_frame_update_point): #更新data_frame_update_point筆資料到data and dt array
+					''' 當arduino送來的第一個check byte不符合時則檢查到對時才往下'''
 					val = self.COM.read1Binary()
 					while(val[0] != self.check_byte):
 						val = self.COM.read1Binary()
+					'''--------------------------------------------------------- '''
 					#read new value
-					temp_ax = self.COM.read2Binary()
-					temp_ay = self.COM.read2Binary()
-					temp_az = self.COM.read2Binary()
-					temp_wx = self.COM.read2Binary()
-					temp_wy = self.COM.read2Binary()
-					temp_wz = self.COM.read2Binary()
+					temp_Nano33_ax = self.COM.read2Binary()
+					temp_Nano33_ay = self.COM.read2Binary()
+					temp_Nano33_az = self.COM.read2Binary()
+					temp_Nano33_wx = self.COM.read2Binary()
+					temp_Nano33_wy = self.COM.read2Binary()
+					temp_Nano33_wz = self.COM.read2Binary()
 					temp_dt = self.COM.read4Binary()
-					temp_wz200 = self.COM.read4Binary()
-					temp_ADax = self.COM.read3Binary()
-					temp_ADay = self.COM.read3Binary()
-					temp_ADaz = self.COM.read3Binary()
+					temp_SRS200_wz = self.COM.read4Binary()
+					temp_Adxl355_ax = self.COM.read3Binary()
+					temp_Adxl355_ay = self.COM.read3Binary()
+					temp_Adxl355_az = self.COM.read3Binary()
 					val2 = self.COM.read1Binary()
 					
 						
-					if(DEBUG2):
+					if(DEBUG_COM):
 						print(val[0], end='\t')
-						print(temp_ax[0], end='\t')
-						print(temp_ax[1], end='\t')
-						print(temp_ay[0], end='\t')
-						print(temp_ay[1], end='\t')
-						print(temp_az[0], end='\t')
-						print(temp_az[1], end='\t')
-						print(temp_wx[0], end='\t')
-						print(temp_wx[1], end='\t')
-						print(temp_wy[0], end='\t')
-						print(temp_wy[1], end='\t')
-						print(temp_wz[0], end='\t')
-						print(temp_wz[1], end='\t')
-						print(temp_wz200[0], end='\t')
-						print(temp_wz200[1], end='\t')
-						print(temp_wz200[2], end='\t')
-						print(temp_wz200[3], end='\t')
+						print(temp_Nano33_ax[0], end='\t')
+						print(temp_Nano33_ax[1], end='\t')
+						print(temp_Nano33_ay[0], end='\t')
+						print(temp_Nano33_ay[1], end='\t')
+						print(temp_Nano33_az[0], end='\t')
+						print(temp_Nano33_az[1], end='\t')
+						print(temp_Nano33_wx[0], end='\t')
+						print(temp_Nano33_wx[1], end='\t')
+						print(temp_Nano33_wy[0], end='\t')
+						print(temp_Nano33_wy[1], end='\t')
+						print(temp_Nano33_wz[0], end='\t')
+						print(temp_Nano33_wz[1], end='\t')
 						print(temp_dt[0], end='\t')
 						print(temp_dt[1], end='\t')
 						print(temp_dt[2], end='\t')
 						print(temp_dt[3], end='\t')
+						print(temp_SRS200_wz[0], end='\t')
+						print(temp_SRS200_wz[1], end='\t')
+						print(temp_SRS200_wz[2], end='\t')
+						print(temp_SRS200_wz[3], end='\t')
+						print(temp_Adxl355_ax[0], end='\t')
+						print(temp_Adxl355_ax[1], end='\t')
+						print(temp_Adxl355_ax[2], end='\t')
+						print(temp_Adxl355_ay[0], end='\t')
+						print(temp_Adxl355_ay[1], end='\t')
+						print(temp_Adxl355_ay[2], end='\t')
+						print(temp_Adxl355_az[0], end='\t')
+						print(temp_Adxl355_az[1], end='\t')
+						print(temp_Adxl355_az[2], end='\t')
 						print(val2[0])
-						
+					''' 當arduino送來的第一個check byte不符合時則跳出for loop，發生在arduino傳來的時間爆掉時'''
 					if(val2[0] != self.check_byte2):
 						valid_byte = 0
 						drop_flag = 1
@@ -190,20 +184,18 @@ class COMRead_Action(QObject):
 						
 					if(valid_byte): 
 						#conversion
-						temp_ax = self.convert2Sign_2B(temp_ax)
-						temp_ay = self.convert2Sign_2B(temp_ay)
-						temp_az = self.convert2Sign_2B(temp_az)
-						temp_wx = self.convert2Sign_2B(temp_wx)
-						temp_wy = self.convert2Sign_2B(temp_wy)
-						temp_wz = self.convert2Sign_2B(temp_wz)
+						temp_Nano33_ax = self.convert2Sign_2B(temp_Nano33_ax)
+						temp_Nano33_ay = self.convert2Sign_2B(temp_Nano33_ay)
+						temp_Nano33_az = self.convert2Sign_2B(temp_Nano33_az)
+						temp_Nano33_wx = self.convert2Sign_2B(temp_Nano33_wx)
+						temp_Nano33_wy = self.convert2Sign_2B(temp_Nano33_wy)
+						temp_Nano33_wz = self.convert2Sign_2B(temp_Nano33_wz)
 						temp_dt = self.convert2Unsign_4B(temp_dt)
-						temp_wz200 = self.convert2Sign_4B(temp_wz200)
-						temp_ADax =self.convert2Sign_3B(temp_ADax)
-						temp_ADay =self.convert2Sign_3B(temp_ADay)
-						temp_ADaz =self.convert2Sign_3B(temp_ADaz)
+						temp_SRS200_wz = self.convert2Sign_4B(temp_SRS200_wz)
+						temp_Adxl355_ax =self.convert2Sign_3B(temp_Adxl355_ax)
+						temp_Adxl355_ay =self.convert2Sign_3B(temp_Adxl355_ay)
+						temp_Adxl355_az =self.convert2Sign_3B(temp_Adxl355_az)
 						
-						# print(temp_dt, end=', ')
-						# print(temp_dt_before, end=', ')
 						if(temp_dt < temp_dt_before):
 							temp_offset = math.ceil(abs(temp_dt - temp_dt_before)/(1<<32))*(1<<32)
 							temp_dt = temp_dt + temp_offset
@@ -214,138 +206,108 @@ class COMRead_Action(QObject):
 							# dt_init = temp_dt
 						
 						#calaculate MV value
+		data_Nano33_ax = np.zeros(self.data_frame_update_point)
+		data_Nano33_ay = np.zeros(self.data_frame_update_point)
+		data_Nano33_az = np.zeros(self.data_frame_update_point)
+		data_Adxl355_ax = np.zeros(self.data_frame_update_point)
+		data_Adxl355_ay = np.zeros(self.data_frame_update_point)
+		data_Adxl355_az = np.zeros(self.data_frame_update_point)
+		data_Nano33_wx = np.zeros(self.data_frame_update_point)
+		data_Nano33_wy = np.zeros(self.data_frame_update_point)
+		data_Nano33_wz = np.zeros(self.data_frame_update_point)
+		data_SRS200_wz = np.zeros(self.data_frame_update_point)
 						if(MV_MODE):
-							data_ax_sum = data_ax_sum - data_ax[0]
-							data_ax_sum = data_ax_sum + temp_ax
-							data_ax_MV = data_ax_sum/self.data_frame_update_point
+							data_Nano33_ax_sum = data_Nano33_ax_sum - data_Nano33_ax[0]
+							data_Nano33_ax_sum = data_Nano33_ax_sum + temp_Nano33_ax
+							data_Nano33_ax_MV = data_Nano33_ax_sum/self.data_frame_update_point
 							
-							data_ay_sum = data_ay_sum - data_ay[0]
-							data_ay_sum = data_ay_sum + temp_ay
-							data_ay_MV = data_ay_sum/self.data_frame_update_point
+							data_Nano33_ay_sum = data_Nano33_ay_sum - data_Nano33_ay[0]
+							data_Nano33_ay_sum = data_Nano33_ay_sum + temp_Nano33_ay
+							data_Nano33_ay_MV = data_Nano33_ay_sum/self.data_frame_update_point
 							
-							data_az_sum = data_az_sum - data_az[0]
-							data_az_sum = data_az_sum + temp_az
-							data_az_MV = data_az_sum/self.data_frame_update_point
+							data_Nano33_az_sum = data_Nano33_az_sum - data_Nano33_az[0]
+							data_Nano33_az_sum = data_Nano33_az_sum + temp_Nano33_az
+							data_Nano33_ax_MV = data_Nano33_az_sum/self.data_frame_update_point
 							
-							data_ADax_sum = data_ADax_sum - data_ADax[0]
-							data_ADax_sum = data_ADax_sum + temp_ADax
-							data_ADax_MV = data_ADax_sum/self.data_frame_update_point
+							data_Nano33_wx_sum = data_Nano33_wx_sum - data_Nano33_wx[0]
+							data_Nano33_wx_sum = data_Nano33_wx_sum + temp_Nano33_wx
+							data_Nano33_wx_MV = data_Nano33_wx_sum/self.data_frame_update_point
 							
-							data_ADay_sum = data_ADay_sum - data_ADay[0]
-							data_ADay_sum = data_ADay_sum + temp_ADay
-							data_ADay_MV = data_ADay_sum/self.data_frame_update_point
+							data_Nano33_wy_sum = data_Nano33_wy_sum - data_Nano33_wy[0]
+							data_Nano33_wy_sum = data_Nano33_wy_sum + temp_Nano33_wy
+							data_Nano33_wy_MV = data_Nano33_wy_sum/self.data_frame_update_point
 							
-							data_ADaz_sum = data_ADaz_sum - data_ADaz[0]
-							data_ADaz_sum = data_ADaz_sum + temp_ADaz
-							data_ADaz_MV = data_ADaz_sum/self.data_frame_update_point
+							data_Nano33_wz_sum = data_Nano33_wz_sum - data_Nano33_wz[0]
+							data_Nano33_wz_sum = data_Nano33_wz_sum + temp_Nano33_wz
+							data_Nano33_wz_MV = data_Nano33_wz_sum/self.data_frame_update_point
 							
-							data_wx_sum = data_wx_sum - data_wx[0]
-							data_wx_sum = data_wx_sum + temp_wx
-							data_wx_MV = data_wx_sum/self.data_frame_update_point
+							data_SRS200_wz_sum = data_SRS200_wz_sum - data_SRS200_wz[0]
+							data_SRS200_wz_sum = data_SRS200_wz_sum + temp_SRS200_wz
+							data_SRS200_wz_MV = data_SRS200_wz_sum/self.data_frame_update_point
 							
-							data_wy_sum = data_wy_sum - data_wy[0]
-							data_wy_sum = data_wy_sum + temp_wy
-							data_wy_MV = data_wy_sum/self.data_frame_update_point
+							data_Adxl355_ax_sum = data_Adxl355_ax_sum - data_Adxl355_ax[0]
+							data_Adxl355_ax_sum = data_Adxl355_ax_sum + temp_Adxl355_ax
+							data_Adxl355_ax_MV = data_Adxl355_ax_sum/self.data_frame_update_point
 							
-							data_wz_sum = data_wz_sum - data_wz[0]
-							data_wz_sum = data_wz_sum + temp_wz
-							data_wz_MV = data_wz_sum/self.data_frame_update_point
+							data_Adxl355_ay_sum = data_Adxl355_ay_sum - data_Adxl355_ay[0]
+							data_Adxl355_ay_sum = data_Adxl355_ay_sum + temp_Adxl355_ay
+							data_Adxl355_ay_MV = data_Adxl355_ay_sum/self.data_frame_update_point
 							
-							data_wz200_sum = data_wz200_sum - data_wz200[0]
-							data_wz200_sum = data_wz200_sum + temp_wz200
-							data_wz200_MV = data_wz200_sum/self.data_frame_update_point
+							data_Adxl355_az_sum = data_Adxl355_az_sum - data_Adxl355_az[0]
+							data_Adxl355_az_sum = data_Adxl355_az_sum + temp_Adxl355_az
+							data_Adxl355_az_MV = data_Adxl355_az_sum/self.data_frame_update_point
 							
-							val_ax = data_ax_MV
-							val_ay = data_ay_MV
-							val_az = data_az_MV
-							val_ADax = data_ADax_MV
-							val_ADay = data_ADay_MV
-							val_ADaz = data_ADaz_MV
-							val_wx = data_wx_MV
-							val_wy = data_wy_MV
-							val_wz = data_wz_MV
-							val_wz200 = data_wz200_MV
+							val_Nano33_ax = data_Nano33_ax_MV
+							val_Nano33_ay = data_Nano33_ay_MV
+							val_Nano33_az = data_Nano33_az_MV
+							val_Adxl355_ax = data_Adxl355_ax_MV
+							val_Adxl355_ay = data_Adxl355_ay_MV
+							val_Adxl355_az = data_Adxl355_az_MV
+							val_Nano33_wx = data_Nano33_wx_MV
+							val_Nano33_wy = data_Nano33_wy_MV
+							val_Nano33_wz = data_Nano33_wz_MV
+							val_SRS200_wz = data_SRS200_wz_MV
 							
 						else: 
-							val_ax = temp_ax
-							val_ay = temp_ay
-							val_az = temp_az
-							val_ADax = temp_ADax
-							val_ADay = temp_ADay
-							val_ADaz = temp_ADaz
-							val_wx = temp_wx
-							val_wy = temp_wy
-							val_wz = temp_wz
-							val_wz200 = temp_wz200
+							val_Nano33_ax = temp_Nano33_ax
+							val_Nano33_ay = temp_Nano33_ay
+							val_Nano33_az = temp_Nano33_az
+							val_Adxl355_ax = temp_Adxl355_ax
+							val_Adxl355_ay = temp_Adxl355_ay
+							val_Adxl355_az = temp_Adxl355_az
+							val_Nano33_wx = temp_Nano33_wx
+							val_Nano33_wy = temp_Nano33_wy
+							val_Nano33_wz = temp_Nano33_wz
+							val_SRS200_wz = temp_SRS200_wz
 						
-						if(abs(val_wz-data_wz[-1]) < self.wzVth):
-							val_wz_vth = self.offset_wz
-						else :
-							val_wz_vth = val_wz
 						
-						val_wz200_vth = val_wz200
-						val_ADax_vth = val_ADax
-						val_ADay_vth = val_ADay
+						data_Nano33_ax = np.append(data_Nano33_ax[1:], val_Nano33_ax)
+						data_Nano33_ay = np.append(data_Nano33_ay[1:], val_Nano33_ay)
+						data_Nano33_az = np.append(data_Nano33_az[1:], val_Nano33_az)
+						data_Adxl355_ax = np.append(data_Adxl355_ax[1:], val_Adxl355_ax)
+						data_Adxl355_ay = np.append(data_Adxl355_ay[1:], val_Adxl355_ay)
+						data_Adxl355_az = np.append(data_Adxl355_az[1:], val_Adxl355_az)
+						data_Nano33_wx = np.append(data_Nano33_wx[1:], val_Nano33_wx)
+						data_Nano33_wy = np.append(data_Nano33_wy[1:], val_Nano33_wy)
+						data_Nano33_wz = np.append(data_Nano33_wz[1:], val_Nano33_wz)
+						data_SRS200_wz = np.append(data_SRS200_wz[1:], val_SRS200_wz)
 						
-						if(abs(val_wx-data_wx[-1]) < self.wxVth):
-							val_wx_vth = self.offset_wx
-						else :
-							val_wx_vth = val_wx
-							
-						if(abs(val_wy-data_wy[-1]) < self.wyVth):
-							val_wy_vth = self.offset_wy
-						else :
-							val_wy_vth = val_wy
-							
-						# print(val_ax, end=', ')	
-						# print(data_ax[-1], end=', ')
-						# print(val_ax-data_ax[-1], end=', ')						
-						
-						if(abs(val_ax-data_ax[-1]) < self.axVth):
-							val_ax_vth = self.offset_ax
-						else :
-							val_ax_vth = val_ax
-							
-						if(abs(val_ay-data_ay[-1]) < self.ayVth):
-							val_ay_vth = self.offset_ay
-						else :
-							val_ay_vth = val_ay
-						
-						data_ax = np.append(data_ax[1:], val_ax)
-						data_ay = np.append(data_ay[1:], val_ay)
-						data_az = np.append(data_az[1:], val_az)
-						data_ADax = np.append(data_ADax[1:], val_ADax)
-						data_ADay = np.append(data_ADay[1:], val_ADay)
-						data_ADaz = np.append(data_ADaz[1:], val_ADaz)
-						data_wx = np.append(data_wx[1:], val_wx)
-						data_wy = np.append(data_wy[1:], val_wy)
-						data_wz = np.append(data_wz[1:], val_wz)
-						data_wz200 = np.append(data_wz200[1:], val_wz200)
-						
-						data_wx_vth = np.append(data_wx_vth[1:], val_wx_vth)
-						data_wy_vth = np.append(data_wy_vth[1:], val_wy_vth)
-						data_wz_vth = np.append(data_wz_vth[1:], val_wz_vth)
-						data_wz200_vth = np.append(data_wz200_vth[1:], val_wz200_vth)
-						data_ax_vth = np.append(data_ax_vth[1:], val_ax_vth)
-						data_ay_vth = np.append(data_ay_vth[1:], val_ay_vth)
-						data_ADax_vth = np.append(data_ADax_vth[1:], val_ADax_vth)
-						data_ADay_vth = np.append(data_ADay_vth[1:], val_ADay_vth)
 						
 						# dt_new = dt_old + i*self.TIME_PERIOD
 						dt = np.append(dt[1:], temp_dt)
 						# print(temp_dt, end=', ')
 						# print(dt_init, end=', ')
 						# print(dt)
-
+				#end of for loop
 				self.valid_cnt = self.valid_cnt + 1
 				self.bufferSize = self.COM.port.inWaiting()
 				if(DEBUG):
-					# print('ax: ', data_ax)
-					# print('ay: ', data_ay)
-					# print('az: ', data_az)
-					# print('wx: ', data_wx)
-					# print('wy: ', data_wy)
-					# print('wz: ', data_wz)
+					print('data_Nano33_ax: ', data_Nano33_ax)
+					print('data_Nano33_ay: ', data_Nano33_ay)
+					print('data_Nano33_az: ', data_Nano33_az)
+					print('data_Nano33_wx: ', data_Nano33_wx)
+					print('data_Nano33_wy: ', data_Nano33_wy)
+					print('data_Nano33_wz: ', data_Nano33_wz)
 					# print('len(data): ', len(data), end=', ')
 					# print('len(data_wx): ', len(data_wx), end=', ')
 					# print('len(data_wy): ', len(data_wy), end=', ')
@@ -365,13 +327,13 @@ class COMRead_Action(QObject):
 						dt_init = dt[0]
 					self.fog_update9.emit(data_ADax_vth, data_ADay_vth, data_ax_vth, data_ay_vth, data_wx_vth, data_wy_vth, data_wz_vth, data_wz200_vth, dt-dt_init)
 					# dt_old = dt_new + self.TIME_PERIOD
-			#end of while loop
+			#end of while self.runFlag:
 			self.fog_finished.emit()
 			temp_dt_before = 0
 			self.valid_flag = 0
 			self.valid_cnt = 0
 	
-	def calibrationADXL_IMUnGYRO(self, MV_MODE=1):
+	def IMU_calibration(self, MV_MODE=1):
 		if self.runFlag:
 			self.COM.port.flushInput()
 			

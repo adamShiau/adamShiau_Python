@@ -50,6 +50,8 @@ class mainWindow(QMainWindow):
 	ADay_offset = 0
 	ayVth = 0
 	MV_status = 0
+	''' gloable signal'''
+	usbconnect_status = pyqtSignal(object) #to trigger the btn to enable state
 	def __init__(self, parent = None):
 		super (mainWindow, self).__init__(parent)
 		# self.COM = act.UART()
@@ -58,9 +60,11 @@ class mainWindow(QMainWindow):
 		self.move(0,0)
 		self.loggername = "Total"
 		self.top = UI.mainWidget()
-		self.act = ACT.COMRead_Action(self.loggername)
-		self.thread1 = QThread() #開一個thread
+		self.act = ACT.IMU_Action(self.loggername)
+		'''inittialize thread '''
+		self.thread1 = QThread()
 		self.thread_cali = QThread()
+		'''end of inittialize thread '''
 		self.data = np.empty(0)
 		self.data2 = np.empty(0)
 		self.data3 = np.empty(0)
@@ -107,24 +111,13 @@ class mainWindow(QMainWindow):
 		self.mainUI()
 		self.mainMenu()
 		self.linkFunction()
-		self.disableBtn()
-		self.get_cbVal()
-		self.get_rbVal()
+		self.setCheckBox_init()
+		self.setBtnStatus(False)
+		# self.get_cbVal()
+		# self.get_rbVal()
 		# self.wz_offset = self.act.offset_wz
-	
-	def disableBtn(self):
-		# self.top.usb.btn.setEnabled(False)
-		self.top.read_btn.read.setEnabled(False)
-		self.top.stop_btn.stop.setEnabled(False)
-		self.top.cali_btn.btn.setEnabled(False)
-		self.top.cali_stop_btn.btn.setEnabled(False)
 		
-	def enableBtn(self):
-		# self.top.usb.btn.setEnabled(True)
-		self.top.read_btn.read.setEnabled(True)
-		self.top.stop_btn.stop.setEnabled(True)
-		self.top.cali_btn.btn.setEnabled(True)
-		self.top.cali_stop_btn.btn.setEnabled(True)
+	
 	
 	def mainUI(self):
 		mainLayout = QGridLayout()
@@ -147,69 +140,77 @@ class mainWindow(QMainWindow):
 		
 
 	def linkFunction(self):
+		''' thread btn connect '''
+		self.top.TabPlot.tab1_read_btn.bt.clicked.connect(self.myThreadStart) # set runFlag=1
+		self.top.TabPlot.tab1_stop_btn.bt.clicked.connect(self.buttonStop) # set runFlag=0
+		# self.top.cali_btn.btn.clicked.connect(self.caliThreadStart)
+		# self.top.cali_stop_btn.btn.clicked.connect(self.caliThreadStop)
+		# self.top.stop_btn.stop.clicked.connect(self.buttonStop) # set runFlag=0
 		''' btn connect '''
-		
-		self.top.cali_btn.btn.clicked.connect(self.caliThreadStart)
-		self.top.cali_stop_btn.btn.clicked.connect(self.caliThreadStop)
-		self.top.read_btn.read.clicked.connect(self.myThreadStart) # set runFlag=1
-		self.top.stop_btn.stop.clicked.connect(self.buttonStop) # set runFlag=0
-		#usb connect
 		self.top.usb.bt_update.clicked.connect(self.update_comport)
 		self.top.usb.cs.currentIndexChanged.connect(self.uadate_comport_label)
 		self.top.usb.bt_connect.clicked.connect(self.usbConnect)
-		self.top.usb.bt_connect.clicked.connect(self.enableBtn)
 		''' thread connect '''
 		self.thread1.started.connect(lambda:self.act.updateADXL_IMUnGYRO(MV_MODE=self.MV_status)) 
-		# self.thread1.started.connect(lambda:self.act.updateIMUnGYRO(MV_MODE=self.MV_status))
-		# self.thread_cali.started.connect(lambda:self.act.calibrationGYRO(MV_MODE=self.MV_status)) 
-		# self.thread_cali.started.connect(lambda:self.act.calibrationIMUnGYRO(MV_MODE=self.MV_status))
-		self.thread_cali.started.connect(lambda:self.act.calibrationADXL_IMUnGYRO(MV_MODE=self.MV_status))
+		# self.thread_cali.started.connect(lambda:self.act.calibrationADXL_IMUnGYRO(MV_MODE=self.MV_status))
 
 		''' emit connect '''
-		self.act.fog_finished.connect(self.myThreadStop) #runFlag=0時fog_finished會emit，之後關掉thread1
-		# self.act.fog_update.connect(self.plotFog) #fog_update emit 接收最新data and dt array
-		# self.act.fog_update2.connect(self.plotFog2)  
-		# self.act.fog_update7.connect(self.plotXLMDnGYRO)
-		# self.act.fog_update7.connect(self.plotGYRO)
-		self.act.fog_update8.connect(self.plotIMUnGYRO)
-		self.act.fog_update9.connect(self.plotADXLIMUnGYRO)
-		self.act.fog_update12.connect(self.calibGYRO)
-		# self.act.fog_update13.connect(self.calibIMUnGYRO)
-		self.act.fog_update13.connect(self.calibADXLIMUnGYRO)
+		#btn enable signal
+		self.usbconnect_status.connect(self.setBtnStatus)
+		# self.act.fog_finished.connect(self.myThreadStop) #runFlag=0時fog_finished會emit，之後關掉thread1
+		# self.act.fog_update8.connect(self.plotIMUnGYRO)
+		# self.act.fog_update9.connect(self.plotADXLIMUnGYRO)
+		# self.act.fog_update12.connect(self.calibGYRO)
+		# self.act.fog_update13.connect(self.calibADXLIMUnGYRO)
 		
 		''' text connect '''
-		self.top.wzOffset_le.textChanged.connect(self.updata_para)
-		self.top.wzVth_le.textChanged.connect(self.updata_para)
-		self.top.wz200Offset_le.textChanged.connect(self.updata_para)
-		self.top.wxOffset_le.textChanged.connect(self.updata_para)
-		self.top.wxVth_le.textChanged.connect(self.updata_para)
-		self.top.wyOffset_le.textChanged.connect(self.updata_para)
-		self.top.wyVth_le.textChanged.connect(self.updata_para)
-		self.top.axOffset_le.textChanged.connect(self.updata_para)
-		self.top.axVth_le.textChanged.connect(self.updata_para)
-		self.top.ayOffset_le.textChanged.connect(self.updata_para)
-		self.top.ayVth_le.textChanged.connect(self.updata_para)
-		self.top.axOffsetAD_le.textChanged.connect(self.updata_para)
-		self.top.ayOffsetAD_le.textChanged.connect(self.updata_para)
+		# self.top.wzOffset_le.textChanged.connect(self.updata_para)
+		# self.top.wzVth_le.textChanged.connect(self.updata_para)
+		# self.top.wz200Offset_le.textChanged.connect(self.updata_para)
+		# self.top.wxOffset_le.textChanged.connect(self.updata_para)
+		# self.top.wxVth_le.textChanged.connect(self.updata_para)
+		# self.top.wyOffset_le.textChanged.connect(self.updata_para)
+		# self.top.wyVth_le.textChanged.connect(self.updata_para)
+		# self.top.axOffset_le.textChanged.connect(self.updata_para)
+		# self.top.axVth_le.textChanged.connect(self.updata_para)
+		# self.top.ayOffset_le.textChanged.connect(self.updata_para)
+		# self.top.ayVth_le.textChanged.connect(self.updata_para)
+		# self.top.axOffsetAD_le.textChanged.connect(self.updata_para)
+		# self.top.ayOffsetAD_le.textChanged.connect(self.updata_para)
 
 
 		
 		''' check box '''
-		self.top.cb.ax_cb.toggled.connect(lambda:self.cb_toogled(self.top.cb.ax_cb))
-		self.top.cb.ay_cb.toggled.connect(lambda:self.cb_toogled(self.top.cb.ay_cb))
-		self.top.cb.wz_cb.toggled.connect(lambda:self.cb_toogled(self.top.cb.wz_cb))
-		self.top.cb.wz200_cb.toggled.connect(lambda:self.cb_toogled(self.top.cb.wz200_cb))
-		self.top.cb.v_cb.toggled.connect(lambda:self.cb_toogled(self.top.cb.v_cb))
-		self.top.cb.vx_cb.toggled.connect(lambda:self.cb_toogled(self.top.cb.vx_cb))
-		self.top.cb.vy_cb.toggled.connect(lambda:self.cb_toogled(self.top.cb.vy_cb))
-		self.top.cb.thetaz_cb.toggled.connect(lambda:self.cb_toogled(self.top.cb.thetaz_cb))
-		self.top.cb.thetaz200_cb.toggled.connect(lambda:self.cb_toogled(self.top.cb.thetaz200_cb))
-		self.top.cb.x_cb.toggled.connect(lambda:self.cb_toogled(self.top.cb.x_cb))
-		self.top.cb.y_cb.toggled.connect(lambda:self.cb_toogled(self.top.cb.y_cb))
-		self.top.cb.track_cb.toggled.connect(lambda:self.cb_toogled(self.top.cb.track_cb))
+		# self.top.cb.ax_cb.toggled.connect(lambda:self.cb_toogled(self.top.cb.ax_cb))
+		# self.top.cb.ay_cb.toggled.connect(lambda:self.cb_toogled(self.top.cb.ay_cb))
+		# self.top.cb.wz_cb.toggled.connect(lambda:self.cb_toogled(self.top.cb.wz_cb))
+		# self.top.cb.wz200_cb.toggled.connect(lambda:self.cb_toogled(self.top.cb.wz200_cb))
+		# self.top.cb.v_cb.toggled.connect(lambda:self.cb_toogled(self.top.cb.v_cb))
+		# self.top.cb.vx_cb.toggled.connect(lambda:self.cb_toogled(self.top.cb.vx_cb))
+		# self.top.cb.vy_cb.toggled.connect(lambda:self.cb_toogled(self.top.cb.vy_cb))
+		# self.top.cb.thetaz_cb.toggled.connect(lambda:self.cb_toogled(self.top.cb.thetaz_cb))
+		# self.top.cb.thetaz200_cb.toggled.connect(lambda:self.cb_toogled(self.top.cb.thetaz200_cb))
+		# self.top.cb.x_cb.toggled.connect(lambda:self.cb_toogled(self.top.cb.x_cb))
+		# self.top.cb.y_cb.toggled.connect(lambda:self.cb_toogled(self.top.cb.y_cb))
+		# self.top.cb.track_cb.toggled.connect(lambda:self.cb_toogled(self.top.cb.track_cb))
 		
 		''' radio btn'''
-		self.top.mv_rb.toggled.connect(lambda:self.rb_toggled(self.top.mv_rb))
+		# self.top.mv_rb.toggled.connect(lambda:self.rb_toggled(self.top.mv_rb))
+	
+	def setCheckBox_init(self):
+		self.top.TabPlot.tab1_gyro_cb.cb1.setChecked(True) #set gyro wz initial as Nano33
+		self.top.TabPlot.tab1_adxlXLM_cb.cb1.setChecked(True) #set adxl355 XLM initial as ax
+		self.top.TabPlot.tab1_nano33XLM_cb.cb1.setChecked(True) #set nano33 XLM initial as ax
+		self.top.TabPlot.tab1_speed_cb.cb1.setChecked(True) #set speed initial as adxl355
+		
+	def setBtnStatus(self, flag):
+		self.top.TabPlot.tab1_read_btn.bt.setEnabled(flag)
+		self.top.TabPlot.tab1_stop_btn.bt.setEnabled(flag)
+		self.top.TabPlot.tab2_cali_start_btn.bt.setEnabled(flag)
+		self.top.TabPlot.tab2_cali_stop_btn.bt.setEnabled(flag)
+		self.top.TabPlot.tab3_xmax.bt.setEnabled(flag)
+		self.top.TabPlot.tab3_ymax.bt.setEnabled(flag)
+		
 	
 	def rb_toggled(self, rb):
 		self.MV_status = rb.isChecked()
@@ -359,6 +360,7 @@ class mainWindow(QMainWindow):
 		self.cp = self.act.COM.comPort[idx][0]
 	
 	def usbConnect(self):
+		# self.usbconnect_status = pyqtSignal(object)
 		print(self.cp);
 		if (TEST_MODE):
 			usbConnStatus = True
@@ -367,6 +369,7 @@ class mainWindow(QMainWindow):
 		print("status:" + str(usbConnStatus))
 		if usbConnStatus:
 			self.top.usb.SetConnectText(Qt.blue, self.cp + " Connect")
+			self.usbconnect_status.emit(1)
 			print("Connect build")
 		else:
 			self.top.usb.SetConnectText(Qt.red,"Connect failed", True)
@@ -491,11 +494,12 @@ class mainWindow(QMainWindow):
 		self.diffdata6 = np.empty(0)
 	
 	def myThreadStart(self):
-		self.save_status = self.openFileBox()
+		# self.save_status = self.openFileBox()
 		# file_name = self.top.save_edit.edit.text() 
 		# self.f=open(file_name,'a')
 		# self.f=open('er','a')
 		self.act.runFlag = True
+		print('self.act.runFlag:', self.act.runFlag)
 		self.thread1.start()
 		self.act.COM.port.flushInput()
 		# self.top.com_plot.ax1.legend(bbox_to_anchor=(1.0, 1.0), loc='upper left', prop={'size': 10})

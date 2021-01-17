@@ -265,6 +265,19 @@ class spinBlockOneLabel(QGroupBox):
 		layout.addWidget(self.lb)  		
 		self.setLayout(layout)
 	
+class chkBoxBlock_1(QWidget):
+	def __init__(self, title='', name='', parent=None):
+		super(chkBoxBlock_1, self).__init__(parent)
+		self.groupBox = QGroupBox(title)
+		self.cb = QCheckBox(name)
+		
+	def layout(self):
+		layout = QVBoxLayout()
+		layout.addWidget(self.cb)
+		self.groupBox.setLayout(layout)
+		self.groupBox.show()
+		return self.groupBox
+	
 class chkBoxBlock_2(QWidget):
 	def __init__(self, title='', name1='', name2='', parent=None):
 		super(chkBoxBlock_2, self).__init__(parent)

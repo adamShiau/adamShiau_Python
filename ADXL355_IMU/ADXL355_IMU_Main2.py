@@ -29,6 +29,7 @@ xlm_factor = 0.000122 #4g / 32768
 ADxlm_factor = 0.0000156 #8g
 # gyro_factor = 0.00763 #250 / 32768 
 gyro_factor = 0.0090 #250 / 32768 
+gyroPP_factor = 1
 gyro200_factor = 0.0121
 
 # wx_offset = 107.065
@@ -49,8 +50,18 @@ class mainWindow(QMainWindow):
 	ay_offset = 0
 	ADay_offset = 0
 	ayVth = 0
+	''' define and initiate global variable '''
 	MV_status = 0
-	''' gloable signal'''
+	offset_SRS200_wz = 0
+	offset_PP_wz = 0
+	offset_Nano33_wz = 0
+	offset_Nano33_ax = 0
+	offset_Nano33_ay = 0
+	offset_Nano33_az = 0
+	offset_Adxl355_ax = 0
+	offset_Adxl355_ay = 0
+	offset_Adxl355_az = 0
+	''' pyqtSignal'''
 	usbconnect_status = pyqtSignal(object) #to trigger the btn to enable state
 	def __init__(self, parent = None):
 		super (mainWindow, self).__init__(parent)
@@ -75,6 +86,13 @@ class mainWindow(QMainWindow):
 		self.data8 = np.empty(0)
 		self.data9 = np.empty(0)
 		self.data10 = np.empty(0)
+		self.data_SRS200_wz = np.empty(0)
+		self.data_Nano33_wz = np.empty(0)
+		self.data_PP_wz = np.empty(0)
+		self.data_Adxl355_ax = np.empty(0)
+		self.data_Adxl355_ay = np.empty(0)
+		self.data_Nano33_ax = np.empty(0)
+		self.data_Nano33_ay = np.empty(0)
 		self.diffdata1 = np.empty(0)
 		self.diffdata2 = np.empty(0)
 		self.diffdata3 = np.empty(0)
@@ -113,8 +131,8 @@ class mainWindow(QMainWindow):
 		self.linkFunction()
 		self.setCheckBox_init()
 		self.setBtnStatus(False)
-		# self.get_cbVal()
-		# self.get_rbVal()
+		self.get_cbVal()
+		self.get_rbVal()
 		# self.wz_offset = self.act.offset_wz
 		
 	
@@ -143,8 +161,8 @@ class mainWindow(QMainWindow):
 		''' thread btn connect '''
 		self.top.TabPlot.tab1_read_btn.bt.clicked.connect(self.myThreadStart) # set runFlag=1
 		self.top.TabPlot.tab1_stop_btn.bt.clicked.connect(self.buttonStop) # set runFlag=0
-		# self.top.cali_btn.btn.clicked.connect(self.caliThreadStart)
-		# self.top.cali_stop_btn.btn.clicked.connect(self.caliThreadStop)
+		self.top.TabPlot.tab2_cali_start_btn.bt.clicked.connect(self.caliThreadStart)
+		self.top.TabPlot.tab2_cali_stop_btn.bt.clicked.connect(self.caliThreadStop)
 		# self.top.stop_btn.stop.clicked.connect(self.buttonStop) # set runFlag=0
 		''' btn connect '''
 		self.top.usb.bt_update.clicked.connect(self.update_comport)
@@ -152,15 +170,14 @@ class mainWindow(QMainWindow):
 		self.top.usb.bt_connect.clicked.connect(self.usbConnect)
 		''' thread connect '''
 		self.thread1.started.connect(lambda:self.act.updateADXL_IMUnGYRO(MV_MODE=self.MV_status)) 
-		# self.thread_cali.started.connect(lambda:self.act.calibrationADXL_IMUnGYRO(MV_MODE=self.MV_status))
+		self.thread_cali.started.connect(lambda:self.act.IMU_calibration(MV_MODE=self.MV_status))
 
 		''' emit connect '''
 		#btn enable signal
-		self.usbconnect_status.connect(self.setBtnStatus)
-		# self.act.fog_finished.connect(self.myThreadStop) #runFlag=0時fog_finished會emit，之後關掉thread1
-		# self.act.fog_update8.connect(self.plotIMUnGYRO)
-		# self.act.fog_update9.connect(self.plotADXLIMUnGYRO)
-		# self.act.fog_update12.connect(self.calibGYRO)
+		self.usbconnect_status.connect(self.setBtnStatus) #確定usb連接成功時才enable btn
+		#action emit connect
+		self.act.fog_update8.connect(self.plotADXLIMUnGYRO)
+		self.act.fog_finished.connect(self.myThreadStop) #runFlag=0時fog_finished會emit，之後關掉thread1
 		# self.act.fog_update13.connect(self.calibADXLIMUnGYRO)
 		
 		''' text connect '''
@@ -181,21 +198,17 @@ class mainWindow(QMainWindow):
 
 		
 		''' check box '''
-		# self.top.cb.ax_cb.toggled.connect(lambda:self.cb_toogled(self.top.cb.ax_cb))
-		# self.top.cb.ay_cb.toggled.connect(lambda:self.cb_toogled(self.top.cb.ay_cb))
-		# self.top.cb.wz_cb.toggled.connect(lambda:self.cb_toogled(self.top.cb.wz_cb))
-		# self.top.cb.wz200_cb.toggled.connect(lambda:self.cb_toogled(self.top.cb.wz200_cb))
-		# self.top.cb.v_cb.toggled.connect(lambda:self.cb_toogled(self.top.cb.v_cb))
-		# self.top.cb.vx_cb.toggled.connect(lambda:self.cb_toogled(self.top.cb.vx_cb))
-		# self.top.cb.vy_cb.toggled.connect(lambda:self.cb_toogled(self.top.cb.vy_cb))
-		# self.top.cb.thetaz_cb.toggled.connect(lambda:self.cb_toogled(self.top.cb.thetaz_cb))
-		# self.top.cb.thetaz200_cb.toggled.connect(lambda:self.cb_toogled(self.top.cb.thetaz200_cb))
-		# self.top.cb.x_cb.toggled.connect(lambda:self.cb_toogled(self.top.cb.x_cb))
-		# self.top.cb.y_cb.toggled.connect(lambda:self.cb_toogled(self.top.cb.y_cb))
-		# self.top.cb.track_cb.toggled.connect(lambda:self.cb_toogled(self.top.cb.track_cb))
+		self.top.TabPlot.tab1_gyro_cb.cb1.toggled.connect(lambda:self.cb_toogled(self.top.TabPlot.tab1_gyro_cb.cb1))
+		self.top.TabPlot.tab1_gyro_cb.cb2.toggled.connect(lambda:self.cb_toogled(self.top.TabPlot.tab1_gyro_cb.cb2))
+		self.top.TabPlot.tab1_adxlXLM_cb.cb1.toggled.connect(lambda:self.cb_toogled(self.top.TabPlot.tab1_adxlXLM_cb.cb1))
+		self.top.TabPlot.tab1_adxlXLM_cb.cb2.toggled.connect(lambda:self.cb_toogled(self.top.TabPlot.tab1_adxlXLM_cb.cb2))
+		self.top.TabPlot.tab1_nano33XLM_cb.cb1.toggled.connect(lambda:self.cb_toogled(self.top.TabPlot.tab1_nano33XLM_cb.cb1))
+		self.top.TabPlot.tab1_nano33XLM_cb.cb2.toggled.connect(lambda:self.cb_toogled(self.top.TabPlot.tab1_nano33XLM_cb.cb2))
+		self.top.TabPlot.tab1_speed_cb.cb1.toggled.connect(lambda:self.cb_toogled(self.top.TabPlot.tab1_speed_cb.cb1))
+		self.top.TabPlot.tab1_speed_cb.cb2.toggled.connect(lambda:self.cb_toogled(self.top.TabPlot.tab1_speed_cb.cb2))
 		
 		''' radio btn'''
-		# self.top.mv_rb.toggled.connect(lambda:self.rb_toggled(self.top.mv_rb))
+		self.top.mv_rb.toggled.connect(lambda:self.rb_toggled(self.top.mv_rb))
 	
 	def setCheckBox_init(self):
 		self.top.TabPlot.tab1_gyro_cb.cb1.setChecked(True) #set gyro wz initial as Nano33
@@ -221,69 +234,49 @@ class mainWindow(QMainWindow):
 		print('MV:', self.MV_status)
 		
 	def cb_toogled(self, cb):
-		if(cb.text()=='ax'):
-			self.ax_chk = cb.isChecked()
-			print('ax:', self.ax_chk)
-		elif(cb.text()=='ay'):
-			self.ay_chk = cb.isChecked()
-			print('ay:', self.ay_chk)
-		elif(cb.text()=='wz'):
-			self.wz_chk = cb.isChecked()
-			print('wz:', self.wz_chk)
-		elif(cb.text()=='wz200'):
-			self.wz200_chk = cb.isChecked()
-			print('wz200:', self.wz200_chk)
-		elif(cb.text()=='vx'):
-			self.vx_chk = cb.isChecked()
-			print('vx:', self.vx_chk)
-		elif(cb.text()=='vy'):
-			self.vy_chk = cb.isChecked()
-			print('vy:', self.vy_chk)
-		elif(cb.text()=='x'):
-			self.x_chk = cb.isChecked()
-			print('x:', self.x_chk)
-		elif(cb.text()=='y'):
-			self.y_chk = cb.isChecked()
-			print('y:', self.y_chk)
-		elif(cb.text()=='v'):
-			self.v_chk = cb.isChecked()
-			print('v:', self.v_chk)
-		elif(cb.text()=='thetaz'):
-			self.thetaz_chk = cb.isChecked()
-			print('thetaz:', self.thetaz_chk)
-		elif(cb.text()=='thetaz200'):
-			self.thetaz200_chk = cb.isChecked()
-			print('thetaz200:', self.thetaz200_chk)
-		elif(cb.text()=='track'):
-			self.track_chk = cb.isChecked()
-			print('track:', self.track_chk)
+		if(cb.text()==self.top.TabPlot.tab1_gyro_cb.cb1.text()):
+			self.Nano33_wz_chk = cb.isChecked()
+			print('Nano33_wz_chk:', self.Nano33_wz_chk)
+		elif(cb.text()==self.top.TabPlot.tab1_gyro_cb.cb2.text()):
+			self.PP_wz_chk = cb.isChecked()
+			print('PP_wz_chk:', self.PP_wz_chk)
+		elif(cb.text()==self.top.TabPlot.tab1_adxlXLM_cb.cb1.text()):
+			self.Adxl355_ax_chk = cb.isChecked()
+			print('Adxl355_ax_chk:', self.Adxl355_ax_chk)
+		elif(cb.text()==self.top.TabPlot.tab1_adxlXLM_cb.cb2.text()):
+			self.Adxl355_ay_chk = cb.isChecked()
+			print('Adxl355_ay_chk:', self.Adxl355_ay_chk)
+		elif(cb.text()==self.top.TabPlot.tab1_nano33XLM_cb.cb1.text()):
+			self.Nano33_ax_chk = cb.isChecked()
+			print('Nano33_ax_chk:', self.Nano33_ax_chk)
+		elif(cb.text()==self.top.TabPlot.tab1_nano33XLM_cb.cb2.text()):
+			self.Nano33_ay_chk = cb.isChecked()
+			print('Nano33_ay_chk:', self.Nano33_ay_chk)
+		elif(cb.text()==self.top.TabPlot.tab1_speed_cb.cb1.text()):
+			self.Adxl355_v_chk = cb.isChecked()
+			print('Adxl355_v_chk:', self.Adxl355_v_chk)
+		elif(cb.text()==self.top.TabPlot.tab1_speed_cb.cb2.text()):
+			self.Nano33_v_chk = cb.isChecked()
+			print('Nano33_v_chk:', self.Nano33_v_chk)
 			
 	def get_cbVal(self):
-		self.ax_chk = self.top.cb.ax_cb.isChecked()
-		print('ax:', self.ax_chk)
-		self.ay_chk = self.top.cb.ay_cb.isChecked()
-		print('ay:', self.ay_chk)
-		self.wz_chk = self.top.cb.wz_cb.isChecked()
-		print('wz:', self.wz_chk)
-		self.wz200_chk = self.top.cb.wz200_cb.isChecked()
-		print('wz200:', self.wz200_chk)
-		self.vx_chk = self.top.cb.vx_cb.isChecked()
-		print('vx:', self.vx_chk)
-		self.vy_chk = self.top.cb.vy_cb.isChecked()
-		print('vy:', self.vy_chk)
-		self.v_chk = self.top.cb.v_cb.isChecked()
-		print('v:', self.v_chk)
-		self.thetaz_chk = self.top.cb.thetaz_cb.isChecked()
-		print('thetaz:', self.thetaz_chk)
-		self.thetaz200_chk = self.top.cb.thetaz200_cb.isChecked()
-		print('thetaz200:', self.thetaz200_chk)
-		self.x_chk = self.top.cb.x_cb.isChecked()
-		print('x:', self.x_chk)
-		self.y_chk = self.top.cb.y_cb.isChecked()
-		print('y:', self.y_chk)
-		self.track_chk = self.top.cb.track_cb.isChecked()
-		print('track:', self.track_chk)
-	
+		self.Nano33_wz_chk = self.top.TabPlot.tab1_gyro_cb.cb1.isChecked()
+		print('Nano33_wz_chk:', self.Nano33_wz_chk)
+		self.PP_wz_chk = self.top.TabPlot.tab1_gyro_cb.cb2.isChecked()
+		print('PP_wz_chk:', self.PP_wz_chk)
+		self.Adxl355_ax_chk = self.top.TabPlot.tab1_adxlXLM_cb.cb1.isChecked()
+		print('Adxl355_ax_chk:', self.Adxl355_ax_chk)
+		self.Adxl355_ay_chk = self.top.TabPlot.tab1_adxlXLM_cb.cb2.isChecked()
+		print('Adxl355_ay_chk:', self.Adxl355_ay_chk)
+		self.Nano33_ax_chk = self.top.TabPlot.tab1_nano33XLM_cb.cb1.isChecked()
+		print('Nano33_ax_chk:', self.Nano33_ax_chk)
+		self.Nano33_ay_chk = self.top.TabPlot.tab1_nano33XLM_cb.cb2.isChecked()
+		print('Nano33_ay_chk:', self.Nano33_ay_chk)
+		self.Adxl355_v_chk = self.top.TabPlot.tab1_speed_cb.cb1.isChecked()
+		print('Adxl355_v_chk:', self.Adxl355_v_chk)
+		self.Nano33_v_chk = self.top.TabPlot.tab1_speed_cb.cb2.isChecked()
+		print('Nano33_v_chk:', self.Nano33_v_chk)
+		
 	def updata_para(self):
 		self.wz_offset = float(self.top.wzOffset_le.text())
 		self.wzVth = float(self.top.wzVth_le.text())
@@ -380,6 +373,8 @@ class mainWindow(QMainWindow):
 	def buttonStop(self):#set runFlag=0
 		# self.act.setStop()
 		self.act.runFlag = False
+		self.act.runFlag_cali = False
+		print('self.act.runFlag: ', self.act.runFlag)
 		self.act.dt_init_flag = 1
 		self.thetax_arr = np.empty(0)
 		self.thetay_arr = np.empty(0)
@@ -400,7 +395,7 @@ class mainWindow(QMainWindow):
 		self.y200_sum = 0
 		self.dx200_arr = np.zeros(0)
 		self.dy200_arr = np.zeros(0)
-		self.top.com_plot.ax2.clear()
+		# self.top.com_plot.ax2.clear()
 		
 	def open_file(self, filename):
 		self.f=open(filename, 'w')
@@ -508,10 +503,10 @@ class mainWindow(QMainWindow):
 	def myThreadStop(self):
 		self.thread1.quit() 
 		self.thread1.wait()
-		if(self.save_status):
-			stop_time_header = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
-			self.f.writelines('#' + stop_time_header + '\n')
-			self.f.close()
+		# if(self.save_status):
+			# stop_time_header = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
+			# self.f.writelines('#' + stop_time_header + '\n')
+			# self.f.close()
 		self.data  = np.empty(0)
 		self.data2 = np.empty(0)
 		self.data3 = np.empty(0)
@@ -522,6 +517,13 @@ class mainWindow(QMainWindow):
 		self.data8 = np.empty(0)
 		self.data9 = np.empty(0)
 		self.data10 = np.empty(0)
+		self.data_SRS200_wz = np.empty(0)
+		self.data_Nano33_wz = np.empty(0)
+		self.data_PP_wz = np.empty(0)
+		self.data_Adxl355_ax = np.empty(0)
+		self.data_Adxl355_ay = np.empty(0)
+		self.data_Nano33_ax = np.empty(0)
+		self.data_Nano33_ay = np.empty(0)
 		self.dt = np.empty(0)
 		self.thetaz = 0
 		self.thetaz200 = 0
@@ -530,328 +532,55 @@ class mainWindow(QMainWindow):
 		self.speed = 0
 		self.speedx = 0
 		self.speedy = 0
+	'''
+	offset_SRS200_wz = 0
+	offset_PP_wz = 0
+	offset_Nano33_wz = 0
+	offset_Nano33_ax = 0
+	offset_Nano33_ay = 0
+	offset_Nano33_az = 0
+	offset_Adxl355_ax = 0
+	offset_Adxl355_ay = 0
+	offset_Adxl355_az = 0	
+	'''
 		
-		
-	def plotFOGnXLMD(self, data_fog, data_ax, data_ay, data_az, dt):
-		
+	def plotADXLIMUnGYRO(self, dt, data_SRS200_wz, data_Nano33_wz, data_PP_wz, data_Adxl355_ax, data_Adxl355_ay, data_Nano33_ax, data_Nano33_ay):
 		if(self.act.runFlag):
-			self.top.com_plot.ax1.clear()
-			self.top.com_plot.ax2.clear()
-			
-		if (len(self.data) >= 1000):
-			self.data = self.data[self.act.data_frame_update_point:]
-			self.data2 = self.data2[self.act.data_frame_update_point:]
-			self.data3 = self.data3[self.act.data_frame_update_point:]
-			self.data4 = self.data4[self.act.data_frame_update_point:]
-			self.dt = self.dt[self.act.data_frame_update_point:]
-		data_fog_f = data_fog*w_factor
-		data_ax_f = data_ax*xlm_factor
-		data_ay_f = data_ay*xlm_factor
-		data_az_f = data_az*xlm_factor
-		self.data = np.append(self.data, data_fog_f)
-		self.data2 = np.append(self.data2, data_ax_f)
-		self.data3 = np.append(self.data3, data_ay_f)
-		self.data4 = np.append(self.data4, data_az_f)
-		self.dt = np.append(self.dt, dt)
-		if(self.save_status):
-			np.savetxt(self.f, (np.vstack([dt,data_fog_f, data_ax_f, data_ay_f, data_az_f])).T, fmt='%.2f,%.5f,%.5f,%.5f,%.5f')
-		if(DEBUG) :
-			print('len(data_fog)', len(self.data))
-			print('len(data_ax)', len(self.data2))
-			print('len(data_ay)', len(self.data3))
-			print('len(data_az)', len(self.data4))
-			print('len(dt)', len(self.dt))
-		colors = np.array(['r','g','b'])
-		self.top.com_plot.ax1.set_ylabel("angular velocity(degree/hr)")
-		self.top.com_plot.ax1.plot(self.dt, self.data, color = 'k', linestyle = '-', marker = '')
-		self.top.com_plot.ax2.set_ylabel("acceleration(g)")
-		self.top.com_plot.ax2.set_xlabel("time(s)")
-		# self.top.com_plot.ax2.plot(self.dt, self.data2, self.dt, self.data3,  self.dt, self.data4, color = colors,linestyle = '-', marker = '')
-		self.top.com_plot.ax2.plot(self.dt, self.data2, color = 'r', linestyle = '-', marker = '', label="ax")
-		self.top.com_plot.ax2.plot(self.dt, self.data3, color = 'g', linestyle = '-', marker = '', label="ay")
-		self.top.com_plot.ax2.plot(self.dt, self.data4, color = 'b', linestyle = '-', marker = '', label="az")
-		self.top.com_plot.ax2.legend(bbox_to_anchor=(1.0, 1.0), loc='upper left', prop={'size': 10})
-		# self.top.com_plot.ax2.plot(self.dt, self.data2, color = 'red', linestyle = '-', marker = '')
-		# self.top.com_plot.ax3.set_ylabel("ay")
-		# self.top.com_plot.ax3.plot(self.dt, self.data3, color = 'red', linestyle = '-', marker = '')
-		# self.top.com_plot.ax4.set_ylabel("az")
-		# self.top.com_plot.ax4.plot(self.dt, self.data4, color = 'red', linestyle = '-', marker = '')
-		
-		self.top.com_plot.figure.canvas.draw()
-		
-		# self.top.com_plot.ax3.clear()
-		# self.top.com_plot.ax4.clear()
-		self.top.com_plot.figure.canvas.flush_events()
-		
-	def plotXLMDnGYRO(self, data_ax, data_ay, data_az, data_wx, data_wy, data_wz, dt):
-		
-		if(self.act.runFlag):
-			self.top.com_plot.ax1.clear()
-			self.top.com_plot.ax2.clear()
-			
-		if (len(self.data) >= 1000):
-			self.data = self.data[self.act.data_frame_update_point:]
-			self.data2 = self.data2[self.act.data_frame_update_point:]
-			self.data3 = self.data3[self.act.data_frame_update_point:]
-			self.data4 = self.data4[self.act.data_frame_update_point:]
-			self.data5 = self.data5[self.act.data_frame_update_point:]
-			self.data6 = self.data6[self.act.data_frame_update_point:]
-			self.dt = self.dt[self.act.data_frame_update_point:]
-		data_ax_f = data_ax*xlm_factor
-		data_ay_f = data_ay*xlm_factor
-		data_az_f = data_az*xlm_factor
-		data_wx_f = data_wx*gyro_factor
-		data_wy_f = data_wy*gyro_factor
-		data_wz_f = data_wz*gyro_factor
-		self.data  = np.append(self.data,  data_ax_f)
-		self.data2 = np.append(self.data2, data_ay_f)
-		self.data3 = np.append(self.data3, data_az_f)
-		self.data4 = np.append(self.data4, data_wx_f)
-		self.data5 = np.append(self.data5, data_wy_f)
-		self.data6 = np.append(self.data6, data_wz_f)
-		self.dt = np.append(self.dt, dt)
-		if(self.save_status):
-			np.savetxt(self.f, (np.vstack([dt,data_ax_f, data_ay_f, data_az_f, data_wx_f, data_wy_f, data_wz_f])).T, fmt='%.5f,%.5f,%.5f,%.5f,%.5f,%.5f,%.5f')
-		if(DEBUG) :
-			print('len(data_ax)', len(self.data))
-			print('len(data_ay)', len(self.data2))
-			print('len(data_az)', len(self.data3))
-			print('len(data_wx)', len(self.data4))
-			print('len(data_wy)', len(self.data5))
-			print('len(data_wz)', len(self.data6))
-			print('len(dt)', len(self.dt))
-		self.top.com_plot.ax1.set_ylabel("angular velocity(dps)")
-		self.top.com_plot.ax1.plot(self.dt, self.data4, color = 'r', linestyle = '-', marker = '', label="wx")
-		self.top.com_plot.ax1.plot(self.dt, self.data5, color = 'g', linestyle = '-', marker = '', label="wy")
-		self.top.com_plot.ax1.plot(self.dt, self.data6, color = 'b', linestyle = '-', marker = '', label="wz")
-		self.top.com_plot.ax1.legend(bbox_to_anchor=(1.0, 1.0), loc='upper left', prop={'size': 10})
-		
-		self.top.com_plot.ax2.set_ylabel("acceleration(g)")
-		self.top.com_plot.ax2.set_xlabel("time(s)")
-		self.top.com_plot.ax2.plot(self.dt, self.data, color = 'r', linestyle = '-', marker = '' , label="ax")
-		self.top.com_plot.ax2.plot(self.dt, self.data2, color = 'g', linestyle = '-', marker = '', label="ay")
-		self.top.com_plot.ax2.plot(self.dt, self.data3, color = 'b', linestyle = '-', marker = '', label="az")
-		self.top.com_plot.ax2.legend(bbox_to_anchor=(1.0, 1.0), loc='upper left', prop={'size': 10})
-		# self.top.com_plot.ax2.plot(self.dt, self.data2, color = 'red', linestyle = '-', marker = '')
-		# self.top.com_plot.ax3.set_ylabel("ay")
-		# self.top.com_plot.ax3.plot(self.dt, self.data3, color = 'red', linestyle = '-', marker = '')
-		# self.top.com_plot.ax4.set_ylabel("az")
-		# self.top.com_plot.ax4.plot(self.dt, self.data4, color = 'red', linestyle = '-', marker = '')
-		
-		self.top.com_plot.figure.canvas.draw()
-		
-		# self.top.com_plot.ax3.clear()
-		# self.top.com_plot.ax4.clear()
-		self.top.com_plot.figure.canvas.flush_events()
-		
-	def plotIMUnGYRO(self, data_ax, data_ay, data_az, data_wx, data_wy, data_wz, data_wz200, dt):
-		if(self.act.runFlag):
-			self.top.com_plot.ax1.clear()
-			self.top.com_plot.ax2.clear()
-			# if(not self.track_chk):
-				# self.top.com_plot.ax2.clear()
-		dt = dt*1e-6
-		if (len(self.data) >= 1000):
-			self.data = self.data[self.act.data_frame_update_point:]
-			self.data2 = self.data2[self.act.data_frame_update_point:]
-			self.data3 = self.data3[self.act.data_frame_update_point:]
-			self.data4 = self.data4[self.act.data_frame_update_point:]
-			self.data5 = self.data5[self.act.data_frame_update_point:]
-			self.data6 = self.data6[self.act.data_frame_update_point:]
-			self.data7 = self.data7[self.act.data_frame_update_point:]
-			self.dt = self.dt[self.act.data_frame_update_point:]
-		data_ax_f = (data_ax-self.ax_offset)*xlm_factor
-		data_ay_f = (data_ay-self.ay_offset)*xlm_factor
-		data_az_f = (data_az-0)*xlm_factor
-		data_wx_f = (data_wx-self.wx_offset)*gyro_factor
-		data_wy_f = (data_wy-self.wy_offset)*gyro_factor
-		data_wz_f = (data_wz-self.wz_offset)*gyro_factor
-		data_wz200_f = (data_wz200-self.wz200_offset)*gyro200_factor/3600 #convert to DPS
-		
-		self.thetaz = self.thetaz - np.sum(data_wz_f)*0.01 #負號是方向判斷的問題
-		self.thetaz_arr = np.append(self.thetaz_arr, self.thetaz)
-		self.thetaz200 = self.thetaz200 - np.sum(data_wz200_f)*0.01 #負號是方向判斷的問題
-		self.thetaz200_arr = np.append(self.thetaz200_arr, self.thetaz200)
-		self.thetax = self.thetax + np.sum(data_wx_f)*0.01
-		self.thetax_arr = np.append(self.thetax_arr, self.thetax)
-		self.thetay = self.thetay + np.sum(data_wy_f)*0.01
-		self.thetay_arr = np.append(self.thetay_arr, self.thetay)
-		self.speedx = self.speedx + np.sum(data_ax_f)*9.8*0.01
-		self.speedx_arr = np.append(self.speedx_arr, self.speedx)
-		self.speedy = self.speedy + np.sum(data_ay_f)*9.8*0.01
-		self.speedy_arr = np.append(self.speedy_arr, self.speedy)
-		self.speed = np.sqrt(np.square(self.speedx)+np.square(self.speedy))
-		self.speed_arr = np.append(self.speed_arr, self.speed)
-		
-		''' for track plot'''
-		theta = 90 - self.thetaz
-		theta200 = 90 - self.thetaz200
-		'''
-		dx = dr*cos(theta), dr = vdt
-		v = 1 m/s
-		dt = data_frame_update_point*self.act.TIME_PERIOD 
-		'''
-		dx = np.cos(theta*np.pi/180)*self.act.data_frame_update_point*self.act.TIME_PERIOD 
-		dy = np.sin(theta*np.pi/180)*self.act.data_frame_update_point*self.act.TIME_PERIOD
-		self.x_sum = self.x_sum + dx
-		self.y_sum = self.y_sum + dy
-		
-		dx200 = np.cos(theta200*np.pi/180)*self.act.data_frame_update_point*self.act.TIME_PERIOD 
-		dy200 = np.sin(theta200*np.pi/180)*self.act.data_frame_update_point*self.act.TIME_PERIOD
-		self.x200_sum = self.x200_sum + dx200
-		self.y200_sum = self.y200_sum + dy200
-		
-		self.top.theta_lb.setText(str(round(self.thetaz,2)))
-		self.top.theta_lb.setStyleSheet('color: blue')
-		self.top.theta200_lb.setText(str(round(self.thetaz200,2)))
-		self.top.theta200_lb.setStyleSheet('color: red')
-		self.top.buffer_lb.setText(str(self.act.bufferSize))
-		
-		self.dx_arr = np.append(self.dx_arr, dx)
-		self.dy_arr = np.append(self.dy_arr, dy)
-		self.x_arr = np.append(self.x_arr, self.x_sum)
-		self.y_arr = np.append(self.y_arr, self.y_sum)
-		
-		self.dx200_arr = np.append(self.dx200_arr, dx200)
-		self.dy200_arr = np.append(self.dy200_arr, dy200)
-		self.x200_arr = np.append(self.x200_arr, self.x200_sum)
-		self.y200_arr = np.append(self.y200_arr, self.y200_sum)
-		
-		if (len(self.thetaz_arr) >= 10):
-			self.thetaz_arr = self.thetaz_arr[1:]
-			self.thetaz200_arr = self.thetaz200_arr[1:]
-			self.thetax_arr = self.thetax_arr[1:]
-			self.thetay_arr = self.thetay_arr[1:]
-			self.speedx_arr = self.speedx_arr[1:]
-			self.speedy_arr = self.speedy_arr[1:]
-			self.speed_arr = self.speed_arr[1:]
-			self.dx_arr = self.dx_arr[1:]
-			self.dy_arr = self.dy_arr[1:]
-			self.dx200_arr = self.dx200_arr[1:]
-			self.dy200_arr = self.dy200_arr[1:]
-			# self.x_arr = self.x_arr[1:]
-			# self.y_arr = self.y_arr[1:]
-		# print(np.sum(data_wz_f))
-		
-		self.data  = np.append(self.data,  data_ax_f)
-		self.data2 = np.append(self.data2, data_ay_f)
-		self.data3 = np.append(self.data3, data_az_f)
-		self.data4 = np.append(self.data4, data_wx_f)
-		self.data5 = np.append(self.data5, data_wy_f)
-		self.data6 = np.append(self.data6, data_wz_f)
-		self.data7 = np.append(self.data7, data_wz200_f)
-		self.dt = np.append(self.dt, dt)
-		if(self.save_status):
-			np.savetxt(self.f, (np.vstack([dt,data_ax_f, data_ay_f, data_az_f, data_wx_f, data_wy_f, data_wz_f, data_wz200_f])).T, fmt='%5.5f,%.5f,%.5f,%.5f,%4.5f,%4.5f,%4.5f, %4.5f')
-		if(DEBUG) :
-			# print(np.average(self.data))
-			# print(np.average(self.data2))
-			# print(np.average(self.data3))
-			# print('len(data_wx)', len(self.data4), end=', ')
-			# print(np.average(self.data4))
-			# print('len(data_wy)', len(self.data5), end=', ')
-			# print(np.average(self.data5))
-			# print('len(data_wz)', len(self.data6), end=', ')
-			# print('len(data_wz200)', len(self.data7), end=', ')
-			# print(np.round(np.average(self.data6), 3), end=', ')
-			# print(np.round(np.std(self.data6), 3))
-			# print(np.average(self.data6))
-			# print('len(dt)', len(self.dt))
-			
-			# print("thez: ", end=', ')
-			# print(self.thetaz, end=', ')
-			# print(len(self.thetaz_arr))
-			# print("thex: ", end=', ')
-			# print(self.thetax, end=', ')
-			# print(len(self.thetax_arr))
-			# print("they: ", end=', ')
-			# print(self.thetay, end=', ')
-			# print(len(self.thetay_arr))
-			
-			# print("vx: ", end=', ')
-			# print(self.speedx, end=', ')
-			# print(len(self.speedx_arr))
-			# print("vy: ", end=', ')
-			# print(self.speedy, end=', ')
-			# print(len(self.speedy_arr))
-			# self.top.wzOffset_lb.setText(str(np.average(self.data6)))
+			self.top.TabPlot.tab1_plot1.ax.clear()
+			if(self.Nano33_wz_chk or self.PP_wz_chk):
+				self.top.TabPlot.tab1_plot2.ax.clear()
+			if(self.Adxl355_ax_chk or self.Adxl355_ay_chk or self.Nano33_ax_chk or self.Nano33_ay_chk):
+				self.top.TabPlot.tab1_plot3.ax.clear()
+			if(self.Nano33_v_chk or self.Adxl355_v_chk):
+				self.top.TabPlot.tab1_plot4.ax.clear()
 			pass
-					
-		if(self.ax_chk):
-			self.top.com_plot.ax1.plot(self.dt, self.data, color = 'r', linestyle = '-', marker = '', label="ax")
-		if(self.ay_chk):
-			self.top.com_plot.ax1.plot(self.dt, self.data2, color = 'g', linestyle = '-', marker = '', label="ay")
-			
-		if(self.wz_chk):
-			self.top.com_plot.ax1.plot(self.dt, self.data6, color = 'b', linestyle = '-', marker = '', label="wz")
-		if(self.wz200_chk):
-			self.top.com_plot.ax1.plot(self.dt, self.data7, color = 'r', linestyle = '-', marker = '', label="wz200")
-		if(self.x_chk):
-			self.top.com_plot.ax1.plot(self.x_arr, color = 'r', linestyle = '-', marker = '', label="x")
-		if(self.y_chk):
-			self.top.com_plot.ax1.plot(self.y_arr, color = 'g', linestyle = '-', marker = '', label="y")
-		if(self.vx_chk):
-			self.top.com_plot.ax2.plot(self.speedx_arr, color = 'r', linestyle = '-', marker = '', label="vx")
-			self.top.com_plot.ax2.set_ylim([-5, 5])
-		if(self.vy_chk):
-			self.top.com_plot.ax2.plot(self.speedy_arr, color = 'g', linestyle = '-', marker = '', label="vy")
-			self.top.com_plot.ax2.set_ylim([-5, 5])
-		if(self.thetaz_chk):
-			self.top.com_plot.ax2.plot(self.thetaz_arr, color = 'b', linestyle = '-', marker = '', label="thetaz")
-		if(self.thetaz200_chk):
-			self.top.com_plot.ax2.plot(self.thetaz200_arr, color = 'r', linestyle = '-', marker = '', label="thetaz200")
-		if(self.v_chk):
-			self.top.com_plot.ax2.plot(self.speed_arr, color = 'k', linestyle = '-', marker = '', label="speed")
-			self.top.com_plot.ax2.set_ylim([0, 5])
-		if(self.track_chk):
-			self.top.com_plot.ax2.plot(self.x_arr, self.y_arr, color = 'b', linestyle = '-', marker = '', label="track")
-			self.top.com_plot.ax2.plot(self.x200_arr, self.y200_arr, color = 'r', linestyle = '-', marker = '', label="track200")
-			self.top.com_plot.ax2.set_xlim([track_min, track_max])
-			self.top.com_plot.ax2.set_ylim([track_min, track_max])
-		
-		self.top.com_plot.ax1.legend(bbox_to_anchor=(0.9, 1.0), loc='upper left', prop={'size': 10})
-		self.top.com_plot.ax2.legend(bbox_to_anchor=(0.9, 1.0), loc='upper left', prop={'size': 10})
-		self.top.com_plot.figure.canvas.draw()		
-		self.top.com_plot.figure.canvas.flush_events()
-		
-	def plotADXLIMUnGYRO(self, data_ADax, data_ADay, data_ax, data_ay, data_wx, data_wy, data_wz, data_wz200, dt):
-		if(self.act.runFlag):
-			self.top.com_plot.ax1.clear()
-			self.top.com_plot.ax2.clear()
-			# if(not self.track_chk):
-				# self.top.com_plot.ax2.clear()
 		dt = dt*1e-6
-		if (len(self.data) >= 1000):
-			self.data = self.data[self.act.data_frame_update_point:]
-			self.data2 = self.data2[self.act.data_frame_update_point:]
-			self.data3 = self.data3[self.act.data_frame_update_point:]
-			self.data4 = self.data4[self.act.data_frame_update_point:]
-			self.data5 = self.data5[self.act.data_frame_update_point:]
-			self.data6 = self.data6[self.act.data_frame_update_point:]
-			self.data7 = self.data7[self.act.data_frame_update_point:]
-			self.data8 = self.data8[self.act.data_frame_update_point:]
+		if (len(self.dt) >= 1000):
 			self.dt = self.dt[self.act.data_frame_update_point:]
-		data_ax_f = (data_ax-self.ax_offset)*xlm_factor
-		data_ay_f = (data_ay-self.ay_offset)*xlm_factor
-		data_ADax_f = (data_ADax-self.ADax_offset)*ADxlm_factor
-		data_ADay_f = (data_ADay-self.ADay_offset)*ADxlm_factor
-		# data_az_f = (data_az-0)*xlm_factor
-		data_wx_f = (data_wx-self.wx_offset)*gyro_factor
-		data_wy_f = (data_wy-self.wy_offset)*gyro_factor
-		data_wz_f = (data_wz-self.wz_offset)*gyro_factor
-		data_wz200_f = (data_wz200-self.wz200_offset)*gyro200_factor/3600 #convert to DPS
+			self.data_SRS200_wz = self.data_SRS200_wz[self.act.data_frame_update_point:]
+			self.data_Nano33_wz = self.data_Nano33_wz[self.act.data_frame_update_point:]
+			self.data_PP_wz = self.data_PP_wz[self.act.data_frame_update_point:]
+			self.data_Adxl355_ax = self.data_Adxl355_ax[self.act.data_frame_update_point:]
+			self.data_Adxl355_ay = self.data_Adxl355_ay[self.act.data_frame_update_point:]
+			self.data_Nano33_ax = self.data_Nano33_ax[self.act.data_frame_update_point:]
+			self.data_Nano33_ay = self.data_Nano33_ay[self.act.data_frame_update_point:]
+			
+		data_SRS200_wz_f = (data_SRS200_wz - self.offset_SRS200_wz)*gyro200_factor
+		data_Nano33_wz_f = (data_Nano33_wz - self.offset_Nano33_wz)*gyro_factor
+		data_PP_wz_f = (data_PP_wz - self.offset_PP_wz)*gyroPP_factor
+		data_Adxl355_ax_f = (data_Adxl355_ax - self.offset_Adxl355_ax)*ADxlm_factor
+		data_Adxl355_ay_f = (data_Adxl355_ay - self.offset_Adxl355_ay)*ADxlm_factor
+		data_Nano33_ax_f = (data_Nano33_ax - self.offset_Nano33_ax)*xlm_factor
+		data_Nano33_ay_f = (data_Nano33_ay - self.offset_Nano33_ay)*xlm_factor
+
 		
-		self.thetaz = self.thetaz - np.sum(data_wz_f)*0.01 #負號是方向判斷的問題
+		self.thetaz = self.thetaz - np.sum(data_Nano33_wz_f)*0.01 #負號是方向判斷的問題, 0.01是1/ODR
 		self.thetaz_arr = np.append(self.thetaz_arr, self.thetaz)
-		self.thetaz200 = self.thetaz200 - np.sum(data_wz200_f)*0.01 #負號是方向判斷的問題
+		self.thetaz200 = self.thetaz200 - np.sum(data_SRS200_wz)*0.01 #負號是方向判斷的問題
 		self.thetaz200_arr = np.append(self.thetaz200_arr, self.thetaz200)
-		self.thetax = self.thetax + np.sum(data_wx_f)*0.01
-		self.thetax_arr = np.append(self.thetax_arr, self.thetax)
-		self.thetay = self.thetay + np.sum(data_wy_f)*0.01
-		self.thetay_arr = np.append(self.thetay_arr, self.thetay)
-		self.speedx = self.speedx + np.sum(data_ax_f)*9.8*0.01
+		self.speedx = self.speedx + np.sum(data_Nano33_ax_f)*9.8*0.01
 		self.speedx_arr = np.append(self.speedx_arr, self.speedx)
-		self.speedy = self.speedy + np.sum(data_ay_f)*9.8*0.01
+		self.speedy = self.speedy + np.sum(data_Nano33_ay_f)*9.8*0.01
 		self.speedy_arr = np.append(self.speedy_arr, self.speedy)
 		self.speed = np.sqrt(np.square(self.speedx)+np.square(self.speedy))
 		self.speed_arr = np.append(self.speed_arr, self.speed)
@@ -859,8 +588,8 @@ class mainWindow(QMainWindow):
 		''' for track plot'''
 		theta = 90 - self.thetaz
 		theta200 = 90 - self.thetaz200
-		print('theta: ', self.thetaz)
-		self.top.wz_gauge.item.setRotation(self.thetaz)
+		# print('theta: ', self.thetaz)
+		# self.top.wz_gauge.item.setRotation(self.thetaz)
 		'''
 		dx = dr*cos(theta), dr = vdt
 		v = 1 m/s
@@ -876,11 +605,8 @@ class mainWindow(QMainWindow):
 		self.x200_sum = self.x200_sum + dx200
 		self.y200_sum = self.y200_sum + dy200
 		
-		self.top.theta_lb.setText(str(round(self.thetaz,2)))
-		self.top.theta_lb.setStyleSheet('color: blue')
-		self.top.theta200_lb.setText(str(round(self.thetaz200,2)))
-		self.top.theta200_lb.setStyleSheet('color: red')
-		self.top.buffer_lb.setText(str(self.act.bufferSize))
+		#print buffer to label
+		self.top.buffer_lb.lb.setText(str(self.act.bufferSize))
 		
 		self.dx_arr = np.append(self.dx_arr, dx)
 		self.dy_arr = np.append(self.dy_arr, dy)
@@ -908,18 +634,29 @@ class mainWindow(QMainWindow):
 			# self.y_arr = self.y_arr[1:]
 		# print(np.sum(data_wz_f))
 		
-		self.data  = np.append(self.data,  data_ax_f)
-		self.data2 = np.append(self.data2, data_ay_f)
-		self.data3 = np.append(self.data3, data_ADax_f)
-		self.data4 = np.append(self.data4, data_ADay_f)
-		self.data5 = np.append(self.data5, data_wx_f)
-		self.data6 = np.append(self.data6, data_wy_f)
-		self.data7 = np.append(self.data7, data_wz_f)
-		self.data8 = np.append(self.data8, data_wz200_f)
+		self.data_SRS200_wz  = np.append(self.data_SRS200_wz,  data_SRS200_wz_f)
+		self.data_Nano33_wz = np.append(self.data_Nano33_wz, data_Nano33_wz_f)
+		self.data_PP_wz = np.append(self.data_PP_wz, data_PP_wz_f)
+		self.data_Adxl355_ax = np.append(self.data_Adxl355_ax, data_Adxl355_ax_f)
+		self.data_Adxl355_ay = np.append(self.data_Adxl355_ay, data_Adxl355_ay_f)
+		self.data_Nano33_ax = np.append(self.data_Nano33_ax, data_Nano33_ax_f)
+		self.data_Nano33_ay = np.append(self.data_Nano33_ay, data_Nano33_ay_f)
 		self.dt = np.append(self.dt, dt)
-		if(self.save_status):
-			np.savetxt(self.f, (np.vstack([dt,data_ax_f, data_ay_f, data_ADax_f, data_ADay_f, data_wx_f, data_wy_f, data_wz_f, data_wz200_f])).T, fmt='%5.5f,%.5f,%.5f,%.5f,%.5f,%4.5f,%4.5f,%4.5f, %4.5f')
+		
+		# if(self.save_status):
+			# np.savetxt(self.f, (np.vstack([dt,data_ax_f, data_ay_f, data_ADax_f, data_ADay_f, data_wx_f, data_wy_f, data_wz_f, data_wz200_f])).T, fmt='%5.5f,%.5f,%.5f,%.5f,%.5f,%4.5f,%4.5f,%4.5f, %4.5f')
 		if(DEBUG) :
+			# print('len(dt): ', len(self.dt))
+			# print('len(self.data_SRS200_wz): ', len(self.data_SRS200_wz))
+			# print('dt: ', self.dt)
+			# print('SRS200_wz: ', self.data_SRS200_wz)
+			# print('Nano33_wz: ', self.data_Nano33_wz)
+			# print('PP_wz: ', self.data_PP_wz)
+			# print('Adxl355_ax: ', self.data_Adxl355_ax)
+			# print('Adxl355_ay: ', self.data_Adxl355_ay)
+			# print('Nano33_ax: ', self.data_Nano33_ax)
+			# print('Nano33_ay: ', self.data_Nano33_ay)
+			
 			# print(np.average(self.data))
 			# print(np.average(self.data2))
 			# print(np.average(self.data3))
@@ -961,232 +698,40 @@ class mainWindow(QMainWindow):
 			# print('len(wz200): ', len(self.data8))
 			pass
 					
-		if(self.ax_chk):
-			# self.top.com_plot.ax1.plot(self.dt, self.data, color = 'r', linestyle = '-', marker = '', label="ax")
-			self.top.com_plot.ax1.plot(self.dt, self.data3, color = 'r', linestyle = '-', marker = '', label="ADax")
-		if(self.ay_chk):
-			# self.top.com_plot.ax1.plot(self.dt, self.data2, color = 'g', linestyle = '-', marker = '', label="ay")
-			self.top.com_plot.ax1.plot(self.dt, self.data4, color = 'g', linestyle = '-', marker = '', label="ADay")
-			
-		if(self.wz_chk):
-			self.top.com_plot.ax1.plot(self.dt, self.data7, color = 'b', linestyle = '-', marker = '', label="wz")
-		if(self.wz200_chk):
-			self.top.com_plot.ax1.plot(self.dt, self.data8, color = 'r', linestyle = '-', marker = '', label="wz200")
-		if(self.x_chk):
-			self.top.com_plot.ax1.plot(self.x_arr, color = 'r', linestyle = '-', marker = '', label="x")
-		if(self.y_chk):
-			self.top.com_plot.ax1.plot(self.y_arr, color = 'g', linestyle = '-', marker = '', label="y")
-		if(self.vx_chk):
-			self.top.com_plot.ax2.plot(self.speedx_arr, color = 'r', linestyle = '-', marker = '', label="vx")
-			self.top.com_plot.ax2.set_ylim([-5, 5])
-		if(self.vy_chk):
-			self.top.com_plot.ax2.plot(self.speedy_arr, color = 'g', linestyle = '-', marker = '', label="vy")
-			self.top.com_plot.ax2.set_ylim([-5, 5])
-		if(self.thetaz_chk):
-			self.top.com_plot.ax2.plot(self.thetaz_arr, color = 'b', linestyle = '-', marker = '', label="thetaz")
-		if(self.thetaz200_chk):
-			self.top.com_plot.ax2.plot(self.thetaz200_arr, color = 'r', linestyle = '-', marker = '', label="thetaz200")
-		if(self.v_chk):
-			self.top.com_plot.ax2.plot(self.speed_arr, color = 'k', linestyle = '-', marker = '', label="speed")
-			self.top.com_plot.ax2.set_ylim([0, 5])
-		if(self.track_chk):
-			self.top.com_plot.ax2.plot(self.x_arr, self.y_arr, color = 'b', linestyle = '-', marker = '', label="track")
-			self.top.com_plot.ax2.plot(self.x200_arr, self.y200_arr, color = 'r', linestyle = '-', marker = '', label="track200")
-			self.top.com_plot.ax2.set_xlim([track_min, track_max])
-			self.top.com_plot.ax2.set_ylim([track_min, track_max])
 		
-		self.top.com_plot.ax1.legend(bbox_to_anchor=(0.9, 1.0), loc='upper left', prop={'size': 10})
-		self.top.com_plot.ax2.legend(bbox_to_anchor=(0.9, 1.0), loc='upper left', prop={'size': 10})
-		self.top.com_plot.figure.canvas.draw()		
-		self.top.com_plot.figure.canvas.flush_events()
+		self.top.TabPlot.tab1_plot1.ax.plot(self.dt, self.data_SRS200_wz, color = 'b', linestyle = '-', marker = '', label="SRS200_wz")
+		self.top.TabPlot.tab1_plot1.figure.canvas.draw()		
+		self.top.TabPlot.tab1_plot1.figure.canvas.flush_events()
+		# self.top.com_plot.ax1.legend(bbox_to_anchor=(0.9, 1.0), loc='upper left', prop={'size': 10})
+		# self.top.com_plot.ax2.legend(bbox_to_anchor=(0.9, 1.0), loc='upper left', prop={'size': 10})
+		
 	
-	def calibGYRO(self, data_ax, data_ay, data_az, data_wx, data_wy, data_wz, 
-					diff_ax, diff_ay, diff_az, diff_wx, diff_wy, diff_wz):
-		if(self.act.runFlag):
-			self.top.com_plot.ax1.clear()
-			self.top.com_plot.ax2.clear()
+		if(self.Nano33_wz_chk ):
+			self.top.TabPlot.tab1_plot2.ax.plot(self.dt, self.data_Nano33_wz, color = 'b', linestyle = '-', marker = '', label="Nano33_wz")
+		if(self.PP_wz_chk):
+			self.top.TabPlot.tab1_plot2.ax.plot(self.dt, self.data_PP_wz, color = 'k', linestyle = '-', marker = '', label="PP_wz")			
+		if(self.Nano33_wz_chk or self.PP_wz_chk):
+			self.top.TabPlot.tab1_plot2.figure.canvas.draw()		
+			self.top.TabPlot.tab1_plot2.figure.canvas.flush_events()
 			
-		if (len(self.data) >= 300):
-			self.data  = self.data[self.act.data_frame_update_point:]
-			self.data2 = self.data2[self.act.data_frame_update_point:]
-			self.data3 = self.data3[self.act.data_frame_update_point:]
-			self.data4 = self.data4[self.act.data_frame_update_point:]
-			self.data5 = self.data5[self.act.data_frame_update_point:]
-			self.data6 = self.data6[self.act.data_frame_update_point:]
-			self.diffdata1 = self.diffdata1[self.act.data_frame_update_point:]
-			self.diffdata2 = self.diffdata2[self.act.data_frame_update_point:]
-			self.diffdata3 = self.diffdata3[self.act.data_frame_update_point:]
-			self.diffdata4 = self.diffdata4[self.act.data_frame_update_point:]
-			self.diffdata5 = self.diffdata5[self.act.data_frame_update_point:]
-			self.diffdata6 = self.diffdata6[self.act.data_frame_update_point:]
+		if(self.Adxl355_ax_chk):
+			self.top.TabPlot.tab1_plot3.ax.plot(self.dt, self.data_Adxl355_ax, color = 'b', linestyle = '-', marker = '', label="Adxl355_ax")
+		if(self.Adxl355_ay_chk):
+			self.top.TabPlot.tab1_plot3.ax.plot(self.dt, self.data_Adxl355_ay, color = 'k', linestyle = '-', marker = '', label="Adxl355_ay")
+		if(self.Nano33_ax_chk):
+			self.top.TabPlot.tab1_plot3.ax.plot(self.dt, self.data_Nano33_ax, color = 'r', linestyle = '-', marker = '', label="Nano33_ax")
+		if(self.Nano33_ay_chk):
+			self.top.TabPlot.tab1_plot3.ax.plot(self.dt, self.data_Nano33_ay, color = 'g', linestyle = '-', marker = '', label="Nano33_ay")
+		if(self.Adxl355_ax_chk or self.Adxl355_ay_chk or self.Nano33_ax_chk or self.Nano33_ay_chk):
+			self.top.TabPlot.tab1_plot3.figure.canvas.draw()		
+			self.top.TabPlot.tab1_plot3.figure.canvas.flush_events()
 		
-		self.data  = np.append(self.data,  data_ax)
-		self.data2 = np.append(self.data2, data_ay)
-		self.data3 = np.append(self.data3, data_az)
-		self.data4 = np.append(self.data4, data_wx)
-		self.data5 = np.append(self.data5, data_wy)
-		self.data6 = np.append(self.data6, data_wz)
-		self.diffdata1 = np.append(self.diffdata1, diff_ax)
-		self.diffdata2 = np.append(self.diffdata2, diff_ay)
-		self.diffdata3 = np.append(self.diffdata3, diff_az)
-		self.diffdata4 = np.append(self.diffdata4, diff_wx)
-		self.diffdata5 = np.append(self.diffdata5, diff_wy)
-		self.diffdata6 = np.append(self.diffdata6, diff_wz)
-		
-		wz_offset = np.round(np.average(self.data6),3)
-		wz_std = np.round(np.std(self.data6), 3)
-		diffwz_std = np.round(np.std(self.diffdata6), 3)
-		self.top.wzOffset_lb.val.setText(str(wz_offset))
-		self.top.wzStd_lb.val.setText(str(wz_std))
-		self.top.diffwzStd_lb.val.setText(str(diffwz_std))
-		
-		wx_offset = np.round(np.average(self.data4),3)
-		wx_std = np.round(np.std(self.data4), 3)
-		diffwx_std = np.round(np.std(self.diffdata4), 3)
-		self.top.wxOffset_lb.val.setText(str(wx_offset))
-		self.top.wxStd_lb.val.setText(str(wx_std))
-		self.top.diffwxStd_lb.val.setText(str(diffwx_std))
-		
-		wy_offset = np.round(np.average(self.data5),3)
-		wy_std = np.round(np.std(self.data5), 3)
-		diffwy_std = np.round(np.std(self.diffdata5), 3)
-		self.top.wyOffset_lb.val.setText(str(wy_offset))
-		self.top.wyStd_lb.val.setText(str(wy_std))
-		self.top.diffwyStd_lb.val.setText(str(diffwy_std))
-		
-		ax_offset = np.round(np.average(self.data),3)
-		ax_std = np.round(np.std(self.data), 3)
-		diffax_std = np.round(np.std(self.diffdata1), 3)
-		self.top.axOffset_lb.val.setText(str(ax_offset))
-		self.top.axStd_lb.val.setText(str(ax_std))
-		self.top.diffaxStd_lb.val.setText(str(diffax_std))
-		
-		ay_offset = np.round(np.average(self.data2),3)
-		ay_std = np.round(np.std(self.data2), 3)
-		diffay_std = np.round(np.std(self.diffdata2), 3)
-		self.top.ayOffset_lb.val.setText(str(ay_offset))
-		self.top.ayStd_lb.val.setText(str(ay_std))
-		self.top.diffayStd_lb.val.setText(str(diffay_std))
-		
-		''' ax ay plot '''
-		# self.top.com_plot.ax1.set_ylabel("acc(code)")
-		# self.top.com_plot.ax1.plot(self.data, color = 'r', linestyle = '-', marker = '', label="ax")
-		# self.top.com_plot.ax1.legend(bbox_to_anchor=(1.0, 1.0), loc='upper left', prop={'size': 10})
-		# self.top.com_plot.ax2.set_ylabel("w(code)")
-		# self.top.com_plot.ax2.plot(self.data6, color = 'b', linestyle = '-', marker = '', label="wz")
-		# self.top.com_plot.ax2.legend(bbox_to_anchor=(1.0, 1.0), loc='upper left', prop={'size': 10})
-		
-		if(self.ax_chk):
-			self.top.com_plot.ax1.plot(self.data, color = 'r', linestyle = '-', marker = '', label="ax")
-		if(self.ay_chk):
-			self.top.com_plot.ax1.plot(self.data2, color = 'g', linestyle = '-', marker = '', label="ay")
-		if(self.wz_chk):
-			self.top.com_plot.ax2.plot(self.data6, color = 'b', linestyle = '-', marker = '', label="wz")
-		
-		self.top.com_plot.ax1.legend(bbox_to_anchor=(0.9, 1.0), loc='upper left', prop={'size': 10})
-		self.top.com_plot.ax2.legend(bbox_to_anchor=(0.9, 1.0), loc='upper left', prop={'size': 10})
-		
-		self.top.com_plot.figure.canvas.draw()		
-		self.top.com_plot.figure.canvas.flush_events()
-		
-	def calibIMUnGYRO(self, data_ax, data_ay, data_az, data_wx, data_wy, data_wz, data_wz200,
-					diff_ax, diff_ay, diff_az, diff_wx, diff_wy, diff_wz):
-		if(self.act.runFlag):
-			self.top.com_plot.ax1.clear()
-			self.top.com_plot.ax2.clear()
+		if(self.Nano33_v_chk):
+			self.top.TabPlot.tab1_plot4.ax.plot(self.dt, self.data_Nano33_ay, color = 'k', linestyle = '-', marker = '', label="Nano33_v")
+		if(self.Nano33_v_chk or self.Adxl355_v_chk):
+			self.top.TabPlot.tab1_plot4.figure.canvas.draw()		
+			self.top.TabPlot.tab1_plot4.figure.canvas.flush_events()
 			
-		if (len(self.data) >= 300):
-			self.data  = self.data[self.act.data_frame_update_point:]
-			self.data2 = self.data2[self.act.data_frame_update_point:]
-			self.data3 = self.data3[self.act.data_frame_update_point:]
-			self.data4 = self.data4[self.act.data_frame_update_point:]
-			self.data5 = self.data5[self.act.data_frame_update_point:]
-			self.data6 = self.data6[self.act.data_frame_update_point:]
-			self.data7 = self.data7[self.act.data_frame_update_point:]
-			self.diffdata1 = self.diffdata1[self.act.data_frame_update_point:]
-			self.diffdata2 = self.diffdata2[self.act.data_frame_update_point:]
-			self.diffdata3 = self.diffdata3[self.act.data_frame_update_point:]
-			self.diffdata4 = self.diffdata4[self.act.data_frame_update_point:]
-			self.diffdata5 = self.diffdata5[self.act.data_frame_update_point:]
-			self.diffdata6 = self.diffdata6[self.act.data_frame_update_point:]
-		
-		self.data  = np.append(self.data,  data_ax)
-		self.data2 = np.append(self.data2, data_ay)
-		self.data3 = np.append(self.data3, data_az)
-		self.data4 = np.append(self.data4, data_wx)
-		self.data5 = np.append(self.data5, data_wy)
-		self.data6 = np.append(self.data6, data_wz)
-		self.data7 = np.append(self.data7, data_wz200)
-		self.diffdata1 = np.append(self.diffdata1, diff_ax)
-		self.diffdata2 = np.append(self.diffdata2, diff_ay)
-		self.diffdata3 = np.append(self.diffdata3, diff_az)
-		self.diffdata4 = np.append(self.diffdata4, diff_wx)
-		self.diffdata5 = np.append(self.diffdata5, diff_wy)
-		self.diffdata6 = np.append(self.diffdata6, diff_wz)
-		
-		wz_offset = np.round(np.average(self.data6),3)
-		wz_std = np.round(np.std(self.data6), 3)
-		diffwz_std = np.round(np.std(self.diffdata6), 3)
-		self.top.wzOffset_lb.val.setText(str(wz_offset))
-		self.top.wzStd_lb.val.setText(str(wz_std))
-		self.top.diffwzStd_lb.val.setText(str(diffwz_std))
-		
-		wz200_offset = np.round(np.average(self.data7),3)
-		wz200_std = np.round(np.std(self.data7), 3)
-		self.top.wz200Offset_lb.val.setText(str(wz200_offset))
-		self.top.wz200Std_lb.val.setText(str(wz200_std))
-		
-		wx_offset = np.round(np.average(self.data4),3)
-		wx_std = np.round(np.std(self.data4), 3)
-		diffwx_std = np.round(np.std(self.diffdata4), 3)
-		self.top.wxOffset_lb.val.setText(str(wx_offset))
-		self.top.wxStd_lb.val.setText(str(wx_std))
-		self.top.diffwxStd_lb.val.setText(str(diffwx_std))
-		
-		wy_offset = np.round(np.average(self.data5),3)
-		wy_std = np.round(np.std(self.data5), 3)
-		diffwy_std = np.round(np.std(self.diffdata5), 3)
-		self.top.wyOffset_lb.val.setText(str(wy_offset))
-		self.top.wyStd_lb.val.setText(str(wy_std))
-		self.top.diffwyStd_lb.val.setText(str(diffwy_std))
-		
-		ax_offset = np.round(np.average(self.data),3)
-		ax_std = np.round(np.std(self.data), 3)
-		diffax_std = np.round(np.std(self.diffdata1), 3)
-		self.top.axOffset_lb.val.setText(str(ax_offset))
-		self.top.axStd_lb.val.setText(str(ax_std))
-		self.top.diffaxStd_lb.val.setText(str(diffax_std))
-		
-		ay_offset = np.round(np.average(self.data2),3)
-		ay_std = np.round(np.std(self.data2), 3)
-		diffay_std = np.round(np.std(self.diffdata2), 3)
-		self.top.ayOffset_lb.val.setText(str(ay_offset))
-		self.top.ayStd_lb.val.setText(str(ay_std))
-		self.top.diffayStd_lb.val.setText(str(diffay_std))
-		
-		''' ax ay plot '''
-		# self.top.com_plot.ax1.set_ylabel("acc(code)")
-		# self.top.com_plot.ax1.plot(self.data, color = 'r', linestyle = '-', marker = '', label="ax")
-		# self.top.com_plot.ax1.legend(bbox_to_anchor=(1.0, 1.0), loc='upper left', prop={'size': 10})
-		# self.top.com_plot.ax2.set_ylabel("w(code)")
-		# self.top.com_plot.ax2.plot(self.data6, color = 'b', linestyle = '-', marker = '', label="wz")
-		# self.top.com_plot.ax2.legend(bbox_to_anchor=(1.0, 1.0), loc='upper left', prop={'size': 10})
-		
-		# if(self.ax_chk):
-			# self.top.com_plot.ax1.plot(self.data, color = 'r', linestyle = '-', marker = '', label="ax")
-		# if(self.ay_chk):
-			# self.top.com_plot.ax1.plot(self.data2, color = 'g', linestyle = '-', marker = '', label="ay")
-		if(self.wz200_chk):
-			self.top.com_plot.ax1.plot(self.data7, color = 'r', linestyle = '-', marker = '', label="wz200")
-		if(self.wz_chk):
-			self.top.com_plot.ax2.plot(self.data6, color = 'b', linestyle = '-', marker = '', label="wz")
-		
-		self.top.com_plot.ax1.legend(bbox_to_anchor=(0.9, 1.0), loc='upper left', prop={'size': 10})
-		self.top.com_plot.ax2.legend(bbox_to_anchor=(0.9, 1.0), loc='upper left', prop={'size': 10})
-		
-		self.top.com_plot.figure.canvas.draw()		
-		self.top.com_plot.figure.canvas.flush_events()
-		
 	def calibADXLIMUnGYRO(self, data_ax, data_ay, data_az, data_ADax, data_ADay, data_ADaz, 
 						data_wx, data_wy, data_wz, data_wz200, diff_wx, diff_wy, diff_wz):
 		if(self.act.runFlag):

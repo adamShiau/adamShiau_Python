@@ -25,10 +25,10 @@ class TabPlot(QTabWidget):
 		self.tab1_plot3 = outputPlotSize(16)
 		self.tab1_plot4 = outputPlotSize(16)
 		###tab1 check box###
-		self.tab1_gyro_cb = chkBoxBlock_2('','Nano33', 'PP')
+		self.tab1_gyro_cb = chkBoxBlock_2('wz','Nano33', 'PP')
 		self.tab1_adxlXLM_cb = chkBoxBlock_2( 'ADXL355', 'ax', 'ay')
 		self.tab1_nano33XLM_cb = chkBoxBlock_2('Nano33', 'ax', 'ay')
-		self.tab1_speed_cb = chkBoxBlock_2( '', 'ADXL355', 'Nano33')
+		self.tab1_speed_cb = chkBoxBlock_2( 'speed', 'ADXL355', 'Nano33')
 		###tab1 btn###
 		self.tab1_read_btn = AdamGUIclass.btn('read')
 		self.tab1_stop_btn = AdamGUIclass.btn('stop')

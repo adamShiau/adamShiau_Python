@@ -34,23 +34,16 @@ class IMU_Action(QObject):
 	fog_update12 = pyqtSignal(object, object, object, object, object, object, object, object, object, object, object, object)
 	fog_update13 = pyqtSignal(object, object, object, object, object, object, object, object, object, object, object, object, object)
 	fog_finished = pyqtSignal()
+	'''當valid_cnt累加到valid_cnt_num時valid_flag會變1，此時才會送數據到main，目的為了避開程式一開始亂跳的情形 '''
 	valid_flag = 0
 	valid_cnt = 0
+	valid_cnt_num = 5
 	TIME_PERIOD = 0.01
 	''' 計算一定的點數後再傳到main作圖，點數太小的話buffer會累積造成lag'''
 	data_frame_update_point = 15
 	''' run glag 初始值'''
 	runFlag = 0
-	'''IMU 靜止時之offset, 需先run calibration才會有值，否則為0'''
-	offset_SRS200_wz = 0
-	offset_PP_wz = 0
-	offset_Nano33_wz = 0
-	offset_Nano33_ax = 0
-	offset_Nano33_ay = 0
-	offset_Nano33_az = 0
-	offset_Adxl355_ax = 0
-	offset_Adxl355_ay = 0
-	offset_Adxl355_az = 0
+	runFlag_cali = 0
 	''' check byte '''
 	check_byte = 170
 	check_byte2 = 171
@@ -76,15 +69,6 @@ class IMU_Action(QObject):
 		# self.SaveFileName = ''
 		
 	def updateADXL_IMUnGYRO(self, MV_MODE=1):
-		print('act . offset_SRS200_wz: ', offset_SRS200_wz) 
-		print('act . offset_PP_wz: ', offset_PP_wz) 
-		print('act . offset_Nano33_wz: ', offset_Nano33_wz) 
-		print('act . offset_Nano33_ax: ', offset_Nano33_ax) 
-		print('act . offset_Nano33_ay: ', offset_Nano33_ay) 
-		print('act . offset_Nano33_az: ', offset_Nano33_az) 
-		print('act . offset_Adxl355_ax: ', offset_Adxl355_ax) 
-		print('act . offset_Adxl355_ay: ', offset_Adxl355_ay) 
-		print('act . offset_Adxl355_az: ', offset_Adxl355_az) 		
 		
 		data_Nano33_ax = np.zeros(self.data_frame_update_point)
 		data_Nano33_ay = np.zeros(self.data_frame_update_point)
@@ -96,6 +80,7 @@ class IMU_Action(QObject):
 		data_Nano33_wy = np.zeros(self.data_frame_update_point)
 		data_Nano33_wz = np.zeros(self.data_frame_update_point)
 		data_SRS200_wz = np.zeros(self.data_frame_update_point)
+		data_PP_wz = np.zeros(self.data_frame_update_point)
 		dt = np.zeros(self.data_frame_update_point)
 		data_Nano33_ax_sum = 0
 		data_Nano33_ay_sum = 0
@@ -107,11 +92,12 @@ class IMU_Action(QObject):
 		data_Nano33_wy_sum = 0
 		data_Nano33_wz_sum = 0
 		data_SRS200_wz_sum = 0
+		data_PP_wz_sum = 0
 		temp_dt_before = 0
 		temp_offset = 0
 		drop_flag = 0
 		
-		if self.runFlag:
+		if self.runFlag or self.runFlag_cali:
 			self.COM.port.flushInput()
 			
 			while self.runFlag:
@@ -138,6 +124,7 @@ class IMU_Action(QObject):
 					temp_Nano33_wz = self.COM.read2Binary()
 					temp_dt = self.COM.read4Binary()
 					temp_SRS200_wz = self.COM.read4Binary()
+					temp_PP_wz = 0 #modify after
 					temp_Adxl355_ax = self.COM.read3Binary()
 					temp_Adxl355_ay = self.COM.read3Binary()
 					temp_Adxl355_az = self.COM.read3Binary()
@@ -192,6 +179,7 @@ class IMU_Action(QObject):
 						temp_Nano33_wz = self.convert2Sign_2B(temp_Nano33_wz)
 						temp_dt = self.convert2Unsign_4B(temp_dt)
 						temp_SRS200_wz = self.convert2Sign_4B(temp_SRS200_wz)
+						temp_PP_wz = 0
 						temp_Adxl355_ax =self.convert2Sign_3B(temp_Adxl355_ax)
 						temp_Adxl355_ay =self.convert2Sign_3B(temp_Adxl355_ay)
 						temp_Adxl355_az =self.convert2Sign_3B(temp_Adxl355_az)
@@ -200,22 +188,8 @@ class IMU_Action(QObject):
 							temp_offset = math.ceil(abs(temp_dt - temp_dt_before)/(1<<32))*(1<<32)
 							temp_dt = temp_dt + temp_offset
 							temp_dt_before = temp_dt
-						# print(temp_offset)
-						# if(self.dt_init_flag):
-							# self.dt_init_flag = 0
-							# dt_init = temp_dt
 						
 						#calaculate MV value
-		data_Nano33_ax = np.zeros(self.data_frame_update_point)
-		data_Nano33_ay = np.zeros(self.data_frame_update_point)
-		data_Nano33_az = np.zeros(self.data_frame_update_point)
-		data_Adxl355_ax = np.zeros(self.data_frame_update_point)
-		data_Adxl355_ay = np.zeros(self.data_frame_update_point)
-		data_Adxl355_az = np.zeros(self.data_frame_update_point)
-		data_Nano33_wx = np.zeros(self.data_frame_update_point)
-		data_Nano33_wy = np.zeros(self.data_frame_update_point)
-		data_Nano33_wz = np.zeros(self.data_frame_update_point)
-		data_SRS200_wz = np.zeros(self.data_frame_update_point)
 						if(MV_MODE):
 							data_Nano33_ax_sum = data_Nano33_ax_sum - data_Nano33_ax[0]
 							data_Nano33_ax_sum = data_Nano33_ax_sum + temp_Nano33_ax
@@ -245,6 +219,10 @@ class IMU_Action(QObject):
 							data_SRS200_wz_sum = data_SRS200_wz_sum + temp_SRS200_wz
 							data_SRS200_wz_MV = data_SRS200_wz_sum/self.data_frame_update_point
 							
+							data_PP_wz_sum = data_PP_wz_sum - data_PP_wz[0]
+							data_PP_wz_sum = data_PP_wz_sum + temp_PP_wz
+							data_PP_wz_MV = data_PP_wz_sum/self.data_frame_update_point
+							
 							data_Adxl355_ax_sum = data_Adxl355_ax_sum - data_Adxl355_ax[0]
 							data_Adxl355_ax_sum = data_Adxl355_ax_sum + temp_Adxl355_ax
 							data_Adxl355_ax_MV = data_Adxl355_ax_sum/self.data_frame_update_point
@@ -267,6 +245,7 @@ class IMU_Action(QObject):
 							val_Nano33_wy = data_Nano33_wy_MV
 							val_Nano33_wz = data_Nano33_wz_MV
 							val_SRS200_wz = data_SRS200_wz_MV
+							val_PP_wz = data_PP_wz_MV
 							
 						else: 
 							val_Nano33_ax = temp_Nano33_ax
@@ -279,6 +258,7 @@ class IMU_Action(QObject):
 							val_Nano33_wy = temp_Nano33_wy
 							val_Nano33_wz = temp_Nano33_wz
 							val_SRS200_wz = temp_SRS200_wz
+							val_PP_wz = temp_PP_wz
 						
 						
 						data_Nano33_ax = np.append(data_Nano33_ax[1:], val_Nano33_ax)
@@ -291,7 +271,7 @@ class IMU_Action(QObject):
 						data_Nano33_wy = np.append(data_Nano33_wy[1:], val_Nano33_wy)
 						data_Nano33_wz = np.append(data_Nano33_wz[1:], val_Nano33_wz)
 						data_SRS200_wz = np.append(data_SRS200_wz[1:], val_SRS200_wz)
-						
+						data_PP_wz = np.append(data_PP_wz[1:], val_PP_wz)
 						
 						# dt_new = dt_old + i*self.TIME_PERIOD
 						dt = np.append(dt[1:], temp_dt)
@@ -302,30 +282,33 @@ class IMU_Action(QObject):
 				self.valid_cnt = self.valid_cnt + 1
 				self.bufferSize = self.COM.port.inWaiting()
 				if(DEBUG):
-					print('data_Nano33_ax: ', data_Nano33_ax)
-					print('data_Nano33_ay: ', data_Nano33_ay)
-					print('data_Nano33_az: ', data_Nano33_az)
-					print('data_Nano33_wx: ', data_Nano33_wx)
-					print('data_Nano33_wy: ', data_Nano33_wy)
-					print('data_Nano33_wz: ', data_Nano33_wz)
-					# print('len(data): ', len(data), end=', ')
-					# print('len(data_wx): ', len(data_wx), end=', ')
-					# print('len(data_wy): ', len(data_wy), end=', ')
-					# print('len(data_wz_vth): ', len(data_wz_vth), end=', ')
-					# print('len(data_wz200_vth): ', len(data_wz200_vth), end=', ')
-					# print('len(dt): ', len(dt))
-					# print(self.bufferSize)
+					# print('bufferSize: ', self.bufferSize)
+					# print('len(data): ', len(data_SRS200_wz))
+					# print('data_Nano33_ax: ', data_Nano33_ax)
+					# print('data_Nano33_ay: ', data_Nano33_ay)
+					# print('data_Nano33_az: ', data_Nano33_az)
+					# print('data_Nano33_wx: ', data_Nano33_wx)
+					# print('data_Nano33_wy: ', data_Nano33_wy)
+					# print('data_Nano33_wz: ', data_Nano33_wz)
+					# print('data_Adxl355_ax: ', data_Adxl355_ax)
+					# print('data_Adxl355_ay: ', data_Adxl355_ay)
+					# print('data_Adxl355_az: ', data_Adxl355_az)
+					# print('data_SRS200_wz: ', data_SRS200_wz)	
+					# print('data_PP_wz: ', data_PP_wz)					
 					pass
 				if(self.valid_cnt == 1):
 					temp_dt_before = dt[0]
 					
-				if(self.valid_cnt == 5):
+				if(self.valid_cnt == self.valid_cnt_num):
 					self.valid_flag = 1
+					
 				if(self.valid_flag):
 					if(self.dt_init_flag):
 						self.dt_init_flag = 0
 						dt_init = dt[0]
-					self.fog_update9.emit(data_ADax_vth, data_ADay_vth, data_ax_vth, data_ay_vth, data_wx_vth, data_wy_vth, data_wz_vth, data_wz200_vth, dt-dt_init)
+					self.fog_update8.emit(dt-dt_init, data_SRS200_wz, data_Nano33_wz, data_PP_wz, data_Adxl355_ax, data_Adxl355_ay,
+											data_Nano33_ax, data_Nano33_ay)
+					# self.fog_update9.emit(data_ADax_vth, data_ADay_vth, data_ax_vth, data_ay_vth, data_wx_vth, data_wy_vth, data_wz_vth, data_wz200_vth, dt-dt_init)
 					# dt_old = dt_new + self.TIME_PERIOD
 			#end of while self.runFlag:
 			self.fog_finished.emit()

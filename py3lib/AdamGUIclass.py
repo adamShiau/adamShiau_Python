@@ -282,8 +282,8 @@ class chkBoxBlock_2(QWidget):
 	def __init__(self, title='', name1='', name2='', parent=None):
 		super(chkBoxBlock_2, self).__init__(parent)
 		self.groupBox = QGroupBox(title)
-		self.cb1 = QCheckBox(name1)
-		self.cb2 = QCheckBox(name2)
+		self.cb1 = QCheckBox(title+'_'+name1)
+		self.cb2 = QCheckBox(title+'_'+name2)
 		
 	def layout(self):
 		layout = QVBoxLayout()

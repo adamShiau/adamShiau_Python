@@ -633,7 +633,7 @@ class COMRead_Action(QObject):
 					# print('len(data_wz_vth): ', len(data_wz_vth), end=', ')
 					# print('len(data_wz200_vth): ', len(data_wz200_vth), end=', ')
 					# print('len(dt): ', len(dt))
-					# print(self.bufferSize)
+					print(self.bufferSize)
 					pass
 				if(self.valid_cnt == 1):
 					temp_dt_before = dt[0]

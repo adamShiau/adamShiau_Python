@@ -112,8 +112,8 @@ class mainWidget(QWidget):
 	def main_UI(self):
 		mainLayout = QGridLayout()
 		mainLayout.addWidget(self.usb.layoutG(), 0,0,1,3)
-		mainLayout.addWidget(self.buffer_lb, 0,3,1,3)
-		mainLayout.addWidget(self.mv_rb, 0,6,1,1)
+		mainLayout.addWidget(self.buffer_lb, 0,3,1,1)
+		mainLayout.addWidget(self.mv_rb, 0,4,1,1)
 		mainLayout.addWidget(self.TabPlot, 1,0,8,8)
 		mainLayout.addWidget(self.SRS200_gauge, 2,9,3,3)
 		mainLayout.addWidget(self.speed_gauge, 5,9,3,3)

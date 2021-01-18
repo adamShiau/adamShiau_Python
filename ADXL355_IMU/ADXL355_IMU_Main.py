@@ -1197,7 +1197,6 @@ class mainWindow(QMainWindow):
 			self.diffdata4 = self.diffdata4[self.act.data_frame_update_point:]
 			self.diffdata5 = self.diffdata5[self.act.data_frame_update_point:]
 			self.diffdata6 = self.diffdata6[self.act.data_frame_update_point:]
-		
 		self.data  = np.append(self.data,  data_ax)
 		self.data2 = np.append(self.data2, data_ay)
 		self.data3 = np.append(self.data3, data_az)

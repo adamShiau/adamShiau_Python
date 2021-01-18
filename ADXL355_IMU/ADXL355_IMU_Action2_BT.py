@@ -31,6 +31,7 @@ class IMU_Action(QObject):
 	fog_update7 = pyqtSignal(object, object, object, object, object, object, object)
 	fog_update8 = pyqtSignal(object, object, object, object, object, object, object, object)
 	fog_update9 = pyqtSignal(object, object, object, object, object, object, object, object, object)
+	fog_update11 = pyqtSignal(object, object, object, object, object, object, object, object, object, object, object)
 	fog_update12 = pyqtSignal(object, object, object, object, object, object, object, object, object, object, object, object)
 	fog_update13 = pyqtSignal(object, object, object, object, object, object, object, object, object, object, object, object, object)
 	fog_finished = pyqtSignal()
@@ -100,7 +101,7 @@ class IMU_Action(QObject):
 		if self.runFlag or self.runFlag_cali:
 			self.COM.port.flushInput()
 			
-			while self.runFlag:
+			while self.runFlag or self.runFlag_cali:
 				valid_byte = 1
 				if(drop_flag):
 					drop_flag = 0
@@ -201,7 +202,7 @@ class IMU_Action(QObject):
 							
 							data_Nano33_az_sum = data_Nano33_az_sum - data_Nano33_az[0]
 							data_Nano33_az_sum = data_Nano33_az_sum + temp_Nano33_az
-							data_Nano33_ax_MV = data_Nano33_az_sum/self.data_frame_update_point
+							data_Nano33_az_MV = data_Nano33_az_sum/self.data_frame_update_point
 							
 							data_Nano33_wx_sum = data_Nano33_wx_sum - data_Nano33_wx[0]
 							data_Nano33_wx_sum = data_Nano33_wx_sum + temp_Nano33_wx
@@ -306,8 +307,12 @@ class IMU_Action(QObject):
 					if(self.dt_init_flag):
 						self.dt_init_flag = 0
 						dt_init = dt[0]
-					self.fog_update8.emit(dt-dt_init, data_SRS200_wz, data_Nano33_wz, data_PP_wz, data_Adxl355_ax, data_Adxl355_ay,
+					if(self.runFlag):
+						self.fog_update8.emit(dt-dt_init, data_SRS200_wz, data_Nano33_wz, data_PP_wz, data_Adxl355_ax, data_Adxl355_ay,
 											data_Nano33_ax, data_Nano33_ay)
+					elif(self.runFlag_cali):
+						self.fog_update11.emit(data_SRS200_wz, data_Nano33_wx, data_Nano33_wy, data_Nano33_wz, data_PP_wz, data_Adxl355_ax, data_Adxl355_ay,
+											data_Adxl355_az, data_Nano33_ax, data_Nano33_ay, data_Nano33_az)
 					# self.fog_update9.emit(data_ADax_vth, data_ADay_vth, data_ax_vth, data_ay_vth, data_wx_vth, data_wy_vth, data_wz_vth, data_wz200_vth, dt-dt_init)
 					# dt_old = dt_new + self.TIME_PERIOD
 			#end of while self.runFlag:

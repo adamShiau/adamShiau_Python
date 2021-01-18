@@ -37,19 +37,6 @@ gyro200_factor = 0.0121
 
 
 class mainWindow(QMainWindow):
-	wz_offset = 0
-	wzVth = 0
-	wz200_offset = 0
-	wx_offset = 0
-	wxVth = 0
-	wy_offset = 0
-	wyVth = 0
-	ax_offset = 0
-	axVth = 0
-	ADax_offset = 0
-	ay_offset = 0
-	ADay_offset = 0
-	ayVth = 0
 	''' define and initiate global variable '''
 	MV_status = 0
 	offset_SRS200_wz = 0
@@ -76,29 +63,17 @@ class mainWindow(QMainWindow):
 		self.thread1 = QThread()
 		self.thread_cali = QThread()
 		'''end of inittialize thread '''
-		self.data = np.empty(0)
-		self.data2 = np.empty(0)
-		self.data3 = np.empty(0)
-		self.data4 = np.empty(0)
-		self.data5 = np.empty(0)
-		self.data6 = np.empty(0)
-		self.data7 = np.empty(0)
-		self.data8 = np.empty(0)
-		self.data9 = np.empty(0)
-		self.data10 = np.empty(0)
 		self.data_SRS200_wz = np.empty(0)
+		self.data_Nano33_wx = np.empty(0)
+		self.data_Nano33_wy = np.empty(0)
 		self.data_Nano33_wz = np.empty(0)
 		self.data_PP_wz = np.empty(0)
 		self.data_Adxl355_ax = np.empty(0)
 		self.data_Adxl355_ay = np.empty(0)
+		self.data_Adxl355_az = np.empty(0)
 		self.data_Nano33_ax = np.empty(0)
 		self.data_Nano33_ay = np.empty(0)
-		self.diffdata1 = np.empty(0)
-		self.diffdata2 = np.empty(0)
-		self.diffdata3 = np.empty(0)
-		self.diffdata4 = np.empty(0)
-		self.diffdata5 = np.empty(0)
-		self.diffdata6 = np.empty(0)
+		self.data_Nano33_az = np.empty(0)
 		self.thetaz = 0
 		self.thetaz200 = 0
 		self.thetax = 0
@@ -162,7 +137,7 @@ class mainWindow(QMainWindow):
 		self.top.TabPlot.tab1_read_btn.bt.clicked.connect(self.myThreadStart) # set runFlag=1
 		self.top.TabPlot.tab1_stop_btn.bt.clicked.connect(self.buttonStop) # set runFlag=0
 		self.top.TabPlot.tab2_cali_start_btn.bt.clicked.connect(self.caliThreadStart)
-		self.top.TabPlot.tab2_cali_stop_btn.bt.clicked.connect(self.caliThreadStop)
+		self.top.TabPlot.tab2_cali_stop_btn.bt.clicked.connect(self.buttonStop)
 		# self.top.stop_btn.stop.clicked.connect(self.buttonStop) # set runFlag=0
 		''' btn connect '''
 		self.top.usb.bt_update.clicked.connect(self.update_comport)
@@ -170,14 +145,16 @@ class mainWindow(QMainWindow):
 		self.top.usb.bt_connect.clicked.connect(self.usbConnect)
 		''' thread connect '''
 		self.thread1.started.connect(lambda:self.act.updateADXL_IMUnGYRO(MV_MODE=self.MV_status)) 
-		self.thread_cali.started.connect(lambda:self.act.IMU_calibration(MV_MODE=self.MV_status))
+		self.thread_cali.started.connect(lambda:self.act.updateADXL_IMUnGYRO(MV_MODE=self.MV_status))
 
 		''' emit connect '''
 		#btn enable signal
 		self.usbconnect_status.connect(self.setBtnStatus) #確定usb連接成功時才enable btn
 		#action emit connect
 		self.act.fog_update8.connect(self.plotADXLIMUnGYRO)
+		self.act.fog_update11.connect(self.calibADXLIMUnGYRO)
 		self.act.fog_finished.connect(self.myThreadStop) #runFlag=0時fog_finished會emit，之後關掉thread1
+		self.act.fog_finished.connect(self.myThreadStop)
 		# self.act.fog_update13.connect(self.calibADXLIMUnGYRO)
 		
 		''' text connect '''
@@ -375,6 +352,7 @@ class mainWindow(QMainWindow):
 		self.act.runFlag = False
 		self.act.runFlag_cali = False
 		print('self.act.runFlag: ', self.act.runFlag)
+		print('self.act.runFlag_cali: ', self.act.runFlag_cali)
 		self.act.dt_init_flag = 1
 		self.thetax_arr = np.empty(0)
 		self.thetay_arr = np.empty(0)
@@ -403,90 +381,80 @@ class mainWindow(QMainWindow):
 		self.f.writelines('#' + start_time_header + '\n')
 	
 	def caliThreadStart(self):
-		self.act.runFlag = True
+		self.act.runFlag_cali = True
+		print('self.act.runFlag_cali:', self.act.runFlag_cali)
 		self.thread_cali.start()
 		
 	def caliThreadStop(self):
-		self.act.runFlag = False 
-		wzOffset_cp = float(self.top.wzOffset_lb.val.text())
-		wzVth_cp = round(float(self.top.diffwzStd_lb.val.text())*3,3)
-		wz200Offset_cp = float(self.top.wz200Offset_lb.val.text())
-		wxOffset_cp = float(self.top.wxOffset_lb.val.text())
-		wxVth_cp = round(float(self.top.diffwxStd_lb.val.text())*3,3)
-		wyOffset_cp = float(self.top.wyOffset_lb.val.text())
-		wyVth_cp = round(float(self.top.diffwyStd_lb.val.text())*3,3)
-		
-		axOffset_cp = float(self.top.axOffset_lb.val.text())
-		ADaxOffset_cp = float(self.top.axOffsetAD_lb.val.text())
-		axVth_cp = round(float(self.top.diffaxStd_lb.val.text())*3,3)
-		ayOffset_cp = float(self.top.ayOffset_lb.val.text())
-		ADayOffset_cp = float(self.top.ayOffsetAD_lb.val.text())
-		ayVth_cp = round(float(self.top.diffayStd_lb.val.text())*3,3)
-		# print("ADaxOffset_cp:", ADaxOffset_cp)
-		# print("ADayOffset_cp:", ADayOffset_cp)
-		if(wzVth_cp < 1):
-			wzVth_cp = 1
-		if(wxVth_cp < 1):
-			wxVth_cp = 1
-		if(wyVth_cp < 1):
-			wyVth_cp = 1
-		if(axVth_cp < 1):
-			axVth_cp = 1
-		if(ayVth_cp < 1):
-			ayVth_cp = 1
-			
-		self.top.wzOffset_le.setText(str(wzOffset_cp))
-		self.top.wzVth_le.setText(str(wzVth_cp))
-		self.wz_offset = wzOffset_cp
-		self.wzVth = wzVth_cp
-		
-		self.top.wz200Offset_le.setText(str(wz200Offset_cp))
-		self.wz200_offset = wz200Offset_cp
-		
-		self.top.wxOffset_le.setText(str(wxOffset_cp))
-		self.top.wxVth_le.setText(str(wxVth_cp))
-		self.wx_offset = wxOffset_cp
-		self.wxVth = wxVth_cp
-		
-		self.top.wyOffset_le.setText(str(wyOffset_cp))
-		self.top.wyVth_le.setText(str(wyVth_cp))
-		self.wy_offset = wyOffset_cp
-		self.wyVth = wyVth_cp
-		
-		self.top.axOffset_le.setText(str(axOffset_cp))
-		self.top.axVth_le.setText(str(axVth_cp))
-		self.ax_offset = axOffset_cp
-		self.axVth = axVth_cp
-		
-		self.top.ayOffset_le.setText(str(ayOffset_cp))
-		self.top.ayVth_le.setText(str(ayVth_cp))
-		self.ay_offset = ayOffset_cp
-		self.ayVth = ayVth_cp
-		
-		self.top.axOffsetAD_le.setText(str(ADaxOffset_cp))
-		self.ADax_offset = ADaxOffset_cp
-		
-		self.top.ayOffsetAD_le.setText(str(ADayOffset_cp))
-		self.ADay_offset = ADayOffset_cp
-		
+		self.act.runFlag_cali = False 
 		self.thread_cali.quit() 
 		self.thread_cali.wait()
-		self.data  = np.empty(0)
-		self.data2 = np.empty(0)
-		self.data3 = np.empty(0)
-		self.data4 = np.empty(0)
-		self.data5 = np.empty(0)
-		self.data6 = np.empty(0)
-		self.data7 = np.empty(0)
-		self.data8 = np.empty(0)
-		self.data9 = np.empty(0)
-		self.data10 = np.empty(0)
-		self.diffdata1 = np.empty(0)
-		self.diffdata2 = np.empty(0)
-		self.diffdata3 = np.empty(0)
-		self.diffdata4 = np.empty(0)
-		self.diffdata5 = np.empty(0)
-		self.diffdata6 = np.empty(0)
+		
+		# self.top.TabPlot.lb.setText(str(self.act.bufferSize))
+		offset_SRS200_wz = 0
+		offset_PP_wz = 0
+		offset_Nano33_wz = 0
+		offset_Nano33_ax = 0
+		offset_Nano33_ay = 0
+		offset_Nano33_az = 0
+		offset_Adxl355_ax = 0
+		offset_Adxl355_ay = 0
+		offset_Adxl355_az = 0
+		
+		# wzOffset_cp = float(self.top.wzOffset_lb.val.text())
+			
+		# self.top.wzOffset_le.setText(str(wzOffset_cp))
+		# self.top.wzVth_le.setText(str(wzVth_cp))
+		# self.wz_offset = wzOffset_cp
+		# self.wzVth = wzVth_cp
+		
+		# self.top.wz200Offset_le.setText(str(wz200Offset_cp))
+		# self.wz200_offset = wz200Offset_cp
+		
+		# self.top.wxOffset_le.setText(str(wxOffset_cp))
+		# self.top.wxVth_le.setText(str(wxVth_cp))
+		# self.wx_offset = wxOffset_cp
+		# self.wxVth = wxVth_cp
+		
+		# self.top.wyOffset_le.setText(str(wyOffset_cp))
+		# self.top.wyVth_le.setText(str(wyVth_cp))
+		# self.wy_offset = wyOffset_cp
+		# self.wyVth = wyVth_cp
+		
+		# self.top.axOffset_le.setText(str(axOffset_cp))
+		# self.top.axVth_le.setText(str(axVth_cp))
+		# self.ax_offset = axOffset_cp
+		# self.axVth = axVth_cp
+		
+		# self.top.ayOffset_le.setText(str(ayOffset_cp))
+		# self.top.ayVth_le.setText(str(ayVth_cp))
+		# self.ay_offset = ayOffset_cp
+		# self.ayVth = ayVth_cp
+		
+		# self.top.axOffsetAD_le.setText(str(ADaxOffset_cp))
+		# self.ADax_offset = ADaxOffset_cp
+		
+		# self.top.ayOffsetAD_le.setText(str(ADayOffset_cp))
+		# self.ADay_offset = ADayOffset_cp
+		
+		# self.thread_cali.quit() 
+		# self.thread_cali.wait()
+		# self.data  = np.empty(0)
+		# self.data2 = np.empty(0)
+		# self.data3 = np.empty(0)
+		# self.data4 = np.empty(0)
+		# self.data5 = np.empty(0)
+		# self.data6 = np.empty(0)
+		# self.data7 = np.empty(0)
+		# self.data8 = np.empty(0)
+		# self.data9 = np.empty(0)
+		# self.data10 = np.empty(0)
+		# self.diffdata1 = np.empty(0)
+		# self.diffdata2 = np.empty(0)
+		# self.diffdata3 = np.empty(0)
+		# self.diffdata4 = np.empty(0)
+		# self.diffdata5 = np.empty(0)
+		# self.diffdata6 = np.empty(0)
 	
 	def myThreadStart(self):
 		# self.save_status = self.openFileBox()
@@ -503,28 +471,25 @@ class mainWindow(QMainWindow):
 	def myThreadStop(self):
 		self.thread1.quit() 
 		self.thread1.wait()
+		self.thread_cali.quit() 
+		self.thread_cali.wait()
 		# if(self.save_status):
 			# stop_time_header = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
 			# self.f.writelines('#' + stop_time_header + '\n')
 			# self.f.close()
-		self.data  = np.empty(0)
-		self.data2 = np.empty(0)
-		self.data3 = np.empty(0)
-		self.data4 = np.empty(0)
-		self.data5 = np.empty(0)
-		self.data6 = np.empty(0)
-		self.data7 = np.empty(0)
-		self.data8 = np.empty(0)
-		self.data9 = np.empty(0)
-		self.data10 = np.empty(0)
 		self.data_SRS200_wz = np.empty(0)
+		self.data_Nano33_wx = np.empty(0)
+		self.data_Nano33_wy = np.empty(0)
 		self.data_Nano33_wz = np.empty(0)
 		self.data_PP_wz = np.empty(0)
 		self.data_Adxl355_ax = np.empty(0)
 		self.data_Adxl355_ay = np.empty(0)
+		self.data_Adxl355_az = np.empty(0)
 		self.data_Nano33_ax = np.empty(0)
 		self.data_Nano33_ay = np.empty(0)
+		self.data_Nano33_az = np.empty(0)
 		self.dt = np.empty(0)
+		
 		self.thetaz = 0
 		self.thetaz200 = 0
 		self.thetax = 0
@@ -532,19 +497,10 @@ class mainWindow(QMainWindow):
 		self.speed = 0
 		self.speedx = 0
 		self.speedy = 0
-	'''
-	offset_SRS200_wz = 0
-	offset_PP_wz = 0
-	offset_Nano33_wz = 0
-	offset_Nano33_ax = 0
-	offset_Nano33_ay = 0
-	offset_Nano33_az = 0
-	offset_Adxl355_ax = 0
-	offset_Adxl355_ay = 0
-	offset_Adxl355_az = 0	
-	'''
+
 		
 	def plotADXLIMUnGYRO(self, dt, data_SRS200_wz, data_Nano33_wz, data_PP_wz, data_Adxl355_ax, data_Adxl355_ay, data_Nano33_ax, data_Nano33_ay):
+		# print('plotADXLIMUnGYRO')
 		if(self.act.runFlag):
 			self.top.TabPlot.tab1_plot1.ax.clear()
 			if(self.Nano33_wz_chk or self.PP_wz_chk):
@@ -657,45 +613,6 @@ class mainWindow(QMainWindow):
 			# print('Nano33_ax: ', self.data_Nano33_ax)
 			# print('Nano33_ay: ', self.data_Nano33_ay)
 			
-			# print(np.average(self.data))
-			# print(np.average(self.data2))
-			# print(np.average(self.data3))
-			# print('len(data_wx)', len(self.data4), end=', ')
-			# print(np.average(self.data4))
-			# print('len(data_wy)', len(self.data5), end=', ')
-			# print(np.average(self.data5))
-			# print('len(data_wz)', len(self.data6), end=', ')
-			# print('len(data_wz200)', len(self.data7), end=', ')
-			# print(np.round(np.average(self.data6), 3), end=', ')
-			# print(np.round(np.std(self.data6), 3))
-			# print(np.average(self.data6))
-			# print('len(dt)', len(self.dt))
-			
-			# print("thez: ", end=', ')
-			# print(self.thetaz, end=', ')
-			# print(len(self.thetaz_arr))
-			# print("thex: ", end=', ')
-			# print(self.thetax, end=', ')
-			# print(len(self.thetax_arr))
-			# print("they: ", end=', ')
-			# print(self.thetay, end=', ')
-			# print(len(self.thetay_arr))
-			
-			# print("vx: ", end=', ')
-			# print(self.speedx, end=', ')
-			# print(len(self.speedx_arr))
-			# print("vy: ", end=', ')
-			# print(self.speedy, end=', ')
-			# print(len(self.speedy_arr))
-			# self.top.wzOffset_lb.setText(str(np.average(self.data6)))
-			
-			# print('len(dt): ', len(self.dt))
-			# print('len(ax_33): ', len(self.data))
-			# print('len(ay_33): ', len(self.data2))
-			# print('len(ADax): ', len(self.data3))
-			# print('len(ADay): ', len(self.data4))
-			# print('len(wz): ', len(self.data7))
-			# print('len(wz200): ', len(self.data8))
 			pass
 					
 		
@@ -731,121 +648,87 @@ class mainWindow(QMainWindow):
 		if(self.Nano33_v_chk or self.Adxl355_v_chk):
 			self.top.TabPlot.tab1_plot4.figure.canvas.draw()		
 			self.top.TabPlot.tab1_plot4.figure.canvas.flush_events()
+		
+	def calibADXLIMUnGYRO(self, data_SRS200_wz, data_Nano33_wx, data_Nano33_wy, data_Nano33_wz, data_PP_wz, data_Adxl355_ax, data_Adxl355_ay,
+									data_Adxl355_az, data_Nano33_ax, data_Nano33_ay, data_Nano33_az):
+		# print('calibADXLIMUnGYRO')
+		if (len(self.data_SRS200_wz) >= 300):
+			self.data_SRS200_wz = self.data_SRS200_wz[self.act.data_frame_update_point:]
+			self.data_Nano33_wx = self.data_Nano33_wx[self.act.data_frame_update_point:]
+			self.data_Nano33_wy = self.data_Nano33_wy[self.act.data_frame_update_point:]
+			self.data_Nano33_wz = self.data_Nano33_wz[self.act.data_frame_update_point:]
+			self.data_PP_wz = self.data_PP_wz[self.act.data_frame_update_point:]
+			self.data_Adxl355_ax = self.data_Adxl355_ax[self.act.data_frame_update_point:]
+			self.data_Adxl355_ay = self.data_Adxl355_ay[self.act.data_frame_update_point:]
+			self.data_Adxl355_az = self.data_Adxl355_az[self.act.data_frame_update_point:]
+			self.data_Nano33_ax = self.data_Nano33_ax[self.act.data_frame_update_point:]
+			self.data_Nano33_ay = self.data_Nano33_ay[self.act.data_frame_update_point:]
+			self.data_Nano33_az = self.data_Nano33_az[self.act.data_frame_update_point:]
 			
-	def calibADXLIMUnGYRO(self, data_ax, data_ay, data_az, data_ADax, data_ADay, data_ADaz, 
-						data_wx, data_wy, data_wz, data_wz200, diff_wx, diff_wy, diff_wz):
-		if(self.act.runFlag):
-			self.top.com_plot.ax1.clear()
-			self.top.com_plot.ax2.clear()
-			
-		if (len(self.data) >= 300):
-			self.data  = self.data[self.act.data_frame_update_point:]
-			self.data2 = self.data2[self.act.data_frame_update_point:]
-			self.data3 = self.data3[self.act.data_frame_update_point:]
-			self.data4 = self.data4[self.act.data_frame_update_point:]
-			self.data5 = self.data5[self.act.data_frame_update_point:]
-			self.data6 = self.data6[self.act.data_frame_update_point:]
-			self.data7 = self.data7[self.act.data_frame_update_point:]
-			self.data8 = self.data8[self.act.data_frame_update_point:]
-			self.data9 = self.data9[self.act.data_frame_update_point:]
-			self.data10 = self.data10[self.act.data_frame_update_point:]
-			# self.diffdata1 = self.diffdata1[self.act.data_frame_update_point:]
-			# self.diffdata2 = self.diffdata2[self.act.data_frame_update_point:]
-			# self.diffdata3 = self.diffdata3[self.act.data_frame_update_point:]
-			self.diffdata4 = self.diffdata4[self.act.data_frame_update_point:]
-			self.diffdata5 = self.diffdata5[self.act.data_frame_update_point:]
-			self.diffdata6 = self.diffdata6[self.act.data_frame_update_point:]
+		self.data_SRS200_wz  = np.append(self.data_SRS200_wz,  data_SRS200_wz)
+		self.data_Nano33_wx = np.append(self.data_Nano33_wx, data_Nano33_wx)
+		self.data_Nano33_wy = np.append(self.data_Nano33_wy, data_Nano33_wy)
+		self.data_Nano33_wz = np.append(self.data_Nano33_wz, data_Nano33_wz)
+		self.data_PP_wz = np.append(self.data_PP_wz, data_PP_wz)
+		self.data_Adxl355_ax = np.append(self.data_Adxl355_ax, data_Adxl355_ax)
+		self.data_Adxl355_ay = np.append(self.data_Adxl355_ay, data_Adxl355_ay)
+		self.data_Adxl355_az = np.append(self.data_Adxl355_az, data_Adxl355_az)
+		self.data_Nano33_ax = np.append(self.data_Nano33_ax, data_Nano33_ax)
+		self.data_Nano33_ay  = np.append(self.data_Nano33_ay,  data_Nano33_ay)
+		self.data_Nano33_az  = np.append(self.data_Nano33_az,  data_Nano33_az)
 		
-		self.data  = np.append(self.data,  data_ax)
-		self.data2 = np.append(self.data2, data_ay)
-		self.data3 = np.append(self.data3, data_az)
-		self.data4 = np.append(self.data4, data_wx)
-		self.data5 = np.append(self.data5, data_wy)
-		self.data6 = np.append(self.data6, data_wz)
-		self.data7 = np.append(self.data7, data_wz200)
-		self.data8  = np.append(self.data8,  data_ADax)
-		self.data9  = np.append(self.data9,  data_ADay)
-		self.data10  = np.append(self.data10,  data_ADaz)
-		# self.diffdata1 = np.append(self.diffdata1, diff_ax)
-		# self.diffdata2 = np.append(self.diffdata2, diff_ay)
-		# self.diffdata3 = np.append(self.diffdata3, diff_az)
-		self.diffdata4 = np.append(self.diffdata4, diff_wx)
-		self.diffdata5 = np.append(self.diffdata5, diff_wy)
-		self.diffdata6 = np.append(self.diffdata6, diff_wz)
+		self.top.buffer_lb.lb.setText(str(self.act.bufferSize))
 		
-		wz_offset = np.round(np.average(self.data6),3)
-		wz_std = np.round(np.std(self.data6), 3)
-		diffwz_std = np.round(np.std(self.diffdata6), 3)
-		self.top.wzOffset_lb.val.setText(str(wz_offset))
-		self.top.wzStd_lb.val.setText(str(wz_std))
-		self.top.diffwzStd_lb.val.setText(str(diffwz_std))
+		offset_SRS200_wz = np.round(np.average(self.data_SRS200_wz),3)
+		std_SRS200_wz = np.round(np.std(self.data_SRS200_wz), 3)
+		self.top.TabPlot.tab2_SRS200.lb1.setText(str(offset_SRS200_wz))
+		self.top.TabPlot.tab2_SRS200.lb2.setText(str(std_SRS200_wz))
 		
-		wz200_offset = np.round(np.average(self.data7),3)
-		wz200_std = np.round(np.std(self.data7), 3)
-		self.top.wz200Offset_lb.val.setText(str(wz200_offset))
-		self.top.wz200Std_lb.val.setText(str(wz200_std))
+		offset_PP_wz = np.round(np.average(self.data_PP_wz),3)
+		std_PP_wz = np.round(np.std(self.data_PP_wz), 3)
+		self.top.TabPlot.tab2_PP.lb1.setText(str(offset_PP_wz))
+		self.top.TabPlot.tab2_PP.lb2.setText(str(std_PP_wz))
 		
-		wx_offset = np.round(np.average(self.data4),3)
-		wx_std = np.round(np.std(self.data4), 3)
-		diffwx_std = np.round(np.std(self.diffdata4), 3)
-		self.top.wxOffset_lb.val.setText(str(wx_offset))
-		self.top.wxStd_lb.val.setText(str(wx_std))
-		self.top.diffwxStd_lb.val.setText(str(diffwx_std))
 		
-		wy_offset = np.round(np.average(self.data5),3)
-		wy_std = np.round(np.std(self.data5), 3)
-		diffwy_std = np.round(np.std(self.diffdata5), 3)
-		self.top.wyOffset_lb.val.setText(str(wy_offset))
-		self.top.wyStd_lb.val.setText(str(wy_std))
-		self.top.diffwyStd_lb.val.setText(str(diffwy_std))
+		offset_Nano33_wz = np.round(np.average(self.data_Nano33_wz),3)
+		std_Nano33_wz = np.round(np.std(self.data_Nano33_wz), 3)
+		self.top.TabPlot.tab2_Nano33_gyro.lb1.setText(str(offset_Nano33_wz))
+		self.top.TabPlot.tab2_Nano33_gyro.lb2.setText(str(std_Nano33_wz))
 		
-		ax_offset = np.round(np.average(self.data),3)
-		ax_std = np.round(np.std(self.data), 3)
-		diffax_std = np.round(np.std(self.diffdata1), 3)
-		self.top.axOffset_lb.val.setText(str(ax_offset))
-		self.top.axStd_lb.val.setText(str(ax_std))
-		self.top.diffaxStd_lb.val.setText(str(diffax_std))
+		offset_Nano33_ax = np.round(np.average(self.data_Nano33_ax),3)
+		std_Nano33_ax = np.round(np.std(self.data_Nano33_ax), 3)
+		self.top.TabPlot.tab2_Nano33_xlm.lb1_1.setText(str(offset_Nano33_ax))
+		self.top.TabPlot.tab2_Nano33_xlm.lb1_2.setText(str(std_Nano33_ax))
 		
-		ay_offset = np.round(np.average(self.data2),3)
-		ay_std = np.round(np.std(self.data2), 3)
-		diffay_std = np.round(np.std(self.diffdata2), 3)
-		self.top.ayOffset_lb.val.setText(str(ay_offset))
-		self.top.ayStd_lb.val.setText(str(ay_std))
-		self.top.diffayStd_lb.val.setText(str(diffay_std))
+		offset_Nano33_ay = np.round(np.average(self.data_Nano33_ay),3)
+		std_Nano33_ay = np.round(np.std(self.data_Nano33_ay), 3)
+		self.top.TabPlot.tab2_Nano33_xlm.lb2_1.setText(str(offset_Nano33_ay))
+		self.top.TabPlot.tab2_Nano33_xlm.lb2_2.setText(str(std_Nano33_ay))
 		
-		ADax_offset = np.round(np.average(self.data8),3)
-		ADax_std = np.round(np.std(self.data8), 3)
-		self.top.axOffsetAD_lb.val.setText(str(ADax_offset))
-		self.top.axStdAD_lb.val.setText(str(ADax_std))
+		offset_Nano33_az = np.round(np.average(self.data_Nano33_az),3)
+		std_Nano33_az = np.round(np.std(self.data_Nano33_az), 3)
+		self.top.TabPlot.tab2_Nano33_xlm.lb3_1.setText(str(offset_Nano33_az))
+		self.top.TabPlot.tab2_Nano33_xlm.lb3_2.setText(str(std_Nano33_az))
 		
-		ADay_offset = np.round(np.average(self.data9),3)
-		ADay_std = np.round(np.std(self.data9), 3)
-		self.top.ayOffsetAD_lb.val.setText(str(ADay_offset))
-		self.top.ayStdAD_lb.val.setText(str(ADay_std))
+		offset_Adxl355_ax = np.round(np.average(self.data_Adxl355_ax),3)
+		std_Adxl355_ax = np.round(np.std(self.data_Adxl355_ax), 3)
+		self.top.TabPlot.tab2_ADXL355_xlm.lb1_1.setText(str(offset_Adxl355_ax))
+		self.top.TabPlot.tab2_ADXL355_xlm.lb1_2.setText(str(std_Adxl355_ax))
 		
-		''' ax ay plot '''
-		# self.top.com_plot.ax1.set_ylabel("acc(code)")
-		# self.top.com_plot.ax1.plot(self.data, color = 'r', linestyle = '-', marker = '', label="ax")
-		# self.top.com_plot.ax1.legend(bbox_to_anchor=(1.0, 1.0), loc='upper left', prop={'size': 10})
-		# self.top.com_plot.ax2.set_ylabel("w(code)")
-		# self.top.com_plot.ax2.plot(self.data6, color = 'b', linestyle = '-', marker = '', label="wz")
-		# self.top.com_plot.ax2.legend(bbox_to_anchor=(1.0, 1.0), loc='upper left', prop={'size': 10})
+		offset_Adxl355_ay = np.round(np.average(self.data_Adxl355_ay),3)
+		std_Adxl355_ay = np.round(np.std(self.data_Adxl355_ay), 3)
+		self.top.TabPlot.tab2_ADXL355_xlm.lb2_1.setText(str(offset_Adxl355_ay))
+		self.top.TabPlot.tab2_ADXL355_xlm.lb2_2.setText(str(std_Adxl355_ay))
 		
-		# if(self.ax_chk):
-			# self.top.com_plot.ax1.plot(self.data, color = 'r', linestyle = '-', marker = '', label="ax")
-		# if(self.ay_chk):
-			# self.top.com_plot.ax1.plot(self.data2, color = 'g', linestyle = '-', marker = '', label="ay")
-		if(self.wz200_chk):
-			self.top.com_plot.ax1.plot(self.data7, color = 'r', linestyle = '-', marker = '', label="wz200")
-		if(self.wz_chk):
-			self.top.com_plot.ax2.plot(self.data6, color = 'b', linestyle = '-', marker = '', label="wz")
+		offset_Adxl355_az = np.round(np.average(self.data_Adxl355_az),3)
+		std_Adxl355_az = np.round(np.std(self.data_Adxl355_az), 3)
+		self.top.TabPlot.tab2_ADXL355_xlm.lb3_1.setText(str(offset_Adxl355_az))
+		self.top.TabPlot.tab2_ADXL355_xlm.lb3_2.setText(str(std_Adxl355_az))
 		
-		self.top.com_plot.ax1.legend(bbox_to_anchor=(0.9, 1.0), loc='upper left', prop={'size': 10})
-		self.top.com_plot.ax2.legend(bbox_to_anchor=(0.9, 1.0), loc='upper left', prop={'size': 10})
-		
-		self.top.com_plot.figure.canvas.draw()		
-		self.top.com_plot.figure.canvas.flush_events()
-		
+		self.top.TabPlot.tab1_plot4.ax.clear()
+		self.top.TabPlot.tab1_plot4.ax.plot(self.data_Nano33_az, color = 'k', linestyle = '-', marker = '', label="Nano33_v")
+		self.top.TabPlot.tab1_plot4.figure.canvas.draw()		
+		self.top.TabPlot.tab1_plot4.figure.canvas.flush_events()
 
         
 if __name__ == '__main__':

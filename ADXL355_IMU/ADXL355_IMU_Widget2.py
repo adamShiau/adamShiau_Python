@@ -49,6 +49,8 @@ class TabPlot(QTabWidget):
 		###tab3 btn###
 		self.tab3_xmax = AdamGUIclass.editBlockwBtn('xmax')
 		self.tab3_ymax = AdamGUIclass.editBlockwBtn('ymax')
+		###tab3 check box###
+		self.tab3_track_cb = chkBoxBlock_2('track','Nano33', 'SRS200')
 		
 		# self.plot2 = output2Plot()
 		# self.plot2.ax1.set_ylabel("Arbiary Uint")
@@ -89,9 +91,10 @@ class TabPlot(QTabWidget):
 
 	def Tab3_UI(self):
 		layout = QGridLayout()
-		layout.addWidget(self.tab3_plot1, 0, 0, 10, 10) 
-		layout.addWidget(self.tab3_xmax, 1, 10, 1, 1)
-		layout.addWidget(self.tab3_ymax, 2, 10, 1, 1)
+		layout.addWidget(self.tab3_plot1, 0, 0, 10, 10)  
+		layout.addWidget(self.tab3_track_cb.layout(), 1, 10, 1, 1)
+		layout.addWidget(self.tab3_xmax, 2, 10, 1, 1)
+		layout.addWidget(self.tab3_ymax, 3, 10, 1, 1)
 		self.tab3.setLayout(layout)
 
 class mainWidget(QWidget):
@@ -104,7 +107,7 @@ class mainWidget(QWidget):
 		###radio btn###
 		self.mv_rb = QRadioButton('MV enable')
 		self.mv_rb.setChecked(0)
-		##guage###
+		##gauge###
 		self.SRS200_gauge = gaugePlot()
 		self.speed_gauge = gaugePlot()
 		self.main_UI()

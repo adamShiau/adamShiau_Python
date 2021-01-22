@@ -55,6 +55,9 @@ class mainWindow(QMainWindow):
 	''' axis max for track'''
 	x_max = 1
 	y_max = 1
+	clear_track_flag = False
+	''' data save'''
+	save_status = False
 	def __init__(self, parent = None):
 		super (mainWindow, self).__init__(parent)
 		# self.COM = act.UART()
@@ -164,7 +167,6 @@ class mainWindow(QMainWindow):
 		self.act.fog_update8.connect(self.plotADXLIMUnGYRO)
 		self.act.fog_update11.connect(self.calibADXLIMUnGYRO)
 		self.act.fog_finished.connect(self.myThreadStop) #runFlag=0時fog_finished會emit，之後關掉thread1
-		self.act.fog_finished.connect(self.myThreadStop)
 		
 		''' text connect '''
 		# self.top.wzOffset_le.textChanged.connect(self.updata_para)
@@ -407,67 +409,15 @@ class mainWindow(QMainWindow):
 		offset_Adxl355_ay = 0
 		offset_Adxl355_az = 0
 		
-		# wzOffset_cp = float(self.top.wzOffset_lb.val.text())
-			
-		# self.top.wzOffset_le.setText(str(wzOffset_cp))
-		# self.top.wzVth_le.setText(str(wzVth_cp))
-		# self.wz_offset = wzOffset_cp
-		# self.wzVth = wzVth_cp
-		
-		# self.top.wz200Offset_le.setText(str(wz200Offset_cp))
-		# self.wz200_offset = wz200Offset_cp
-		
-		# self.top.wxOffset_le.setText(str(wxOffset_cp))
-		# self.top.wxVth_le.setText(str(wxVth_cp))
-		# self.wx_offset = wxOffset_cp
-		# self.wxVth = wxVth_cp
-		
-		# self.top.wyOffset_le.setText(str(wyOffset_cp))
-		# self.top.wyVth_le.setText(str(wyVth_cp))
-		# self.wy_offset = wyOffset_cp
-		# self.wyVth = wyVth_cp
-		
-		# self.top.axOffset_le.setText(str(axOffset_cp))
-		# self.top.axVth_le.setText(str(axVth_cp))
-		# self.ax_offset = axOffset_cp
-		# self.axVth = axVth_cp
-		
-		# self.top.ayOffset_le.setText(str(ayOffset_cp))
-		# self.top.ayVth_le.setText(str(ayVth_cp))
-		# self.ay_offset = ayOffset_cp
-		# self.ayVth = ayVth_cp
-		
-		# self.top.axOffsetAD_le.setText(str(ADaxOffset_cp))
-		# self.ADax_offset = ADaxOffset_cp
-		
-		# self.top.ayOffsetAD_le.setText(str(ADayOffset_cp))
-		# self.ADay_offset = ADayOffset_cp
-		
-		# self.thread_cali.quit() 
-		# self.thread_cali.wait()
-		# self.data  = np.empty(0)
-		# self.data2 = np.empty(0)
-		# self.data3 = np.empty(0)
-		# self.data4 = np.empty(0)
-		# self.data5 = np.empty(0)
-		# self.data6 = np.empty(0)
-		# self.data7 = np.empty(0)
-		# self.data8 = np.empty(0)
-		# self.data9 = np.empty(0)
-		# self.data10 = np.empty(0)
-		# self.diffdata1 = np.empty(0)
-		# self.diffdata2 = np.empty(0)
-		# self.diffdata3 = np.empty(0)
-		# self.diffdata4 = np.empty(0)
-		# self.diffdata5 = np.empty(0)
-		# self.diffdata6 = np.empty(0)
-	
 	def myThreadStart(self):
-		# self.save_status = self.openFileBox()
+		# '''
+		self.save_status = self.openFileBox()
+		# '''
 		# file_name = self.top.save_edit.edit.text() 
 		# self.f=open(file_name,'a')
 		# self.f=open('er','a')
 		self.act.runFlag = True
+		self.clear_track_flag = True
 		print('self.act.runFlag:', self.act.runFlag)
 		self.thread1.start()
 		self.act.COM.port.flushInput()
@@ -479,10 +429,12 @@ class mainWindow(QMainWindow):
 		self.thread1.wait()
 		self.thread_cali.quit() 
 		self.thread_cali.wait()
-		# if(self.save_status):
-			# stop_time_header = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
-			# self.f.writelines('#' + stop_time_header + '\n')
-			# self.f.close()
+		# '''
+		if(self.save_status):
+			stop_time_header = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
+			self.f.writelines('#' + stop_time_header + '\n')
+			self.f.close()
+		# '''
 		self.data_SRS200_wz = np.empty(0)
 		self.data_Nano33_wx = np.empty(0)
 		self.data_Nano33_wy = np.empty(0)
@@ -520,8 +472,9 @@ class mainWindow(QMainWindow):
 				self.top.TabPlot.tab1_plot3.ax.clear()
 			if(self.Nano33_v_chk or self.Adxl355_v_chk):
 				self.top.TabPlot.tab1_plot4.ax.clear()
-			if(self.Nano33_track_chk or self.SRS200_track_chk):
-				self.top.TabPlot.tab3_plot1.ax.clear()
+			# if((self.Nano33_track_chk or self.SRS200_track_chk) and self.clear_track_flag):
+				# self.clear_track_flag = False
+				# self.top.TabPlot.tab3_plot1.ax.clear()
 			pass
 		dt = dt*1e-6
 		if (len(self.dt) >= 1000):
@@ -541,6 +494,7 @@ class mainWindow(QMainWindow):
 		data_Adxl355_ay_f = (data_Adxl355_ay - self.offset_Adxl355_ay)*ADxlm_factor
 		data_Nano33_ax_f = (data_Nano33_ax - self.offset_Nano33_ax)*xlm_factor
 		data_Nano33_ay_f = (data_Nano33_ay - self.offset_Nano33_ay)*xlm_factor
+		
 
 		'''由角速率積分計算角度，積分時間為data_frame_update_point*(1/ODR), ODR=100Hz'''
 		self.thetaz_nano33 = self.thetaz_nano33 - np.sum(data_Nano33_wz_f)*SAMPLING_TIME #負號是方向判斷的問題, 0.01是1/ODR
@@ -570,8 +524,6 @@ class mainWindow(QMainWindow):
 		''' for track plot'''
 		thetaz_nano33 = 90 - self.thetaz_nano33
 		thetaz_SRS200 = 90 - self.thetaz_SRS200
-		# print('thetaz_nano33: ', self.thetaz_nano33)
-		# self.top.wz_gauge.item.setRotation(self.thetaz_nano33)
 		'''
 		dx = dr*cos(theta), dr = vdt
 		v = 1 m/s
@@ -617,7 +569,6 @@ class mainWindow(QMainWindow):
 			self.y_arr = self.y_arr[1:]
 			self.x200_arr = self.x200_arr[1:]
 			self.y200_arr = self.y200_arr[1:]
-		# print(np.sum(data_wz_f))
 		
 		self.data_SRS200_wz  = np.append(self.data_SRS200_wz,  data_SRS200_wz_f)
 		self.data_Nano33_wz = np.append(self.data_Nano33_wz, data_Nano33_wz_f)
@@ -628,8 +579,10 @@ class mainWindow(QMainWindow):
 		self.data_Nano33_ay = np.append(self.data_Nano33_ay, data_Nano33_ay_f)
 		self.dt = np.append(self.dt, dt)
 		
-		# if(self.save_status):
-			# np.savetxt(self.f, (np.vstack([dt,data_ax_f, data_ay_f, data_ADax_f, data_ADay_f, data_wx_f, data_wy_f, data_wz_f, data_wz200_f])).T, fmt='%5.5f,%.5f,%.5f,%.5f,%.5f,%4.5f,%4.5f,%4.5f, %4.5f')
+		if(self.save_status):
+			np.savetxt(self.f, (np.vstack([dt, data_SRS200_wz_f, data_Nano33_wz_f, data_PP_wz_f, data_Adxl355_ax_f, data_Adxl355_ay_f, 
+			data_Nano33_ax_f, data_Nano33_ay_f])).T, fmt='%5.5f,%5.5f,%5.5f,%5.5f,%5.5f,%5.5f,%5.5f,%5.5f')
+		
 		if(DEBUG) :
 			# print('len(dt): ', len(self.dt))
 			# print('len(self.data_SRS200_wz): ', len(self.data_SRS200_wz))
@@ -680,17 +633,17 @@ class mainWindow(QMainWindow):
 			self.top.TabPlot.tab1_plot4.figure.canvas.draw()		
 			self.top.TabPlot.tab1_plot4.figure.canvas.flush_events()
 			
-		if(self.Nano33_track_chk):
-			self.top.TabPlot.tab3_plot1.ax.plot(self.x_arr, self.y_arr, color = 'b', linestyle = '-', marker = '', label="Nano33_track")
+		# if(self.Nano33_track_chk):
+			# self.top.TabPlot.tab3_plot1.ax.plot(self.x_arr, self.y_arr, color = 'b', linestyle = '-', marker = '', label="Nano33_track")
 			
-		if(self.SRS200_track_chk):
-			self.top.TabPlot.tab3_plot1.ax.plot(self.x200_arr, self.y200_arr, color = 'k', linestyle = '-', marker = '', label="SRS200_track")
+		# if(self.SRS200_track_chk):
+			# self.top.TabPlot.tab3_plot1.ax.plot(self.x200_arr, self.y200_arr, color = 'k', linestyle = '-', marker = '', label="SRS200_track")
 		
-		if(self.Nano33_track_chk or self.SRS200_track_chk):
-			self.top.TabPlot.tab3_plot1.ax.set_xlim([-self.x_max, self.x_max])
-			self.top.TabPlot.tab3_plot1.ax.set_ylim([-self.y_max, self.y_max])
-			self.top.TabPlot.tab3_plot1.figure.canvas.draw()		
-			self.top.TabPlot.tab3_plot1.figure.canvas.flush_events()
+		# if(self.Nano33_track_chk or self.SRS200_track_chk):
+			# self.top.TabPlot.tab3_plot1.ax.set_xlim([-self.x_max, self.x_max])
+			# self.top.TabPlot.tab3_plot1.ax.set_ylim([-self.y_max, self.y_max])
+			# self.top.TabPlot.tab3_plot1.figure.canvas.draw()		
+			# self.top.TabPlot.tab3_plot1.figure.canvas.flush_events()
 			
 	def calibADXLIMUnGYRO(self, data_SRS200_wz, data_Nano33_wx, data_Nano33_wy, data_Nano33_wz, data_PP_wz, data_Adxl355_ax, data_Adxl355_ay,
 									data_Adxl355_az, data_Nano33_ax, data_Nano33_ay, data_Nano33_az):

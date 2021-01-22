@@ -108,7 +108,7 @@ class IMU_Action(QObject):
 					print("drop occurred!")
 					self.COM.port.flushInput()
 				while(not (self.COM.port.inWaiting()>(self.data_frame_update_point*31))) : #rx buffer 不到 arduino傳來的總byte數*data_frame_update_point時不做任何事
-					# print(self.COM.port.inWaiting())
+					print(self.COM.port.inWaiting())
 					pass
 				for i in range(0,self.data_frame_update_point): #更新data_frame_update_point筆資料到data and dt array
 					''' 當arduino送來的第一個check byte不符合時則檢查到對時才往下'''

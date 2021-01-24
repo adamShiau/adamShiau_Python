@@ -438,7 +438,7 @@ class COMRead_Action(QObject):
 					temp_ADay = self.COM.read3Binary()
 					temp_ADaz = self.COM.read3Binary()
 					val2 = self.COM.read1Binary()
-					
+					print(self.COM.port.inWaiting())
 						
 					if(DEBUG2):
 						print(val[0], end='\t')

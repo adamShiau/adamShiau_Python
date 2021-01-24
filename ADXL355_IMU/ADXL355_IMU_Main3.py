@@ -14,8 +14,8 @@ import numpy as np
 # import py3lib.FileToArray as file
 # import py3lib.QuLogger as Qlogger 
 # import py3lib.FileToArray as fil2a 
-import ADXL355_IMU_Widget2 as UI 
-import ADXL355_IMU_Action2_BT as ACT
+import ADXL355_IMU_Widget3 as UI 
+import ADXL355_IMU_Action3_BT as ACT
 TITLE_TEXT = "IMU_PLOT"
 VERSION_TEXT = 'Compare FOG with MEMS，2020/12/01'
 READOUT_FILENAME = "Signal_Read_Out.txt"
@@ -68,8 +68,8 @@ class mainWindow(QMainWindow):
 		self.top = UI.mainWidget()
 		self.act = ACT.IMU_Action(self.loggername)
 		'''inittialize thread '''
-		self.thread1 = QThread()
-		self.thread_cali = QThread()
+		# self.thread1 = QThread()
+		# self.thread_cali = QThread()
 		'''end of inittialize thread '''
 		self.data_SRS200_wz = np.empty(0)
 		self.data_Nano33_wx = np.empty(0)
@@ -157,8 +157,8 @@ class mainWindow(QMainWindow):
 		self.top.TabPlot.tab3_xmax.bt.clicked.connect(self.updata_para)
 		self.top.TabPlot.tab3_ymax.bt.clicked.connect(self.updata_para)
 		''' thread connect '''
-		self.thread1.started.connect(lambda:self.act.updateADXL_IMUnGYRO(MV_MODE=self.MV_status)) 
-		self.thread_cali.started.connect(lambda:self.act.updateADXL_IMUnGYRO(MV_MODE=self.MV_status))
+		# self.thread1.started.connect(lambda:self.act.updateADXL_IMUnGYRO(MV_MODE=self.MV_status)) 
+		# self.thread_cali.started.connect(lambda:self.act.updateADXL_IMUnGYRO(MV_MODE=self.MV_status))
 
 		''' emit connect '''
 		#btn enable signal
@@ -391,12 +391,15 @@ class mainWindow(QMainWindow):
 	def caliThreadStart(self):
 		self.act.runFlag_cali = True
 		print('self.act.runFlag_cali:', self.act.runFlag_cali)
-		self.thread_cali.start()
+		# self.thread_cali.start()
+		self.act.start()
 		
 	def caliThreadStop(self):
 		self.act.runFlag_cali = False 
-		self.thread_cali.quit() 
-		self.thread_cali.wait()
+		# self.thread_cali.quit() 
+		# self.thread_cali.wait()
+		self.act.quit() 
+		self.act.wait()
 		
 		# self.top.TabPlot.lb.setText(str(self.act.bufferSize))
 		offset_SRS200_wz = 0
@@ -418,17 +421,21 @@ class mainWindow(QMainWindow):
 		# self.f=open('er','a')
 		self.act.runFlag = True
 		self.clear_track_flag = True
+		self.act.start()
+		self.act.MV_MODE = self.MV_status
 		print('self.act.runFlag:', self.act.runFlag)
-		self.thread1.start()
+		# self.thread1.start()
 		self.act.COM.port.flushInput()
 		# self.top.com_plot.ax1.legend(bbox_to_anchor=(1.0, 1.0), loc='upper left', prop={'size': 10})
 		# self.top.com_plot.ax2.legend(bbox_to_anchor=(1.0, 1.0), loc='upper left', prop={'size': 10})
 		
 	def myThreadStop(self):
-		self.thread1.quit() 
-		self.thread1.wait()
-		self.thread_cali.quit() 
-		self.thread_cali.wait()
+		# self.thread1.quit() 
+		# self.thread1.wait()
+		# self.thread_cali.quit() 
+		# self.thread_cali.wait()
+		self.act.quit() 
+		self.act.wait()
 		# '''
 		if(self.save_status):
 			stop_time_header = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
@@ -465,22 +472,26 @@ class mainWindow(QMainWindow):
 	def plotADXLIMUnGYRO(self, dt, data_SRS200_wz, data_Nano33_wz, data_PP_wz, data_Adxl355_ax, data_Adxl355_ay, data_Nano33_ax, data_Nano33_ay):
 		# print('plotADXLIMUnGYRO')
 		if(self.act.runFlag):
-			# self.top.TabPlot.tab1_plot1.ax.clear()
+			self.top.TabPlot.tab1_plot1.ax.clear()
+			self.top.TabPlot.tab1_plot2.ax.clear()
+			self.top.TabPlot.tab1_plot3.ax.clear()
+			self.top.TabPlot.tab1_plot4.ax.clear()
+			self.top.TabPlot.tab3_plot1.ax.clear()
+			'''
 			if(self.Nano33_wz_chk or self.PP_wz_chk):
 				self.top.TabPlot.tab1_plot2.ax.clear()
 			if(self.Adxl355_ax_chk or self.Adxl355_ay_chk or self.Nano33_ax_chk or self.Nano33_ay_chk):
 				self.top.TabPlot.tab1_plot3.ax.clear()
 			if(self.Nano33_v_chk or self.Adxl355_v_chk):
 				self.top.TabPlot.tab1_plot4.ax.clear()
-			# '''
-			# if((self.Nano33_track_chk or self.SRS200_track_chk) and self.clear_track_flag):
-				# self.clear_track_flag = False
-				# self.top.TabPlot.tab3_plot1.ax.clear()
-				
-			if((self.Nano33_track_chk or self.SRS200_track_chk)):
+			if((self.Nano33_track_chk or self.SRS200_track_chk) and self.clear_track_flag):
 				self.clear_track_flag = False
 				self.top.TabPlot.tab3_plot1.ax.clear()
-			# '''
+				
+			# if((self.Nano33_track_chk or self.SRS200_track_chk)):
+				# self.clear_track_flag = False
+				# self.top.TabPlot.tab3_plot1.ax.clear()
+			'''
 			pass
 		dt = dt*1e-6
 		if (len(self.dt) >= 1000):
@@ -558,7 +569,7 @@ class mainWindow(QMainWindow):
 		self.x200_arr = np.append(self.x200_arr, self.x200_sum)
 		self.y200_arr = np.append(self.y200_arr, self.y200_sum)
 		
-		if (len(self.thetaz_nano33_arr) >= 10):
+		if (len(self.thetaz_nano33_arr) >= 1000):
 			self.thetaz_nano33_arr = self.thetaz_nano33_arr[1:]
 			self.thetaz_SRS200_arr = self.thetaz_SRS200_arr[1:]
 			# self.thetax_arr = self.thetax_arr[1:]
@@ -607,10 +618,55 @@ class mainWindow(QMainWindow):
 		self.top.TabPlot.tab1_plot1.ax.plot(self.dt, self.data_SRS200_wz, color = 'b', linestyle = '-', marker = '', label="SRS200_wz")
 		self.top.TabPlot.tab1_plot1.figure.canvas.draw()		
 		self.top.TabPlot.tab1_plot1.figure.canvas.flush_events()
+		
 		# self.top.com_plot.ax1.legend(bbox_to_anchor=(0.9, 1.0), loc='upper left', prop={'size': 10})
 		# self.top.com_plot.ax2.legend(bbox_to_anchor=(0.9, 1.0), loc='upper left', prop={'size': 10})
+		if(self.Nano33_wz_chk ):
+			self.top.TabPlot.tab1_plot2.ax.plot(self.dt, self.data_Nano33_wz, color = 'b', linestyle = '-', marker = '', label="Nano33_wz")
 		
-	
+		if(self.PP_wz_chk):
+			self.top.TabPlot.tab1_plot2.ax.plot(self.dt, self.data_PP_wz, color = 'k', linestyle = '-', marker = '', label="PP_wz")		
+		if(self.Nano33_wz_chk or self.PP_wz_chk):
+			self.top.TabPlot.tab1_plot2.figure.canvas.draw()		
+			self.top.TabPlot.tab1_plot2.figure.canvas.flush_events()
+		
+		if(self.Adxl355_ax_chk):
+			self.top.TabPlot.tab1_plot3.ax.plot(self.dt, self.data_Adxl355_ax, color = 'b', linestyle = '-', marker = '', label="Adxl355_ax")
+		if(self.Adxl355_ay_chk):
+			self.top.TabPlot.tab1_plot3.ax.plot(self.dt, self.data_Adxl355_ay, color = 'k', linestyle = '-', marker = '', label="Adxl355_ay")
+		if(self.Nano33_ax_chk):
+			self.top.TabPlot.tab1_plot3.ax.plot(self.dt, self.data_Nano33_ax, color = 'r', linestyle = '-', marker = '', label="Nano33_ax")
+		if(self.Nano33_ay_chk):
+			self.top.TabPlot.tab1_plot3.ax.plot(self.dt, self.data_Nano33_ay, color = 'g', linestyle = '-', marker = '', label="Nano33_ay")
+		if(self.Adxl355_ax_chk or self.Adxl355_ay_chk or self.Nano33_ax_chk or self.Nano33_ay_chk):
+			self.top.TabPlot.tab1_plot3.figure.canvas.draw()		
+			self.top.TabPlot.tab1_plot3.figure.canvas.flush_events()
+		
+		if(self.Adxl355_v_chk):
+			self.top.TabPlot.tab1_plot4.ax.plot(self.speed_Adxl355_arr, color = 'b', linestyle = '-', marker = '', label="Adxl355_v")
+		if(self.Nano33_v_chk):
+			self.top.TabPlot.tab1_plot4.ax.plot(self.speed_Nano33_arr, color = 'k', linestyle = '-', marker = '', label="Nano33_v")
+		if(self.Nano33_v_chk or self.Adxl355_v_chk):
+			self.top.TabPlot.tab1_plot4.figure.canvas.draw()		
+			self.top.TabPlot.tab1_plot4.figure.canvas.flush_events()
+		
+		if(self.Nano33_track_chk):
+			self.top.TabPlot.tab3_plot1.ax.plot(self.x_arr, self.y_arr, color = 'b', linestyle = '-', marker = '', label="Nano33_track")
+		if(self.SRS200_track_chk):
+			self.top.TabPlot.tab3_plot1.ax.plot(self.x200_arr, self.y200_arr, color = 'k', linestyle = '-', marker = '', label="SRS200_track")
+			# print('len(x200_arr): ', len(self.x200_arr))
+			x_max = self.x200_arr[-1] + 500
+			x_min = self.x200_arr[-1] - 500
+			y_max = self.y200_arr[-1] + 500
+			y_min = self.y200_arr[-1] - 500
+		if(self.Nano33_track_chk or self.SRS200_track_chk):
+			# self.top.TabPlot.tab3_plot1.ax.set_xlim([-self.x_max, self.x_max])
+			# self.top.TabPlot.tab3_plot1.ax.set_ylim([-self.y_max, self.y_max])
+			self.top.TabPlot.tab3_plot1.ax.set_xlim([x_min, x_max])
+			self.top.TabPlot.tab3_plot1.ax.set_ylim([y_min, y_max])
+			self.top.TabPlot.tab3_plot1.figure.canvas.draw()		
+			self.top.TabPlot.tab3_plot1.figure.canvas.flush_events()
+		'''
 		if(self.Nano33_wz_chk ):
 			self.top.TabPlot.tab1_plot2.ax.plot(self.dt, self.data_Nano33_wz, color = 'b', linestyle = '-', marker = '', label="Nano33_wz")
 		if(self.PP_wz_chk):
@@ -639,7 +695,6 @@ class mainWindow(QMainWindow):
 			self.top.TabPlot.tab1_plot4.figure.canvas.draw()		
 			self.top.TabPlot.tab1_plot4.figure.canvas.flush_events()
 			
-		# ''' 
 		if(self.Nano33_track_chk):
 			self.top.TabPlot.tab3_plot1.ax.plot(self.x_arr, self.y_arr, color = 'b', linestyle = '-', marker = '', label="Nano33_track")
 		if(self.SRS200_track_chk):
@@ -729,9 +784,6 @@ class mainWindow(QMainWindow):
 		self.top.TabPlot.tab2_ADXL355_xlm.lb3_1.setText(str(self.offset_Adxl355_az))
 		self.top.TabPlot.tab2_ADXL355_xlm.lb3_2.setText(str(self.std_Adxl355_az))
 		
-		'''下兩行沒用，但不知為何不加程式會卡住 '''
-		self.top.TabPlot.tab1_plot4.figure.canvas.draw()		
-		self.top.TabPlot.tab1_plot4.figure.canvas.flush_events()
 
         
 if __name__ == '__main__':

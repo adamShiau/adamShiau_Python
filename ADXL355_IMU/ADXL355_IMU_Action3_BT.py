@@ -6,8 +6,8 @@ import numpy as np
 import scipy as sp
 from scipy import signal
 # import py3lib.COMPort as usb
-import ADXL355_IMU_Widget2 as UI 
-import ADXL355_IMU_Main2 as MA 
+# import ADXL355_IMU_Widget2 as UI 
+# import ADXL355_IMU_Main2 as MA 
 from py3lib.COMPort import UART
 import py3lib.FileToArray as fil2a
 from PyQt5.QtGui import *
@@ -20,12 +20,13 @@ import math
 import time 
 import datetime
 
+THREAD_DELY = sys.float_info.min
 TEST_MODE = False
 DEBUG = 0
 DEBUG_COM = 1
 # MV_MODE = 1
 
-class IMU_Action(QObject):
+class IMU_Action(QThread):
 	update_COMArray = pyqtSignal(object)
 	fog_update = pyqtSignal(object,object)
 	fog_update2 = pyqtSignal(object,object, object)
@@ -43,7 +44,7 @@ class IMU_Action(QObject):
 	valid_cnt_num = 5
 	TIME_PERIOD = 0.01
 	''' 計算一定的點數後再傳到main作圖，點數太小的話buffer會累積造成lag'''
-	data_frame_update_point = 15
+	data_frame_update_point = 20
 	''' run glag 初始值'''
 	runFlag = 0
 	runFlag_cali = 0
@@ -65,14 +66,15 @@ class IMU_Action(QObject):
 	''' buffer size 會傳到main做monitor'''
 	bufferSize = 0
 	dt_init_flag = 1
+	MV_MODE = 0
 	def __init__(self, loggername):	
 		super().__init__()
 		self.COM = UART()
 		self.logger = logging.getLogger(loggername)
 		# self.SaveFileName = ''
 		
-	def updateADXL_IMUnGYRO(self, MV_MODE=1):
-		
+	# def updateADXL_IMUnGYRO(self, MV_MODE=1):
+	def run(self):
 		data_Nano33_ax = np.zeros(self.data_frame_update_point)
 		data_Nano33_ay = np.zeros(self.data_frame_update_point)
 		data_Nano33_az = np.zeros(self.data_frame_update_point)
@@ -99,6 +101,7 @@ class IMU_Action(QObject):
 		temp_dt_before = 0
 		temp_offset = 0
 		drop_flag = 0
+		dt_init = 0
 		
 		if self.runFlag or self.runFlag_cali:
 			self.COM.port.flushInput()
@@ -115,6 +118,7 @@ class IMU_Action(QObject):
 					# stop_time_header = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
 					# print(stop_time_header, end=', ')
 					# print(self.COM.port.inWaiting())
+					
 					pass
 				for i in range(0,self.data_frame_update_point): #更新data_frame_update_point筆資料到data and dt array
 					''' 當arduino送來的第一個check byte不符合時則檢查到對時才往下'''
@@ -136,9 +140,10 @@ class IMU_Action(QObject):
 					temp_Adxl355_ay = self.COM.read3Binary()
 					temp_Adxl355_az = self.COM.read3Binary()
 					val2 = self.COM.read1Binary()
-					print(self.COM.port.inWaiting())
+					# print(self.COM.port.inWaiting())
 						
 					if(DEBUG_COM):
+						print(datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S'))
 						print('buffer: ',end=', ' )
 						print(self.bufferSize)
 						print('val[0]: ',end=', ' )
@@ -201,7 +206,7 @@ class IMU_Action(QObject):
 							temp_dt_before = temp_dt
 						
 						#calaculate MV value
-						if(MV_MODE):
+						if(self.MV_MODE):
 							data_Nano33_ax_sum = data_Nano33_ax_sum - data_Nano33_ax[0]
 							data_Nano33_ax_sum = data_Nano33_ax_sum + temp_Nano33_ax
 							data_Nano33_ax_MV = data_Nano33_ax_sum/self.data_frame_update_point
@@ -312,7 +317,7 @@ class IMU_Action(QObject):
 					
 				if(self.valid_cnt == self.valid_cnt_num):
 					self.valid_flag = 1
-					
+				
 				if(self.valid_flag):
 					if(self.dt_init_flag):
 						self.dt_init_flag = 0
@@ -320,16 +325,17 @@ class IMU_Action(QObject):
 					if(self.runFlag):
 						self.fog_update8.emit(dt-dt_init, data_SRS200_wz, data_Nano33_wz, data_PP_wz, data_Adxl355_ax, data_Adxl355_ay,
 											data_Nano33_ax, data_Nano33_ay)
-						time.sleep(0.001)
+						time.sleep(THREAD_DELY)
 					elif(self.runFlag_cali):
 						self.fog_update11.emit(data_SRS200_wz, data_Nano33_wx, data_Nano33_wy, data_Nano33_wz, data_PP_wz, data_Adxl355_ax, data_Adxl355_ay,
 											data_Adxl355_az, data_Nano33_ax, data_Nano33_ay, data_Nano33_az)
+						time.sleep(THREAD_DELY)
 			#end of while self.runFlag:
 			self.fog_finished.emit()
 			temp_dt_before = 0
 			self.valid_flag = 0
 			self.valid_cnt = 0
-				
+			self.dt_init_flag = 1
 			
 	def convert2Sign_4B(self, datain) :
 		shift_data = (datain[0]<<24|datain[1]<<16|datain[2]<<8|datain[3])

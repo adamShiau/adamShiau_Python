@@ -19,6 +19,7 @@ TITLE_TEXT = "OPEN LOOP"
 VERSION_TEXT = 'fog open loop 2020/12/25'
 READOUT_FILENAME = "Signal_Read_Out.txt"
 MAX_SAVE_INDEX = 3000
+TEST_MODE = False
 DEBUG = 1
 track_max = 50
 track_min = -50
@@ -40,7 +41,11 @@ POLARITY = '4 '
 WAIT_CNT = '5 '
 ERR_TH = '6 '
 ERR_AVG = '7 '
+GAIN1 = '8 '
+STEP_MAX = '9 '
+V2PI = '10 '
 OPENLOOP_START = '12 '
+FB_ON = GAIN1
 '''adc conversion '''
 ADC_COEFFI = (2.5/8192)
 TIME_COEFFI = 0.0001
@@ -63,6 +68,8 @@ class mainWindow(QMainWindow):
 	mod_H = 10000
 	mod_L = -10000
 	freq = 100
+	''' pyqtSignal'''
+	usbconnect_status = pyqtSignal(object) #to trigger the btn to enable state
 	def __init__(self, parent = None):
 		super (mainWindow, self).__init__(parent)
 		self.setWindowTitle(TITLE_TEXT)
@@ -75,25 +82,23 @@ class mainWindow(QMainWindow):
 		self.mainMenu()
 		self.thread1 = QThread() #開一個thread
 		self.linkFunction()
-		self.disableBtn()
+		# self.disableBtn()
 		self.data = np.empty(0)
 		self.time = np.empty(0)
-		
+		self.setBtnStatus(False)
 	
 	# def send_initial_value(self):
 		
 	
-	def disableBtn(self):
-		self.top.usb.btn.setEnabled(False)
-		self.top.read_btn.read.setEnabled(False)
-		self.top.stop_btn.stop.setEnabled(False)
+	# def disableBtn(self):
+		# self.top.usb.btn.setEnabled(False)
+		# self.top.read_btn.read.setEnabled(False)
+		# self.top.stop_btn.stop.setEnabled(False)
 		
-	def enableBtn(self):
-		self.top.usb.btn.setEnabled(True)
-		self.top.read_btn.read.setEnabled(True)
-		self.top.stop_btn.stop.setEnabled(True)
-		# self.top.cali_btn.btn.setEnabled(True)
-		# self.top.cali_stop_btn.btn.setEnabled(True)
+	# def enableBtn(self):
+		# self.top.usb.btn.setEnabled(True)
+		# self.top.read_btn.read.setEnabled(True)
+		# self.top.stop_btn.stop.setEnabled(True)
 	
 	def mainUI(self):
 		mainLayout = QGridLayout()
@@ -117,28 +122,19 @@ class mainWindow(QMainWindow):
 
 	def linkFunction(self):
 		''' btn connect '''
-		self.top.usb.btn.clicked.connect(self.usbConnect)
-		self.top.read_btn.read.clicked.connect(self.thread1Start) # set runFlag=1
-		self.top.stop_btn.stop.clicked.connect(self.buttonStop) # set runFlag=0
-		self.top.updataCom.updata.clicked.connect(self.updata_comport)
-		self.top.updataCom.cs.currentIndexChanged.connect(self.uadate_comport_label)
-		self.top.updataCom.updata.clicked.connect(self.enableBtn)
+		self.top.usb.bt_update.clicked.connect(self.update_comport)
+		self.top.usb.cs.currentIndexChanged.connect(self.uadate_comport_label)
+		self.top.usb.bt_connect.clicked.connect(self.usbConnect)
+		self.top.read_btn.bt.clicked.connect(self.thread1Start) # set runFlag=1
+		self.top.stop_btn.bt.clicked.connect(self.buttonStop) # set runFlag=0
 		''' thread connect '''
-		# self.thread1.started.connect(lambda:self.act.updateIMUnGYRO(MV_MODE=self.MV_status))
-		# self.thread1.started.connect(self.act.updateOpenLoop_old)
 		self.thread1.started.connect(self.act.updateOpenLoop)
 
 		''' emit connect '''
 		self.act.fog_finished.connect(self.myThreadStop) #runFlag=0時fog_finished會emit，之後關掉thread1
-		# self.act.fog_update.connect(self.plotFog) #fog_update emit 接收最新data and dt array
-		# self.act.fog_update2.connect(self.plotFog2)  
-		# self.act.fog_update7.connect(self.plotXLMDnGYRO)
-		# self.act.fog_update7.connect(self.plotGYRO)
-		# self.act.fog_update8.connect(self.plotIMUnGYRO)
-		# self.act.fog_update12.connect(self.calibGYRO)
-		# self.act.fog_update13.connect(self.calibIMUnGYRO) 
 		self.act.openLoop_updata2.connect(self.plotOpenLoop)
-		# self.act.openLoop_updata1.connect(self.plotOpenLoop_old)
+		#btn enable signal
+		self.usbconnect_status.connect(self.setBtnStatus) #確定usb連接成功時才enable btn
 		
 		''' spin box connect'''
 		self.top.wait_cnt.spin.valueChanged.connect(self.send_WIT_CNT_CMD)
@@ -148,36 +144,15 @@ class mainWindow(QMainWindow):
 		self.top.freq.spin.valueChanged.connect(self.send_FREQ_CMD)
 		self.top.err_offset.spin.valueChanged.connect(self.send_ERR_OFFSET_CMD)
 		self.top.polarity.spin.valueChanged.connect(self.send_POLARITY_CMD)
-
-		''' text connect '''
-		# self.top.wzOffset_le.textChanged.connect(self.updata_para)
-		# self.top.wzVth_le.textChanged.connect(self.updata_para)
-		# self.top.wz200Offset_le.textChanged.connect(self.updata_para)
-		# self.top.wxOffset_le.textChanged.connect(self.updata_para)
-		# self.top.wxVth_le.textChanged.connect(self.updata_para)
-		# self.top.wyOffset_le.textChanged.connect(self.updata_para)
-		# self.top.wyVth_le.textChanged.connect(self.updata_para)
-		# self.top.axOffset_le.textChanged.connect(self.updata_para)
-		# self.top.axVth_le.textChanged.connect(self.updata_para)
-		# self.top.ayOffset_le.textChanged.connect(self.updata_para)
-		# self.top.ayVth_le.textChanged.connect(self.updata_para)
 		
-		''' check box '''
-		# self.top.cb.ax_cb.toggled.connect(lambda:self.cb_toogled(self.top.cb.ax_cb))
-		# self.top.cb.ay_cb.toggled.connect(lambda:self.cb_toogled(self.top.cb.ay_cb))
-		# self.top.cb.wz_cb.toggled.connect(lambda:self.cb_toogled(self.top.cb.wz_cb))
-		# self.top.cb.wz200_cb.toggled.connect(lambda:self.cb_toogled(self.top.cb.wz200_cb))
-		# self.top.cb.v_cb.toggled.connect(lambda:self.cb_toogled(self.top.cb.v_cb))
-		# self.top.cb.vx_cb.toggled.connect(lambda:self.cb_toogled(self.top.cb.vx_cb))
-		# self.top.cb.vy_cb.toggled.connect(lambda:self.cb_toogled(self.top.cb.vy_cb))
-		# self.top.cb.thetaz_cb.toggled.connect(lambda:self.cb_toogled(self.top.cb.thetaz_cb))
-		# self.top.cb.thetaz200_cb.toggled.connect(lambda:self.cb_toogled(self.top.cb.thetaz200_cb))
-		# self.top.cb.x_cb.toggled.connect(lambda:self.cb_toogled(self.top.cb.x_cb))
-		# self.top.cb.y_cb.toggled.connect(lambda:self.cb_toogled(self.top.cb.y_cb))
-		# self.top.cb.track_cb.toggled.connect(lambda:self.cb_toogled(self.top.cb.track_cb))
+		self.top.gain1.spin.valueChanged.connect(self.send_GAIN1_CMD)
+		self.top.step_max.spin.valueChanged.connect(self.send_STEP_MAX_CMD)
+		self.top.v2pi.spin.valueChanged.connect(self.send_V2PI_CMD)
+		self.top.fb_on.spin.valueChanged.connect(self.send_FB_ON_CMD)
 		
-		''' radio btn'''
-		# self.top.mv_rb.toggled.connect(lambda:self.rb_toggled(self.top.mv_rb))
+	def setBtnStatus(self, flag):
+		self.top.read_btn.bt.setEnabled(flag)
+		self.top.stop_btn.bt.setEnabled(flag)
 		
 	''' UART command '''
 	def send_ERR_OFFSET_CMD(self):
@@ -215,6 +190,33 @@ class mainWindow(QMainWindow):
 		cmd = MOD_AMP_L + str(value) + '\n'
 		print(cmd)
 		self.act.COM.writeLine(cmd)
+		
+	def send_GAIN1_CMD(self):
+		value = self.top.gain1.spin.value()	
+		cmd = GAIN1 + str(value) + '\n'
+		print(cmd)
+		self.act.COM.writeLine(cmd)
+		
+	def send_STEP_MAX_CMD(self):
+		value = self.top.step_max.spin.value()	
+		cmd = STEP_MAX + str(value) + '\n'
+		print(cmd)
+		self.act.COM.writeLine(cmd)
+		
+	def send_V2PI_CMD(self):
+		value = self.top.v2pi.spin.value()	
+		cmd = V2PI + str(value) + '\n'
+		print(cmd)
+		self.act.COM.writeLine(cmd)
+	
+	def send_FB_ON_CMD(self):
+		value = self.top.fb_on.spin.value()	
+		if(value==0):
+			cmd = GAIN1 + str(15) + '\n'
+		elif(value==1):
+			cmd = GAIN1 + str(self.top.gain1.spin.value()) + '\n'
+		print(cmd)
+		self.act.COM.writeLine(cmd)
 	
 	def send_FREQ_CMD(self):
 		value = self.top.freq.spin.value()	
@@ -224,106 +226,6 @@ class mainWindow(QMainWindow):
 		self.act.COM.writeLine(cmd)
 		
 	'''------------------------------------------------- '''
-		
-	def cb_toogled(self, cb):
-		if(cb.text()=='ax'):
-			self.ax_chk = cb.isChecked()
-			print('ax:', self.ax_chk)
-		elif(cb.text()=='ay'):
-			self.ay_chk = cb.isChecked()
-			print('ay:', self.ay_chk)
-		elif(cb.text()=='wz'):
-			self.wz_chk = cb.isChecked()
-			print('wz:', self.wz_chk)
-		elif(cb.text()=='wz200'):
-			self.wz200_chk = cb.isChecked()
-			print('wz200:', self.wz200_chk)
-		elif(cb.text()=='vx'):
-			self.vx_chk = cb.isChecked()
-			print('vx:', self.vx_chk)
-		elif(cb.text()=='vy'):
-			self.vy_chk = cb.isChecked()
-			print('vy:', self.vy_chk)
-		elif(cb.text()=='x'):
-			self.x_chk = cb.isChecked()
-			print('x:', self.x_chk)
-		elif(cb.text()=='y'):
-			self.y_chk = cb.isChecked()
-			print('y:', self.y_chk)
-		elif(cb.text()=='v'):
-			self.v_chk = cb.isChecked()
-			print('v:', self.v_chk)
-		elif(cb.text()=='thetaz'):
-			self.thetaz_chk = cb.isChecked()
-			print('thetaz:', self.thetaz_chk)
-		elif(cb.text()=='thetaz200'):
-			self.thetaz200_chk = cb.isChecked()
-			print('thetaz200:', self.thetaz200_chk)
-		elif(cb.text()=='track'):
-			self.track_chk = cb.isChecked()
-			print('track:', self.track_chk)
-			
-	def get_cbVal(self):
-		self.ax_chk = self.top.cb.ax_cb.isChecked()
-		print('ax:', self.ax_chk)
-		self.ay_chk = self.top.cb.ay_cb.isChecked()
-		print('ay:', self.ay_chk)
-		self.wz_chk = self.top.cb.wz_cb.isChecked()
-		print('wz:', self.wz_chk)
-		self.wz200_chk = self.top.cb.wz200_cb.isChecked()
-		print('wz200:', self.wz200_chk)
-		self.vx_chk = self.top.cb.vx_cb.isChecked()
-		print('vx:', self.vx_chk)
-		self.vy_chk = self.top.cb.vy_cb.isChecked()
-		print('vy:', self.vy_chk)
-		self.v_chk = self.top.cb.v_cb.isChecked()
-		print('v:', self.v_chk)
-		self.thetaz_chk = self.top.cb.thetaz_cb.isChecked()
-		print('thetaz:', self.thetaz_chk)
-		self.thetaz200_chk = self.top.cb.thetaz200_cb.isChecked()
-		print('thetaz200:', self.thetaz200_chk)
-		self.x_chk = self.top.cb.x_cb.isChecked()
-		print('x:', self.x_chk)
-		self.y_chk = self.top.cb.y_cb.isChecked()
-		print('y:', self.y_chk)
-		self.track_chk = self.top.cb.track_cb.isChecked()
-		print('track:', self.track_chk)
-	
-	def updata_para(self):
-		self.wz_offset = float(self.top.wzOffset_le.text())
-		self.wzVth = float(self.top.wzVth_le.text())
-		self.act.offset_wz = self.wz_offset  
-		self.act.wzVth = self.wzVth
-		
-		self.wz200_offset = float(self.top.wz200Offset_le.text())
-		self.act.offset_wz200 = self.wz200_offset  
-		
-		self.wx_offset = float(self.top.wxOffset_le.text())
-		self.wxVth = float(self.top.wxVth_le.text())
-		self.act.offset_wx = self.wx_offset  
-		self.act.wxVth = self.wxVth
-		
-		self.wy_offset = float(self.top.wyOffset_le.text())
-		self.wyVth = float(self.top.wyVth_le.text())
-		self.act.offset_wy = self.wy_offset  
-		self.act.wyVth = self.wyVth
-		
-		self.ax_offset = float(self.top.axOffset_le.text())
-		self.axVth = float(self.top.axVth_le.text())
-		self.act.offset_ax = self.ax_offset  
-		# self.act.axVth = self.axVth
-		self.act.axVth = 0
-		
-		self.ay_offset = float(self.top.ayOffset_le.text())
-		self.ayVth = float(self.top.wyVth_le.text())
-		self.act.offset_ay = self.ay_offset  
-		# self.act.ayVth = self.ayVth
-		self.act.ayVth = 0
-		print('change')
-		# print(type(self.wz_offset), end=', ')
-		# print(self.wz_offset)
-		# print(type(self.wzVth), end=', ')
-		# print(self.wzVth)
 	
 	def versionBox(self):
 		versionBox = QMessageBox()
@@ -343,32 +245,38 @@ class mainWindow(QMainWindow):
 			saveBox.about(self, "Save File", "No file saving")
 			return 0
 			
-	def updata_comport(self):
+# """ comport functin """
+	def update_comport(self):
 		self.act.COM.selectCom()
-		self.top.updataCom.cs.clear()
-		''' combo box '''
+		self.top.usb.cs.clear()
 		if(self.act.COM.portNum > 0):
 			for i in range(self.act.COM.portNum):
-				self.top.updataCom.cs.addItem(self.act.COM.comPort[i][0])
-			idx = self.top.updataCom.cs.currentIndex()
-			self.top.updataCom.lb.setText(self.act.COM.comPort[idx][1])
+				self.top.usb.cs.addItem(self.act.COM.comPort[i][0])
+			idx = self.top.usb.cs.currentIndex()
+			self.top.usb.lb.setText(self.act.COM.comPort[idx][1])
 	
 	def uadate_comport_label(self):
-		idx = self.top.updataCom.cs.currentIndex()
-		self.top.updataCom.lb.setText(self.act.COM.comPort[idx][1])
+		idx = self.top.usb.cs.currentIndex()
+		self.top.usb.lb.setText(self.act.COM.comPort[idx][1])
 		self.cp = self.act.COM.comPort[idx][0]
 	
 	def usbConnect(self):
-		# usbConnStatus = self.act.usbConnect() 
+		# self.usbconnect_status = pyqtSignal(object)
 		print(self.cp);
-		usbConnStatus = self.act.usbConnect_comboBox(self.cp)
+		if (TEST_MODE):
+			usbConnStatus = True
+		else:
+			usbConnStatus = self.act.COM.connect_comboBox(baudrate = 115200, timeout = 1, port_name=self.cp)
 		print("status:" + str(usbConnStatus))
 		if usbConnStatus:
-			self.top.usb.SetConnectText(Qt.black, self.act.COM.port.port + " Connection build", True)
+			self.top.usb.SetConnectText(Qt.blue, self.cp + " Connect")
+			self.usbconnect_status.emit(1)
 			print("Connect build")
 		else:
 			self.top.usb.SetConnectText(Qt.red,"Connect failed", True)
 			print("Connect failed")
+			
+# """ end of comport functin """
 			
 	def buttonStop(self):#set runFlag=0
 		# self.act.setStop()
@@ -378,26 +286,6 @@ class mainWindow(QMainWindow):
 		
 		self.act.runFlag = False
 		self.act.dt_init_flag = 1
-		# self.thetax_arr = np.empty(0)
-		# self.thetay_arr = np.empty(0)
-		# self.thetaz_arr = np.empty(0)
-		# self.thetaz200_arr = np.empty(0)
-		# self.speedx_arr = np.empty(0)
-		# self.speedy_arr = np.empty(0)
-		# self.speed_arr = np.empty(0)
-		# self.x_arr = np.zeros(0)
-		# self.y_arr = np.zeros(0)
-		# self.x_sum = 0
-		# self.y_sum = 0
-		# self.dx_arr = np.zeros(0)
-		# self.dy_arr = np.zeros(0)
-		# self.x200_arr = np.zeros(0)
-		# self.y200_arr = np.zeros(0)
-		# self.x200_sum = 0
-		# self.y200_sum = 0
-		# self.dx200_arr = np.zeros(0)
-		# self.dy200_arr = np.zeros(0)
-		# self.top.com_plot.ax2.clear()
 		
 	def open_file(self, filename):
 		self.f=open(filename, 'w')
@@ -519,6 +407,27 @@ class mainWindow(QMainWindow):
 		
 		
 	def plotOpenLoop(self, time, data):
+		if(self.act.runFlag):
+			self.top.com_plot.ax.clear()
+		# data_f = data*ADC_COEFFI 
+		data_f = data 
+		time_f = time*TIME_COEFFI
+		self.data  = np.append(self.data, data_f)
+		self.time  = np.append(self.time, time_f)
+		if (len(self.data) >= 1000):
+			self.data = self.data[self.act.data_frame_update_point:]
+			self.time = self.time[self.act.data_frame_update_point:]
+		
+		if(self.save_status):
+			np.savetxt(self.f, (np.vstack([time_f, data_f])).T, fmt='%5.5f, %5.5f')
+		# print(time)
+		# print('len(time):', len(time))
+		# print('len(data):', len(data))
+		self.top.com_plot.ax.plot(self.time, self.data, color = 'r', linestyle = '-', marker = '*', label="open")
+		self.top.com_plot.figure.canvas.draw()		
+		self.top.com_plot.figure.canvas.flush_events()
+		
+	def plotCloseLoop(self, time, data):
 		if(self.act.runFlag):
 			self.top.com_plot.ax.clear()
 		data_f = data*ADC_COEFFI 

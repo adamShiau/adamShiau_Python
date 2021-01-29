@@ -11,10 +11,11 @@ class mainWidget(QWidget):
 	def __init__(self, parent=None):
 		super(mainWidget, self).__init__(parent)
 		self.setWindowTitle(TITLE_TEXT)
-		self.updataCom = comportComboboxBlock(group_name='updata comport', btn_name='renew')
-		self.usb = connectBlock("USB Connection")
-		self.read_btn = Read_btn()
-		self.stop_btn = Stop_btn()
+		# self.updataCom = comportComboboxBlock(group_name='updata comport', btn_name='renew')
+		# self.usb = connectBlock("USB Connection")
+		self.usb = usbConnect()
+		self.read_btn = btn('read')
+		self.stop_btn = btn('stop')
 		''' spin box'''
 		self.wait_cnt = spinBlock(title='Wait cnt', minValue=0, maxValue=100, double=False, step=1)
 		self.avg = spinBlock(title='avg', minValue=0, maxValue=6, double=False, step=1)
@@ -22,65 +23,38 @@ class mainWidget(QWidget):
 		self.polarity = spinBlock(title='polarity', minValue=0, maxValue=1, double=False, step=1)
 		self.mod_H = spinBlock(title='MOD_H', minValue=0, maxValue=32767, double=False, step=1)
 		self.mod_L = spinBlock(title='MOD_L', minValue=-32768, maxValue=0, double=False, step=1)
+		self.gain1 = spinBlock(title='GAIN', minValue=0, maxValue=14, double=False, step=1)
+		self.step_max = spinBlock(title='step_max', minValue=0, maxValue=16384, double=False, step=1)
+		self.v2pi = spinBlock(title='V2PI', minValue=0, maxValue=32767, double=False, step=1)
+		self.fb_on = spinBlock(title='mode(0:OPEN)', minValue=0, maxValue=1, double=False, step=1)
 		self.freq = spinBlockOneLabel(title='frequency', minValue=0, maxValue=150, double=False, step=1)
 		
-		self.com_plot = outputPlot()
+		
+		self.com_plot = outputPlotSize(16)
 		self.main_UI()
 
 	def main_UI(self):
 		mainLayout = QGridLayout()
-		mainLayout.addWidget(self.com_plot, 0,0,7,1)
-		mainLayout.addWidget(self.updataCom.layout(), 0,1,1,3)
-		mainLayout.addWidget(self.usb.layout1(), 1,1,1,3)
+		mainLayout.addWidget(self.usb.layoutG(), 0,0,1,3)
+		mainLayout.addWidget(self.com_plot, 1,0,10,10)
 				
 		###btn###
-		mainLayout.addWidget(self.read_btn, 2,1,1,1)
-		mainLayout.addWidget(self.stop_btn, 2,2,1,1)
+		mainLayout.addWidget(self.read_btn, 1,10,1,2)
+		mainLayout.addWidget(self.stop_btn, 1,12,1,2)
 		
 		###spin Box###
-		mainLayout.addWidget(self.wait_cnt, 3,1,1,1)
-		mainLayout.addWidget(self.avg, 3,2,1,1)
-		mainLayout.addWidget(self.mod_H, 4,1,1,1)
-		mainLayout.addWidget(self.mod_L, 4,2,1,1)
-		mainLayout.addWidget(self.err_offset, 5,1,1,1)
-		mainLayout.addWidget(self.polarity, 5,2,1,1)
-		mainLayout.addWidget(self.freq, 6,1,1,2)
+		mainLayout.addWidget(self.wait_cnt, 3,10,1,2)
+		mainLayout.addWidget(self.avg, 3,12,1,2)
+		mainLayout.addWidget(self.mod_H, 4,10,1,2)
+		mainLayout.addWidget(self.mod_L, 4,12,1,2)
+		mainLayout.addWidget(self.err_offset, 5,10,1,2)
+		mainLayout.addWidget(self.polarity, 5,12,1,2)
+		mainLayout.addWidget(self.gain1, 6,10,1,2)
+		mainLayout.addWidget(self.step_max, 6,12,1,2)
+		mainLayout.addWidget(self.v2pi, 7,10,1,2)
+		mainLayout.addWidget(self.fb_on, 7,12,1,2)
+		mainLayout.addWidget(self.freq, 8,10,1,4)
 		
-		###label and line editor###
-		
-		# mainLayout.addWidget(self.theta_lb, 16,1)
-		# mainLayout.addWidget(self.theta200_lb, 16,2)
-		# mainLayout.addWidget(self.buffer_lb, 16,3)
-		
-		# mainLayout.addWidget(self.wzOffset_lb, 12,1)
-		# mainLayout.addWidget(self.wzStd_lb, 12,2)
-		# mainLayout.addWidget(self.diffwzStd_lb, 12,3)
-		# mainLayout.addWidget(self.wzOffset_le, 13,1,1,1)
-		# mainLayout.addWidget(self.wzVth_le, 13,3,1,1)
-		
-		# mainLayout.addWidget(self.wz200Offset_lb, 14,1)
-		# mainLayout.addWidget(self.wz200Std_lb, 14,2)
-		# mainLayout.addWidget(self.wz200Offset_le, 15,1,1,1)
-		
-		# mainLayout.addWidget(self.wxOffset_lb, 8,1)
-		# mainLayout.addWidget(self.wxStd_lb, 8,2)
-		# mainLayout.addWidget(self.diffwxStd_lb, 8,3)
-		# mainLayout.addWidget(self.wxOffset_le, 9,1,1,1)
-		# mainLayout.addWidget(self.wxVth_le, 9,3,1,1)
-		
-		# mainLayout.addWidget(self.wyOffset_lb, 10,1)
-		# mainLayout.addWidget(self.wyStd_lb, 10,2)
-		# mainLayout.addWidget(self.diffwyStd_lb, 10,3)
-		# mainLayout.addWidget(self.wyOffset_le, 11,1,1,1)
-		# mainLayout.addWidget(self.wyVth_le, 11,3,1,1)
-		
-		# mainLayout.addWidget(self.axOffset_lb, 4,1)
-		# mainLayout.addWidget(self.axStd_lb, 4,2)
-		# mainLayout.addWidget(self.axOffset_le, 5,1,1,1)
-		
-		# mainLayout.addWidget(self.ayOffset_lb, 6,1)
-		# mainLayout.addWidget(self.ayStd_lb, 6,2)
-		# mainLayout.addWidget(self.ayOffset_le, 7,1,1,1)
 		self.setLayout(mainLayout)
  
 class Comport_sel(QWidget):

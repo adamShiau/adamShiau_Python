@@ -27,6 +27,7 @@ class mainWidget(QWidget):
 		self.step_max = spinBlock(title='step_max', minValue=0, maxValue=16384, double=False, step=1)
 		self.v2pi = spinBlock(title='V2PI', minValue=0, maxValue=32767, double=False, step=1)
 		self.fb_on = spinBlock(title='mode(0:OPEN)', minValue=0, maxValue=1, double=False, step=1)
+		self.err_th = spinBlock(title='ERR_TH', minValue=0, maxValue=16384, double=False, step=1)
 		self.freq = spinBlockOneLabel(title='frequency', minValue=0, maxValue=150, double=False, step=1)
 		
 		
@@ -39,21 +40,22 @@ class mainWidget(QWidget):
 		mainLayout.addWidget(self.com_plot, 1,0,10,10)
 				
 		###btn###
-		mainLayout.addWidget(self.read_btn, 1,10,1,2)
-		mainLayout.addWidget(self.stop_btn, 1,12,1,2)
+		mainLayout.addWidget(self.read_btn, 0,5,1,1)
+		mainLayout.addWidget(self.stop_btn, 0,6,1,1)
 		
 		###spin Box###
-		mainLayout.addWidget(self.wait_cnt, 3,10,1,2)
-		mainLayout.addWidget(self.avg, 3,12,1,2)
-		mainLayout.addWidget(self.mod_H, 4,10,1,2)
-		mainLayout.addWidget(self.mod_L, 4,12,1,2)
-		mainLayout.addWidget(self.err_offset, 5,10,1,2)
-		mainLayout.addWidget(self.polarity, 5,12,1,2)
-		mainLayout.addWidget(self.gain1, 6,10,1,2)
-		mainLayout.addWidget(self.step_max, 6,12,1,2)
-		mainLayout.addWidget(self.v2pi, 7,10,1,2)
-		mainLayout.addWidget(self.fb_on, 7,12,1,2)
-		mainLayout.addWidget(self.freq, 8,10,1,4)
+		mainLayout.addWidget(self.wait_cnt, 1,10,1,2)
+		mainLayout.addWidget(self.avg, 1,12,1,2)
+		mainLayout.addWidget(self.mod_H, 2,10,1,2)
+		mainLayout.addWidget(self.mod_L, 2,12,1,2)
+		mainLayout.addWidget(self.err_offset, 3,10,1,2)
+		mainLayout.addWidget(self.polarity, 3,12,1,2)
+		mainLayout.addWidget(self.gain1, 4,10,1,2)
+		mainLayout.addWidget(self.step_max, 4,12,1,2)
+		mainLayout.addWidget(self.v2pi, 5,10,1,2)
+		mainLayout.addWidget(self.fb_on, 5,12,1,2)
+		mainLayout.addWidget(self.err_th, 6,10,1,2)
+		mainLayout.addWidget(self.freq, 7,10,1,4)
 		
 		self.setLayout(mainLayout)
  

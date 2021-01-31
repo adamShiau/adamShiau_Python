@@ -137,11 +137,12 @@ class mainWindow(QMainWindow):
 		self.usbconnect_status.connect(self.setBtnStatus) #確定usb連接成功時才enable btn
 		
 		''' spin box connect'''
-		self.top.wait_cnt.spin.valueChanged.connect(self.send_WIT_CNT_CMD)
+		self.top.wait_cnt.spin.valueChanged.connect(self.send_WAIT_CNT_CMD)
 		self.top.avg.spin.valueChanged.connect(self.send_AVG_CMD)
 		self.top.mod_H.spin.valueChanged.connect(self.send_MOD_H_CMD)
 		self.top.mod_L.spin.valueChanged.connect(self.send_MOD_L_CMD)
 		self.top.freq.spin.valueChanged.connect(self.send_FREQ_CMD)
+		self.top.err_th.spin.valueChanged.connect(self.send_ERR_TH_CMD)
 		self.top.err_offset.spin.valueChanged.connect(self.send_ERR_OFFSET_CMD)
 		self.top.polarity.spin.valueChanged.connect(self.send_POLARITY_CMD)
 		
@@ -167,7 +168,7 @@ class mainWindow(QMainWindow):
 		print(cmd)
 		self.act.COM.writeLine(cmd)
 		
-	def send_WIT_CNT_CMD(self):
+	def send_WAIT_CNT_CMD(self):
 		value = self.top.wait_cnt.spin.value()	
 		cmd = WAIT_CNT + str(value) + '\n'
 		print(cmd)
@@ -208,6 +209,13 @@ class mainWindow(QMainWindow):
 		cmd = V2PI + str(value) + '\n'
 		print(cmd)
 		self.act.COM.writeLine(cmd)
+		
+	def send_ERR_TH_CMD(self):
+		value = self.top.err_th.spin.value()	
+		cmd = ERR_TH + str(value) + '\n'
+		print(cmd)
+		self.act.COM.writeLine(cmd)
+		
 	
 	def send_FB_ON_CMD(self):
 		value = self.top.fb_on.spin.value()	

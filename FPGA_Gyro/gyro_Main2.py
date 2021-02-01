@@ -351,7 +351,7 @@ class mainWindow(QMainWindow):
 		self.data  = np.append(self.data, data_f)
 		self.time  = np.append(self.time, time_f)
 		self.step = np.append(self.step, step)
-		if (len(self.data) >= 1000):
+		if (len(self.data) >= 3000):
 			self.data = self.data[self.act.data_frame_update_point:]
 			self.step = self.step[self.act.data_frame_update_point:]
 			self.time = self.time[self.act.data_frame_update_point:]

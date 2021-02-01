@@ -13,8 +13,8 @@ import numpy as np
 # import py3lib.FileToArray as file
 # import py3lib.QuLogger as Qlogger 
 # import py3lib.FileToArray as fil2a 
-import gyro_Widget as UI 
-import gyro_Action as ACT
+import gyro_Widget2 as UI 
+import gyro_Action2 as ACT
 TITLE_TEXT = "OPEN LOOP"
 VERSION_TEXT = 'fog open loop 2020/12/25'
 READOUT_FILENAME = "Signal_Read_Out.txt"
@@ -49,6 +49,18 @@ FB_ON = GAIN1
 '''adc conversion '''
 ADC_COEFFI = (2.5/8192)
 TIME_COEFFI = 0.0001
+''' define initial value'''
+# MOD_H = 5000
+# MOD_L = -5000
+# ERR_OFFSET = 0
+# POLARITY = 0
+# WAIT_CNT = 50
+# ERR_TH = 0
+# ERR_AVG = 5
+# GAIN_SEL = 5
+# STEP_MAX = 1000
+# V2PI = 20000
+
 
 class mainWindow(QMainWindow):
 	# wz_offset = 0
@@ -84,6 +96,7 @@ class mainWindow(QMainWindow):
 		self.linkFunction()
 		# self.disableBtn()
 		self.data = np.empty(0)
+		self.step = np.empty(0)
 		self.time = np.empty(0)
 		self.setBtnStatus(False)
 	
@@ -132,7 +145,7 @@ class mainWindow(QMainWindow):
 
 		''' emit connect '''
 		self.act.fog_finished.connect(self.myThreadStop) #runFlag=0時fog_finished會emit，之後關掉thread1
-		self.act.openLoop_updata2.connect(self.plotOpenLoop)
+		self.act.openLoop_updata3.connect(self.plotOpenLoop)
 		#btn enable signal
 		self.usbconnect_status.connect(self.setBtnStatus) #確定usb連接成功時才enable btn
 		
@@ -300,78 +313,6 @@ class mainWindow(QMainWindow):
 		start_time_header = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
 		self.f.writelines('#' + start_time_header + '\n')
 	
-	def caliThreadStart(self):
-		self.act.runFlag = True
-		self.thread_cali.start()
-		
-	def caliThreadStop(self):
-		self.act.runFlag = False 
-		wzOffset_cp = float(self.top.wzOffset_lb.val.text())
-		wzVth_cp = round(float(self.top.diffwzStd_lb.val.text())*3,3)
-		wz200Offset_cp = float(self.top.wz200Offset_lb.val.text())
-		wxOffset_cp = float(self.top.wxOffset_lb.val.text())
-		wxVth_cp = round(float(self.top.diffwxStd_lb.val.text())*3,3)
-		wyOffset_cp = float(self.top.wyOffset_lb.val.text())
-		wyVth_cp = round(float(self.top.diffwyStd_lb.val.text())*3,3)
-		
-		axOffset_cp = float(self.top.axOffset_lb.val.text())
-		axVth_cp = round(float(self.top.diffaxStd_lb.val.text())*3,3)
-		ayOffset_cp = float(self.top.ayOffset_lb.val.text())
-		ayVth_cp = round(float(self.top.diffayStd_lb.val.text())*3,3)
-		if(wzVth_cp < 1):
-			wzVth_cp = 1
-		if(wxVth_cp < 1):
-			wxVth_cp = 1
-		if(wyVth_cp < 1):
-			wyVth_cp = 1
-		if(axVth_cp < 1):
-			axVth_cp = 1
-		if(ayVth_cp < 1):
-			ayVth_cp = 1
-			
-		self.top.wzOffset_le.setText(str(wzOffset_cp))
-		self.top.wzVth_le.setText(str(wzVth_cp))
-		self.wz_offset = wzOffset_cp
-		self.wzVth = wzVth_cp
-		
-		self.top.wz200Offset_le.setText(str(wz200Offset_cp))
-		self.wz200_offset = wz200Offset_cp
-		
-		self.top.wxOffset_le.setText(str(wxOffset_cp))
-		self.top.wxVth_le.setText(str(wxVth_cp))
-		self.wx_offset = wxOffset_cp
-		self.wxVth = wxVth_cp
-		
-		self.top.wyOffset_le.setText(str(wyOffset_cp))
-		self.top.wyVth_le.setText(str(wyVth_cp))
-		self.wy_offset = wyOffset_cp
-		self.wyVth = wyVth_cp
-		
-		self.top.axOffset_le.setText(str(axOffset_cp))
-		self.top.axVth_le.setText(str(axVth_cp))
-		self.ax_offset = axOffset_cp
-		self.axVth = axVth_cp
-		
-		self.top.ayOffset_le.setText(str(ayOffset_cp))
-		self.top.ayVth_le.setText(str(ayVth_cp))
-		self.ay_offset = ayOffset_cp
-		self.ayVth = ayVth_cp
-		
-		self.thread_cali.quit() 
-		self.thread_cali.wait()
-		self.data  = np.empty(0)
-		self.data2 = np.empty(0)
-		self.data3 = np.empty(0)
-		self.data4 = np.empty(0)
-		self.data5 = np.empty(0)
-		self.data6 = np.empty(0)
-		self.data7 = np.empty(0)
-		self.diffdata1 = np.empty(0)
-		self.diffdata2 = np.empty(0)
-		self.diffdata3 = np.empty(0)
-		self.diffdata4 = np.empty(0)
-		self.diffdata5 = np.empty(0)
-		self.diffdata6 = np.empty(0)
 	
 	def thread1Start(self):
 		self.save_status = self.openFileBox()
@@ -397,29 +338,36 @@ class mainWindow(QMainWindow):
 			self.f.close()
 		self.data  = np.empty(0)
 		self.time  = np.empty(0)
+		self.step  = np.empty(0)
 		
 		
-		
-	def plotOpenLoop(self, time, data):
+	def plotOpenLoop(self, time, data, step):
 		if(self.act.runFlag):
-			self.top.com_plot.ax.clear()
-		# data_f = data*ADC_COEFFI 
-		data_f = data 
+			self.top.com_plot1.ax.clear()
+			self.top.com_plot2.ax.clear()
+		data_f = data*ADC_COEFFI 
+		# data_f = data 
 		time_f = time*TIME_COEFFI
 		self.data  = np.append(self.data, data_f)
 		self.time  = np.append(self.time, time_f)
+		self.step = np.append(self.step, step)
 		if (len(self.data) >= 1000):
 			self.data = self.data[self.act.data_frame_update_point:]
+			self.step = self.step[self.act.data_frame_update_point:]
 			self.time = self.time[self.act.data_frame_update_point:]
 		
 		if(self.save_status):
-			np.savetxt(self.f, (np.vstack([time_f, data_f])).T, fmt='%5.5f, %5.5f')
+			np.savetxt(self.f, (np.vstack([time_f, data_f, step])).T, fmt='%5.5f, %5.5f, %5.5f')
 		# print(time)
 		# print('len(time):', len(time))
 		# print('len(data):', len(data))
-		self.top.com_plot.ax.plot(self.time, self.data, color = 'r', linestyle = '-', marker = '*', label="open")
-		self.top.com_plot.figure.canvas.draw()		
-		self.top.com_plot.figure.canvas.flush_events()
+		self.top.com_plot1.ax.plot(self.time, self.data, color = 'r', linestyle = '-', marker = '*', label="err")
+		self.top.com_plot1.figure.canvas.draw()		
+		self.top.com_plot1.figure.canvas.flush_events()
+		
+		self.top.com_plot2.ax.plot(self.time, self.step, color = 'r', linestyle = '-', marker = '*', label="step")
+		self.top.com_plot2.figure.canvas.draw()		
+		self.top.com_plot2.figure.canvas.flush_events()
 		
 	def plotCloseLoop(self, time, data):
 		if(self.act.runFlag):

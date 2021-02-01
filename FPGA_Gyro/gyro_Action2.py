@@ -82,6 +82,7 @@ class gyro_Action(QObject):
 	def updateOpenLoop(self):
 		data = np.zeros(self.data_frame_update_point)
 		time = np.zeros(self.data_frame_update_point)
+		step = np.zeros(self.data_frame_update_point)
 		print("runFlag=", self.runFlag)
 		if self.runFlag:
 			self.COM.port.flushInput()
@@ -112,6 +113,9 @@ class gyro_Action(QObject):
 					temp_data = self.convert2Sign_4B(temp_data)
 					data = np.append(data[1:], temp_data)
 					
+					temp_step = self.COM.read4Binary()
+					temp_step = self.convert2Sign_4B(temp_step)
+					step = np.append(step[1:], temp_step)
 					
 				self.valid_cnt = self.valid_cnt + 1
 				print(self.COM.port.inWaiting(), end=', ')
@@ -120,7 +124,7 @@ class gyro_Action(QObject):
 				if(self.valid_cnt == 1):
 					self.valid_flag = 1
 				if(self.valid_flag):
-					self.openLoop_updata2.emit(time, data)
+					self.openLoop_updata3.emit(time, data, step)
 					# self.openLoop_updata1.emit(data)
 		self.valid_flag = 0
 		self.valid_cnt = 0

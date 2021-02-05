@@ -50,17 +50,30 @@ FB_ON = GAIN1
 ADC_COEFFI = (2.5/8192)
 TIME_COEFFI = 0.0001
 ''' define initial value'''
-# MOD_H = 5000
-# MOD_L = -5000
-# ERR_OFFSET = 0
-# POLARITY = 0
-# WAIT_CNT = 50
-# ERR_TH = 0
-# ERR_AVG = 5
-# GAIN_SEL = 5
-# STEP_MAX = 1000
-# V2PI = 20000
+MOD_H_INIT = 0
+MOD_L_INIT = 0
+FREQ_INIT = 116
+ERR_OFFSET_INIT = 50
+POLARITY_INIT = 0
+WAIT_CNT_INIT = 30
+ERR_TH_INIT = 0
+ERR_AVG_INIT = 6
+GAIN_SEL_INIT = 10
+STEP_MAX_INIT = 4000
+V2PI_INIT = 25000
 
+CMD_MOD_H_INIT = MOD_AMP_H + str(MOD_H_INIT) + '\n'
+CMD_MOD_L_INIT = MOD_AMP_L + str(MOD_L_INIT) + '\n'
+CMD_ERR_OFFSET_INIT = ERR_OFFSET + str(ERR_OFFSET_INIT) + '\n'
+CMD_POLARITY_INIT = POLARITY + str(POLARITY_INIT) + '\n'
+CMD_WAIT_CNT_INIT = WAIT_CNT + str(WAIT_CNT_INIT) + '\n'
+CMD_ERR_TH_INIT = ERR_TH + str(ERR_TH_INIT) + '\n'
+CMD_ERR_AVG_INIT = ERR_AVG + str(ERR_AVG_INIT) + '\n'
+CMD_GAIN_SEL_INIT = GAIN1 + str(GAIN_SEL_INIT) + '\n'
+CMD_STEP_MAX_INIT = STEP_MAX + str(STEP_MAX_INIT) + '\n'
+CMD_V2PI_INIT = V2PI + str(V2PI_INIT) + '\n'
+CMD_FREQ_INIT = MOD_FREQ + str(FREQ_INIT) + '\n' 
+# CMD_MODE_INIT = GAIN1 + str(15) + '\n' 
 
 class mainWindow(QMainWindow):
 	# wz_offset = 0
@@ -75,11 +88,11 @@ class mainWindow(QMainWindow):
 	# ay_offset = 0
 	# ayVth = 0
 	# MV_status = 0
-	wait_cnt = 10
-	avg = 0
-	mod_H = 10000
-	mod_L = -10000
-	freq = 100
+	# wait_cnt = 10
+	# avg = 0
+	# mod_H = 10000
+	# mod_L = -10000
+	# freq = 100
 	''' pyqtSignal'''
 	usbconnect_status = pyqtSignal(object) #to trigger the btn to enable state
 	def __init__(self, parent = None):
@@ -98,6 +111,7 @@ class mainWindow(QMainWindow):
 		self.data = np.empty(0)
 		self.step = np.empty(0)
 		self.time = np.empty(0)
+		self.setInitValue(False)
 		self.setBtnStatus(False)
 	
 	# def send_initial_value(self):
@@ -148,7 +162,7 @@ class mainWindow(QMainWindow):
 		self.act.openLoop_updata3.connect(self.plotOpenLoop)
 		#btn enable signal
 		self.usbconnect_status.connect(self.setBtnStatus) #確定usb連接成功時才enable btn
-		
+		self.usbconnect_status.connect(self.setInitValue)
 		''' spin box connect'''
 		self.top.wait_cnt.spin.valueChanged.connect(self.send_WAIT_CNT_CMD)
 		self.top.avg.spin.valueChanged.connect(self.send_AVG_CMD)
@@ -163,6 +177,34 @@ class mainWindow(QMainWindow):
 		self.top.step_max.spin.valueChanged.connect(self.send_STEP_MAX_CMD)
 		self.top.v2pi.spin.valueChanged.connect(self.send_V2PI_CMD)
 		self.top.fb_on.spin.valueChanged.connect(self.send_FB_ON_CMD)
+		
+	def setInitValue(self, EN):
+		if(EN):
+			self.act.COM.writeLine(CMD_MOD_H_INIT)
+			self.act.COM.writeLine(CMD_MOD_L_INIT)
+			self.act.COM.writeLine(CMD_ERR_OFFSET_INIT)
+			self.act.COM.writeLine(CMD_POLARITY_INIT)
+			self.act.COM.writeLine(CMD_WAIT_CNT_INIT)
+			self.act.COM.writeLine(CMD_ERR_TH_INIT)
+			self.act.COM.writeLine(CMD_ERR_AVG_INIT)
+			self.act.COM.writeLine(CMD_GAIN_SEL_INIT)
+			self.act.COM.writeLine(CMD_STEP_MAX_INIT)
+			self.act.COM.writeLine(CMD_V2PI_INIT)
+			self.act.COM.writeLine(CMD_FREQ_INIT)
+			# self.act.COM.writeLine(CMD_MODE_INIT)
+			self.top.mod_H.spin.setValue(MOD_H_INIT)
+			self.top.mod_L.spin.setValue(MOD_L_INIT)
+			self.top.err_offset.spin.setValue(ERR_OFFSET_INIT)
+			self.top.polarity.spin.setValue(POLARITY_INIT)
+			self.top.wait_cnt.spin.setValue(WAIT_CNT_INIT)
+			self.top.err_th.spin.setValue(ERR_TH_INIT)
+			self.top.avg.spin.setValue(ERR_AVG_INIT)
+			self.top.gain1.spin.setValue(GAIN_SEL_INIT)
+			self.top.step_max.spin.setValue(STEP_MAX_INIT)
+			self.top.v2pi.spin.setValue(V2PI_INIT)
+			self.top.freq.spin.setValue(FREQ_INIT)
+			self.top.fb_on.spin.setValue(1)
+
 		
 	def setBtnStatus(self, flag):
 		self.top.read_btn.bt.setEnabled(flag)

@@ -22,11 +22,11 @@ class mainWidget(QWidget):
 		self.mod_H = spinBlock(title='MOD_H', minValue=0, maxValue=32767, double=False, step=1)
 		self.mod_L = spinBlock(title='MOD_L', minValue=-32768, maxValue=0, double=False, step=1)
 		self.gain1 = spinBlock(title='GAIN', minValue=0, maxValue=14, double=False, step=1)
-		self.step_max = spinBlock(title='step_max', minValue=0, maxValue=16384, double=False, step=1)
-		self.v2pi = spinBlock(title='V2PI', minValue=0, maxValue=32767, double=False, step=1)
+		self.step_max = spinBlock(title='step_max', minValue=1000, maxValue=16384, double=False, step=1000)
+		self.v2pi = spinBlock(title='V2PI', minValue=2000, maxValue=32767, double=False, step=1000)
 		self.fb_on = spinBlock(title='mode(0:OPEN)', minValue=0, maxValue=1, double=False, step=1)
 		self.err_th = spinBlock(title='ERR_TH', minValue=0, maxValue=16384, double=False, step=1)
-		self.freq = spinBlockOneLabel(title='frequency', minValue=0, maxValue=150, double=False, step=1)
+		self.freq = spinBlockOneLabel(title='frequency', minValue=50, maxValue=150, double=False, step=1)
 		
 		''' plot '''
 		self.com_plot1 = outputPlotSize(16)

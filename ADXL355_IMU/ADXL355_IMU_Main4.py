@@ -4,16 +4,10 @@ sys.path.append("../")
 import time 
 import datetime
 from scipy import signal
-# import logging
 from PyQt5.QtGui import * 
 from PyQt5.QtCore import * 
 from PyQt5.QtWidgets import *
-# from py3lib.COMPort import UART 
 import numpy as np
-# import py3lib
-# import py3lib.FileToArray as file
-# import py3lib.QuLogger as Qlogger 
-# import py3lib.FileToArray as fil2a 
 import ADXL355_IMU_Widget4 as UI 
 import ADXL355_IMU_Action4_BT as ACT
 TITLE_TEXT = "IMU_PLOT"
@@ -22,7 +16,8 @@ READOUT_FILENAME = "Signal_Read_Out.txt"
 MAX_SAVE_INDEX = 3000
 ODR = 100
 SAMPLING_TIME = 1/ODR
-DEBUG = 1
+DEBUG = 0
+DEBUG_COM = 1
 track_max = 50
 track_min = -50
 w_factor = 0.01
@@ -473,6 +468,10 @@ class mainWindow(QMainWindow):
 	def plotADXLIMUnGYRO(self, dt, data_SRS200_wz, data_Nano33_wz, data_PP_wz, data_Adxl355_ax, data_Adxl355_ay, data_Nano33_ax, data_Nano33_ay):
 		# print('plotADXLIMUnGYRO')
 		if(self.act.runFlag):
+		
+			if(DEBUG_COM):
+				print('data_SRS200_wz: ', end=', ');
+				print(data_SRS200_wz)
 			
 			# self.top.TabPlot.tab1_plot1.ax.clear()
 			# self.top.TabPlot.tab1_plot2.ax.clear()
@@ -619,7 +618,7 @@ class mainWindow(QMainWindow):
 			pass
 					
 		
-		self.top.TabPlot.tab1_plot1.setData(self.dt, self.data_SRS200_wz)
+		self.top.TabPlot.tab1_plot1.setData(self.data_SRS200_wz)
 		
 		
 		# self.top.com_plot.ax1.legend(bbox_to_anchor=(0.9, 1.0), loc='upper left', prop={'size': 10})

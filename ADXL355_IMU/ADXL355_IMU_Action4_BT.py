@@ -5,9 +5,6 @@ import time
 import numpy as np 
 import scipy as sp
 from scipy import signal
-# import py3lib.COMPort as usb
-# import ADXL355_IMU_Widget2 as UI 
-# import ADXL355_IMU_Main2 as MA 
 from py3lib.COMPort import UART
 import py3lib.FileToArray as fil2a
 from PyQt5.QtGui import *
@@ -23,7 +20,7 @@ import datetime
 THREAD_DELY = sys.float_info.min
 DEBUG = 0
 DEBUG_COM = 0
-TEST_MODE = 0
+TEST_MODE = 1
 # MV_MODE = 1
 
 class IMU_Action(QThread):
@@ -75,6 +72,8 @@ class IMU_Action(QThread):
 		
 	# def updateADXL_IMUnGYRO(self, MV_MODE=1):
 	def run(self):
+		print('---------------------')
+		print('start run!')
 		data_Nano33_ax = np.zeros(self.data_frame_update_point)
 		data_Nano33_ay = np.zeros(self.data_frame_update_point)
 		data_Nano33_az = np.zeros(self.data_frame_update_point)
@@ -152,55 +151,60 @@ class IMU_Action(QThread):
 						temp_Adxl355_ax = self.COM.read3Binary()
 						temp_Adxl355_ay = self.COM.read3Binary()
 						temp_Adxl355_az = self.COM.read3Binary()
-						val2 = self.COM.read1Binary()
-						
+						# val2 = self.COM.read1Binary()
+					
 					# print(self.COM.port.inWaiting())
 						
 					if(DEBUG_COM):
-						print(datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S'))
-						print('buffer: ',end=', ' )
-						print(self.bufferSize)
-						if(not TEST_MODE):
-							print('val[0]: ',end=', ' )
-							print(val[0])
-						print(temp_Nano33_ax[0], end='\t')
-						print(temp_Nano33_ax[1], end='\t')
-						print(temp_Nano33_ay[0], end='\t')
-						print(temp_Nano33_ay[1], end='\t')
-						print(temp_Nano33_az[0], end='\t')
-						print(temp_Nano33_az[1], end='\t')
-						print(temp_Nano33_wx[0], end='\t')
-						print(temp_Nano33_wx[1], end='\t')
-						print(temp_Nano33_wy[0], end='\t')
-						print(temp_Nano33_wy[1], end='\t')
-						print(temp_Nano33_wz[0], end='\t')
-						print(temp_Nano33_wz[1], end='\t')
-						print(temp_dt[0], end='\t')
-						print(temp_dt[1], end='\t')
-						print(temp_dt[2], end='\t')
-						print(temp_dt[3], end='\t')
+						# print(datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S'))
+						# print('buffer: ',end=', ' )
+						# print(self.bufferSize)
+						# if(not TEST_MODE):
+							# print('val[0]: ',end=', ' )
+							# print(val[0])
+						# print('temp_Nano33_a: ');
+						# print(temp_Nano33_ax[0], end='\t')
+						# print(temp_Nano33_ax[1], end='\t')
+						# print(temp_Nano33_ay[0], end='\t')
+						# print(temp_Nano33_ay[1], end='\t')
+						# print(temp_Nano33_az[0], end='\t')
+						# print(temp_Nano33_az[1])
+						# print('temp_Nano33_w: ');
+						# print(temp_Nano33_wx[0], end='\t')
+						# print(temp_Nano33_wx[1], end='\t')
+						# print(temp_Nano33_wy[0], end='\t')
+						# print(temp_Nano33_wy[1], end='\t')
+						# print(temp_Nano33_wz[0], end='\t')
+						# print(temp_Nano33_wz[1])
+						# print('temp_dt: ');
+						# print(temp_dt[0], end='\t')
+						# print(temp_dt[1], end='\t')
+						# print(temp_dt[2], end='\t')
+						# print(temp_dt[3])
+						print('temp_SRS200_w: ');
 						print(temp_SRS200_wz[0], end='\t')
 						print(temp_SRS200_wz[1], end='\t')
 						print(temp_SRS200_wz[2], end='\t')
-						print(temp_SRS200_wz[3], end='\t')
-						print(temp_Adxl355_ax[0], end='\t')
-						print(temp_Adxl355_ax[1], end='\t')
-						print(temp_Adxl355_ax[2], end='\t')
-						print(temp_Adxl355_ay[0], end='\t')
-						print(temp_Adxl355_ay[1], end='\t')
-						print(temp_Adxl355_ay[2], end='\t')
-						print(temp_Adxl355_az[0], end='\t')
-						print(temp_Adxl355_az[1], end='\t')
-						print(temp_Adxl355_az[2])
-						if(not TEST_MODE):
-							print('va2[0]: ',end=', ' )
-							print(val2[0])
+						print(temp_SRS200_wz[3])
+						# print('temp_Adxl355_a: ');
+						# print(temp_Adxl355_ax[0], end='\t')
+						# print(temp_Adxl355_ax[1], end='\t')
+						# print(temp_Adxl355_ax[2], end='\t')
+						# print(temp_Adxl355_ay[0], end='\t')
+						# print(temp_Adxl355_ay[1], end='\t')
+						# print(temp_Adxl355_ay[2], end='\t')
+						# print(temp_Adxl355_az[0], end='\t')
+						# print(temp_Adxl355_az[1], end='\t')
+						# print(temp_Adxl355_az[2])
+						# if(not TEST_MODE):
+							# print('va2[0]: ',end=', ' )
+							# print(val2[0])
 					''' 當arduino送來的第一個check byte不符合時則跳出for loop，發生在arduino傳來的時間爆掉時'''
-					if(not TEST_MODE):
-						if(val2[0] != self.check_byte2):
-							valid_byte = 0
-							drop_flag = 1
-							break #break for loop
+					# if(not TEST_MODE):
+						# if(val2[0] != self.check_byte2):
+							# valid_byte = 0
+							# drop_flag = 1
+							# break #break for loop
 						
 					if(valid_byte): 
 						if(not TEST_MODE):
@@ -217,6 +221,9 @@ class IMU_Action(QThread):
 							temp_Adxl355_ax =self.convert2Sign_3B(temp_Adxl355_ax)
 							temp_Adxl355_ay =self.convert2Sign_3B(temp_Adxl355_ay)
 							temp_Adxl355_az =self.convert2Sign_3B(temp_Adxl355_az)
+						
+						# if(DEBUG_COM):
+							# print('temp_dt: ', temp_dt);
 						
 						if(temp_dt < temp_dt_before):
 							temp_offset = math.ceil(abs(temp_dt - temp_dt_before)/(1<<32))*(1<<32)

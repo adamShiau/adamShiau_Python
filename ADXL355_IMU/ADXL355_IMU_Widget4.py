@@ -11,7 +11,6 @@ import pyqtgraph as pg
 from py3lib import *
 from py3lib import AdamGUIclass
 from py3lib.AdamGUIclass import *
-# from py3lib.AdamGUIclass import *
 TITLE_TEXT = "NanoIMU"
 
 class TabPlot(QTabWidget):

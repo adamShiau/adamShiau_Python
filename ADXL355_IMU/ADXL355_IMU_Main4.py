@@ -17,7 +17,7 @@ MAX_SAVE_INDEX = 3000
 ODR = 100
 SAMPLING_TIME = 1/ODR
 DEBUG = 0
-DEBUG_COM = 1
+DEBUG_COM = 0
 track_max = 50
 track_min = -50
 w_factor = 0.01
@@ -182,9 +182,9 @@ class mainWindow(QMainWindow):
 		self.top.mv_rb.toggled.connect(lambda:self.rb_toggled(self.top.mv_rb))
 	
 	def setCheckBox_init(self):
-		self.top.TabPlot.tab1_gyro_cb.cb1.setChecked(True) #set gyro wz initial as Nano33
+		self.top.TabPlot.tab1_gyro_cb.cb2.setChecked(True) #set gyro wz initial as PP
 		self.top.TabPlot.tab1_adxlXLM_cb.cb1.setChecked(True) #set adxl355 XLM initial as ax
-		self.top.TabPlot.tab1_nano33XLM_cb.cb1.setChecked(True) #set nano33 XLM initial as ax
+		# self.top.TabPlot.tab1_nano33XLM_cb.cb1.setChecked(True) #set nano33 XLM initial as ax
 		self.top.TabPlot.tab1_speed_cb.cb1.setChecked(True) #set speed_Nano33 initial as adxl355
 		self.top.TabPlot.tab3_track_cb.cb2.setChecked(True) #set track_SRS200 initially
 		
@@ -599,8 +599,10 @@ class mainWindow(QMainWindow):
 		self.dt = np.append(self.dt, dt)
 		
 		if(self.save_status):
-			np.savetxt(self.f, (np.vstack([dt, data_SRS200_wz_f, data_Nano33_wz_f, data_PP_wz_f, data_Adxl355_ax_f, data_Adxl355_ay_f, 
-			data_Nano33_ax_f, data_Nano33_ay_f])).T, fmt='%5.5f,%5.5f,%5.5f,%5.5f,%5.5f,%5.5f,%5.5f,%5.5f')
+			# np.savetxt(self.f, (np.vstack([dt, data_SRS200_wz_f, data_Nano33_wz_f, data_PP_wz_f, data_Adxl355_ax_f, data_Adxl355_ay_f, 
+			# data_Nano33_ax_f, data_Nano33_ay_f])).T, fmt='%5.5f,%5.5f,%5.5f,%5.5f,%5.5f,%5.5f,%5.5f,%5.5f')
+			np.savetxt(self.f, (np.vstack([dt, data_SRS200_wz_f, data_PP_wz_f, data_Adxl355_ax_f, data_Adxl355_ay_f, 
+			])).T, fmt='%5.5f,%5.5f,%5.5f,%5.5f,%5.5f')
 		if(DEBUG) :
 			print('len(dt): ', len(self.dt))
 			print('len(self.data_SRS200_wz): ', len(self.data_SRS200_wz))
@@ -618,7 +620,7 @@ class mainWindow(QMainWindow):
 			pass
 					
 		
-		self.top.TabPlot.tab1_plot1.setData(self.data_SRS200_wz)
+		self.top.TabPlot.tab1_plot1.setData(self.dt, self.data_SRS200_wz)
 		
 		
 		# self.top.com_plot.ax1.legend(bbox_to_anchor=(0.9, 1.0), loc='upper left', prop={'size': 10})

@@ -153,6 +153,14 @@ class UART:
 			return "ERROR"
 		else:
 			return data
+	def read5Binary(self):
+		try:
+			data = self.port.read(5)
+		except:
+			self.logger.error("readBinary failed")
+			return "ERROR"
+		else:
+			return data
 			
 	def read3Binary(self):
 		try:

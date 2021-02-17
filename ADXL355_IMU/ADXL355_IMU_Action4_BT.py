@@ -18,7 +18,7 @@ import time
 import datetime
 
 THREAD_DELY = sys.float_info.min
-DEBUG = 1
+DEBUG = 0
 DEBUG_COM = 1
 TEST_MODE = 0
 # MV_MODE = 1
@@ -37,6 +37,7 @@ class IMU_Action(QThread):
 	fog_finished = pyqtSignal()
 	'''當valid_cnt累加到valid_cnt_num時valid_flag會變1，此時才會送數據到main，目的為了避開程式一開始亂跳的情形 '''
 	valid_flag = 0
+	drop_cnt=0
 	valid_cnt = 0
 	valid_cnt_num = 5
 	TIME_PERIOD = 0.01
@@ -110,9 +111,10 @@ class IMU_Action(QThread):
 				if(drop_flag):
 					drop_flag = 0
 					print("drop occurred!")
+					self.drop_cnt = self.drop_cnt+1
 					self.COM.port.flushInput()
 				if(not TEST_MODE):
-					while(not (self.COM.port.inWaiting()>(self.data_frame_update_point*18))) : #rx buffer 不到 arduino傳來的總byte數*data_frame_update_point時不做任何事
+					while(not (self.COM.port.inWaiting()>(self.data_frame_update_point*23))) : #rx buffer 不到 arduino傳來的總byte數*data_frame_update_point時不做任何事
 						# print(self.COM.port.inWaiting())
 						pass
 				for i in range(0,self.data_frame_update_point): #更新data_frame_update_point筆資料到data and dt array
@@ -137,7 +139,10 @@ class IMU_Action(QThread):
 						temp_Adxl355_ay = np.random.randn()
 						temp_Adxl355_az = np.random.randn()
 						cnt += 10000
-						time.sleep(0.01)
+						# time.sleep(0.01)
+						# for i in range(100):
+							# print(i, end=', ')
+							# print(self.COM.read1Binary()[0])
 					else:
 						# temp_Nano33_ax = self.COM.read2Binary()
 						# temp_Nano33_ay = self.COM.read2Binary()
@@ -153,11 +158,31 @@ class IMU_Action(QThread):
 						temp_Nano33_wz = np.random.randn()*100
 						
 						temp_dt = self.COM.read4Binary()
-						temp_SRS200_wz = self.COM.read4Binary()
-						temp_PP_wz = self.COM.read4Binary()
-						temp_Adxl355_ax = self.COM.read3Binary()
-						temp_Adxl355_ay = self.COM.read3Binary()
-						temp_Adxl355_az = self.COM.read3Binary()
+						temp_SRS200_wz = self.COM.read5Binary()
+						if(temp_SRS200_wz[0] != 192):
+								temp_SRS200_wz = np.array([0,0,0,0])
+						else:
+							temp_SRS200_wz = temp_SRS200_wz[1:]
+						temp_PP_wz = self.COM.read5Binary()
+						if(temp_PP_wz[0] != 193):
+								temp_PP_wz = np.array([0,0,0,0])
+						else:
+							temp_PP_wz = temp_PP_wz[1:]
+						temp_Adxl355_ax = self.COM.read4Binary()
+						if(temp_Adxl355_ax[0] != 194):
+								temp_Adxl355_ax = np.array([0,0,0])
+						else:
+							temp_Adxl355_ax = temp_Adxl355_ax[1:]
+						temp_Adxl355_ay = self.COM.read4Binary()
+						if(temp_Adxl355_ay[0] != 195):
+								temp_Adxl355_ay = np.array([0,0,0])
+						else:
+							temp_Adxl355_ay = temp_Adxl355_ay[1:]
+						temp_Adxl355_az = self.COM.read4Binary()
+						if(temp_Adxl355_az[0] != 196):
+								temp_Adxl355_az = np.array([0,0,0])
+						else:
+							temp_Adxl355_az = temp_Adxl355_az[1:]
 						val2 = self.COM.read1Binary()
 					
 					# print(self.COM.port.inWaiting())
@@ -168,7 +193,11 @@ class IMU_Action(QThread):
 						# print(self.bufferSize)
 						if(not TEST_MODE):
 							print('val[0]: ',end=' ' )
-							print(val[0])
+							print(val[0],end=' ' )
+							print('va2[0]: ',end=' ' ) 
+							print(val2[0],end=' ')
+							print('drop_cnt: ',end=' ' )
+							print(self.drop_cnt)
 						# print('temp_Nano33_a: ');
 						# print(temp_Nano33_ax[0], end='\t')
 						# print(temp_Nano33_ax[1], end='\t')
@@ -184,38 +213,40 @@ class IMU_Action(QThread):
 						# print(temp_Nano33_wz[0], end='\t')
 						# print(temp_Nano33_wz[1])
 						# print('temp_dt: ');
-						print(temp_dt[0], end='\t')
-						print(temp_dt[1], end='\t')
-						print(temp_dt[2], end='\t')
-						print(temp_dt[3], end='\t')
-						print(temp_dt[0]<<24 | temp_dt[1]<<16 |temp_dt[2]<<8 | temp_dt[3])
-						print(temp_PP_wz[0], end='\t')
-						print(temp_PP_wz[1], end='\t')
-						print(temp_PP_wz[2], end='\t')
-						print(temp_PP_wz[3], end='\t')
-						print(temp_PP_wz[0]<<24 | temp_PP_wz[1]<<16 |temp_PP_wz[2]<<8 | temp_PP_wz[3])
+						# print(temp_dt[0], end='\t')
+						# print(temp_dt[1], end='\t')
+						# print(temp_dt[2], end='\t')
+						# print(temp_dt[3], end='\t')
+						# print(temp_dt[0]<<24 | temp_dt[1]<<16 |temp_dt[2]<<8 | temp_dt[3])
+						# print('temp_PP_wz: ');
+						# print(temp_PP_wz[0], end='\t')
+						# print(temp_PP_wz[1], end='\t')
+						# print(temp_PP_wz[2], end='\t')
+						# print(temp_PP_wz[3], end='\t')
+						# print(temp_PP_wz[0]<<24 | temp_PP_wz[1]<<16 |temp_PP_wz[2]<<8 | temp_PP_wz[3])
 						# print('temp_SRS200_w: ');
 						# print(temp_SRS200_wz[0], end='\t')
 						# print(temp_SRS200_wz[1], end='\t')
 						# print(temp_SRS200_wz[2], end='\t')
 						# print(temp_SRS200_wz[3])
-						# print('temp_Adxl355_a: ');
+						# print('temp_Adxl355_ax: ');
 						# print(temp_Adxl355_ax[0], end='\t')
 						# print(temp_Adxl355_ax[1], end='\t')
-						# print(temp_Adxl355_ax[2], end='\t')
+						# print(temp_Adxl355_ax[2])
+						# print('temp_Adxl355_ay: ');
 						# print(temp_Adxl355_ay[0], end='\t')
 						# print(temp_Adxl355_ay[1], end='\t')
-						# print(temp_Adxl355_ay[2], end='\t')
+						# print(temp_Adxl355_ay[2])
 						# print(temp_Adxl355_az[0], end='\t')
 						# print(temp_Adxl355_az[1], end='\t')
 						# print(temp_Adxl355_az[2])
-						if(not TEST_MODE):
-							print('va2[0]: ',end=' ' )
-							print(val2[0])
+						
 					''' 當arduino送來的第一個check byte不符合時則跳出for loop，發生在arduino傳來的時間爆掉時'''
 					if(not TEST_MODE):
 						if(val2[0] != self.check_byte2):
 							valid_byte = 0
+							valid_flag = 0
+							self.valid_cnt = (self.valid_cnt_num-2)
 							drop_flag = 1
 							break #break for loop
 						
@@ -230,6 +261,7 @@ class IMU_Action(QThread):
 							# temp_Nano33_wz = self.convert2Sign_2B(temp_Nano33_wz)
 							temp_dt = self.convert2Unsign_4B(temp_dt)
 							temp_SRS200_wz = self.convert2Sign_4B(temp_SRS200_wz)
+							
 							temp_PP_wz = self.convert2Unsign_4B(temp_PP_wz)
 							temp_Adxl355_ax =self.convert2Sign_3B(temp_Adxl355_ax)
 							temp_Adxl355_ay =self.convert2Sign_3B(temp_Adxl355_ay)

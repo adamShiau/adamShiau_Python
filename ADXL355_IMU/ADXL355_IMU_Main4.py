@@ -45,6 +45,7 @@ class mainWindow(QMainWindow):
 	offset_Adxl355_ax = 0
 	offset_Adxl355_ay = 0
 	offset_Adxl355_az = 0
+	
 	''' pyqtSignal'''
 	usbconnect_status = pyqtSignal(object) #to trigger the btn to enable state
 	''' axis max for track'''
@@ -496,7 +497,7 @@ class mainWindow(QMainWindow):
 			
 			pass
 		dt = dt*1e-6
-		if (len(self.dt) >= 1000):
+		if (len(self.dt) >= 3000):
 			self.dt = self.dt[self.act.data_frame_update_point:]
 			self.data_SRS200_wz = self.data_SRS200_wz[self.act.data_frame_update_point:]
 			self.data_Nano33_wz = self.data_Nano33_wz[self.act.data_frame_update_point:]

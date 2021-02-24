@@ -51,18 +51,18 @@ FB_ON = GAIN1
 ADC_COEFFI = (2.5/8192)
 TIME_COEFFI = 0.0001
 ''' define initial value'''
-MOD_H_INIT = 0
-MOD_L_INIT = 0
+MOD_H_INIT = 1000
+MOD_L_INIT = -2500
 FREQ_INIT = 116
-ERR_OFFSET_INIT = 50
+ERR_OFFSET_INIT = 0
 POLARITY_INIT = 0
 WAIT_CNT_INIT = 30
 ERR_TH_INIT = 0
 ERR_AVG_INIT = 6
-GAIN_SEL_INIT = 10
-STEP_MAX_INIT = 4000
-V2PI_INIT = 25000
-V2PIN_INIT = -25000
+GAIN_SEL_INIT = 6
+STEP_MAX_INIT = 10000
+V2PI_INIT = 31000
+V2PIN_INIT = -31000
 
 CMD_MOD_H_INIT = MOD_AMP_H + str(MOD_H_INIT) + '\n'
 CMD_MOD_L_INIT = MOD_AMP_L + str(MOD_L_INIT) + '\n'
@@ -72,6 +72,7 @@ CMD_WAIT_CNT_INIT = WAIT_CNT + str(WAIT_CNT_INIT) + '\n'
 CMD_ERR_TH_INIT = ERR_TH + str(ERR_TH_INIT) + '\n'
 CMD_ERR_AVG_INIT = ERR_AVG + str(ERR_AVG_INIT) + '\n'
 CMD_GAIN_SEL_INIT = GAIN1 + str(GAIN_SEL_INIT) + '\n'
+CMD_OPENLOOP_INIT = GAIN1 + str(15) + '\n'
 CMD_STEP_MAX_INIT = STEP_MAX + str(STEP_MAX_INIT) + '\n'
 CMD_V2PI_INIT = V2PI + str(V2PI_INIT) + '\n'
 CMD_V2PIN_INIT = V2PIN + str(V2PIN_INIT) + '\n'
@@ -191,7 +192,7 @@ class mainWindow(QMainWindow):
 			self.act.COM.writeLine(CMD_WAIT_CNT_INIT)
 			self.act.COM.writeLine(CMD_ERR_TH_INIT)
 			self.act.COM.writeLine(CMD_ERR_AVG_INIT)
-			self.act.COM.writeLine(CMD_GAIN_SEL_INIT)
+			# self.act.COM.writeLine(CMD_GAIN_SEL_INIT)
 			self.act.COM.writeLine(CMD_STEP_MAX_INIT)
 			self.act.COM.writeLine(CMD_V2PI_INIT)
 			self.act.COM.writeLine(CMD_V2PIN_INIT)
@@ -209,7 +210,8 @@ class mainWindow(QMainWindow):
 			self.top.v2pi.spin.setValue(V2PI_INIT)
 			self.top.v2piN.spin.setValue(V2PIN_INIT)
 			self.top.freq.spin.setValue(FREQ_INIT)
-			self.top.fb_on.spin.setValue(1)
+			self.top.fb_on.spin.setValue(0)
+			self.act.COM.writeLine(CMD_OPENLOOP_INIT)
 
 		
 	def setBtnStatus(self, flag):

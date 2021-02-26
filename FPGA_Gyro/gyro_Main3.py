@@ -53,15 +53,15 @@ TIME_COEFFI = 0.0001
 ''' define initial value'''
 MOD_H_INIT = 1000
 MOD_L_INIT = -2500
-FREQ_INIT = 116
+FREQ_INIT = 115
 ERR_OFFSET_INIT = 0
 POLARITY_INIT = 0
-WAIT_CNT_INIT = 30
+WAIT_CNT_INIT = 45
 ERR_TH_INIT = 0
-ERR_AVG_INIT = 6
-GAIN_SEL_INIT = 6
+ERR_AVG_INIT = 2
+GAIN_SEL_INIT = 14
 STEP_MAX_INIT = 10000
-V2PI_INIT = 31000
+V2PI_INIT = 27000
 V2PIN_INIT = -31000
 
 CMD_MOD_H_INIT = MOD_AMP_H + str(MOD_H_INIT) + '\n'
@@ -402,12 +402,12 @@ class mainWindow(QMainWindow):
 			self.top.com_plot1.ax.clear()
 			self.top.com_plot2.ax.clear()
 		data_f = data*ADC_COEFFI 
-		# data_f = data 
 		time_f = time*TIME_COEFFI
+		# data_f = data 
 		self.data  = np.append(self.data, data_f)
 		self.time  = np.append(self.time, time_f)
 		self.step = np.append(self.step, step)
-		if (len(self.data) >= 3000):
+		if (len(self.data) >= 1000):
 			self.data = self.data[self.act.data_frame_update_point:]
 			self.step = self.step[self.act.data_frame_update_point:]
 			self.time = self.time[self.act.data_frame_update_point:]
@@ -428,6 +428,7 @@ class mainWindow(QMainWindow):
 	def plotCloseLoop(self, time, data):
 		if(self.act.runFlag):
 			self.top.com_plot.ax.clear()
+		# data_f = data*ADC_COEFFI 
 		data_f = data*ADC_COEFFI 
 		time_f = time*TIME_COEFFI
 		self.data  = np.append(self.data, data_f)

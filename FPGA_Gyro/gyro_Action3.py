@@ -83,12 +83,14 @@ class gyro_Action(QObject):
 		data = np.zeros(self.data_frame_update_point)
 		time = np.zeros(self.data_frame_update_point)
 		step = np.zeros(self.data_frame_update_point)
+		data_sum = 0
+		step_sum = 0
 		print("runFlag=", self.runFlag)
 		if self.runFlag:
 			self.COM.port.flushInput()
 			
 			while self.runFlag:
-				while(not (self.COM.port.inWaiting()>(self.data_frame_update_point*9))) : #rx buffer 不到 (self.data_frame_update_point*9) byte數目時不做任何事
+				while(not (self.COM.port.inWaiting()>(self.data_frame_update_point*14))) : #rx buffer 不到 (self.data_frame_update_point*9) byte數目時不做任何事
 					# print(self.COM.port.inWaiting())
 					pass
 					
@@ -98,24 +100,37 @@ class gyro_Action(QObject):
 						val = self.COM.read1Binary()
 					
 					temp_time = self.COM.read4Binary()
-					# print(temp_time[0], end=', ')
-					# print(temp_time[1], end=', ')
-					# print(temp_time[2], end=', ')
-					# print(temp_time[3])
 					temp_time = self.convert2Unsign_4B(temp_time)
-					time = np.append(time[1:], temp_time)
+					
 					
 					temp_data = self.COM.read4Binary()
-					# print(temp_data[0], end=', ')
-					# print(temp_data[1], end=', ')
-					# print(temp_data[2], end=', ')
-					# print(temp_data[3])
 					temp_data = self.convert2Sign_4B(temp_data)
-					data = np.append(data[1:], temp_data)
+					
 					
 					temp_step = self.COM.read4Binary()
 					temp_step = self.convert2Sign_4B(temp_step)
+					
+					
+					temp_step_SM = self.COM.read1Binary()
+					print('ERR:', temp_data, end=', ')
+					print('STEP:', temp_step, end=', ')
+					print('SM:', temp_step_SM[0])
+					
+					data_sum = data_sum - data[0]
+					data_sum = data_sum + temp_data
+					data_MV = data_sum/self.data_frame_update_point
+					val_data = data_MV
+					
+					step_sum = step_sum - step[0]
+					step_sum = step_sum + temp_step
+					step_MV = step_sum/self.data_frame_update_point
+					val_step = step_MV
+					
+					time = np.append(time[1:], temp_time)
+					data = np.append(data[1:], temp_data)
 					step = np.append(step[1:], temp_step)
+					# data = np.append(data[1:], val_data)
+					# step = np.append(step[1:], val_step)
 					
 				self.valid_cnt = self.valid_cnt + 1
 				print(self.COM.port.inWaiting(), end=', ')
@@ -130,51 +145,6 @@ class gyro_Action(QObject):
 		self.valid_cnt = 0
 		self.fog_finished.emit()
 		
-	def updateOpenLoop_old(self):
-		data = np.zeros(self.data_frame_update_point)
-		# time = np.zeros(self.data_frame_update_point)
-		print("runFlag=", self.runFlag)
-		if self.runFlag:
-			self.COM.port.flushInput()
-			
-			while self.runFlag:
-				while(not (self.COM.port.inWaiting()>(self.data_frame_update_point*9))) : #rx buffer 不到 (self.data_frame_update_point*9) byte數目時不做任何事
-					# print(self.COM.port.inWaiting())
-					pass
-					
-				for i in range(0,self.data_frame_update_point): #更新data_frame_update_point筆資料到data and dt array
-					# val = self.COM.read1Binary()
-					# while(val[0] != self.check_byte):
-						# val = self.COM.read1Binary()
-					
-					# temp_time = self.COM.read4Binary()
-					# print(temp_time[0], end=', ')
-					# print(temp_time[1], end=', ')
-					# print(temp_time[2], end=', ')
-					# print(temp_time[3])
-					# temp_time = self.convert2Unsign_4B(temp_time)
-					# time = np.append(time[1:], temp_time)
-					
-					temp_data = self.COM.read4Binary()
-					# print(temp_data[0], end=', ')
-					# print(temp_data[1], end=', ')
-					# print(temp_data[2], end=', ')
-					# print(temp_data[3])
-					temp_data = self.convert2Sign_4B(temp_data)
-					data = np.append(data[1:], temp_data)
-					
-				self.valid_cnt = self.valid_cnt + 1
-				print(self.COM.port.inWaiting(), end=', ')
-				print(data)
-				# print(time)
-				if(self.valid_cnt == 2):
-					self.valid_flag = 1
-				if(self.valid_flag):
-					# self.openLoop_updata2.emit(time, data)
-					self.openLoop_updata1.emit(data)
-		self.valid_flag = 0
-		self.valid_cnt = 0
-		self.fog_finished.emit()
 			
 	def convert2Sign_4B(self, datain) :
 		shift_data = (datain[0]<<24|datain[1]<<16|datain[2]<<8|datain[3])

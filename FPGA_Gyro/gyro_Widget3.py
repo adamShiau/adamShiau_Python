@@ -19,15 +19,15 @@ class mainWidget(QWidget):
 		self.avg = spinBlock(title='avg', minValue=0, maxValue=6, double=False, step=1)
 		self.err_offset = spinBlock(title='Err offset', minValue=-50, maxValue=50, double=False, step=1)
 		self.polarity = spinBlock(title='polarity', minValue=0, maxValue=1, double=False, step=1)
-		self.mod_H = spinBlock(title='MOD_H', minValue=0, maxValue=32767, double=False, step=1)
-		self.mod_L = spinBlock(title='MOD_L', minValue=-32768, maxValue=0, double=False, step=1)
+		self.mod_H = spinBlock(title='MOD_H', minValue=0, maxValue=32767, double=False, step=100)
+		self.mod_L = spinBlock(title='MOD_L', minValue=-32768, maxValue=0, double=False, step=100)
 		self.gain1 = spinBlock(title='GAIN', minValue=0, maxValue=14, double=False, step=1)
 		self.step_max = spinBlock(title='step_max', minValue=1000, maxValue=32767, double=False, step=1000)
 		self.v2pi = spinBlock(title='V2PI_P', minValue=2000, maxValue=32767, double=False, step=1000)
 		self.v2piN = spinBlock(title='V2PI_N', minValue=-32768, maxValue=-2000, double=False, step=1000)
 		self.fb_on = spinBlock(title='mode(0:OPEN)', minValue=0, maxValue=1, double=False, step=1)
 		self.err_th = spinBlock(title='ERR_TH', minValue=0, maxValue=16384, double=False, step=1)
-		self.freq = spinBlockOneLabel(title='frequency', minValue=50, maxValue=150, double=False, step=1)
+		self.freq = spinBlockOneLabel(title='frequency', minValue=50, maxValue=1500, double=False, step=1)
 		
 		''' plot '''
 		self.com_plot1 = outputPlotSize(16)

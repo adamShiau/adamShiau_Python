@@ -15,6 +15,7 @@ import numpy as np
 # import py3lib.FileToArray as fil2a 
 import gyro_Widget3 as UI 
 import gyro_Action3 as ACT
+import gyro_Globals as globals
 TITLE_TEXT = "OPEN LOOP"
 VERSION_TEXT = 'fog open loop 2020/12/25'
 READOUT_FILENAME = "Signal_Read_Out.txt"
@@ -56,10 +57,10 @@ MOD_L_INIT = -2500
 FREQ_INIT = 115
 ERR_OFFSET_INIT = 0
 POLARITY_INIT = 0
-WAIT_CNT_INIT = 45
+WAIT_CNT_INIT = 60
 ERR_TH_INIT = 0
-ERR_AVG_INIT = 2
-GAIN_SEL_INIT = 14
+ERR_AVG_INIT = 5
+GAIN_SEL_INIT = 11
 STEP_MAX_INIT = 10000
 V2PI_INIT = 27000
 V2PIN_INIT = -31000
@@ -78,25 +79,9 @@ CMD_V2PI_INIT = V2PI + str(V2PI_INIT) + '\n'
 CMD_V2PIN_INIT = V2PIN + str(V2PIN_INIT) + '\n'
 CMD_FREQ_INIT = MOD_FREQ + str(FREQ_INIT) + '\n' 
 # CMD_MODE_INIT = GAIN1 + str(15) + '\n' 
-
 class mainWindow(QMainWindow):
-	# wz_offset = 0
-	# wzVth = 0
-	# wz200_offset = 0
-	# wx_offset = 0
-	# wxVth = 0
-	# wy_offset = 0
-	# wyVth = 0
-	# ax_offset = 0
-	# axVth = 0
-	# ay_offset = 0
-	# ayVth = 0
-	# MV_status = 0
-	# wait_cnt = 10
-	# avg = 0
-	# mod_H = 10000
-	# mod_L = -10000
-	# freq = 100
+	# Kal_status = 0
+	
 	''' pyqtSignal'''
 	usbconnect_status = pyqtSignal(object) #to trigger the btn to enable state
 	def __init__(self, parent = None):
@@ -112,6 +97,7 @@ class mainWindow(QMainWindow):
 		self.thread1 = QThread() #開一個thread
 		self.linkFunction()
 		# self.disableBtn()
+		self.get_rbVal()
 		self.data = np.empty(0)
 		self.step = np.empty(0)
 		self.time = np.empty(0)
@@ -159,6 +145,7 @@ class mainWindow(QMainWindow):
 		self.top.read_btn.bt.clicked.connect(self.thread1Start) # set runFlag=1
 		self.top.stop_btn.bt.clicked.connect(self.buttonStop) # set runFlag=0
 		''' thread connect '''
+		# self.thread1.started.connect(lambda:self.act.updateOpenLoop(Kal_status = self.Kal_status))
 		self.thread1.started.connect(self.act.updateOpenLoop)
 
 		''' emit connect '''
@@ -167,6 +154,10 @@ class mainWindow(QMainWindow):
 		#btn enable signal
 		self.usbconnect_status.connect(self.setBtnStatus) #確定usb連接成功時才enable btn
 		self.usbconnect_status.connect(self.setInitValue)
+		
+		''' radio btn'''
+		self.top.Kal_rb.toggled.connect(lambda:self.rb_toggled(self.top.Kal_rb))
+		
 		''' spin box connect'''
 		self.top.wait_cnt.spin.valueChanged.connect(self.send_WAIT_CNT_CMD)
 		self.top.avg.spin.valueChanged.connect(self.send_AVG_CMD)
@@ -182,6 +173,9 @@ class mainWindow(QMainWindow):
 		self.top.v2pi.spin.valueChanged.connect(self.send_V2PI_CMD)
 		self.top.v2piN.spin.valueChanged.connect(self.send_V2PIN_CMD)
 		self.top.fb_on.spin.valueChanged.connect(self.send_FB_ON_CMD)
+		
+		self.top.Q.spin.valueChanged.connect(self.update_kal_Q)
+		self.top.R.spin.valueChanged.connect(self.update_kal_R)
 		
 	def setInitValue(self, EN):
 		if(EN):
@@ -212,6 +206,8 @@ class mainWindow(QMainWindow):
 			self.top.freq.spin.setValue(FREQ_INIT)
 			self.top.fb_on.spin.setValue(0)
 			self.act.COM.writeLine(CMD_OPENLOOP_INIT)
+			self.top.Q.spin.setValue(globals.kal_Q)
+			self.top.R.spin.setValue(globals.kal_R)
 
 		
 	def setBtnStatus(self, flag):
@@ -302,6 +298,15 @@ class mainWindow(QMainWindow):
 		print(cmd)
 		self.act.COM.writeLine(cmd)
 		
+	def update_kal_Q(self):
+		value = self.top.Q.spin.value()
+		globals.kal_Q = value
+		print('kal_Q:', globals.kal_Q)
+		
+	def update_kal_R(self):
+		value = self.top.R.spin.value()
+		globals.kal_R = value
+		print('kal_R:', globals.kal_R)
 	'''------------------------------------------------- '''
 	
 	def versionBox(self):
@@ -363,7 +368,15 @@ class mainWindow(QMainWindow):
 		
 		self.act.runFlag = False
 		self.act.dt_init_flag = 1
+	
+	def rb_toggled(self, rb):
+		globals.kal_status = rb.isChecked()
+		print('main:', globals.kal_status)
 		
+	def get_rbVal(self):
+		globals.Kal_status = self.top.Kal_rb.isChecked()
+		print('Kal:', globals.Kal_status)
+	
 	def open_file(self, filename):
 		self.f=open(filename, 'w')
 		start_time_header = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')

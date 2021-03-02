@@ -28,7 +28,11 @@ class mainWidget(QWidget):
 		self.fb_on = spinBlock(title='mode(0:OPEN)', minValue=0, maxValue=1, double=False, step=1)
 		self.err_th = spinBlock(title='ERR_TH', minValue=0, maxValue=16384, double=False, step=1)
 		self.freq = spinBlockOneLabel(title='frequency', minValue=50, maxValue=1500, double=False, step=1)
-		
+		self.Q = spinBlock(title='Q', minValue=1, maxValue=100000, double=False, step=10)
+		self.R = spinBlock(title='R', minValue=1, maxValue=100000, double=False, step=10)
+		'''radio btn'''
+		self.Kal_rb = QRadioButton('Kalman filter')
+		self.Kal_rb.setChecked(0)
 		''' plot '''
 		self.com_plot1 = outputPlotSize(16)
 		self.com_plot2 = outputPlotSize(16)
@@ -43,6 +47,9 @@ class mainWidget(QWidget):
 		mainLayout.addWidget(self.read_btn, 0,5,1,1)
 		mainLayout.addWidget(self.stop_btn, 0,6,1,1)
 		
+		### rb ###
+		mainLayout.addWidget(self.Kal_rb, 0,10,1,1) 
+		
 		###spin Box###
 		mainLayout.addWidget(self.wait_cnt, 1,10,1,2)
 		mainLayout.addWidget(self.avg, 1,12,1,2)
@@ -56,7 +63,9 @@ class mainWidget(QWidget):
 		mainLayout.addWidget(self.v2piN, 5,12,1,2)
 		mainLayout.addWidget(self.fb_on, 6,12,1,2)
 		mainLayout.addWidget(self.err_th, 6,10,1,2)
-		mainLayout.addWidget(self.freq, 7,10,1,4)
+		mainLayout.addWidget(self.freq, 7,10,1,4) 
+		mainLayout.addWidget(self.Q, 8,10,1,2) 
+		mainLayout.addWidget(self.R, 8,12,1,2) 
 		
 		self.setLayout(mainLayout)
  

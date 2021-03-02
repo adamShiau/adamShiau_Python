@@ -14,10 +14,13 @@ import logging
 import py3lib
 from py3lib import *
 import math
+# import gyro_Main3 as MAIN 
+import gyro_Globals as globals
 
 TEST_MODE = False
 DEBUG = 1
 DEBUG2 = 1
+FAKE_DATA = 0
 # MV_MODE = 1
 
 class gyro_Action(QObject):
@@ -54,10 +57,12 @@ class gyro_Action(QObject):
 	check_byte2 = 171
 	bufferSize = 0
 	dt_init_flag = 1
+	kal_flag = 0
 	def __init__(self, loggername):	
 		super().__init__()
 		self.COM = usb.FT232(loggername)
 		self.logger = logging.getLogger(loggername)
+		# MAIN.mainWindow.Kal_update.emit.connect(self.test)
 		# self.SaveFileName = ''
 
 	def usbConnect(self):
@@ -85,6 +90,29 @@ class gyro_Action(QObject):
 		step = np.zeros(self.data_frame_update_point)
 		data_sum = 0
 		step_sum = 0
+		''' for kalmman filter'''
+		#initial guess value
+		x0 = 0
+		y0 = 0
+		p0 = 0
+		#Q:process variance
+		#R:measure variance
+		# Q = 1
+		# R = 100
+		print('action kal_Q:', globals.kal_Q)
+		print('action kal_R:', globals.kal_R)
+		x_p = np.zeros(self.data_frame_update_point+1)
+		y_p = np.zeros(self.data_frame_update_point+1)
+		p_p = np.zeros(self.data_frame_update_point+1)
+		x = np.zeros(self.data_frame_update_point)
+		y = np.zeros(self.data_frame_update_point)
+		p = np.zeros(self.data_frame_update_point)
+		k = np.zeros(self.data_frame_update_point)
+		p0 = p0^2
+		x_p[self.data_frame_update_point] = x0
+		y_p[self.data_frame_update_point] = y0
+		p_p[self.data_frame_update_point] = p0 + globals.kal_Q
+		''' '''
 		print("runFlag=", self.runFlag)
 		if self.runFlag:
 			self.COM.port.flushInput()
@@ -93,7 +121,10 @@ class gyro_Action(QObject):
 				while(not (self.COM.port.inWaiting()>(self.data_frame_update_point*14))) : #rx buffer 不到 (self.data_frame_update_point*9) byte數目時不做任何事
 					# print(self.COM.port.inWaiting())
 					pass
-					
+				x_p[0] = x_p[self.data_frame_update_point]
+				y_p[0] = y_p[self.data_frame_update_point]
+				p_p[0] = p_p[self.data_frame_update_point]
+				
 				for i in range(0,self.data_frame_update_point): #更新data_frame_update_point筆資料到data and dt array
 					val = self.COM.read1Binary()
 					while(val[0] != self.check_byte):
@@ -105,6 +136,11 @@ class gyro_Action(QObject):
 					
 					temp_data = self.COM.read4Binary()
 					temp_data = self.convert2Sign_4B(temp_data)
+					if(FAKE_DATA):
+						if(i<7):
+							temp_data = 100
+						else:
+							temp_data = 0
 					
 					
 					temp_step = self.COM.read4Binary()
@@ -112,9 +148,29 @@ class gyro_Action(QObject):
 					
 					
 					temp_step_SM = self.COM.read1Binary()
-					print('ERR:', temp_data, end=', ')
-					print('STEP:', temp_step, end=', ')
-					print('SM:', temp_step_SM[0])
+					# print('ERR:', temp_data, end=', ')
+					# print('STEP:', temp_step, end=', ')
+					# print('SM:', temp_step_SM[0], end=', ')
+					# print('i: ', i)
+					
+					# print('i: ', i, end=', ')
+					# print('p_p: ', p_p[i], end=', ')
+					# print('x_p: ', x_p[i])
+					# print('Kal_status:', Kal_status)
+					self.kal_flag = globals.kal_status
+					''' Kalmman filter'''
+					#update
+					k[i] = p_p[i]/(p_p[i] + globals.kal_R) #k_n
+					x[i] = x_p[i] + k[i]*(temp_data - x_p[i])  #x_nn
+					y[i] = y_p[i] + k[i]*(temp_step - y_p[i])  #y_nn
+					p[i] = (1 - k[i])*p_p[i] #p_nn
+
+					#predict
+					x_p[i+1] = x[i]
+					y_p[i+1] = y[i]
+					p_p[i+1] = p[i] + globals.kal_Q
+					
+					''' end of kalmman filter'''
 					
 					data_sum = data_sum - data[0]
 					data_sum = data_sum + temp_data
@@ -127,11 +183,16 @@ class gyro_Action(QObject):
 					val_step = step_MV
 					
 					time = np.append(time[1:], temp_time)
-					data = np.append(data[1:], temp_data)
-					step = np.append(step[1:], temp_step)
-					# data = np.append(data[1:], val_data)
-					# step = np.append(step[1:], val_step)
-					
+					# data = np.append(data[1:], temp_data)
+					# step = np.append(step[1:], temp_step)
+					# data = np.append(data[1:], val_data) #MV
+					# step = np.append(step[1:], val_step) #MV
+					if(self.kal_flag == True):
+						data = np.append(data[1:], x[i]) #kalmman filter
+						step = np.append(step[1:], y[i]) #kalmman filter
+					else:
+						data = np.append(data[1:], temp_data)
+						step = np.append(step[1:], temp_step)
 				self.valid_cnt = self.valid_cnt + 1
 				print(self.COM.port.inWaiting(), end=', ')
 				print(data)

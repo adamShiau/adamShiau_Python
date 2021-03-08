@@ -525,6 +525,7 @@ class mainWindow(QMainWindow):
 		# print('self.thetaz_nano33: ', self.thetaz_nano33)
 		print('self.thetaz_SRS200: ', self.thetaz_SRS200)
 		self.top.SRS200_gauge.lb.setText(str(round(self.thetaz_SRS200, 2)))
+		
 		'''由加速度積分計算速度'''
 		#Nano33
 		self.speedx_Nano33 = self.speedx_Nano33 + np.sum(data_Nano33_ax_f)*9.8*SAMPLING_TIME
@@ -538,10 +539,10 @@ class mainWindow(QMainWindow):
 		self.speedy_Adxl355 = self.speedy_Adxl355 + np.sum(data_Adxl355_ay_f)*9.8*SAMPLING_TIME
 		self.speed_Adxl355 = np.sqrt(np.square(self.speedx_Adxl355)+np.square(self.speedy_Adxl355))
 		self.speed_Adxl355_arr = np.append(self.speed_Adxl355_arr, self.speed_Adxl355)
-		
+		self.top.speed_gauge.lb.setText(str(round(self.speed_Adxl355, 2)))
 		#guage plot
 		self.top.SRS200_gauge.gauge.item.setRotation(self.thetaz_SRS200)
-		self.top.speed_gauge.item.setRotation(np.average(data_SRS200_wz_f))
+		self.top.speed_gauge.gauge.item.setRotation(np.average(data_SRS200_wz_f))
 		
 		''' for track plot'''
 		thetaz_nano33 = 90 - self.thetaz_nano33

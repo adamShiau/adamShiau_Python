@@ -17,6 +17,8 @@ TITLE_TEXT = "NanoIMU"
 class TabPlot(QTabWidget):
 	def __init__(self, parent=None):
 		super(TabPlot, self).__init__(parent)
+		pg.setConfigOption('background', 'w')
+		pg.setConfigOption('foreground', 'k')
 		self.win = pg.GraphicsLayoutWidget(show=True, title="Basic plotting examples")
 		self.win.resize(1000,600)
 		self.win.setWindowTitle('pyqtgraph example: Plotting')
@@ -31,19 +33,18 @@ class TabPlot(QTabWidget):
 		###tab1 plot###
 		tab1_plot1 = self.win.addPlot(title="p1")
 		self.tab1_plot1 = tab1_plot1.plot(pen='r')
-		# self.tab1_plot1.plot(pen=(241,77,65))
 		tab1_plot2 = self.win.addPlot(title="p2")
 		self.tab1_plot2_1 = tab1_plot2.plot(pen='r')
-		self.tab1_plot2_2 = tab1_plot2.plot(pen='g')
+		self.tab1_plot2_2 = tab1_plot2.plot(pen='b')
 		self.win.nextRow()
 		tab1_plot3 = self.win.addPlot(title="p3")
 		self.tab1_plot3_1 = tab1_plot3.plot(pen='r')
-		self.tab1_plot3_2 = tab1_plot3.plot(pen='g')
-		self.tab1_plot3_3 = tab1_plot3.plot(pen='b')
+		self.tab1_plot3_2 = tab1_plot3.plot(pen='b')
+		self.tab1_plot3_3 = tab1_plot3.plot(pen='k')
 		self.tab1_plot3_4 = tab1_plot3.plot(pen='y')
 		tab1_plot4= self.win.addPlot(title="p4")
 		self.tab1_plot4_1 = tab1_plot4.plot(pen='r')
-		self.tab1_plot4_2 = tab1_plot4.plot(pen='r')
+		self.tab1_plot4_2 = tab1_plot4.plot(pen='b')
 		###tab1 check box###
 		self.tab1_gyro_cb = chkBoxBlock_2('wz','Nano33', 'PP')
 		self.tab1_adxlXLM_cb = chkBoxBlock_2( 'ADXL355', 'ax', 'ay')
@@ -66,20 +67,13 @@ class TabPlot(QTabWidget):
 		''' tab3 GUI item'''
 		###tab3 plot###
 		self.tab3_plot1 = self.win2.addPlot(title="plot5")
-		# self.tab3_plot1.setYRange(-10, 10, padding=0)
-		# self.tab3_plot1.setXRange(-10, 10, padding=0)
 		self.tab3_plot1_1 = self.tab3_plot1.plot(pen='r')
-		self.tab3_plot1_2 = self.tab3_plot1.plot(pen='g')
+		self.tab3_plot1_2 = self.tab3_plot1.plot(pen='b')
 		###tab3 btn###
 		self.tab3_xmax = AdamGUIclass.editBlockwBtn('xmax')
 		self.tab3_ymax = AdamGUIclass.editBlockwBtn('ymax')
 		###tab3 check box###
 		self.tab3_track_cb = chkBoxBlock_2('track','Nano33', 'SRS200')
-		
-		# self.plot2 = output2Plot()
-		# self.plot2.ax1.set_ylabel("Arbiary Uint")
-		# self.plot2.ax2.set_xlabel("Time (s)")
-		# self.plot2.ax2.set_ylabel("Arbiary Uint")
 		self.addTab(self.tab1,"Meas.")
 		self.addTab(self.tab2,"Cali.")
 		self.addTab(self.tab3,"Track")
@@ -89,15 +83,11 @@ class TabPlot(QTabWidget):
 		
 	def Tab1_UI(self):
 		layout = QGridLayout()
-		# layout.addWidget(self.tab1_plot1, 0, 0, 10, 10) 
-		# layout.addWidget(self.tab1_plot2, 0, 11, 10, 10)
-		# layout.addWidget(self.tab1_plot3, 10, 0, 10, 10)
-		# layout.addWidget(self.tab1_plot4, 10, 11, 10, 10)
 		layout.addWidget(self.win, 0, 0, 20, 20)
 		layout.addWidget(self.tab1_gyro_cb.layout(), 5, 20, 1, 1)
-		layout.addWidget(self.tab1_adxlXLM_cb.layout(), 14, 9, 1, 1)
-		layout.addWidget(self.tab1_nano33XLM_cb.layout(), 15, 9, 1, 1)
-		layout.addWidget(self.tab1_speed_cb.layout(), 14, 20, 1, 1)
+		layout.addWidget(self.tab1_adxlXLM_cb.layout(), 10, 8, 1, 1)
+		# layout.addWidget(self.tab1_nano33XLM_cb.layout(), 15, 9, 1, 1)
+		layout.addWidget(self.tab1_speed_cb.layout(), 10, 20, 1, 1)
 		layout.addWidget(self.tab1_read_btn, 1, 30, 1, 1)
 		layout.addWidget(self.tab1_stop_btn, 2, 30, 1, 1)
 		self.tab1.setLayout(layout)
@@ -133,8 +123,8 @@ class mainWidget(QWidget):
 		self.mv_rb = QRadioButton('MV enable')
 		self.mv_rb.setChecked(0)
 		##gauge###
-		self.SRS200_gauge = gaugePlotwLabel()
-		self.speed_gauge = gaugePlot()
+		self.SRS200_gauge = gaugePlotwLabel('theta', 'theta (degree)')
+		self.speed_gauge = gaugePlotwLabel('speed', 'speed (m/s)')
 		
 		self.main_UI()
 

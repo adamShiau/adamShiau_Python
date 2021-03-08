@@ -223,14 +223,27 @@ class gaugePlot(QGraphicsView):
 		self.setScene(scene)
 		
 class gaugePlotwLabel(QGraphicsView):
-	def __init__(self, parent=None):
+	def __init__(self, text='', title='123',  parent=None):
 		super(gaugePlotwLabel, self).__init__(parent)
-		self.lb = QLabel('val2')
-		self.gauge = gaugePlot()
 		
+		pe = QPalette()
+		pe.setColor(QPalette.WindowText,Qt.yellow)
+		pe.setColor(QPalette.Window,Qt.black)
+		self.lb = QLabel();
+		self.lb.setPalette(pe)
+		self.lb.setFont(QFont('Arial', 10)) 
+		self.lb.setAutoFillBackground(True)
+		self.lb.setText(text)
+		
+		self.title = QLabel();
+		self.title.setText(title)
+		
+		self.gauge = gaugePlot()
 		layout = QGridLayout()
+		
 		layout.addWidget(self.gauge, 0, 0, 40, 40)
 		layout.addWidget(self.lb, 22, 19, 1, 1)
+		layout.addWidget(self.title, 2, 19, 1, 1)
 		self.setLayout(layout)
 		
 class spinBlock(QGroupBox):

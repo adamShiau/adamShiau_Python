@@ -20,7 +20,7 @@ import datetime
 THREAD_DELY = sys.float_info.min
 DEBUG = 0
 DEBUG_COM = 0
-TEST_MODE = 0
+TEST_MODE = 1
 # MV_MODE = 1
 
 class IMU_Action(QThread):
@@ -139,7 +139,7 @@ class IMU_Action(QThread):
 						temp_Adxl355_ay = np.random.randn()
 						temp_Adxl355_az = np.random.randn()
 						cnt += 10000
-						# time.sleep(0.01)
+						time.sleep(0.01)
 						# for i in range(100):
 							# print(i, end=', ')
 							# print(self.COM.read1Binary()[0])

@@ -10,6 +10,7 @@ from PyQt5.QtWidgets import *
 import numpy as np
 import ADXL355_IMU_Widget4 as UI 
 import ADXL355_IMU_Action4_BT as ACT
+# import ADXL355_Globals as globals
 TITLE_TEXT = "IMU_PLOT"
 VERSION_TEXT = 'Compare FOG with MEMS，2020/12/01'
 READOUT_FILENAME = "Signal_Read_Out.txt"
@@ -522,7 +523,8 @@ class mainWindow(QMainWindow):
 		self.thetaz_SRS200 = self.thetaz_SRS200 - np.sum(data_SRS200_wz_f)*SAMPLING_TIME #負號是方向判斷的問題
 		self.thetaz_SRS200_arr = np.append(self.thetaz_SRS200_arr, self.thetaz_SRS200)
 		# print('self.thetaz_nano33: ', self.thetaz_nano33)
-		# print('self.thetaz_SRS200: ', self.thetaz_SRS200)
+		print('self.thetaz_SRS200: ', self.thetaz_SRS200)
+		self.top.SRS200_gauge.lb.setText(str(round(self.thetaz_SRS200, 2)))
 		'''由加速度積分計算速度'''
 		#Nano33
 		self.speedx_Nano33 = self.speedx_Nano33 + np.sum(data_Nano33_ax_f)*9.8*SAMPLING_TIME
@@ -538,7 +540,7 @@ class mainWindow(QMainWindow):
 		self.speed_Adxl355_arr = np.append(self.speed_Adxl355_arr, self.speed_Adxl355)
 		
 		#guage plot
-		self.top.SRS200_gauge.item.setRotation(self.thetaz_SRS200)
+		self.top.SRS200_gauge.gauge.item.setRotation(self.thetaz_SRS200)
 		self.top.speed_gauge.item.setRotation(np.average(data_SRS200_wz_f))
 		
 		''' for track plot'''
@@ -676,12 +678,13 @@ class mainWindow(QMainWindow):
 		else:
 			self.top.TabPlot.tab3_plot1_1.setData()
 		if(self.SRS200_track_chk):
-			self.top.TabPlot.tab3_plot1_2.setData(self.x200_arr, self.y200_arr)
-			# print('len(x200_arr): ', len(self.x200_arr))
-			x_max = self.x200_arr[-1] + 500
-			x_min = self.x200_arr[-1] - 500
-			y_max = self.y200_arr[-1] + 500
-			y_min = self.y200_arr[-1] - 500
+			self.top.TabPlot.tab3_plot1_2.setData(self.x200_arr, self.y200_arr) 
+			x_max = self.x200_arr[-1] + 50
+			x_min = self.x200_arr[-1] - 50
+			y_max = self.y200_arr[-1] + 50
+			y_min = self.y200_arr[-1] - 50
+			self.top.TabPlot.tab3_plot1.setXRange(x_min, x_max, padding=0)
+			self.top.TabPlot.tab3_plot1.setYRange(y_min, y_max, padding=0)
 		else:
 			self.top.TabPlot.tab3_plot1_2.setData()
 		# if(self.Nano33_track_chk or self.SRS200_track_chk):

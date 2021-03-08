@@ -11,6 +11,7 @@ import pyqtgraph as pg
 from py3lib import *
 from py3lib import AdamGUIclass
 from py3lib.AdamGUIclass import *
+# import ADXL355_Globals as globals
 TITLE_TEXT = "NanoIMU"
 
 class TabPlot(QTabWidget):
@@ -64,9 +65,11 @@ class TabPlot(QTabWidget):
 		self.tab2_cali_stop_btn = AdamGUIclass.btn('cali stop')
 		''' tab3 GUI item'''
 		###tab3 plot###
-		tab3_plot1 = self.win2.addPlot(title="plot5")
-		self.tab3_plot1_1 = tab3_plot1.plot(pen='r')
-		self.tab3_plot1_2 = tab3_plot1.plot(pen='g')
+		self.tab3_plot1 = self.win2.addPlot(title="plot5")
+		# self.tab3_plot1.setYRange(-10, 10, padding=0)
+		# self.tab3_plot1.setXRange(-10, 10, padding=0)
+		self.tab3_plot1_1 = self.tab3_plot1.plot(pen='r')
+		self.tab3_plot1_2 = self.tab3_plot1.plot(pen='g')
 		###tab3 btn###
 		self.tab3_xmax = AdamGUIclass.editBlockwBtn('xmax')
 		self.tab3_ymax = AdamGUIclass.editBlockwBtn('ymax')
@@ -130,8 +133,9 @@ class mainWidget(QWidget):
 		self.mv_rb = QRadioButton('MV enable')
 		self.mv_rb.setChecked(0)
 		##gauge###
-		self.SRS200_gauge = gaugePlot()
+		self.SRS200_gauge = gaugePlotwLabel()
 		self.speed_gauge = gaugePlot()
+		
 		self.main_UI()
 
 	def main_UI(self):
@@ -156,51 +160,6 @@ class Save_edit(QWidget):
 		layout.addWidget(self.edit, 0,0,1,1)
 		self.setLayout(layout)
  
-# class Read_btn(QWidget):
-	# def __init__(self, parent=None):
-		# super(Read_btn, self).__init__(parent)
-		# self.bt = QPushButton("read")
-
-		# self.Read_btn_UI()
-
-	# def Read_btn_UI(self):
-		# layout = QGridLayout()
-		# layout.addWidget(self.read, 0,0,1,1)
-		# self.setLayout(layout)
-        
-# class Stop_btn(QWidget):
-	# def __init__(self, parent=None):
-		# super(Stop_btn, self).__init__(parent)
-		# self.bt = QPushButton("stop")
-
-		# self.Stop_btn_UI()
-
-	# def Stop_btn_UI(self):
-		# layout = QGridLayout()
-		# layout.addWidget(self.stop, 0,0,1,1)
-		# self.setLayout(layout)
-		
-# class Cali_btn(QWidget):
-	# def __init__(self, parent=None):
-		# super(Cali_btn, self).__init__(parent)
-		# self.btn = QPushButton("calibration start")
-		# self.btn_UI()
-
-	# def btn_UI(self):
-		# layout = QGridLayout()
-		# layout.addWidget(self.btn, 0,0,1,1)
-		# self.setLayout(layout)
-		
-# class Cali_stop_btn(QWidget):
-	# def __init__(self, parent=None):
-		# super(Cali_stop_btn, self).__init__(parent)
-		# self.btn = QPushButton("calibration stop")
-		# self.btn_UI()
-
-	# def btn_UI(self):
-		# layout = QGridLayout()
-		# layout.addWidget(self.btn, 0,0,1,1)
-		# self.setLayout(layout)
 
  
 if __name__ == '__main__':

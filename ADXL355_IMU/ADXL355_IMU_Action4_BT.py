@@ -19,7 +19,7 @@ import datetime
 
 THREAD_DELY = sys.float_info.min
 DEBUG = 0
-DEBUG_COM = 1
+DEBUG_COM = 0
 TEST_MODE = 0
 # MV_MODE = 1
 

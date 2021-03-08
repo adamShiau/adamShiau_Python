@@ -10,6 +10,10 @@ from PyQt5.QtWidgets import (QGraphicsView,QGraphicsScene,QApplication)
 
 PLOT_FONTSIZE = 14
 PLOT_FONTSIZE_S = 10
+GAUGE_LINE_X1 = 40
+GAUGE_LINE_Y1 = 160
+GAUGE_LINE_X2 = 101
+GAUGE_LINE_Y2 = 101
 
 class btn(QWidget):
 	def __init__(self, name='name', parent=None):
@@ -206,28 +210,28 @@ class gaugePlot(QGraphicsView):
 		pen = QPen(Qt.red)
 		pen.setWidth(3) #改變指針寬度
 		pen.setCapStyle(Qt.RoundCap)   #指針末端的形狀, Qt.RoundCap, Qt.SquareCap, Qt.RoundCap
-		# scene = QtWidgets.QGraphicsScene() #https://my.oschina.net/golang/blog/209554
 		scene = QGraphicsScene() #https://my.oschina.net/golang/blog/209554
 								#https://www.itread01.com/content/1548416194.html
 
 		pen.setCosmetic(True)  
 		scene.addPixmap(QPixmap('DPS_guage.png'))
-		# scene.addPixmap(QPixmap('back.png'))
-		self.item = scene.addLine(60, 170, 97, 97, pen) #addLine(x1, x2, y1, y2, pen)
+		self.item = scene.addLine(GAUGE_LINE_X1, GAUGE_LINE_Y1, GAUGE_LINE_X2, GAUGE_LINE_Y2, pen) 
 		pen = QtGui.QPen(QtGui.QColor(QtCore.Qt.gray))
 		brush = QtGui.QBrush(pen.color().darker(100))
 		scene.addEllipse(87, 87, 20, 20, pen, brush)
-		self.item.setTransformOriginPoint(97, 97)
+		self.item.setTransformOriginPoint(GAUGE_LINE_X2, GAUGE_LINE_Y2)
 		self.setScene(scene)
-		# self.Grafik.setScene(scene)
 		
-		# lb = QLabel()
-		# lb.setPixmap(QPixmap('back.png'))
-		# lb.addLine(60, 170, 97, 97, pen)
-		# layout = QHBoxLayout() 
-		# layout.addWidget(lb)     
-		# self.setLayout(layout)
+class gaugePlotwLabel(QGraphicsView):
+	def __init__(self, parent=None):
+		super(gaugePlotwLabel, self).__init__(parent)
+		self.lb = QLabel('val2')
+		self.gauge = gaugePlot()
 		
+		layout = QGridLayout()
+		layout.addWidget(self.gauge, 0, 0, 40, 40)
+		layout.addWidget(self.lb, 22, 19, 1, 1)
+		self.setLayout(layout)
 		
 class spinBlock(QGroupBox):
 	def __init__(self, title, minValue, maxValue, double = False, step = 1, Decimals = 2, parent=None):

@@ -20,7 +20,7 @@ import datetime
 THREAD_DELY = sys.float_info.min
 TEST_MODE = 0
 DEBUG = 0
-DEBUG_COM = 0
+DEBUG_COM = 1
 TIME_PERIOD = 0.01
 
 class COMRead_Action(QThread):
@@ -51,7 +51,7 @@ class COMRead_Action(QThread):
 			self.COM.port.flushInput()
 			while self.runFlag:
 				if(not TEST_MODE):
-					while(not (self.COM.port.inWaiting()>(self.data_frame_update_point*9))) : #rx buffer 不到 arduino傳來的總byte數*data_frame_update_point時不做任何事
+					while(not (self.COM.port.inWaiting()>(self.data_frame_update_point*15))) : #rx buffer 不到 arduino傳來的總byte數*data_frame_update_point時不做任何事
 						# print(self.COM.port.inWaiting())
 						pass
 				for i in range(0,self.data_frame_update_point): #更新data_frame_update_point筆資料到data and dt array
@@ -69,8 +69,9 @@ class COMRead_Action(QThread):
 					else:
 						temp_dt = self.COM.read4Binary()
 						temp_data = self.COM.read4Binary()
-						
-					
+						temp_ax = self.COM.read3Binary()
+						temp_ay = self.COM.read3Binary()
+						temp_az = self.COM.read3Binary()
 						
 					# print(self.COM.port.inWaiting())
 						
@@ -81,32 +82,51 @@ class COMRead_Action(QThread):
 						if(not TEST_MODE):
 							print('val[0]: ',end=', ' )
 							print(val[0])
-						print('temp_data: ', end='\t')
-						print(temp_data[0], end='\t')
-						print(temp_data[1], end='\t')
-						print(temp_data[2], end='\t')
-						print(temp_data[3])
 						print('temp_dt: ', end='\t')
 						print(temp_dt[0], end='\t')
 						print(temp_dt[1], end='\t')
 						print(temp_dt[2], end='\t')
 						print(temp_dt[3])
-						
+						print('temp_data: ', end='\t')
+						print(temp_data[0], end='\t')
+						print(temp_data[1], end='\t')
+						print(temp_data[2], end='\t')
+						print(temp_data[3])
+						print('temp_ax: ', end='\t')
+						print(temp_ax[0], end='\t')
+						print(temp_ax[1], end='\t')
+						print(temp_ax[2])
+						print('temp_ay: ', end='\t')
+						print(temp_ay[0], end='\t')
+						print(temp_ay[1], end='\t')
+						print(temp_ay[2])
+						print('temp_az: ', end='\t')
+						print(temp_az[0], end='\t')
+						print(temp_az[1], end='\t')
+						print(temp_az[2])
 					if(not TEST_MODE):
 						#conversion
 						temp_data = self.convert2Sign_4B(temp_data)
 						temp_dt = self.convert2Unsign_4B(temp_dt)
-						
+						temp_ax = self.convert2Sign_3B(temp_ax)
+						temp_ay = self.convert2Sign_3B(temp_ay)
+						temp_az = self.convert2Sign_3B(temp_az)
 					if(temp_dt < temp_dt_before):
 						temp_offset = math.ceil(abs(temp_dt - temp_dt_before)/(1<<32))*(1<<32)
 						temp_dt = temp_dt + temp_offset
 						temp_dt_before = temp_dt
 						
 					if(DEBUG_COM):
-						print('temp_data: ', end='\t')
-						print(temp_data)
 						print('temp_dt: ', end='\t')
 						print(temp_dt)
+						print('temp_data: ', end='\t')
+						print(temp_data)
+						print('temp_ax: ', end='\t')
+						print(temp_ax)
+						print('temp_ax: ', end='\t')
+						print(temp_ay)
+						print('temp_ax: ', end='\t')
+						print(temp_az)
 					data = np.append(data[1:], temp_data)
 					dt = np.append(dt[1:], temp_dt)
 				#end of for loop

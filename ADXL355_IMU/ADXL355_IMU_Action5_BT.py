@@ -22,6 +22,7 @@ DEBUG = 0
 DEBUG_COM = 0
 TEST_MODE = 0
 # MV_MODE = 1
+DISABLE_PP = 1
 
 class IMU_Action(QThread):
 	update_COMArray = pyqtSignal(object)
@@ -42,7 +43,7 @@ class IMU_Action(QThread):
 	valid_cnt_num = 5
 	TIME_PERIOD = 0.01
 	''' 計算一定的點數後再傳到main作圖，點數太小的話buffer會累積造成lag'''
-	data_frame_update_point = 20
+	data_frame_update_point = 5
 	''' run glag 初始值'''
 	runFlag = 0
 	runFlag_cali = 0
@@ -114,7 +115,7 @@ class IMU_Action(QThread):
 					self.drop_cnt = self.drop_cnt+1
 					self.COM.port.flushInput()
 				if(not TEST_MODE):
-					while(not (self.COM.port.inWaiting()>(self.data_frame_update_point*23))) : #rx buffer 不到 arduino傳來的總byte數*data_frame_update_point時不做任何事
+					while(not (self.COM.port.inWaiting()>(self.data_frame_update_point*22))) : #rx buffer 不到 arduino傳來的總byte數*data_frame_update_point時不做任何事
 						# print(self.COM.port.inWaiting())
 						pass
 				for i in range(0,self.data_frame_update_point): #更新data_frame_update_point筆資料到data and dt array
@@ -158,32 +159,33 @@ class IMU_Action(QThread):
 						temp_Nano33_wz = np.random.randn()*100
 						
 						temp_dt = self.COM.read4Binary()
-						temp_SRS200_wz = self.COM.read5Binary()
-						if(temp_SRS200_wz[0] != 192):
-								temp_SRS200_wz = np.array([0,0,0,0])
-						else:
-							temp_SRS200_wz = temp_SRS200_wz[1:]
-						temp_PP_wz = self.COM.read5Binary()
-						if(temp_PP_wz[0] != 193):
-								temp_PP_wz = np.array([0,0,0,0])
-						else:
-							temp_PP_wz = temp_PP_wz[1:]
-						temp_Adxl355_ax = self.COM.read4Binary()
-						if(temp_Adxl355_ax[0] != 194):
-								temp_Adxl355_ax = np.array([0,0,0])
-						else:
-							temp_Adxl355_ax = temp_Adxl355_ax[1:]
-						temp_Adxl355_ay = self.COM.read4Binary()
-						if(temp_Adxl355_ay[0] != 195):
-								temp_Adxl355_ay = np.array([0,0,0])
-						else:
-							temp_Adxl355_ay = temp_Adxl355_ay[1:]
-						temp_Adxl355_az = self.COM.read4Binary()
-						if(temp_Adxl355_az[0] != 196):
-								temp_Adxl355_az = np.array([0,0,0])
-						else:
-							temp_Adxl355_az = temp_Adxl355_az[1:]
-						val2 = self.COM.read1Binary()
+						temp_SRS200_wz = self.COM.read4Binary()
+						# if(temp_SRS200_wz[0] != 192):
+								# temp_SRS200_wz = np.array([0,0,0,0])
+						# else:
+							# temp_SRS200_wz = temp_SRS200_wz[1:]
+						if(not DISABLE_PP):
+							temp_PP_wz = self.COM.read4Binary()
+						# if(temp_PP_wz[0] != 193):
+								# temp_PP_wz = np.array([0,0,0,0])
+						# else:
+							# temp_PP_wz = temp_PP_wz[1:]
+						temp_Adxl355_ax = self.COM.read3Binary()
+						# if(temp_Adxl355_ax[0] != 194):
+								# temp_Adxl355_ax = np.array([0,0,0])
+						# else:
+							# temp_Adxl355_ax = temp_Adxl355_ax[1:]
+						temp_Adxl355_ay = self.COM.read3Binary()
+						# if(temp_Adxl355_ay[0] != 195):
+								# temp_Adxl355_ay = np.array([0,0,0])
+						# else:
+							# temp_Adxl355_ay = temp_Adxl355_ay[1:]
+						temp_Adxl355_az = self.COM.read3Binary()
+						# if(temp_Adxl355_az[0] != 196):
+								# temp_Adxl355_az = np.array([0,0,0])
+						# else:
+							# temp_Adxl355_az = temp_Adxl355_az[1:]
+						# val2 = self.COM.read1Binary()
 					
 					# print(self.COM.port.inWaiting())
 						
@@ -242,13 +244,13 @@ class IMU_Action(QThread):
 						# print(temp_Adxl355_az[2])
 						
 					''' 當arduino送來的第一個check byte不符合時則跳出for loop，發生在arduino傳來的時間爆掉時'''
-					if(not TEST_MODE):
-						if(val2[0] != self.check_byte2):
-							valid_byte = 0
-							valid_flag = 0
-							self.valid_cnt = (self.valid_cnt_num-2)
-							drop_flag = 1
-							break #break for loop
+					# if(not TEST_MODE):
+						# if(val2[0] != self.check_byte2):
+							# valid_byte = 0
+							# valid_flag = 0
+							# self.valid_cnt = (self.valid_cnt_num-2)
+							# drop_flag = 1
+							# break #break for loop
 						
 					if(valid_byte): 
 						if(not TEST_MODE):
@@ -262,7 +264,11 @@ class IMU_Action(QThread):
 							temp_dt = self.convert2Unsign_4B(temp_dt)
 							temp_SRS200_wz = self.convert2Sign_4B(temp_SRS200_wz)
 							
-							temp_PP_wz = self.convert2Unsign_4B(temp_PP_wz)
+							
+							if(DISABLE_PP):
+								temp_PP_wz = 0
+							else:
+								temp_PP_wz = self.convert2Unsign_4B(temp_PP_wz)
 							temp_Adxl355_ax =self.convert2Sign_3B(temp_Adxl355_ax)
 							temp_Adxl355_ay =self.convert2Sign_3B(temp_Adxl355_ay)
 							temp_Adxl355_az =self.convert2Sign_3B(temp_Adxl355_az)

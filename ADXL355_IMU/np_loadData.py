@@ -4,7 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 print(sys.path)
-Var = np.loadtxt('01.txt', comments='#', delimiter=',')
+Var = np.loadtxt('t.txt', comments='#', delimiter=',')
 print(Var.shape)
 print(Var[1,1])
 t = Var[:,0]

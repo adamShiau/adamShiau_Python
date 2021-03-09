@@ -8,8 +8,8 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import * 
 from PyQt5.QtWidgets import *
 import numpy as np
-import COMRead_Widget as UI 
-import COMRead_Action as ACT
+import COMRead_2_Widget as UI 
+import COMRead_2_Action as ACT
 
 TEST_MODE = 0
 DEBUG = 0

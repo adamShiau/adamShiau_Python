@@ -13,8 +13,8 @@ import numpy as np
 # import py3lib.FileToArray as file
 # import py3lib.QuLogger as Qlogger 
 # import py3lib.FileToArray as fil2a 
-import gyro_Widget3 as UI 
-import gyro_Action3 as ACT
+import gyro_Widget4 as UI 
+import gyro_Action4 as ACT
 import gyro_Globals as globals
 TITLE_TEXT = "OPEN LOOP"
 VERSION_TEXT = 'fog open loop 2020/12/25'
@@ -47,12 +47,15 @@ STEP_MAX = '9 '
 V2PI = '10 '
 V2PIN = '11 '
 OPENLOOP_START = '12 '
+STEP_TRIG_DLY = '13 '
 FB_ON = GAIN1
 '''adc conversion '''
 ADC_COEFFI = (1/8192)
 TIME_COEFFI = 0.0001
 ''' define initial value'''
-MOD_H_INIT = 6000
+# MOD_H_INIT = 6000
+# MOD_L_INIT = -1000
+MOD_H_INIT = 0
 MOD_L_INIT = -1000
 FREQ_INIT = 111
 ERR_OFFSET_INIT = 0
@@ -64,6 +67,7 @@ GAIN_SEL_INIT = 11
 STEP_MAX_INIT = 10000
 V2PI_INIT = 30000
 V2PIN_INIT = -30000
+STEP_TRIG_DLY_INIT = 0
 
 CMD_MOD_H_INIT = MOD_AMP_H + str(MOD_H_INIT) + '\n'
 CMD_MOD_L_INIT = MOD_AMP_L + str(MOD_L_INIT) + '\n'
@@ -78,6 +82,7 @@ CMD_STEP_MAX_INIT = STEP_MAX + str(STEP_MAX_INIT) + '\n'
 CMD_V2PI_INIT = V2PI + str(V2PI_INIT) + '\n'
 CMD_V2PIN_INIT = V2PIN + str(V2PIN_INIT) + '\n'
 CMD_FREQ_INIT = MOD_FREQ + str(FREQ_INIT) + '\n' 
+CMD_STEP_TRIG_DLY_INIT = STEP_TRIG_DLY + str(STEP_TRIG_DLY_INIT) + '\n' 
 # CMD_MODE_INIT = GAIN1 + str(15) + '\n' 
 class mainWindow(QMainWindow):
 	# Kal_status = 0
@@ -176,6 +181,7 @@ class mainWindow(QMainWindow):
 		
 		self.top.Q.spin.valueChanged.connect(self.update_kal_Q)
 		self.top.R.spin.valueChanged.connect(self.update_kal_R)
+		self.top.trigDelay.spin.valueChanged.connect(self.send_trigDelay_CMD)
 		
 	def setInitValue(self, EN):
 		if(EN):
@@ -191,6 +197,7 @@ class mainWindow(QMainWindow):
 			self.act.COM.writeLine(CMD_V2PI_INIT)
 			self.act.COM.writeLine(CMD_V2PIN_INIT)
 			self.act.COM.writeLine(CMD_FREQ_INIT)
+			self.act.COM.writeLine(CMD_STEP_TRIG_DLY_INIT)
 			# self.act.COM.writeLine(CMD_MODE_INIT)
 			self.top.mod_H.spin.setValue(MOD_H_INIT)
 			self.top.mod_L.spin.setValue(MOD_L_INIT)
@@ -208,6 +215,7 @@ class mainWindow(QMainWindow):
 			self.act.COM.writeLine(CMD_OPENLOOP_INIT)
 			self.top.Q.spin.setValue(globals.kal_Q)
 			self.top.R.spin.setValue(globals.kal_R)
+			self.top.trigDelay.spin.setValue(STEP_TRIG_DLY_INIT)
 
 		
 	def setBtnStatus(self, flag):
@@ -295,6 +303,12 @@ class mainWindow(QMainWindow):
 		value = self.top.freq.spin.value()	
 		self.top.freq.lb.setText(str(round(1/(2*(value+1)*10e-6),2))+' KHz')
 		cmd = MOD_FREQ + str(value) + '\n'
+		print(cmd)
+		self.act.COM.writeLine(cmd)
+		
+	def send_trigDelay_CMD(self):
+		value = self.top.trigDelay.spin.value()	
+		cmd = STEP_TRIG_DLY + str(value) + '\n'
 		print(cmd)
 		self.act.COM.writeLine(cmd)
 		

@@ -22,13 +22,14 @@ DEBUG = 0
 DEBUG_COM = 0
 TEST_MODE = 0
 # MV_MODE = 1
-DISABLE_PP = 1
+DISABLE_PP = 0
 
 class IMU_Action(QThread):
 	update_COMArray = pyqtSignal(object)
 	fog_update = pyqtSignal(object,object)
 	fog_update2 = pyqtSignal(object,object, object)
 	fog_update4 = pyqtSignal(object, object, object, object, object)
+	fog_update6 = pyqtSignal(object, object, object, object, object, object)
 	fog_update7 = pyqtSignal(object, object, object, object, object, object, object)
 	fog_update8 = pyqtSignal(object, object, object, object, object, object, object, object)
 	fog_update9 = pyqtSignal(object, object, object, object, object, object, object, object, object)
@@ -43,7 +44,7 @@ class IMU_Action(QThread):
 	valid_cnt_num = 5
 	TIME_PERIOD = 0.01
 	''' 計算一定的點數後再傳到main作圖，點數太小的話buffer會累積造成lag'''
-	data_frame_update_point = 5
+	data_frame_update_point = 1
 	''' run glag 初始值'''
 	runFlag = 0
 	runFlag_cali = 0
@@ -87,6 +88,7 @@ class IMU_Action(QThread):
 		data_Nano33_wz = np.zeros(self.data_frame_update_point)
 		data_SRS200_wz = np.zeros(self.data_frame_update_point)
 		data_PP_wz = np.zeros(self.data_frame_update_point)
+		data_T = np.zeros(self.data_frame_update_point)
 		dt = np.zeros(self.data_frame_update_point)
 		data_Nano33_ax_sum = 0
 		data_Nano33_ay_sum = 0
@@ -181,6 +183,7 @@ class IMU_Action(QThread):
 						# else:
 							# temp_Adxl355_ay = temp_Adxl355_ay[1:]
 						temp_Adxl355_az = self.COM.read3Binary()
+						temp_T = self.COM.read2Binary()
 						# if(temp_Adxl355_az[0] != 196):
 								# temp_Adxl355_az = np.array([0,0,0])
 						# else:
@@ -272,6 +275,8 @@ class IMU_Action(QThread):
 							temp_Adxl355_ax =self.convert2Sign_3B(temp_Adxl355_ax)
 							temp_Adxl355_ay =self.convert2Sign_3B(temp_Adxl355_ay)
 							temp_Adxl355_az =self.convert2Sign_3B(temp_Adxl355_az)
+							temp_T = self.convert2Unsign_2B(temp_T)
+							# print(temp_T)
 						
 						# if(DEBUG_COM):
 							# print(temp_dt);
@@ -364,6 +369,7 @@ class IMU_Action(QThread):
 						data_Nano33_wz = np.append(data_Nano33_wz[1:], val_Nano33_wz)
 						data_SRS200_wz = np.append(data_SRS200_wz[1:], val_SRS200_wz)
 						data_PP_wz = np.append(data_PP_wz[1:], val_PP_wz)
+						data_T = np.append(data_T[1:], temp_T)
 						
 						# dt_new = dt_old + i*self.TIME_PERIOD
 						dt = np.append(dt[1:], temp_dt)
@@ -399,13 +405,14 @@ class IMU_Action(QThread):
 						self.dt_init_flag = 0
 						dt_init = dt[0]
 					if(self.runFlag):
-						self.fog_update8.emit(dt-dt_init, data_SRS200_wz, data_Nano33_wz, data_PP_wz, data_Adxl355_ax, data_Adxl355_ay,
-											data_Nano33_ax, data_Nano33_ay)
-						time.sleep(THREAD_DELY)
+						# self.fog_update8.emit(dt-dt_init, data_SRS200_wz, data_Nano33_wz, data_PP_wz, data_Adxl355_ax, data_Adxl355_ay,
+											# data_Nano33_ax, data_Nano33_ay)
+						self.fog_update7.emit(dt-dt_init, data_SRS200_wz, data_PP_wz, data_Adxl355_ax, data_Adxl355_ay, data_Adxl355_az, data_T)
+						# time.sleep(THREAD_DELY)
 					elif(self.runFlag_cali):
-						self.fog_update11.emit(data_SRS200_wz, data_Nano33_wx, data_Nano33_wy, data_Nano33_wz, data_PP_wz, data_Adxl355_ax, data_Adxl355_ay,
-											data_Adxl355_az, data_Nano33_ax, data_Nano33_ay, data_Nano33_az)
-						time.sleep(THREAD_DELY)
+						self.fog_update12.emit(data_SRS200_wz, data_Nano33_wx, data_Nano33_wy, data_Nano33_wz, data_PP_wz, data_Adxl355_ax, data_Adxl355_ay,
+											data_Adxl355_az, data_Nano33_ax, data_Nano33_ay, data_Nano33_az, data_T)
+						# time.sleep(THREAD_DELY)
 			#end of while self.runFlag:
 			self.fog_finished.emit()
 			temp_dt_before = 0
@@ -429,6 +436,10 @@ class IMU_Action(QThread):
 		
 	def convert2Unsign_4B(self, datain) :
 		shift_data = (datain[0]<<24|datain[1]<<16|datain[2]<<8|datain[3])
+		return shift_data
+			
+	def convert2Unsign_2B(self, datain) :
+		shift_data = (datain[0]<<8|datain[1])
 		return shift_data
 			
 	def convert2Sign_2B(self, datain) :

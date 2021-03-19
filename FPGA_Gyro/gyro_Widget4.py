@@ -28,8 +28,8 @@ class mainWidget(QWidget):
 		self.fb_on = spinBlock(title='mode(0:OPEN)', minValue=0, maxValue=1, double=False, step=1)
 		self.err_th = spinBlock(title='ERR_TH', minValue=0, maxValue=16384, double=False, step=1)
 		self.freq = spinBlockOneLabel(title='frequency', minValue=50, maxValue=1500, double=False, step=1)
-		self.Q = spinBlock(title='Q', minValue=1, maxValue=100000, double=False, step=10)
-		self.R = spinBlock(title='R', minValue=1, maxValue=100000, double=False, step=10)
+		self.Q = spinBlock(title='Q', minValue=0, maxValue=100000, double=False, step=10)
+		self.R = spinBlock(title='R', minValue=0, maxValue=100000, double=False, step=10)
 		self.trigDelay = spinBlock(title='trigDelay', minValue=0, maxValue=150, double=False, step=1)
 		'''radio btn'''
 		self.Kal_rb = QRadioButton('Kalman filter')

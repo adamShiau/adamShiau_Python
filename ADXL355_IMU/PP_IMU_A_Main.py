@@ -424,7 +424,7 @@ class mainWindow(QMainWindow):
 		#		,speedx_Adxl355_out, speedy_Adxl355_out, speed_Adxl355_out, data_IMU_speed_f, data_T
 		self.f.writelines('#' + 'dt, data_SRS200_wz_f, data_PP_wz_f, data_Adxl355_ax_f, data_Adxl355_ay_f, '
 		+'data_Adxl355_az_f, speedx_Adxl355_out, speedy_Adxl355_out, speed_Adxl355_out, data_IMU_speed_f, data_T' + '\n')
-	
+		self.f.writelines('#' + 's, DPS, not yet, g, g, g, m/s, m/s, m/s, not yet, code' + '\n')
 	def caliThreadStart(self):
 		self.act.runFlag_cali = True
 		print('self.act.runFlag_cali:', self.act.runFlag_cali)
@@ -533,7 +533,7 @@ class mainWindow(QMainWindow):
 			self.data_Adxl355_az = self.data_Adxl355_az[self.act.data_frame_update_point:]
 			# self.data_Nano33_ax = self.data_Nano33_ax[self.act.data_frame_update_point:]
 			# self.data_Nano33_ay = self.data_Nano33_ay[self.act.data_frame_update_point:]
-			
+		# print('pp:', data_PP_wz)
 		data_SRS200_wz_f = (data_SRS200_wz - self.offset_SRS200_wz)*gyro200_factor/3600 #convert to DPS
 		# data_Nano33_wz_f = (data_Nano33_wz - self.offset_Nano33_wz)*gyro_factor
 		data_PP_wz_f = (data_PP_wz - self.offset_PP_wz)*gyroPP_factor
@@ -650,7 +650,8 @@ class mainWindow(QMainWindow):
 			np.savetxt(self.f, (np.vstack([dt, data_SRS200_wz_f, data_PP_wz_f, data_Adxl355_ax_f, data_Adxl355_ay_f, data_Adxl355_az_f
 				,speedx_Adxl355_out, speedy_Adxl355_out, speed_Adxl355_out, data_IMU_speed_f, data_T])).T, 
 					fmt='%5.5f,%5.5f,%5.5f,%5.5f,%5.5f,%5.5f,%5.5f,%5.5f,%5.5f,%5.5f,%5.0f')
-			
+			#dt:s, data_SRS200_wz_f:DPS, data_PP_wz_f:待定, data_Adxl355_ax_f:g, data_Adxl355_ay_f:g, data_Adxl355_az_f:g
+			#speedx_Adxl355_out:m/s,  speedy_Adxl355_out:m/s, speed_Adxl355_out:m/s, data_IMU_speed_f:待定, data_T:code
 		if(DEBUG) :
 			print('len(dt): ', len(self.dt))
 			print('len(self.data_SRS200_wz): ', len(self.data_SRS200_wz))

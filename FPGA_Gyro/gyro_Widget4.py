@@ -67,7 +67,7 @@ class mainWidget(QWidget):
 		mainLayout.addWidget(self.freq, 7,10,1,4) 
 		mainLayout.addWidget(self.Q, 8,10,1,2) 
 		mainLayout.addWidget(self.R, 8,12,1,2)  
-		# mainLayout.addWidget(self.trigDelay, 9,10,1,2) 
+		mainLayout.addWidget(self.trigDelay, 9,10,1,2) 
 		
 		self.setLayout(mainLayout)
  

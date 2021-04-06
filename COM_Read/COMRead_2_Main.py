@@ -125,7 +125,8 @@ class mainWindow(QMainWindow):
 			self.data = self.data[self.act.data_frame_update_point:]
 			self.dt = self.dt[self.act.data_frame_update_point:]
 			
-		data_temp = (data - 500)*gyro200_factor/3600 #convert to DPS
+		# data_temp = (data - 500)*gyro200_factor/3600 #convert to DPS
+		data_temp = data
 		
 		#print buffer to label
 		self.top.buffer_lb.lb.setText(str(self.act.bufferSize))

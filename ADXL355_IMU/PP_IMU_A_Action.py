@@ -42,7 +42,7 @@ class IMU_Action(QThread):
 	valid_flag = 0
 	drop_cnt=0
 	valid_cnt = 0
-	valid_cnt_num = 300
+	valid_cnt_num = 5
 	TIME_PERIOD = 0.01
 	''' 計算一定的點數後再傳到main作圖，點數太小的話buffer會累積造成lag'''
 	data_frame_update_point = 1
@@ -103,6 +103,9 @@ class IMU_Action(QThread):
 		kal_init_Adxl355_ay = 0
 		kal_init_Adxl355_az = 0
 		kal_init_PP_wz = 0
+		kal_init_Nano33_wx = 0
+		kal_init_Nano33_wy = 0
+		kal_init_Nano33_wz = 0
 		kal_init_IMU_speed = 0
 		p0 = 0
 		#Q:process variance
@@ -114,11 +117,17 @@ class IMU_Action(QThread):
 		kal_p_Adxl355_ay = np.zeros(self.data_frame_update_point+1)
 		kal_p_Adxl355_az = np.zeros(self.data_frame_update_point+1)
 		kal_p_PP_wz = np.zeros(self.data_frame_update_point+1)
+		kal_p_Nano33_wx = np.zeros(self.data_frame_update_point+1)
+		kal_p_Nano33_wy = np.zeros(self.data_frame_update_point+1)
+		kal_p_Nano33_wz = np.zeros(self.data_frame_update_point+1)
 		kal_p_IMU_speed = np.zeros(self.data_frame_update_point+1)
 		p_p = np.zeros(self.data_frame_update_point+1)
 		
 		kal_SRS200_wz = np.zeros(self.data_frame_update_point)
 		kal_PP_wz = np.zeros(self.data_frame_update_point)
+		kal_Nano33_wx = np.zeros(self.data_frame_update_point)
+		kal_Nano33_wy = np.zeros(self.data_frame_update_point)
+		kal_Nano33_wz = np.zeros(self.data_frame_update_point)
 		kal_IMU_speed = np.zeros(self.data_frame_update_point)
 		kal_Adxl355_ax = np.zeros(self.data_frame_update_point)
 		kal_Adxl355_ay = np.zeros(self.data_frame_update_point)
@@ -129,6 +138,9 @@ class IMU_Action(QThread):
 		p0 = p0^2
 		kal_p_SRS200_wz[self.data_frame_update_point] = kal_init_SRS200_wz
 		kal_p_PP_wz[self.data_frame_update_point] = kal_init_PP_wz
+		kal_p_Nano33_wx[self.data_frame_update_point] = kal_init_Nano33_wx
+		kal_p_Nano33_wy[self.data_frame_update_point] = kal_init_Nano33_wy
+		kal_p_Nano33_wz[self.data_frame_update_point] = kal_init_Nano33_wz
 		kal_p_IMU_speed[self.data_frame_update_point] = kal_init_IMU_speed
 		kal_p_Adxl355_ax[self.data_frame_update_point] = kal_init_Adxl355_ax
 		kal_p_Adxl355_ay[self.data_frame_update_point] = kal_init_Adxl355_ay
@@ -151,6 +163,9 @@ class IMU_Action(QThread):
 						pass
 				kal_p_SRS200_wz[0] = kal_p_SRS200_wz[self.data_frame_update_point]
 				kal_p_PP_wz[0] = kal_p_PP_wz[self.data_frame_update_point]
+				kal_p_Nano33_wx[0] = kal_p_Nano33_wx[self.data_frame_update_point]
+				kal_p_Nano33_wy[0] = kal_p_Nano33_wy[self.data_frame_update_point]
+				kal_p_Nano33_wz[0] = kal_p_Nano33_wz[self.data_frame_update_point]
 				kal_p_IMU_speed[0] = kal_p_IMU_speed[self.data_frame_update_point]
 				kal_p_Adxl355_ax[0] = kal_p_Adxl355_ax[self.data_frame_update_point]
 				kal_p_Adxl355_ay[0] = kal_p_Adxl355_ay[self.data_frame_update_point]
@@ -187,15 +202,13 @@ class IMU_Action(QThread):
 						# temp_Nano33_ax = self.COM.read2Binary()
 						# temp_Nano33_ay = self.COM.read2Binary()
 						# temp_Nano33_az = self.COM.read2Binary()
-						# temp_Nano33_wx = self.COM.read2Binary()
-						# temp_Nano33_wy = self.COM.read2Binary()
-						# temp_Nano33_wz = self.COM.read2Binary()
+						
 						temp_Nano33_ax = np.random.randn()
 						temp_Nano33_ay = np.random.randn()
 						temp_Nano33_az = np.random.randn()
-						temp_Nano33_wx = np.random.randn()*100
-						temp_Nano33_wy = np.random.randn()*100
-						temp_Nano33_wz = np.random.randn()*100
+						# temp_Nano33_wx = np.random.randn()*100
+						# temp_Nano33_wy = np.random.randn()*100
+						# temp_Nano33_wz = np.random.randn()*100
 						
 						temp_dt = self.COM.read4Binary()
 						temp_SRS200_wz = self.COM.read4Binary()
@@ -228,7 +241,10 @@ class IMU_Action(QThread):
 								# temp_Adxl355_az = np.array([0,0,0])
 						# else:
 							# temp_Adxl355_az = temp_Adxl355_az[1:]
-						# val2 = self.COM.read1Binary()
+							
+						temp_Nano33_wx = self.COM.read2Binary()
+						temp_Nano33_wy = self.COM.read2Binary()
+						temp_Nano33_wz = self.COM.read2Binary()
 					
 					# print(self.COM.port.inWaiting())
 						
@@ -322,6 +338,9 @@ class IMU_Action(QThread):
 							temp_Adxl355_ay =self.convert2Sign_3B(temp_Adxl355_ay)
 							temp_Adxl355_az =self.convert2Sign_3B(temp_Adxl355_az)
 							temp_T = self.convert2Unsign_2B(temp_T)
+							temp_Nano33_wx = self.convert2Sign_2B(temp_Nano33_wx)
+							temp_Nano33_wy = self.convert2Sign_2B(temp_Nano33_wy)
+							temp_Nano33_wz = self.convert2Sign_2B(temp_Nano33_wz)
 							# print(temp_T)
 						
 						# if(DEBUG_COM):
@@ -332,6 +351,9 @@ class IMU_Action(QThread):
 						k[i] = p_p[i]/(p_p[i] + globals.kal_R) #k_n
 						kal_SRS200_wz[i] = kal_p_SRS200_wz[i] + k[i]*(temp_SRS200_wz - kal_p_SRS200_wz[i])
 						kal_PP_wz[i] = kal_p_PP_wz[i] + k[i]*(temp_PP_wz - kal_p_PP_wz[i])
+						kal_Nano33_wx[i] = kal_p_Nano33_wx[i] + k[i]*(temp_Nano33_wx - kal_p_Nano33_wx[i])
+						kal_Nano33_wy[i] = kal_p_Nano33_wy[i] + k[i]*(temp_Nano33_wy - kal_p_Nano33_wy[i])
+						kal_Nano33_wz[i] = kal_p_Nano33_wz[i] + k[i]*(temp_Nano33_wz - kal_p_Nano33_wz[i])
 						kal_IMU_speed[i] = kal_p_IMU_speed[i] + k[i]*(temp_IMU_speed - kal_p_IMU_speed[i])
 						kal_Adxl355_ax[i] = kal_p_Adxl355_ax[i] + k[i]*(temp_Adxl355_ax - kal_p_Adxl355_ax[i])
 						kal_Adxl355_ay[i] = kal_p_Adxl355_ay[i] + k[i]*(temp_Adxl355_ay - kal_p_Adxl355_ay[i])
@@ -341,6 +363,9 @@ class IMU_Action(QThread):
 						#predict
 						kal_p_SRS200_wz[i+1] = kal_SRS200_wz[i]
 						kal_p_PP_wz[i+1] = kal_PP_wz[i]
+						kal_p_Nano33_wx[i+1] = kal_Nano33_wx[i]
+						kal_p_Nano33_wy[i+1] = kal_Nano33_wy[i]
+						kal_p_Nano33_wz[i+1] = kal_Nano33_wz[i]
 						kal_p_IMU_speed[i+1] = kal_IMU_speed[i]
 						kal_p_Adxl355_ax[i+1] = kal_Adxl355_ax[i]
 						kal_p_Adxl355_ay[i+1] = kal_Adxl355_ay[i]
@@ -360,15 +385,16 @@ class IMU_Action(QThread):
 						val_Nano33_ay = temp_Nano33_ay
 						val_Nano33_az = temp_Nano33_az
 						
-						val_Nano33_wx = temp_Nano33_wx
-						val_Nano33_wy = temp_Nano33_wy
-						val_Nano33_wz = temp_Nano33_wz
+						
 						if(self.kal_flag):
 							val_SRS200_wz = kal_SRS200_wz[i]
 							val_Adxl355_ax = kal_Adxl355_ax[i]
 							val_Adxl355_ay = kal_Adxl355_ay[i]
 							val_Adxl355_az = kal_Adxl355_az[i]
 							val_PP_wz = kal_PP_wz[i]
+							val_Nano33_wx = kal_Nano33_wx[i]
+							val_Nano33_wy = kal_Nano33_wy[i]
+							val_Nano33_wz = kal_Nano33_wz[i]
 							val_IMU_speed = kal_IMU_speed[i]
 						else:
 							val_SRS200_wz = temp_SRS200_wz
@@ -376,6 +402,9 @@ class IMU_Action(QThread):
 							val_Adxl355_ay = temp_Adxl355_ay
 							val_Adxl355_az = temp_Adxl355_az
 							val_PP_wz = temp_PP_wz
+							val_Nano33_wx = temp_Nano33_wx
+							val_Nano33_wy = temp_Nano33_wy
+							val_Nano33_wz = temp_Nano33_wz
 							val_IMU_speed = temp_IMU_speed
 						
 						
@@ -427,9 +456,9 @@ class IMU_Action(QThread):
 						self.dt_init_flag = 0
 						dt_init = dt[0]
 					if(self.runFlag):
-						# self.fog_update8.emit(dt-dt_init, data_SRS200_wz, data_Nano33_wz, data_PP_wz, data_Adxl355_ax, data_Adxl355_ay,
-											# data_Nano33_ax, data_Nano33_ay)
-						self.fog_update8.emit(dt-dt_init, data_SRS200_wz, data_PP_wz, data_Adxl355_ax, data_Adxl355_ay, data_Adxl355_az, data_T, data_IMU_speed)
+						# self.fog_update8.emit(dt-dt_init, data_SRS200_wz, data_PP_wz, data_Adxl355_ax, data_Adxl355_ay, data_Adxl355_az, data_T, data_IMU_speed)
+						self.fog_update11.emit(dt-dt_init, data_SRS200_wz, data_PP_wz, data_Adxl355_ax, data_Adxl355_ay, data_Adxl355_az, data_T, data_IMU_speed, 
+												data_Nano33_wx, data_Nano33_wy, data_Nano33_wz)
 						# time.sleep(THREAD_DELY)
 					elif(self.runFlag_cali):
 						self.fog_update13.emit(data_SRS200_wz, data_Nano33_wx, data_Nano33_wy, data_Nano33_wz, data_PP_wz, data_Adxl355_ax, data_Adxl355_ay,

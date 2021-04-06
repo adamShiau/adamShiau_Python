@@ -33,9 +33,11 @@ class TabPlot(QTabWidget):
 		###tab1 plot###
 		tab1_plot1 = self.win.addPlot(title="SRS200(degree/hour)")
 		self.tab1_plot1 = tab1_plot1.plot(pen='r')
-		tab1_plot2 = self.win.addPlot(title="PP")
+		tab1_plot2 = self.win.addPlot(title="degree/hour")
 		self.tab1_plot2_1 = tab1_plot2.plot(pen='r')
 		self.tab1_plot2_2 = tab1_plot2.plot(pen='b')
+		self.tab1_plot2_3 = tab1_plot2.plot(pen='k')
+		self.tab1_plot2_4 = tab1_plot2.plot(pen='g')
 		self.win.nextRow()
 		tab1_plot3 = self.win.addPlot(title="a(g)")
 		self.tab1_plot3_1 = tab1_plot3.plot(pen='r')
@@ -46,7 +48,7 @@ class TabPlot(QTabWidget):
 		self.tab1_plot4_1 = tab1_plot4.plot(pen='r')
 		self.tab1_plot4_2 = tab1_plot4.plot(pen='b')
 		###tab1 check box###
-		self.tab1_gyro_cb = chkBoxBlock_2('wz','Nano33', 'PP')
+		self.tab1_gyro_cb = chkBoxBlock_4('w','Sparrow', 'Nano33_x', 'Nano33_y', 'Nano33_z')
 		self.tab1_adxlXLM_cb = chkBoxBlock_4( 'ADXL355', 'ax', 'ay', 'az', 'T')
 		self.tab1_nano33XLM_cb = chkBoxBlock_2('Nano33', 'ax', 'ay')
 		self.tab1_speed_cb = chkBoxBlock_2( 'speed', 'ADXL355', 'IMU')
@@ -85,9 +87,9 @@ class TabPlot(QTabWidget):
 	def Tab1_UI(self):
 		layout = QGridLayout()
 		layout.addWidget(self.win, 0, 0, 20, 20)
-		# layout.addWidget(self.tab1_gyro_cb.layout(), 5, 20, 1, 1)
 		layout.addWidget(self.tab1_adxlXLM_cb.layout(), 11, 7, 1, 1)
-		# layout.addWidget(self.tab1_nano33XLM_cb.layout(), 15, 9, 1, 1)
+		# layout.addWidget(self.tab1_nano33XLM_cb.layout(), 12, 7, 1, 1)
+		layout.addWidget(self.tab1_gyro_cb.layout(), 1, 19, 1, 1)
 		layout.addWidget(self.tab1_speed_cb.layout(), 11, 19, 1, 1)
 		layout.addWidget(self.tab1_read_btn, 1, 30, 1, 1)
 		layout.addWidget(self.tab1_stop_btn, 2, 30, 1, 1)
@@ -95,12 +97,12 @@ class TabPlot(QTabWidget):
 
 	def Tab2_UI(self):
 		layout = QGridLayout()
-		layout.addWidget(self.tab2_SRS200, 0, 0, 3, 6)
-		layout.addWidget(self.tab2_PP, 3, 0, 3, 6)
-		layout.addWidget(self.tab2_IMU_speed, 0, 6, 3, 6)
+		layout.addWidget(self.tab2_SRS200, 0, 0, 2, 3)
+		layout.addWidget(self.tab2_PP, 2, 0, 2, 3)
+		layout.addWidget(self.tab2_IMU_speed, 0, 3, 2, 3)
 		# layout.addWidget(self.tab2_Nano33_gyro, 6, 0, 3, 6)
 		# layout.addWidget(self.tab2_Nano33_xlm, 0, 6, 6, 6)
-		layout.addWidget(self.tab2_ADXL355_xlm, 0, 12, 6, 6)
+		layout.addWidget(self.tab2_ADXL355_xlm, 0, 12, 3, 6)
 		layout.addWidget(self.tab2_cali_start_btn, 0, 18, 1, 1)
 		layout.addWidget(self.tab2_cali_stop_btn, 1, 18, 1, 1)
 

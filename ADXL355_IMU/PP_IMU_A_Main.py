@@ -16,7 +16,7 @@ TITLE_TEXT = "IMU_PLOT"
 VERSION_TEXT = 'Compare FOG with MEMS，2020/12/01'
 READOUT_FILENAME = "Signal_Read_Out.txt"
 MAX_SAVE_INDEX = 3000
-ODR = 100
+ODR = 85
 SAMPLING_TIME = 1/ODR
 DEBUG = 0
 DEBUG_COM = 0
@@ -26,8 +26,8 @@ w_factor = 0.01
 TEST_MODE = 0
 xlm_factor = 0.000122 #4g / 32768
 ADxlm_factor = 0.0000156 #8g
-# gyro_factor = 0.00763 #250 / 32768 
-gyro_factor = 0.0090 #250 / 32768 
+gyro_factor = 0.00763 #250 / 32768 
+# gyro_factor = 0.0090 #250 / 32768 
 gyroPP_factor = 1
 IMU_speed_factor = 1
 gyro200_factor = 0.0121
@@ -40,6 +40,8 @@ class mainWindow(QMainWindow):
 	offset_T = 0
 	offset_PP_wz = 0
 	offset_IMU_speed = 0
+	offset_Nano33_wx = 0
+	offset_Nano33_wy = 0
 	offset_Nano33_wz = 0
 	offset_Nano33_ax = 0
 	offset_Nano33_ay = 0
@@ -166,7 +168,7 @@ class mainWindow(QMainWindow):
 		self.usbconnect_status.connect(self.setBtnStatus) #確定usb連接成功時才enable btn
 		self.usbconnect_status.connect(self.setInitValue)
 		#action emit connect
-		self.act.fog_update8.connect(self.plotADXLIMUnGYRO)
+		self.act.fog_update11.connect(self.plotADXLIMUnGYRO)
 		self.act.fog_update13.connect(self.calibADXLIMUnGYRO)
 		self.act.fog_finished.connect(self.myThreadStop) #runFlag=0時fog_finished會emit，之後關掉thread1
 		
@@ -180,6 +182,8 @@ class mainWindow(QMainWindow):
 		''' check box '''
 		self.top.TabPlot.tab1_gyro_cb.cb1.toggled.connect(lambda:self.cb_toogled(self.top.TabPlot.tab1_gyro_cb.cb1))
 		self.top.TabPlot.tab1_gyro_cb.cb2.toggled.connect(lambda:self.cb_toogled(self.top.TabPlot.tab1_gyro_cb.cb2))
+		self.top.TabPlot.tab1_gyro_cb.cb3.toggled.connect(lambda:self.cb_toogled(self.top.TabPlot.tab1_gyro_cb.cb3))
+		self.top.TabPlot.tab1_gyro_cb.cb4.toggled.connect(lambda:self.cb_toogled(self.top.TabPlot.tab1_gyro_cb.cb4))
 		self.top.TabPlot.tab1_adxlXLM_cb.cb1.toggled.connect(lambda:self.cb_toogled(self.top.TabPlot.tab1_adxlXLM_cb.cb1))
 		self.top.TabPlot.tab1_adxlXLM_cb.cb2.toggled.connect(lambda:self.cb_toogled(self.top.TabPlot.tab1_adxlXLM_cb.cb2))
 		self.top.TabPlot.tab1_adxlXLM_cb.cb3.toggled.connect(lambda:self.cb_toogled(self.top.TabPlot.tab1_adxlXLM_cb.cb3))
@@ -195,7 +199,7 @@ class mainWindow(QMainWindow):
 		self.top.kal_rb.toggled.connect(lambda:self.rb_toggled(self.top.kal_rb))
 	
 	def setCheckBox_init(self):
-		self.top.TabPlot.tab1_gyro_cb.cb2.setChecked(True) #set gyro wz initial as PP
+		self.top.TabPlot.tab1_gyro_cb.cb1.setChecked(True) #set gyro wz initial as PP
 		self.top.TabPlot.tab1_adxlXLM_cb.cb1.setChecked(True) #set adxl355 XLM initial as ax
 		# self.top.TabPlot.tab1_nano33XLM_cb.cb1.setChecked(True) #set nano33 XLM initial as ax
 		self.top.TabPlot.tab1_speed_cb.cb1.setChecked(True) #set speed_Nano33 initial as adxl355
@@ -234,11 +238,17 @@ class mainWindow(QMainWindow):
 		
 	def cb_toogled(self, cb):
 		if(cb.text()==self.top.TabPlot.tab1_gyro_cb.cb1.text()):
-			self.Nano33_wz_chk = cb.isChecked()
-			print('Nano33_wz_chk:', self.Nano33_wz_chk)
-		elif(cb.text()==self.top.TabPlot.tab1_gyro_cb.cb2.text()):
 			self.PP_wz_chk = cb.isChecked()
 			print('PP_wz_chk:', self.PP_wz_chk)
+		elif(cb.text()==self.top.TabPlot.tab1_gyro_cb.cb2.text()):
+			self.Nano33_wx_chk = cb.isChecked()
+			print('Nano33_wx_chk:', self.Nano33_wx_chk)
+		elif(cb.text()==self.top.TabPlot.tab1_gyro_cb.cb3.text()):
+			self.Nano33_wy_chk = cb.isChecked()
+			print('Nano33_wy_chk:', self.Nano33_wy_chk)
+		elif(cb.text()==self.top.TabPlot.tab1_gyro_cb.cb4.text()):
+			self.Nano33_wz_chk = cb.isChecked()
+			print('Nano33_wz_chk:', self.Nano33_wz_chk)
 		elif(cb.text()==self.top.TabPlot.tab1_adxlXLM_cb.cb1.text()):
 			self.Adxl355_ax_chk = cb.isChecked()
 			print('Adxl355_ax_chk:', self.Adxl355_ax_chk)
@@ -271,10 +281,14 @@ class mainWindow(QMainWindow):
 			print('SRS200_track_chk:', self.SRS200_track_chk)
 			
 	def get_cbVal(self):
-		self.Nano33_wz_chk = self.top.TabPlot.tab1_gyro_cb.cb1.isChecked()
-		print('Nano33_wz_chk:', self.Nano33_wz_chk)
-		self.PP_wz_chk = self.top.TabPlot.tab1_gyro_cb.cb2.isChecked()
+		self.PP_wz_chk = self.top.TabPlot.tab1_gyro_cb.cb1.isChecked()
 		print('PP_wz_chk:', self.PP_wz_chk)
+		self.Nano33_wx_chk = self.top.TabPlot.tab1_gyro_cb.cb2.isChecked()
+		print('Nano33_wx_chk:', self.Nano33_wx_chk)
+		self.Nano33_wy_chk = self.top.TabPlot.tab1_gyro_cb.cb3.isChecked()
+		print('Nano33_wy_chk:', self.Nano33_wy_chk)
+		self.Nano33_wz_chk = self.top.TabPlot.tab1_gyro_cb.cb4.isChecked()
+		print('Nano33_wz_chk:', self.Nano33_wz_chk)
 		self.Adxl355_ax_chk = self.top.TabPlot.tab1_adxlXLM_cb.cb1.isChecked()
 		print('Adxl355_ax_chk:', self.Adxl355_ax_chk)
 		self.Adxl355_ay_chk = self.top.TabPlot.tab1_adxlXLM_cb.cb2.isChecked()
@@ -442,6 +456,8 @@ class mainWindow(QMainWindow):
 		offset_SRS200_wz = 0
 		offset_PP_wz = 0
 		offset_IMU_speed = 0
+		offset_Nano33_wx = 0
+		offset_Nano33_wy = 0
 		offset_Nano33_wz = 0
 		offset_Nano33_ax = 0
 		offset_Nano33_ay = 0
@@ -512,7 +528,8 @@ class mainWindow(QMainWindow):
 		self.x200_arr = np.zeros(0)
 		self.y200_arr = np.zeros(0)
 		
-	def plotADXLIMUnGYRO(self, dt, data_SRS200_wz, data_PP_wz, data_Adxl355_ax, data_Adxl355_ay, data_Adxl355_az, data_T, data_IMU_speed):
+	def plotADXLIMUnGYRO(self, dt, data_SRS200_wz, data_PP_wz, data_Adxl355_ax, data_Adxl355_ay, data_Adxl355_az, data_T, data_IMU_speed, 
+						data_Nano33_wx, data_Nano33_wy, data_Nano33_wz):
 		# print('plotADXLIMUnGYRO')
 		if(self.act.runFlag):
 		
@@ -525,7 +542,9 @@ class mainWindow(QMainWindow):
 			self.dt = self.dt[self.act.data_frame_update_point:]
 			self.data_T = self.data_T[self.act.data_frame_update_point:]
 			self.data_SRS200_wz = self.data_SRS200_wz[self.act.data_frame_update_point:]
-			# self.data_Nano33_wz = self.data_Nano33_wz[self.act.data_frame_update_point:]
+			self.data_Nano33_wx = self.data_Nano33_wx[self.act.data_frame_update_point:]
+			self.data_Nano33_wy = self.data_Nano33_wy[self.act.data_frame_update_point:]
+			self.data_Nano33_wz = self.data_Nano33_wz[self.act.data_frame_update_point:]
 			self.data_PP_wz = self.data_PP_wz[self.act.data_frame_update_point:]
 			self.data_IMU_speed = self.data_IMU_speed[self.act.data_frame_update_point:]
 			self.data_Adxl355_ax = self.data_Adxl355_ax[self.act.data_frame_update_point:]
@@ -535,7 +554,9 @@ class mainWindow(QMainWindow):
 			# self.data_Nano33_ay = self.data_Nano33_ay[self.act.data_frame_update_point:]
 		# print('pp:', data_PP_wz)
 		data_SRS200_wz_f = (data_SRS200_wz - self.offset_SRS200_wz)*gyro200_factor/3600 #convert to DPS
-		# data_Nano33_wz_f = (data_Nano33_wz - self.offset_Nano33_wz)*gyro_factor
+		data_Nano33_wx_f = (data_Nano33_wx - self.offset_Nano33_wx)*gyro_factor
+		data_Nano33_wy_f = (data_Nano33_wy - self.offset_Nano33_wy)*gyro_factor
+		data_Nano33_wz_f = (data_Nano33_wz - self.offset_Nano33_wz)*gyro_factor
 		data_PP_wz_f = (data_PP_wz - self.offset_PP_wz)*gyroPP_factor
 		data_IMU_speed_f = (data_IMU_speed - self.offset_IMU_speed)*IMU_speed_factor
 		data_Adxl355_ax_f = (data_Adxl355_ax - self.offset_Adxl355_ax)*ADxlm_factor
@@ -635,7 +656,9 @@ class mainWindow(QMainWindow):
 			self.y200_arr = self.y200_arr[1:]
 		
 		self.data_SRS200_wz  = np.append(self.data_SRS200_wz,  data_SRS200_wz_f)
-		# self.data_Nano33_wz = np.append(self.data_Nano33_wz, data_Nano33_wz_f)
+		self.data_Nano33_wx = np.append(self.data_Nano33_wx, data_Nano33_wx_f)
+		self.data_Nano33_wy = np.append(self.data_Nano33_wy, data_Nano33_wy_f)
+		self.data_Nano33_wz = np.append(self.data_Nano33_wz, data_Nano33_wz_f)
 		self.data_PP_wz = np.append(self.data_PP_wz, data_PP_wz_f)
 		self.data_IMU_speed = np.append(self.data_IMU_speed, data_IMU_speed_f)
 		self.data_Adxl355_ax = np.append(self.data_Adxl355_ax, data_Adxl355_ax_f)
@@ -670,16 +693,25 @@ class mainWindow(QMainWindow):
 					
 		
 		#data_SRS200_wz
-		self.top.TabPlot.tab1_plot1.setData(self.dt, self.data_SRS200_wz*3600) #dph
-		
+		# self.top.TabPlot.tab1_plot1.setData(self.dt, self.data_SRS200_wz*3600) #dph
+		self.top.TabPlot.tab1_plot1.setData(self.dt, self.data_SRS200_wz) #dps
 					
 		if(self.PP_wz_chk):
-			self.top.TabPlot.tab1_plot2_2.setData(self.dt, self.data_PP_wz)
+			self.top.TabPlot.tab1_plot2_1.setData(self.dt, self.data_PP_wz)
+		else:
+			self.top.TabPlot.tab1_plot2_1.setData()
+		if(self.Nano33_wx_chk):
+			self.top.TabPlot.tab1_plot2_2.setData(self.dt, self.data_Nano33_wx)
 		else:
 			self.top.TabPlot.tab1_plot2_2.setData()
-		# if(self.Nano33_wz_chk or self.PP_wz_chk):
-			# self.top.TabPlot.tab1_plot2.figure.canvas.draw()		
-			# self.top.TabPlot.tab1_plot2.figure.canvas.flush_events()
+		if(self.Nano33_wy_chk):
+			self.top.TabPlot.tab1_plot2_3.setData(self.dt, self.data_Nano33_wy)
+		else:
+			self.top.TabPlot.tab1_plot2_3.setData()
+		if(self.Nano33_wz_chk):
+			self.top.TabPlot.tab1_plot2_4.setData(self.dt, self.data_Nano33_wz)
+		else:
+			self.top.TabPlot.tab1_plot2_4.setData()
 		
 		if(self.Adxl355_ax_chk):
 			self.top.TabPlot.tab1_plot3_1.setData(self.dt, self.data_Adxl355_ax)
@@ -784,7 +816,7 @@ class mainWindow(QMainWindow):
 		self.top.buffer_lb.lb.setText(str(self.act.bufferSize))
 		
 		self.offset_T = np.round(np.average(self.data_T),3)
-		print('self.offset_T: ', self.offset_T)
+		# print('self.offset_T: ', self.offset_T)
 		
 		self.offset_SRS200_wz = np.round(np.average(self.data_SRS200_wz),3)
 		self.std_SRS200_wz = np.round(np.std(self.data_SRS200_wz), 3)
@@ -801,10 +833,14 @@ class mainWindow(QMainWindow):
 		self.top.TabPlot.tab2_IMU_speed.lb1.setText(str(self.offset_IMU_speed))
 		self.top.TabPlot.tab2_IMU_speed.lb2.setText(str(self.std_IMU_speed))
 		
+		self.offset_Nano33_wx = np.round(np.average(self.data_Nano33_wx),3)
+		self.std_Nano33_wx = np.round(np.std(self.data_Nano33_wx), 3)
+		self.offset_Nano33_wy = np.round(np.average(self.data_Nano33_wy),3)
+		self.std_Nano33_wy = np.round(np.std(self.data_Nano33_wy), 3)
 		self.offset_Nano33_wz = np.round(np.average(self.data_Nano33_wz),3)
 		self.std_Nano33_wz = np.round(np.std(self.data_Nano33_wz), 3)
-		self.top.TabPlot.tab2_Nano33_gyro.lb1.setText(str(self.offset_Nano33_wz))
-		self.top.TabPlot.tab2_Nano33_gyro.lb2.setText(str(self.std_Nano33_wz))
+		# self.top.TabPlot.tab2_Nano33_gyro.lb1.setText(str(self.offset_Nano33_wz))
+		# self.top.TabPlot.tab2_Nano33_gyro.lb2.setText(str(self.std_Nano33_wz))
 		
 		self.offset_Nano33_ax = np.round(np.average(self.data_Nano33_ax),3)
 		self.std_Nano33_ax = np.round(np.std(self.data_Nano33_ax), 3)
@@ -836,6 +872,16 @@ class mainWindow(QMainWindow):
 		self.top.TabPlot.tab2_ADXL355_xlm.lb3_1.setText(str(self.offset_Adxl355_az))
 		self.top.TabPlot.tab2_ADXL355_xlm.lb3_2.setText(str(self.std_Adxl355_az))
 		
+		if(self.act.runFlag_cali == False):
+			print('self.offset_SRS200_wz: ', self.offset_SRS200_wz)
+			print('self.offset_PP_wz: ', self.offset_PP_wz)
+			print('self.offset_Nano33_wx: ', self.offset_Nano33_wx)
+			print('self.offset_Nano33_wy: ', self.offset_Nano33_wy)
+			print('self.offset_Nano33_wz: ', self.offset_Nano33_wz)
+			print('self.offset_Adxl355_ax: ', self.offset_Adxl355_ax)
+			print('self.offset_Adxl355_ay: ', self.offset_Adxl355_ay)
+			print('self.offset_Adxl355_az: ', self.offset_Adxl355_az)
+			print('self.offset_IMU_speed: ', self.offset_IMU_speed)
 
         
 if __name__ == '__main__':

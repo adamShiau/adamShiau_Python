@@ -42,7 +42,7 @@ class IMU_Action(QThread):
 	valid_flag = 0
 	drop_cnt=0
 	valid_cnt = 0
-	valid_cnt_num = 5
+	valid_cnt_num = 50
 	TIME_PERIOD = 0.01
 	''' 計算一定的點數後再傳到main作圖，點數太小的話buffer會累積造成lag'''
 	data_frame_update_point = 1
@@ -327,7 +327,7 @@ class IMU_Action(QThread):
 							if(DISABLE_PP):
 								temp_PP_wz = 0
 							else:
-								temp_PP_wz = self.convert2Unsign_4B(temp_PP_wz)
+								temp_PP_wz = self.convert2Sign_4B(temp_PP_wz)
 								
 							if(DISABLE_IMU_SPEED):
 								temp_IMU_speed = 0

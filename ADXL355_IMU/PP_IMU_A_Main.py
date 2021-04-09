@@ -28,10 +28,10 @@ xlm_factor = 0.000122 #4g / 32768
 ADxlm_factor = 0.0000156 #8g
 gyro_factor = 0.00763 #250 / 32768 
 # gyro_factor = 0.0090 #250 / 32768 
-gyroPP_factor = 1
+gyroPP_factor = -3.06
 IMU_speed_factor = 1
 gyro200_factor = 0.0121
-
+adxl355_th = 0.0005
 
 class mainWindow(QMainWindow):
 	''' define and initiate global variable '''
@@ -49,7 +49,14 @@ class mainWindow(QMainWindow):
 	offset_Adxl355_ax = 0
 	offset_Adxl355_ay = 0
 	offset_Adxl355_az = 0
-	
+	old_data_Adxl355_ax_f = 0
+	old_data_Adxl355_ay_f = 0
+	old_data_Adxl355_az_f = 0
+	current_data_Adxl355_ax_f = 0
+	current_data_Adxl355_ay_f = 0
+	current_data_Adxl355_az_f = 0
+	current_speedx_Adxl355 = 0
+	current_speedy_Adxl355 = 0
 	''' pyqtSignal'''
 	usbconnect_status = pyqtSignal(object) #to trigger the btn to enable state
 	''' axis max for track'''
@@ -94,7 +101,9 @@ class mainWindow(QMainWindow):
 		self.speedy_Nano33 = 0
 		self.speed_Adxl355 = 0
 		self.speedx_Adxl355 = 0
+		self.current_speedx_Adxl355 = 0
 		self.speedy_Adxl355 = 0
+		self.current_speedy_Adxl355 = 0
 		self.thetaz_nano33_arr = np.empty(0)
 		self.thetaz_SRS200_arr = np.empty(0)
 		self.thetax_arr = np.empty(0)
@@ -527,10 +536,22 @@ class mainWindow(QMainWindow):
 		self.speedy_Adxl355 = 0
 		self.x200_arr = np.zeros(0)
 		self.y200_arr = np.zeros(0)
+		self.old_data_Adxl355_ax_f = 0
+		self.old_data_Adxl355_ay_f = 0
+		self.old_data_Adxl355_az_f = 0
+		self.old_speedx_Adxl355 = 0
+		self.old_speedy_Adxl355 = 0
 		
 	def plotADXLIMUnGYRO(self, dt, data_SRS200_wz, data_PP_wz, data_Adxl355_ax, data_Adxl355_ay, data_Adxl355_az, data_T, data_IMU_speed, 
 						data_Nano33_wx, data_Nano33_wy, data_Nano33_wz):
 		# print('plotADXLIMUnGYRO')
+		self.old_data_Adxl355_ax_f = self.current_data_Adxl355_ax_f
+		self.old_data_Adxl355_ay_f = self.current_data_Adxl355_ay_f
+		self.old_data_Adxl355_az_f = self.current_data_Adxl355_az_f
+		
+		self.old_speedx_Adxl355 = self.current_speedx_Adxl355
+		self.old_speedy_Adxl355 = self.current_speedy_Adxl355
+		
 		if(self.act.runFlag):
 		
 			if(DEBUG_COM):
@@ -538,7 +559,7 @@ class mainWindow(QMainWindow):
 				print(data_SRS200_wz)
 			pass
 		dt = dt*1e-6
-		if (len(self.dt) >= 3000):
+		if (len(self.dt) >= 300):
 			self.dt = self.dt[self.act.data_frame_update_point:]
 			self.data_T = self.data_T[self.act.data_frame_update_point:]
 			self.data_SRS200_wz = self.data_SRS200_wz[self.act.data_frame_update_point:]
@@ -557,14 +578,32 @@ class mainWindow(QMainWindow):
 		data_Nano33_wx_f = (data_Nano33_wx - self.offset_Nano33_wx)*gyro_factor
 		data_Nano33_wy_f = (data_Nano33_wy - self.offset_Nano33_wy)*gyro_factor
 		data_Nano33_wz_f = (data_Nano33_wz - self.offset_Nano33_wz)*gyro_factor
-		data_PP_wz_f = (data_PP_wz - self.offset_PP_wz)*gyroPP_factor
+		data_PP_wz_f = (1.97-(data_PP_wz - self.offset_PP_wz)*gyroPP_factor)/3600
 		data_IMU_speed_f = (data_IMU_speed - self.offset_IMU_speed)*IMU_speed_factor
-		data_Adxl355_ax_f = (data_Adxl355_ax - self.offset_Adxl355_ax)*ADxlm_factor
-		data_Adxl355_ay_f = (data_Adxl355_ay - self.offset_Adxl355_ay)*ADxlm_factor
-		data_Adxl355_az_f = (data_Adxl355_az - self.offset_Adxl355_az)*ADxlm_factor
+		self.current_data_Adxl355_ax_f = (data_Adxl355_ax - self.offset_Adxl355_ax)*ADxlm_factor
+		self.current_data_Adxl355_ay_f = (data_Adxl355_ay - self.offset_Adxl355_ay)*ADxlm_factor
+		self.current_data_Adxl355_az_f = (data_Adxl355_az - self.offset_Adxl355_az)*ADxlm_factor
 		# data_Nano33_ax_f = (data_Nano33_ax - self.offset_Nano33_ax)*xlm_factor
 		# data_Nano33_ay_f = (data_Nano33_ay - self.offset_Nano33_ay)*xlm_factor
+		if(np.abs(self.current_data_Adxl355_ax_f - self.old_data_Adxl355_ax_f) < adxl355_th):
+			data_Adxl355_ax_f = 0
+		else:
+			data_Adxl355_ax_f = self.current_data_Adxl355_ax_f
+		if(np.abs(self.current_data_Adxl355_ay_f - self.old_data_Adxl355_ay_f) < adxl355_th):
+			data_Adxl355_ay_f = 0
+		else:
+			data_Adxl355_ay_f = self.current_data_Adxl355_ay_f
+		if(np.abs(self.current_data_Adxl355_az_f - self.old_data_Adxl355_az_f) < adxl355_th):
+			data_Adxl355_az_f = 0
+		else:
+			data_Adxl355_az_f = self.current_data_Adxl355_az_f
 		
+		
+		
+		# print(self.current_data_Adxl355_ax_f, end=', ')
+		# print(self.old_data_Adxl355_ax_f, end=', ')
+		# print(np.abs(self.current_data_Adxl355_ax_f - self.old_data_Adxl355_ax_f), end=', ')
+		# print(np.abs(self.current_data_Adxl355_ax_f - self.old_data_Adxl355_ax_f) < adxl355_th)
 
 		'''由角速率積分計算角度，積分時間為data_frame_update_point*(1/ODR), ODR=100Hz'''
 		# self.thetaz_nano33 = self.thetaz_nano33 - np.sum(data_Nano33_wz_f)*SAMPLING_TIME #負號是方向判斷的問題, 0.01是1/ODR
@@ -573,15 +612,34 @@ class mainWindow(QMainWindow):
 		self.thetaz_SRS200_arr = np.append(self.thetaz_SRS200_arr, self.thetaz_SRS200)
 		# print('self.thetaz_nano33: ', self.thetaz_nano33)
 		# print('self.thetaz_SRS200: ', self.thetaz_SRS200)
-		self.top.SRS200_gauge.lb.setText(str(round(self.thetaz_SRS200, 2)))
+		
 		
 		'''由加速度積分計算速度'''
 		#ADXL355
-		self.speedx_Adxl355 = self.speedx_Adxl355 + np.sum(data_Adxl355_ax_f)*9.81*SAMPLING_TIME
-		self.speedy_Adxl355 = self.speedy_Adxl355 + np.sum(data_Adxl355_ay_f)*9.81*SAMPLING_TIME
+		# self.speedx_Adxl355 = self.speedx_Adxl355 + np.sum(data_Adxl355_ax_f)*9.81*SAMPLING_TIME
+		# self.speedy_Adxl355 = self.speedy_Adxl355 + np.sum(data_Adxl355_ay_f)*9.81*SAMPLING_TIME
+		self.current_speedx_Adxl355 = self.current_speedx_Adxl355 + np.sum(data_Adxl355_ax_f)*9.81*SAMPLING_TIME
+		self.current_speedy_Adxl355 = self.current_speedy_Adxl355 + np.sum(data_Adxl355_ay_f)*9.81*SAMPLING_TIME
+		
+		if(self.current_speedx_Adxl355==self.old_speedx_Adxl355):
+			# self.speedx_Adxl355 = 0
+			self.current_speedx_Adxl355 = 0
+		# else:
+			# self.speedx_Adxl355 = self.current_speedx_Adxl355
+			
+		if(self.current_speedy_Adxl355==self.old_speedy_Adxl355):
+			# self.speedy_Adxl355 = 0
+			self.current_speedy_Adxl355 = 0
+		# else:
+			# self.speedy_Adxl355 = self.current_speedy_Adxl355
+			
+		self.speedx_Adxl355 = self.current_speedx_Adxl355
+		self.speedy_Adxl355 = self.current_speedy_Adxl355
 		self.speed_Adxl355 = np.sqrt(np.square(self.speedx_Adxl355)+np.square(self.speedy_Adxl355))
 		self.speed_Adxl355_arr = np.append(self.speed_Adxl355_arr, self.speed_Adxl355)
-		self.top.speed_gauge.lb.setText(str(round(self.speed_Adxl355*3.6, 2)))
+		
+		# print(self.speedx_Adxl355, end=', ')
+		# print(self.speedy_Adxl355)
 		#speed output save array
 		speedx_Adxl355_out = np.empty(0)
 		speedy_Adxl355_out = np.empty(0)
@@ -592,10 +650,13 @@ class mainWindow(QMainWindow):
 			speed_Adxl355_out = np.append(speed_Adxl355_out, self.speed_Adxl355)
 		#guage plot
 		self.top.SRS200_gauge.gauge.item.setRotation(self.thetaz_SRS200)
+		self.top.SRS200_gauge.lb.setText(str(np.round(self.thetaz_SRS200, 2)))
 		self.top.speed_gauge.gauge.item.setRotation(self.speed_Adxl355)
-		self.top.IMU_speed_gauge.lb.setText(str(round(self.speed_Adxl355*3.6, 2)))
+		# self.top.speed_gauge.lb.setText(str(round(self.speed_Adxl355*3.6, 2)))
+		self.top.speed_gauge.lb.setText(str(np.round(self.speedx_Adxl355*3.6, 2)))
 		self.top.IMU_speed_gauge.gauge.item.setRotation(self.speed_Adxl355)
-		
+		# self.top.IMU_speed_gauge.lb.setText(str(round(self.speed_Adxl355*3.6, 2)))
+		self.top.IMU_speed_gauge.lb.setText(str(np.round(self.speedy_Adxl355*3.6, 2)))
 		''' for track plot'''
 		# thetaz_nano33 = 90 - self.thetaz_nano33
 		thetaz_SRS200 = 90 - self.thetaz_SRS200
@@ -628,7 +689,7 @@ class mainWindow(QMainWindow):
 		# self.dy200_arr = np.append(self.dy200_arr, dy200)
 		
 		self.track_cnt = self.track_cnt + 1
-		if(self.track_cnt == 100):
+		if(self.track_cnt == 10):
 			self.track_cnt = 0
 			self.x200_arr = np.append(self.x200_arr, self.x200_sum)
 			self.y200_arr = np.append(self.y200_arr, self.y200_sum)
@@ -764,10 +825,10 @@ class mainWindow(QMainWindow):
 			# print('self.x200_arr[-1]:', self.x200_arr[-1])
 			# print('len(self.y200_arr):', len(self.y200_arr),end=', ')
 			# print('self.y200_arr[-1]:', self.y200_arr[-1])
-			x_max = self.x200_arr[-1] + 50
-			x_min = self.x200_arr[-1] - 50
-			y_max = self.y200_arr[-1] + 50
-			y_min = self.y200_arr[-1] - 50
+			x_max = self.x200_arr[-1] + 5
+			x_min = self.x200_arr[-1] - 5
+			y_max = self.y200_arr[-1] + 5
+			y_min = self.y200_arr[-1] - 5
 			self.top.TabPlot.tab3_plot1.setXRange(x_min, x_max, padding=0)
 			self.top.TabPlot.tab3_plot1.setYRange(y_min, y_max, padding=0)
 		else:

@@ -3,7 +3,7 @@ import sys
 import numpy as np
 import matplotlib.pyplot as plt
 
-NAME = '2021-03-11'
+NAME = '1'
 
 print(sys.path)
 Var = np.loadtxt(NAME+'.txt', comments='#', delimiter=',')
@@ -37,26 +37,26 @@ plt.xlabel("t(s)") # x label
 plt.ylabel("difft(ms)") # y label
 
 
-plt.figure(2)
-plt.plot(t, SRS_wz)
-plt.title("SRS_wz") # title
-plt.xlabel("t(s)") # x label
-plt.ylabel("DPS") # y label
+# plt.figure(2)
+# plt.plot(t, SRS_wz)
+# plt.title("SRS_wz") # title
+# plt.xlabel("t(s)") # x label
+# plt.ylabel("DPS") # y label
 
-plt.figure(11)
-temp = 0
-theta = np.empty(0)
-for i in range(len(SRS_wz)):
-	temp = temp - SRS_wz[i]
+# plt.figure(11)
+# temp = 0
+# theta = np.empty(0)
+# for i in range(len(SRS_wz)):
+	# temp = temp - SRS_wz[i]
 	
-	theta = np.append(theta, temp*0.01)
+	# theta = np.append(theta, temp*0.01)
 	# print(temp)
 	# print(len(theta))
 # print(len(SRS_wz))
-plt.plot(theta)
-plt.title("theta") # title
-plt.xlabel("pts") # x label
-plt.ylabel("degree") # y label
+# plt.plot(theta)
+# plt.title("theta") # title
+# plt.xlabel("pts") # x label
+# plt.ylabel("degree") # y label
 
 # plt.figure(3)
 # plt.plot(t, ax)

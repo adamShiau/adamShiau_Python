@@ -72,11 +72,12 @@ class TabPlot(QTabWidget):
 		self.tab3_plot1 = self.win2.addPlot(title="plot5")
 		self.tab3_plot1_1 = self.tab3_plot1.plot(pen='r')
 		self.tab3_plot1_2 = self.tab3_plot1.plot(pen='b')
+		self.tab3_plot1_3 = self.tab3_plot1.plot(pen='k')
 		###tab3 btn###
 		self.tab3_xmax = AdamGUIclass.editBlockwBtn('xmax')
 		self.tab3_ymax = AdamGUIclass.editBlockwBtn('ymax')
 		###tab3 check box###
-		self.tab3_track_cb = chkBoxBlock_2('track','Nano33', 'SRS200')
+		self.tab3_track_cb = chkBoxBlock_3('track','Nano33', 'SRS200', 'PP')
 		self.addTab(self.tab1,"Meas.")
 		self.addTab(self.tab2,"Cali.")
 		self.addTab(self.tab3,"Track")
@@ -90,7 +91,7 @@ class TabPlot(QTabWidget):
 		layout.addWidget(self.tab1_adxlXLM_cb.layout(), 11, 7, 1, 1)
 		# layout.addWidget(self.tab1_nano33XLM_cb.layout(), 12, 7, 1, 1)
 		layout.addWidget(self.tab1_gyro_cb.layout(), 1, 19, 1, 1)
-		layout.addWidget(self.tab1_speed_cb.layout(), 11, 19, 1, 1)
+		# layout.addWidget(self.tab1_speed_cb.layout(), 11, 19, 1, 1)
 		layout.addWidget(self.tab1_read_btn, 1, 30, 1, 1)
 		layout.addWidget(self.tab1_stop_btn, 2, 30, 1, 1)
 		self.tab1.setLayout(layout)

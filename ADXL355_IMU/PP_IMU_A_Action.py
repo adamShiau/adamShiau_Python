@@ -23,7 +23,8 @@ DEBUG = 0
 DEBUG_COM = 0
 TEST_MODE = 0
 DISABLE_PP = 0
-DISABLE_IMU_SPEED = 0
+DISABLE_IMU_SPEED = 1
+DISABLE_SRS200 = 0
 
 class IMU_Action(QThread):
 	update_COMArray = pyqtSignal(object)
@@ -211,7 +212,8 @@ class IMU_Action(QThread):
 						# temp_Nano33_wz = np.random.randn()*100
 						
 						temp_dt = self.COM.read4Binary()
-						temp_SRS200_wz = self.COM.read4Binary()
+						if(not DISABLE_SRS200):
+							temp_SRS200_wz = self.COM.read4Binary()
 						# if(temp_SRS200_wz[0] != 192):
 								# temp_SRS200_wz = np.array([0,0,0,0])
 						# else:
@@ -321,7 +323,11 @@ class IMU_Action(QThread):
 							# temp_Nano33_wy = self.convert2Sign_2B(temp_Nano33_wy)
 							# temp_Nano33_wz = self.convert2Sign_2B(temp_Nano33_wz)
 							temp_dt = self.convert2Unsign_4B(temp_dt)
-							temp_SRS200_wz = self.convert2Sign_4B(temp_SRS200_wz)
+							
+							if(DISABLE_SRS200):
+								temp_SRS200_wz = 0
+							else:
+								temp_SRS200_wz = self.convert2Sign_4B(temp_SRS200_wz)
 							
 							
 							if(DISABLE_PP):

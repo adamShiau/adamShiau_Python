@@ -13,8 +13,8 @@ import numpy as np
 # import py3lib.FileToArray as file
 # import py3lib.QuLogger as Qlogger 
 # import py3lib.FileToArray as fil2a 
-import gyro_Widget4 as UI 
-import gyro_Action4 as ACT
+import gyro_Widget5 as UI 
+import gyro_Action5 as ACT
 import gyro_Globals as globals
 TITLE_TEXT = "OPEN LOOP"
 VERSION_TEXT = 'fog open loop 2020/12/25'
@@ -49,27 +49,28 @@ V2PIN = '11 '
 OPENLOOP_START = '12 '
 STEP_TRIG_DLY = '13 '
 GAINPRE = '14 '
-FB_ON = GAIN1
+FB_ON = '15 '
 '''adc conversion '''
 ADC_COEFFI = (5/8192) #PD attnuates 5 times befor enter ADC
 TIME_COEFFI = 0.0001
 ''' define initial value'''
 # MOD_H_INIT = 0
 # MOD_L_INIT = -1000
-MOD_H_INIT = 2400
-MOD_L_INIT = -3700
-FREQ_INIT = 101
+MOD_H_INIT = 2900
+MOD_L_INIT = -2900
+FREQ_INIT = 99
 ERR_OFFSET_INIT = 0
 POLARITY_INIT = 0
-WAIT_CNT_INIT = 25
+WAIT_CNT_INIT = 56
 ERR_TH_INIT = 0
-ERR_AVG_INIT = 6
+ERR_AVG_INIT = 5
 GAIN_SEL_INIT = 11
-# GAINPRE_SEL_INIT = 0
+GAINPRE_SEL_INIT = 0
 STEP_MAX_INIT = 10000
 V2PI_INIT = 30000
 V2PIN_INIT = -30000
 STEP_TRIG_DLY_INIT = 0
+MODE_INIT = 0
 
 CMD_MOD_H_INIT = MOD_AMP_H + str(MOD_H_INIT) + '\n'
 CMD_MOD_L_INIT = MOD_AMP_L + str(MOD_L_INIT) + '\n'
@@ -79,14 +80,14 @@ CMD_WAIT_CNT_INIT = WAIT_CNT + str(WAIT_CNT_INIT) + '\n'
 CMD_ERR_TH_INIT = ERR_TH + str(ERR_TH_INIT) + '\n'
 CMD_ERR_AVG_INIT = ERR_AVG + str(ERR_AVG_INIT) + '\n'
 CMD_GAIN_SEL_INIT = GAIN1 + str(GAIN_SEL_INIT) + '\n'
-# CMD_GAINPRE_SEL_INIT = GAINPRE + str(GAINPRE_SEL_INIT) + '\n'
+CMD_GAINPRE_SEL_INIT = GAINPRE + str(GAINPRE_SEL_INIT) + '\n'
 CMD_OPENLOOP_INIT = GAIN1 + str(15) + '\n'
 CMD_STEP_MAX_INIT = STEP_MAX + str(STEP_MAX_INIT) + '\n'
 CMD_V2PI_INIT = V2PI + str(V2PI_INIT) + '\n'
 CMD_V2PIN_INIT = V2PIN + str(V2PIN_INIT) + '\n'
 CMD_FREQ_INIT = MOD_FREQ + str(FREQ_INIT) + '\n' 
 CMD_STEP_TRIG_DLY_INIT = STEP_TRIG_DLY + str(STEP_TRIG_DLY_INIT) + '\n' 
-# CMD_MODE_INIT = GAIN1 + str(15) + '\n' 
+CMD_MODE_INIT = FB_ON + str(0) + '\n' 
 class mainWindow(QMainWindow):
 	# Kal_status = 0
 	
@@ -177,7 +178,7 @@ class mainWindow(QMainWindow):
 		self.top.polarity.spin.valueChanged.connect(self.send_POLARITY_CMD)
 		
 		self.top.gain1.spin.valueChanged.connect(self.send_GAIN1_CMD)
-		# self.top.gain_pre.spin.valueChanged.connect(self.send_GAINPRE_CMD)
+		self.top.gain_pre.spin.valueChanged.connect(self.send_GAINPRE_CMD)
 		self.top.step_max.spin.valueChanged.connect(self.send_STEP_MAX_CMD)
 		self.top.v2pi.spin.valueChanged.connect(self.send_V2PI_CMD)
 		self.top.v2piN.spin.valueChanged.connect(self.send_V2PIN_CMD)
@@ -196,14 +197,14 @@ class mainWindow(QMainWindow):
 			self.act.COM.writeLine(CMD_WAIT_CNT_INIT)
 			self.act.COM.writeLine(CMD_ERR_TH_INIT)
 			self.act.COM.writeLine(CMD_ERR_AVG_INIT)
-			# self.act.COM.writeLine(CMD_GAIN_SEL_INIT)
-			# self.act.COM.writeLine(CMD_GAINPRE_SEL_INIT)
+			self.act.COM.writeLine(CMD_GAIN_SEL_INIT)
+			self.act.COM.writeLine(CMD_GAINPRE_SEL_INIT)
 			self.act.COM.writeLine(CMD_STEP_MAX_INIT)
 			self.act.COM.writeLine(CMD_V2PI_INIT)
 			self.act.COM.writeLine(CMD_V2PIN_INIT)
 			self.act.COM.writeLine(CMD_FREQ_INIT)
 			self.act.COM.writeLine(CMD_STEP_TRIG_DLY_INIT)
-			# self.act.COM.writeLine(CMD_MODE_INIT)
+			self.act.COM.writeLine(CMD_MODE_INIT)
 			self.top.mod_H.spin.setValue(MOD_H_INIT)
 			self.top.mod_L.spin.setValue(MOD_L_INIT)
 			self.top.err_offset.spin.setValue(ERR_OFFSET_INIT)
@@ -212,12 +213,12 @@ class mainWindow(QMainWindow):
 			self.top.err_th.spin.setValue(ERR_TH_INIT)
 			self.top.avg.spin.setValue(ERR_AVG_INIT)
 			self.top.gain1.spin.setValue(GAIN_SEL_INIT)
-			# self.top.gain_pre.spin.setValue(GAINPRE_SEL_INIT)
+			self.top.gain_pre.spin.setValue(GAINPRE_SEL_INIT)
 			self.top.step_max.spin.setValue(STEP_MAX_INIT)
 			self.top.v2pi.spin.setValue(V2PI_INIT)
 			self.top.v2piN.spin.setValue(V2PIN_INIT)
 			self.top.freq.spin.setValue(FREQ_INIT)
-			self.top.fb_on.spin.setValue(0)
+			self.top.fb_on.spin.setValue(MODE_INIT)
 			self.act.COM.writeLine(CMD_OPENLOOP_INIT)
 			self.top.Q.spin.setValue(globals.kal_Q)
 			self.top.R.spin.setValue(globals.kal_R)
@@ -304,10 +305,11 @@ class mainWindow(QMainWindow):
 	
 	def send_FB_ON_CMD(self):
 		value = self.top.fb_on.spin.value()	
-		if(value==0):
-			cmd = GAIN1 + str(15) + '\n'
-		elif(value==1):
-			cmd = GAIN1 + str(self.top.gain1.spin.value()) + '\n'
+		cmd = FB_ON + str(value) + '\n'
+		# if(value==0):
+			# cmd = GAIN1 + str(15) + '\n'
+		# elif(value==1):
+			# cmd = GAIN1 + str(self.top.gain1.spin.value()) + '\n'
 		print(cmd)
 		self.act.COM.writeLine(cmd)
 	

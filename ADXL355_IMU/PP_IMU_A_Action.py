@@ -57,6 +57,8 @@ class IMU_Action(QThread):
 	bufferSize = 0
 	dt_init_flag = 1
 	MV_MODE = 0
+	dt_old = 0
+	dt_offset = 0
 	def __init__(self, loggername):	
 		super().__init__()
 		self.COM = UART()
@@ -172,7 +174,6 @@ class IMU_Action(QThread):
 				kal_p_Adxl355_ay[0] = kal_p_Adxl355_ay[self.data_frame_update_point]
 				kal_p_Adxl355_az[0] = kal_p_Adxl355_az[self.data_frame_update_point]
 				p_p[0] = p_p[self.data_frame_update_point]
-				
 				for i in range(0,self.data_frame_update_point): #更新data_frame_update_point筆資料到data and dt array
 					''' 當arduino送來的第一個check byte不符合時則檢查到對時才往下'''
 					if(not TEST_MODE): 
@@ -255,12 +256,13 @@ class IMU_Action(QThread):
 						# print('buffer: ',end=', ' )
 						# print(self.bufferSize)
 						if(not TEST_MODE):
-							print('val[0]: ',end=' ' )
-							print(val[0],end=' ' )
-							print('va2[0]: ',end=' ' ) 
-							print(val2[0],end=' ')
-							print('drop_cnt: ',end=' ' )
-							print(self.drop_cnt)
+							# print('val[0]: ',end=' ' )
+							# print(val[0],end=' ' )
+							# print('va2[0]: ',end=' ' ) 
+							# print(val2[0],end=' ')
+							# print('drop_cnt: ',end=' ' )
+							# print(self.drop_cnt)
+							pass
 						# print('temp_Nano33_a: ');
 						# print(temp_Nano33_ax[0], end='\t')
 						# print(temp_Nano33_ax[1], end='\t')
@@ -275,12 +277,12 @@ class IMU_Action(QThread):
 						# print(temp_Nano33_wy[1], end='\t')
 						# print(temp_Nano33_wz[0], end='\t')
 						# print(temp_Nano33_wz[1])
-						# print('temp_dt: ');
-						# print(temp_dt[0], end='\t')
-						# print(temp_dt[1], end='\t')
-						# print(temp_dt[2], end='\t')
-						# print(temp_dt[3], end='\t')
-						# print(temp_dt[0]<<24 | temp_dt[1]<<16 |temp_dt[2]<<8 | temp_dt[3])
+						print('temp_dt: ', end='\t')
+						print(temp_dt[0], end='\t')
+						print(temp_dt[1], end='\t')
+						print(temp_dt[2], end='\t')
+						print(temp_dt[3], end='\t')
+						print(temp_dt[0]<<24 | temp_dt[1]<<16 |temp_dt[2]<<8 | temp_dt[3])
 						# print('temp_PP_wz: ');
 						# print(temp_PP_wz[0], end='\t')
 						# print(temp_PP_wz[1], end='\t')
@@ -305,13 +307,14 @@ class IMU_Action(QThread):
 						# print(temp_Adxl355_az[2])
 						
 					''' 當arduino送來的第一個check byte不符合時則跳出for loop，發生在arduino傳來的時間爆掉時'''
-					# if(not TEST_MODE):
-						# if(val2[0] != self.check_byte2):
-							# valid_byte = 0
-							# valid_flag = 0
-							# self.valid_cnt = (self.valid_cnt_num-2)
-							# drop_flag = 1
-							# break #break for loop
+					if(not TEST_MODE):
+						val2 = self.COM.read1Binary()
+						if(val2[0] != self.check_byte2):
+							valid_byte = 0
+							valid_flag = 0
+							self.valid_cnt = (self.valid_cnt_num-2)
+							drop_flag = 1
+							break #break for loop
 						
 					if(valid_byte): 
 						if(not TEST_MODE):
@@ -323,6 +326,12 @@ class IMU_Action(QThread):
 							# temp_Nano33_wy = self.convert2Sign_2B(temp_Nano33_wy)
 							# temp_Nano33_wz = self.convert2Sign_2B(temp_Nano33_wz)
 							temp_dt = self.convert2Unsign_4B(temp_dt)
+							
+							# if((temp_dt-self.dt_old)>100000 and self.valid_flag == 1):
+								# print(temp_dt, end=', ')
+								# print(self.dt_old, end=', ')
+								# print(temp_dt-self.dt_old)
+								# break
 							
 							if(DISABLE_SRS200):
 								temp_SRS200_wz = 0
@@ -461,14 +470,28 @@ class IMU_Action(QThread):
 					if(self.dt_init_flag):
 						self.dt_init_flag = 0
 						dt_init = dt[0]
-					if(self.runFlag):
-						# self.fog_update8.emit(dt-dt_init, data_SRS200_wz, data_PP_wz, data_Adxl355_ax, data_Adxl355_ay, data_Adxl355_az, data_T, data_IMU_speed)
+						
+					if(self.runFlag) :
+						# print(dt-self.dt_old)
 						self.fog_update11.emit(dt-dt_init, data_SRS200_wz, data_PP_wz, data_Adxl355_ax, data_Adxl355_ay, data_Adxl355_az, data_T, data_IMU_speed, 
-												data_Nano33_wx, data_Nano33_wy, data_Nano33_wz)
+							data_Nano33_wx, data_Nano33_wy, data_Nano33_wz)
+						# if((dt-self.dt_old)<200):
+							# self.fog_update11.emit(dt-dt_init, data_SRS200_wz, data_PP_wz, data_Adxl355_ax, data_Adxl355_ay, data_Adxl355_az, data_T, data_IMU_speed, 
+													# data_Nano33_wx, data_Nano33_wy, data_Nano33_wz)
+						# else: 
+							# print('shit1')
+							# print(dt, end=', ')
+							# print(dt_init, end=', ')
+							# print((dt-dt_init)*1e-3, end=', ')
+							# print((self.dt_old-dt_init)*1e-3)
+							# break
+							# self.dt_offset = self.dt_old - dt_init
+						self.dt_old = dt
 						# time.sleep(THREAD_DELY)
 					elif(self.runFlag_cali):
 						self.fog_update13.emit(data_SRS200_wz, data_Nano33_wx, data_Nano33_wy, data_Nano33_wz, data_PP_wz, data_Adxl355_ax, data_Adxl355_ay,
 											data_Adxl355_az, data_Nano33_ax, data_Nano33_ay, data_Nano33_az, data_T, data_IMU_speed)
+						# self.dt_old = dt
 						# time.sleep(THREAD_DELY)
 			#end of while self.runFlag:
 			self.fog_finished.emit()
@@ -476,6 +499,8 @@ class IMU_Action(QThread):
 			self.valid_flag = 0
 			self.valid_cnt = 0
 			self.dt_init_flag = 1
+			self.dt_old = 0
+			self.dt_offset = 0
 			
 	def convert2Sign_4B(self, datain) :
 		shift_data = (datain[0]<<24|datain[1]<<16|datain[2]<<8|datain[3])

@@ -24,14 +24,21 @@ track_max = 50
 track_min = -50
 w_factor = 0.01
 TEST_MODE = 0
+USE_FAKE_SPEED = 1
 xlm_factor = 0.000122 #4g / 32768
 ADxlm_factor = 0.0000156 #8g
 gyro_factor = 0.00763 #250 / 32768 
 # gyro_factor = 0.0090 #250 / 32768 
-gyroPP_factor = -3.06
+gyroPP_factor = -2.76
 IMU_speed_factor = 1
-gyro200_factor = 0.0121
-adxl355_th = 0.0005
+gyro200_factor = 0.01
+adxl355_th = 0.00001 #acc g_th, 0.0005 = 0.0005*g
+TRACK_UPDATE_CNT = 10
+PRINT_DEGREE = 1
+TRACK_X_MAX = 500
+TRACK_X_MIN = -TRACK_X_MAX
+TRACK_Y_MAX = 500
+TRACK_Y_MIN = -TRACK_Y_MAX
 
 class mainWindow(QMainWindow):
 	''' define and initiate global variable '''
@@ -57,6 +64,7 @@ class mainWindow(QMainWindow):
 	current_data_Adxl355_az_f = 0
 	current_speedx_Adxl355 = 0
 	current_speedy_Adxl355 = 0
+	dt_old = 0
 	''' pyqtSignal'''
 	usbconnect_status = pyqtSignal(object) #to trigger the btn to enable state
 	''' axis max for track'''
@@ -564,6 +572,12 @@ class mainWindow(QMainWindow):
 		self.old_data_Adxl355_az_f = 0
 		self.old_speedx_Adxl355 = 0
 		self.old_speedy_Adxl355 = 0
+		self.dt_old = 0
+		self.data_SRS200_wz_f_old = 0
+		self.data_Nano33_wx_f_old = 0
+		self.data_Nano33_wy_f_old = 0
+		self.data_Nano33_wz_f_old = 0
+		self.data_PP_wz_f_old = 0
 		
 	def plotADXLIMUnGYRO(self, dt, data_SRS200_wz, data_PP_wz, data_Adxl355_ax, data_Adxl355_ay, data_Adxl355_az, data_T, data_IMU_speed, 
 						data_Nano33_wx, data_Nano33_wy, data_Nano33_wz):
@@ -581,7 +595,7 @@ class mainWindow(QMainWindow):
 				print('data_SRS200_wz: ', end=', ');
 				print(data_SRS200_wz)
 			pass
-		dt = dt*1e-6
+		dt = dt*1e-3
 		if (len(self.dt) >= 300):
 			self.dt = self.dt[self.act.data_frame_update_point:]
 			self.data_T = self.data_T[self.act.data_frame_update_point:]
@@ -597,6 +611,14 @@ class mainWindow(QMainWindow):
 			# self.data_Nano33_ax = self.data_Nano33_ax[self.act.data_frame_update_point:]
 			# self.data_Nano33_ay = self.data_Nano33_ay[self.act.data_frame_update_point:]
 		# print('pp:', data_PP_wz)
+		
+		
+		# print(dt, end=', ')
+		# print(self.dt_old, end=', ')
+		# print((dt-self.dt_old)<SAMPLING_TIME*2)
+		
+		
+		# if((dt - self.dt_old)<SAMPLING_TIME*2):
 		data_SRS200_wz_f = (data_SRS200_wz - self.offset_SRS200_wz)*gyro200_factor/3600 #convert to DPS
 		data_Nano33_wx_f = (data_Nano33_wx - self.offset_Nano33_wx)*gyro_factor
 		data_Nano33_wy_f = (data_Nano33_wy - self.offset_Nano33_wy)*gyro_factor
@@ -606,8 +628,6 @@ class mainWindow(QMainWindow):
 		self.current_data_Adxl355_ax_f = (data_Adxl355_ax - self.offset_Adxl355_ax)*ADxlm_factor
 		self.current_data_Adxl355_ay_f = (data_Adxl355_ay - self.offset_Adxl355_ay)*ADxlm_factor
 		self.current_data_Adxl355_az_f = (data_Adxl355_az - self.offset_Adxl355_az)*ADxlm_factor
-		# data_Nano33_ax_f = (data_Nano33_ax - self.offset_Nano33_ax)*xlm_factor
-		# data_Nano33_ay_f = (data_Nano33_ay - self.offset_Nano33_ay)*xlm_factor
 		if(np.abs(self.current_data_Adxl355_ax_f - self.old_data_Adxl355_ax_f) < adxl355_th):
 			data_Adxl355_ax_f = 0
 		else:
@@ -620,8 +640,17 @@ class mainWindow(QMainWindow):
 			data_Adxl355_az_f = 0
 		else:
 			data_Adxl355_az_f = self.current_data_Adxl355_az_f
-		
-		
+		# else: 
+			# data_IMU_speed_f = 0
+			# data_Adxl355_ax_f = 0
+			# data_Adxl355_ay_f = 0
+			# data_Adxl355_az_f = 0
+			# data_SRS200_wz_f = 0
+			# data_Nano33_wx_f = 0
+			# data_Nano33_wy_f = 0
+			# data_Nano33_wz_f = 0
+			# data_PP_wz_f = 0
+			# print('shit')
 		
 		# print(self.current_data_Adxl355_ax_f, end=', ')
 		# print(self.old_data_Adxl355_ax_f, end=', ')
@@ -638,9 +667,10 @@ class mainWindow(QMainWindow):
 		self.thetaz_PP = self.thetaz_PP - np.sum(data_PP_wz_f)*SAMPLING_TIME #負號是方向判斷的問題
 		self.thetaz_PP_arr = np.append(self.thetaz_PP_arr, self.thetaz_PP)
 		
-		# print(self.thetaz_SRS200, end=', ')
-		# print(self.thetaz_PP, end=', ')
-		# print(self.thetaz_Nano33)
+		if(PRINT_DEGREE):
+			print(np.round(self.thetaz_SRS200, 2), end=', ')
+			print(np.round(self.thetaz_PP, 2), end=', ')
+			print(np.round(self.thetaz_Nano33, 2))
 		
 		
 		
@@ -696,22 +726,30 @@ class mainWindow(QMainWindow):
 		v = 1 m/s
 		dt = data_frame_update_point*self.act.TIME_PERIOD 
 		'''
-		dxNano33 = self.speed_Adxl355*np.cos(thetaz_Nano33*np.pi/180)*self.act.data_frame_update_point*self.act.TIME_PERIOD 
-		dyNano33 = self.speed_Adxl355*np.sin(thetaz_Nano33*np.pi/180)*self.act.data_frame_update_point*self.act.TIME_PERIOD
+		if(USE_FAKE_SPEED):
+			dxNano33 = np.cos(thetaz_Nano33*np.pi/180)*self.act.data_frame_update_point*self.act.TIME_PERIOD 
+			dyNano33 = np.sin(thetaz_Nano33*np.pi/180)*self.act.data_frame_update_point*self.act.TIME_PERIOD
+		else:
+			dxNano33 = self.speed_Adxl355*np.cos(thetaz_Nano33*np.pi/180)*self.act.data_frame_update_point*self.act.TIME_PERIOD 
+			dyNano33 = self.speed_Adxl355*np.sin(thetaz_Nano33*np.pi/180)*self.act.data_frame_update_point*self.act.TIME_PERIOD
 		self.xNano33_sum = self.xNano33_sum + dxNano33
 		self.yNano33_sum = self.yNano33_sum + dyNano33
 		
-		dxPP = self.speed_Adxl355*np.cos(thetaz_PP*np.pi/180)*self.act.data_frame_update_point*self.act.TIME_PERIOD 
-		dyPP = self.speed_Adxl355*np.sin(thetaz_PP*np.pi/180)*self.act.data_frame_update_point*self.act.TIME_PERIOD
-		# dxPP = np.cos((thetaz_Nano33+0.1)*np.pi/180)*self.act.data_frame_update_point*self.act.TIME_PERIOD 
-		# dyPP = np.sin((thetaz_Nano33+0.1)*np.pi/180)*self.act.data_frame_update_point*self.act.TIME_PERIOD
+		if(USE_FAKE_SPEED):
+			dxPP = np.cos(thetaz_PP*np.pi/180)*self.act.data_frame_update_point*self.act.TIME_PERIOD 
+			dyPP = np.sin(thetaz_PP*np.pi/180)*self.act.data_frame_update_point*self.act.TIME_PERIOD
+		else:
+			dxPP = self.speed_Adxl355*np.cos(thetaz_PP*np.pi/180)*self.act.data_frame_update_point*self.act.TIME_PERIOD 
+			dyPP = self.speed_Adxl355*np.sin(thetaz_PP*np.pi/180)*self.act.data_frame_update_point*self.act.TIME_PERIOD
 		self.xPP_sum = self.xPP_sum + dxPP
 		self.yPP_sum = self.yPP_sum + dyPP
 		
-		# dx200 = np.cos(thetaz_SRS200*np.pi/180)*self.act.data_frame_update_point*self.act.TIME_PERIOD 
-		# dy200 = np.sin(thetaz_SRS200*np.pi/180)*self.act.data_frame_update_point*self.act.TIME_PERIOD
-		dx200 = self.speed_Adxl355*np.cos(thetaz_SRS200*np.pi/180)*self.act.data_frame_update_point*self.act.TIME_PERIOD 
-		dy200 = self.speed_Adxl355*np.sin(thetaz_SRS200*np.pi/180)*self.act.data_frame_update_point*self.act.TIME_PERIOD
+		if(USE_FAKE_SPEED):
+			dx200 = np.cos(thetaz_SRS200*np.pi/180)*self.act.data_frame_update_point*self.act.TIME_PERIOD 
+			dy200 = np.sin(thetaz_SRS200*np.pi/180)*self.act.data_frame_update_point*self.act.TIME_PERIOD
+		else:
+			dx200 = self.speed_Adxl355*np.cos(thetaz_SRS200*np.pi/180)*self.act.data_frame_update_point*self.act.TIME_PERIOD 
+			dy200 = self.speed_Adxl355*np.sin(thetaz_SRS200*np.pi/180)*self.act.data_frame_update_point*self.act.TIME_PERIOD
 		self.x200_sum = self.x200_sum + dx200
 		self.y200_sum = self.y200_sum + dy200
 		
@@ -727,7 +765,7 @@ class mainWindow(QMainWindow):
 		# self.dy200_arr = np.append(self.dy200_arr, dy200)
 		
 		self.track_cnt = self.track_cnt + 1
-		if(self.track_cnt == 10):
+		if(self.track_cnt == TRACK_UPDATE_CNT):
 			self.track_cnt = 0
 			self.x200_arr = np.append(self.x200_arr, self.x200_sum)
 			self.y200_arr = np.append(self.y200_arr, self.y200_sum)
@@ -763,6 +801,11 @@ class mainWindow(QMainWindow):
 		if (len(self.x200_arr) >= 1000):
 			self.x200_arr = self.x200_arr[1:]
 			self.y200_arr = self.y200_arr[1:]
+			self.xNano33_arr = self.xNano33_arr[1:]
+			self.yNano33_arr = self.yNano33_arr[1:]
+			self.xPP_arr = self.xPP_arr[1:]
+			self.yPP_arr = self.yPP_arr[1:]
+			
 		
 		self.data_SRS200_wz  = np.append(self.data_SRS200_wz,  data_SRS200_wz_f)
 		self.data_Nano33_wx = np.append(self.data_Nano33_wx, data_Nano33_wx_f)
@@ -800,6 +843,13 @@ class mainWindow(QMainWindow):
 			
 			pass
 					
+		''' save old data'''
+		self.dt_old = dt
+		self.data_SRS200_wz_f_old = data_SRS200_wz_f
+		self.data_Nano33_wx_f_old = data_Nano33_wx_f
+		self.data_Nano33_wy_f_old = data_Nano33_wy_f
+		self.data_Nano33_wz_f_old = data_Nano33_wz_f
+		self.data_PP_wz_f_old = data_PP_wz_f
 		
 		#data_SRS200_wz
 		self.top.TabPlot.tab1_plot1.setData(self.dt, self.data_SRS200_wz*3600) #dph
@@ -874,11 +924,11 @@ class mainWindow(QMainWindow):
 			# self.top.TabPlot.tab3_plot1_1.setData()
 		if(self.SRS200_track_chk):
 			self.top.TabPlot.tab3_plot1_2.setData(self.x200_arr, self.y200_arr) 
-			x_max = self.x200_arr[-1] + 5
-			x_min = self.x200_arr[-1] - 5
-			y_max = self.y200_arr[-1] + 5
-			y_min = self.y200_arr[-1] - 5
 			
+			x_max = self.x200_arr[-1] + TRACK_X_MAX
+			x_min = self.x200_arr[-1] + TRACK_X_MIN
+			y_max = self.y200_arr[-1] + TRACK_Y_MAX
+			y_min = self.y200_arr[-1] + TRACK_Y_MIN
 			self.top.TabPlot.tab3_plot1.setXRange(x_min, x_max, padding=0)
 			self.top.TabPlot.tab3_plot1.setYRange(y_min, y_max, padding=0)
 		else:
@@ -886,23 +936,25 @@ class mainWindow(QMainWindow):
 			
 		if(self.Nano33_track_chk):
 			self.top.TabPlot.tab3_plot1_1.setData(self.xNano33_arr, self.yNano33_arr) 
-			# x_max = self.xNano33_arr[-1] + 5
-			# x_min = self.xNano33_arr[-1] - 5
-			# y_max = self.yNano33_arr[-1] + 5
-			# y_min = self.yNano33_arr[-1] - 5
-			# self.top.TabPlot.tab3_plot1.setXRange(x_min, x_max, padding=0)
-			# self.top.TabPlot.tab3_plot1.setYRange(y_min, y_max, padding=0)
+			
+			x_max = self.xNano33_arr[-1] + TRACK_X_MAX
+			x_min = self.xNano33_arr[-1] + TRACK_X_MIN
+			y_max = self.yNano33_arr[-1] + TRACK_Y_MAX
+			y_min = self.yNano33_arr[-1] + TRACK_Y_MIN
+			self.top.TabPlot.tab3_plot1.setXRange(x_min, x_max, padding=0)
+			self.top.TabPlot.tab3_plot1.setYRange(y_min, y_max, padding=0)
 		else:
 			self.top.TabPlot.tab3_plot1_1.setData()
 			
 		if(self.PP_track_chk):
 			self.top.TabPlot.tab3_plot1_3.setData(self.xPP_arr, self.yPP_arr) 
-			x_max = self.xNano33_arr[-1] + 100
-			x_min = self.xNano33_arr[-1] - 100
-			y_max = self.yNano33_arr[-1] + 100
-			y_min = self.yNano33_arr[-1] - 100
-			# self.top.TabPlot.tab3_plot1.setXRange(x_min, x_max, padding=0)
-			# self.top.TabPlot.tab3_plot1.setYRange(y_min, y_max, padding=0)
+			
+			x_max = self.xPP_arr[-1] + TRACK_X_MAX
+			x_min = self.xPP_arr[-1] + TRACK_X_MIN
+			y_max = self.yPP_arr[-1] + TRACK_Y_MAX
+			y_min = self.yPP_arr[-1] + TRACK_Y_MIN
+			self.top.TabPlot.tab3_plot1.setXRange(x_min, x_max, padding=0)
+			self.top.TabPlot.tab3_plot1.setYRange(y_min, y_max, padding=0)
 		else:
 			self.top.TabPlot.tab3_plot1_3.setData()
 			

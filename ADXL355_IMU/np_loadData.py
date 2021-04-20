@@ -3,7 +3,7 @@ import sys
 import numpy as np
 import matplotlib.pyplot as plt
 
-NAME = '1'
+NAME = '04-20-2021_start6'
 
 print(sys.path)
 Var = np.loadtxt(NAME+'.txt', comments='#', delimiter=',')
@@ -14,28 +14,53 @@ print(Var[1,1])
 t = Var[:,0]
 t2 = t[1:]
 
-diff_t = (t2-t[0:-1])*1e3
+diff_t = (t2-t[0:-1])*1
 print('len(t):', len(t))
 print('len(t2):', len(t2))
 print('len(diff_t):', len(diff_t))
 SRS_wz = Var[:,1]
 PP_wz = Var[:,2]
-ax = Var[:,3]
-ay = Var[:,4]
-az = Var[:,5]
-vx = Var[:,6]
-vy = Var[:,7]
-v = Var[:,8]
-T = Var[:,9]
-x = Var2[:,0]
-y = Var2[:,1]
+Nano33_wx = Var[:,3]
+Nano33_wy = Var[:,4]
+Nano33_wz = Var[:,5]
+ax = Var[:,6]
+ay = Var[:,7]
+az = Var[:,8]
+v = Var[:,9]
+vx = Var[:,10]
+vy = Var[:,11]
+T = Var[:,12]
 
-plt.figure(1)
-plt.plot(diff_t,marker = '*')
-plt.title("diff_t") # title
-plt.xlabel("t(s)") # x label
-plt.ylabel("difft(ms)") # y label
+x200 = Var2[:,0]
+y200 = Var2[:,1]
+xPP = Var2[:,2]
+yPP = Var2[:,3]
+xNano33 = Var2[:,4]
+yNano33 = Var2[:,5]
 
+# plt.figure(3)
+# plt.plot(diff_t,marker = '*')
+# plt.title("diff_t") # title
+# plt.xlabel("t(s)") # x label
+# plt.ylabel("difft(ms)") # y label
+
+# plt.figure(1)
+# plt.plot(t, SRS_wz, label='SRS200')
+# plt.plot(t, PP_wz, label='Sparrow')
+# plt.plot(t, Nano33_wz, label='Nano33')
+# plt.title("wz") # title
+# plt.xlabel("t(s)") # x label
+# plt.ylabel("DPS") # y label
+# plt.legend()
+
+plt.figure(2)
+plt.plot(x200, y200, label='SRS200')
+plt.plot(xPP, yPP, label='Sparrow')
+plt.plot(xNano33, yNano33, label='Nano33')
+plt.title("track") # title
+plt.xlabel("m") # x label
+plt.ylabel("m") # y label
+plt.legend()
 
 # plt.figure(2)
 # plt.plot(t, SRS_wz)

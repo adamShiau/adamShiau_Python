@@ -3,7 +3,7 @@ import sys
 import numpy as np
 import matplotlib.pyplot as plt
 
-NAME = '04-20-2021_start6'
+NAME = '2021-04-22-RT-8'
 
 print(sys.path)
 Var = np.loadtxt(NAME+'.txt', comments='#', delimiter=',')
@@ -27,9 +27,8 @@ ax = Var[:,6]
 ay = Var[:,7]
 az = Var[:,8]
 v = Var[:,9]
-vx = Var[:,10]
-vy = Var[:,11]
-T = Var[:,12]
+vbox = Var[:,10]
+T = Var[:,11]
 
 x200 = Var2[:,0]
 y200 = Var2[:,1]
@@ -38,11 +37,11 @@ yPP = Var2[:,3]
 xNano33 = Var2[:,4]
 yNano33 = Var2[:,5]
 
-# plt.figure(3)
-# plt.plot(diff_t,marker = '*')
-# plt.title("diff_t") # title
-# plt.xlabel("t(s)") # x label
-# plt.ylabel("difft(ms)") # y label
+plt.figure(3)
+plt.plot(diff_t,marker = '*')
+plt.title("diff_t") # title
+plt.xlabel("t(s)") # x label
+plt.ylabel("difft(ms)") # y label
 
 # plt.figure(1)
 # plt.plot(t, SRS_wz, label='SRS200')

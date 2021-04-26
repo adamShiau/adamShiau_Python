@@ -23,7 +23,7 @@ DEBUG = 0
 DEBUG_COM = 0
 TEST_MODE = 0
 DISABLE_PP = 0
-DISABLE_IMU_SPEED = 1
+DISABLE_IMU_SPEED = 0
 DISABLE_SRS200 = 0
 
 class IMU_Action(QThread):
@@ -161,7 +161,7 @@ class IMU_Action(QThread):
 					self.drop_cnt = self.drop_cnt+1
 					self.COM.port.flushInput()
 				if(not TEST_MODE):
-					while(not (self.COM.port.inWaiting()>(self.data_frame_update_point*22))) : #rx buffer 不到 arduino傳來的總byte數*data_frame_update_point時不做任何事
+					while(not (self.COM.port.inWaiting()>(self.data_frame_update_point*34))) : #rx buffer 不到 arduino傳來的總byte數*data_frame_update_point時不做任何事
 						# print(self.COM.port.inWaiting())
 						pass
 				kal_p_SRS200_wz[0] = kal_p_SRS200_wz[self.data_frame_update_point]
@@ -226,7 +226,11 @@ class IMU_Action(QThread):
 						# else:
 							# temp_PP_wz = temp_PP_wz[1:]
 						if(not DISABLE_IMU_SPEED):
-							temp_IMU_speed = self.COM.read4Binary()
+							temp_IMU_speed = self.COM.read3Binary()
+						# print('temp_IMU_speed: ');
+						# print(temp_IMU_speed[0], end='\t')
+						# print(temp_IMU_speed[1], end='\t')
+						# print(temp_IMU_speed[2])
 							
 						temp_Adxl355_ax = self.COM.read3Binary()
 						# if(temp_Adxl355_ax[0] != 194):
@@ -347,8 +351,9 @@ class IMU_Action(QThread):
 							if(DISABLE_IMU_SPEED):
 								temp_IMU_speed = 0
 							else:
-								temp_IMU_speed = self.convert2Unsign_4B(temp_IMU_speed)
+								temp_IMU_speed = self.convert2Unsign_3B(temp_IMU_speed)
 								
+							# print('temp_IMU_speed 2: ', temp_IMU_speed)
 							temp_Adxl355_ax =self.convert2Sign_3B(temp_Adxl355_ax)
 							temp_Adxl355_ay =self.convert2Sign_3B(temp_Adxl355_ay)
 							temp_Adxl355_az =self.convert2Sign_3B(temp_Adxl355_az)
@@ -443,6 +448,7 @@ class IMU_Action(QThread):
 						# print(dt_init, end=', ')
 						# print(dt)
 				#end of for loop
+				# print(data_IMU_speed)
 				self.valid_cnt = self.valid_cnt + 1
 				self.bufferSize = self.COM.port.inWaiting()
 				if(DEBUG):
@@ -518,6 +524,10 @@ class IMU_Action(QThread):
 		
 	def convert2Unsign_4B(self, datain) :
 		shift_data = (datain[0]<<24|datain[1]<<16|datain[2]<<8|datain[3])
+		return shift_data
+		
+	def convert2Unsign_3B(self, datain) :
+		shift_data = (datain[0]<<16|datain[1]<<8|datain[2])
 		return shift_data
 			
 	def convert2Unsign_2B(self, datain) :

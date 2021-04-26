@@ -91,7 +91,7 @@ class TabPlot(QTabWidget):
 		layout.addWidget(self.tab1_adxlXLM_cb.layout(), 11, 7, 1, 1)
 		# layout.addWidget(self.tab1_nano33XLM_cb.layout(), 12, 7, 1, 1)
 		layout.addWidget(self.tab1_gyro_cb.layout(), 1, 19, 1, 1)
-		# layout.addWidget(self.tab1_speed_cb.layout(), 11, 19, 1, 1)
+		layout.addWidget(self.tab1_speed_cb.layout(), 11, 19, 1, 1)
 		layout.addWidget(self.tab1_read_btn, 1, 30, 1, 1)
 		layout.addWidget(self.tab1_stop_btn, 2, 30, 1, 1)
 		self.tab1.setLayout(layout)

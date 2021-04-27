@@ -56,9 +56,9 @@ TIME_COEFFI = 0.0001
 ''' define initial value'''
 # MOD_H_INIT = 0
 # MOD_L_INIT = -1000
-MOD_H_INIT = 2900
-MOD_L_INIT = -2900
-FREQ_INIT = 99
+MOD_H_INIT = 3500
+MOD_L_INIT = -4100
+FREQ_INIT = 94
 ERR_OFFSET_INIT = 0
 POLARITY_INIT = 0
 WAIT_CNT_INIT = 56
@@ -306,10 +306,10 @@ class mainWindow(QMainWindow):
 	def send_FB_ON_CMD(self):
 		value = self.top.fb_on.spin.value()	
 		cmd = FB_ON + str(value) + '\n'
-		# if(value==0):
-			# cmd = GAIN1 + str(15) + '\n'
-		# elif(value==1):
-			# cmd = GAIN1 + str(self.top.gain1.spin.value()) + '\n'
+		if(value==0):
+			cmd = GAIN1 + str(15) + '\n'
+		elif(value==1):
+			cmd = GAIN1 + str(self.top.gain1.spin.value()) + '\n'
 		print(cmd)
 		self.act.COM.writeLine(cmd)
 	

@@ -8,15 +8,15 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import * 
 from PyQt5.QtWidgets import *
 import numpy as np
-import PP_IMU_A_Widget as UI 
-import PP_IMU_A_Action as ACT
+import PP_IMU_B_Widget as UI 
+import PP_IMU_B_Action as ACT
 import IMU_Globals as globals
 
 TITLE_TEXT = "IMU_PLOT"
 VERSION_TEXT = 'Compare FOG with MEMS，2020/12/01'
 READOUT_FILENAME = "Signal_Read_Out.txt"
 MAX_SAVE_INDEX = 3000
-ODR = 85
+ODR = 100
 SAMPLING_TIME = 1/ODR
 DEBUG = 0
 DEBUG_COM = 0
@@ -33,7 +33,7 @@ gyroPP_factor = -2.76
 IMU_speed_factor = 0.001
 gyro200_factor = 0.01
 # gyro200_factor = 1.17122
-adxl355_th = 0.00001 #acc g_th, 0.0005 = 0.0005*g
+adxl355_th = 0.0000 #acc g_th, 0.0005 = 0.0005*g
 TRACK_UPDATE_CNT = 10
 PRINT_DEGREE = 0
 TRACK_X_MAX = 150
@@ -192,7 +192,8 @@ class mainWindow(QMainWindow):
 		self.usbconnect_status.connect(self.setBtnStatus) #確定usb連接成功時才enable btn
 		self.usbconnect_status.connect(self.setInitValue)
 		#action emit connect
-		self.act.fog_update11.connect(self.plotADXLIMUnGYRO)
+		# self.act.fog_update11.connect(self.plotADXLIMUnGYRO)
+		self.act.fog_update20.connect(self.plotADXLIMUnGYRO)
 		self.act.fog_update13.connect(self.calibADXLIMUnGYRO)
 		self.act.fog_finished.connect(self.myThreadStop) #runFlag=0時fog_finished會emit，之後關掉thread1
 		
@@ -475,9 +476,10 @@ class mainWindow(QMainWindow):
 		self.f.writelines('#' + start_time_header + '\n')
 		#dt, data_SRS200_wz_f, data_PP_wz_f, data_Adxl355_ax_f, data_Adxl355_ay_f, data_Adxl355_az_f
 		#		,speedx_Adxl355_out, speedy_Adxl355_out, speed_Adxl355_out, data_IMU_speed_f, data_T
-		self.f.writelines('#' + 'dt, SRS200_wz, PP_wz, Nano33_wx, Nano33_wy, Nano33_wz, Adxl355_ax, Adxl355_ay, '
-		+'Adxl355_az, speed, VBOX, data_T' + '\n')
-		self.f.writelines('#' + 's, DPS, DPS, DPS, DPS, DPS, g, g, g, m/s, k/s,code' + '\n')
+		self.f.writelines('#' + 'dt:s, SRS200:DPS, PP:DPS, Nano33_wx:DPS, Nano33_wy:DPS, Nano33_wz:DPS, Adxl355_ax:g, '
+		+'Adxl355_ay:g, Adxl355_az:g, adxl355_speed, VBOX_speed, T, latitude, longitude, velocity, altitude, v_velocity, pitch, roll, heading, accz' + '\n')
+							
+		#dt:s, SRS200:DPS, PP:DPS, Nano33_wx:DPS, Nano33_wy:DPS, Nano33_wz:DPS, Adxl355_ax:g, Adxl355_ay:g, Adxl355_az:g, adxl355_speed, VBOX_speed, T
 		self.f2.writelines('#' + 'SRS200_x, SRS200_y, PP_x, PP_y, Nano33_x, Nano33_y' + '\n')
 	def caliThreadStart(self):
 		self.act.runFlag_cali = True
@@ -581,7 +583,8 @@ class mainWindow(QMainWindow):
 		self.data_PP_wz_f_old = 0
 		
 	def plotADXLIMUnGYRO(self, dt, data_SRS200_wz, data_PP_wz, data_Adxl355_ax, data_Adxl355_ay, data_Adxl355_az, data_T, data_IMU_speed, 
-						data_Nano33_wx, data_Nano33_wy, data_Nano33_wz):
+						data_Nano33_wx, data_Nano33_wy, data_Nano33_wz, latitude, longitude, velocity, altitude, v_velocity, 
+							pitch, roll, heading, accz):
 		# print('plotADXLIMUnGYRO')
 		self.old_data_Adxl355_ax_f = self.current_data_Adxl355_ax_f
 		self.old_data_Adxl355_ay_f = self.current_data_Adxl355_ay_f
@@ -593,7 +596,7 @@ class mainWindow(QMainWindow):
 		if(self.act.runFlag):
 		
 			if(DEBUG_COM):
-				print('data_SRS200_wz: ', end=', ');
+				print('2. data_SRS200_wz: ', end='\t');
 				print(data_SRS200_wz)
 			pass
 		dt = dt*1e-3
@@ -621,16 +624,18 @@ class mainWindow(QMainWindow):
 		
 		# if((dt - self.dt_old)<SAMPLING_TIME*2):
 		# data_SRS200_wz_f = (data_SRS200_wz - self.offset_SRS200_wz)*gyro200_factor/3600 #convert to DPS
-		data_SRS200_wz_f = (data_SRS200_wz - self.offset_SRS200_wz)*gyro200_factor*1.17122/3600 + 0.01528#convert to DPS
-		data_Nano33_wx_f = (data_Nano33_wx - self.offset_Nano33_wx)*gyro_factor
-		data_Nano33_wy_f = (data_Nano33_wy - self.offset_Nano33_wy)*gyro_factor
-		data_Nano33_wz_f = (data_Nano33_wz - self.offset_Nano33_wz)*gyro_factor
-		data_PP_wz_f = (1.97-(data_PP_wz - self.offset_PP_wz)*gyroPP_factor)/3600*1.11098 + 0.01714
-		data_IMU_speed_f = (data_IMU_speed - self.offset_IMU_speed)*IMU_speed_factor/3.6 #convert to m/s
+		# data_SRS200_wz_f = (data_SRS200_wz)*gyro200_factor*1.17122/3600 + 0.01528#convert to DPS
+		data_SRS200_wz_f = data_SRS200_wz/100
+		data_Nano33_wx_f = (data_Nano33_wx)*gyro_factor
+		data_Nano33_wy_f = (data_Nano33_wy)*gyro_factor
+		data_Nano33_wz_f = (data_Nano33_wz)*gyro_factor
+		# data_PP_wz_f = (1.97-(data_PP_wz)*gyroPP_factor)/3600*1.11098 + 0.01714
+		data_PP_wz_f = (data_PP_wz)*gyro200_factor*1.17122/3600 + 0.01528#convert to DPS
+		data_IMU_speed_f = (data_IMU_speed)*IMU_speed_factor/3.6 #convert to m/s
 		# data_IMU_speed_f = (data_IMU_speed - 0)*IMU_speed_factor/3.6 #convert to m/s
-		self.current_data_Adxl355_ax_f = (data_Adxl355_ax - self.offset_Adxl355_ax)*ADxlm_factor
-		self.current_data_Adxl355_ay_f = (data_Adxl355_ay - self.offset_Adxl355_ay)*ADxlm_factor
-		self.current_data_Adxl355_az_f = (data_Adxl355_az - self.offset_Adxl355_az)*ADxlm_factor
+		self.current_data_Adxl355_ax_f = (data_Adxl355_ax)*ADxlm_factor
+		self.current_data_Adxl355_ay_f = (data_Adxl355_ay)*ADxlm_factor
+		self.current_data_Adxl355_az_f = (data_Adxl355_az)*ADxlm_factor
 		if(np.abs(self.current_data_Adxl355_ax_f - self.old_data_Adxl355_ax_f) < adxl355_th):
 			data_Adxl355_ax_f = 0
 		else:
@@ -835,10 +840,11 @@ class mainWindow(QMainWindow):
 			# self.current_data_Adxl355_ax_f, self.current_data_Adxl355_ay_f, self.current_data_Adxl355_az_f, speed_Adxl355_out, speedx_Adxl355_out, speedy_Adxl355_out, data_T])).T, 
 					# fmt='%5.5f,%5.5f,%5.5f,%5.5f,%5.5f,%5.5f,%5.5f,%5.5f,%5.5f,%5.5f,%5.5f,%5.5f,%5.0f')
 			np.savetxt(self.f, (np.vstack([dt, data_SRS200_wz_f, data_PP_wz_f, data_Nano33_wx_f, data_Nano33_wy_f, data_Nano33_wz_f, 
-				self.current_data_Adxl355_ax_f, self.current_data_Adxl355_ay_f, self.current_data_Adxl355_az_f, speed_Adxl355_out, data_IMU_speed_f, data_T])).T, 
-					fmt='%5.5f,%5.5f,%5.5f,%5.5f,%5.5f,%5.5f,%5.5f,%5.5f,%5.5f,%5.5f,%5.5f,%5.0f')
-			#dt:s, data_SRS200_wz_f:DPS, data_PP_wz_f:待定, data_Adxl355_ax_f:g, data_Adxl355_ay_f:g, data_Adxl355_az_f:g
-			#speedx_Adxl355_out:m/s,  speedy_Adxl355_out:m/s, speed_Adxl355_out:m/s, data_IMU_speed_f:待定, data_T:code
+				self.current_data_Adxl355_ax_f, self.current_data_Adxl355_ay_f, self.current_data_Adxl355_az_f, speed_Adxl355_out, data_IMU_speed_f, data_T, 
+				latitude, longitude, velocity, altitude, v_velocity, pitch, roll, heading, accz])).T, 
+					fmt='%5.5f,%5.5f,%5.5f,%5.5f,%5.5f,%5.5f,%5.5f,%5.5f,%5.5f,%5.5f,%5.5f,%5.0f,%5.5f,%5.5f,%5.5f,%5.5f,%5.5f,%5.5f,%5.5f,%5.5f,%5.5f')
+			#dt:s, SRS200:DPS, PP:DPS, Nano33_wx:DPS, Nano33_wy:DPS, Nano33_wz:DPS, Adxl355_ax:g, Adxl355_ay:g, Adxl355_az:g, adxl355_speed, VBOX_speed, T
+
 		if(DEBUG) :
 			print('len(dt): ', len(self.dt))
 			print('len(self.data_SRS200_wz): ', len(self.data_SRS200_wz))
@@ -864,28 +870,29 @@ class mainWindow(QMainWindow):
 		self.data_PP_wz_f_old = data_PP_wz_f
 		
 		#data_SRS200_wz
-		self.top.TabPlot.tab1_plot1.setData(self.dt, self.data_SRS200_wz*3600) #dph
-		# self.top.TabPlot.tab1_plot1.setData(self.dt, self.data_SRS200_wz) #dps
+		# self.top.TabPlot.tab1_plot1.setData(self.dt, self.data_SRS200_wz*3600) #dph
+		self.top.TabPlot.tab1_plot1.setData(self.dt, self.data_SRS200_wz) #dps
+		# self.top.TabPlot.tab1_plot1_2.setData(self.dt, self.data_PP_wz)
 					
 		if(self.PP_wz_chk):
-			self.top.TabPlot.tab1_plot2_1.setData(self.dt, self.data_PP_wz*3600)#dph
-			# self.top.TabPlot.tab1_plot2_1.setData(self.dt, self.data_PP_wz)#dps
+			# self.top.TabPlot.tab1_plot2_1.setData(self.dt, self.data_PP_wz*3600)#dph
+			self.top.TabPlot.tab1_plot2_1.setData(self.dt, self.data_PP_wz)#dps
 		else:
 			self.top.TabPlot.tab1_plot2_1.setData()
 			
 		if(self.Nano33_wx_chk):
-			self.top.TabPlot.tab1_plot2_2.setData(self.dt, self.data_Nano33_wx*3600)#dph
-			# self.top.TabPlot.tab1_plot2_2.setData(self.dt, self.data_Nano33_wx)#dps
+			# self.top.TabPlot.tab1_plot2_2.setData(self.dt, self.data_Nano33_wx*3600)#dph
+			self.top.TabPlot.tab1_plot2_2.setData(self.dt, self.data_Nano33_wx)#dps
 		else:
 			self.top.TabPlot.tab1_plot2_2.setData()
 		if(self.Nano33_wy_chk):
-			self.top.TabPlot.tab1_plot2_3.setData(self.dt, self.data_Nano33_wy*3600)
-			# self.top.TabPlot.tab1_plot2_3.setData(self.dt, self.data_Nano33_wy)
+			# self.top.TabPlot.tab1_plot2_3.setData(self.dt, self.data_Nano33_wy*3600)
+			self.top.TabPlot.tab1_plot2_3.setData(self.dt, self.data_Nano33_wy)
 		else:
 			self.top.TabPlot.tab1_plot2_3.setData()
 		if(self.Nano33_wz_chk):
-			self.top.TabPlot.tab1_plot2_4.setData(self.dt, self.data_Nano33_wz*3600)
-			# self.top.TabPlot.tab1_plot2_4.setData(self.dt, self.data_Nano33_wz)
+			# self.top.TabPlot.tab1_plot2_4.setData(self.dt, self.data_Nano33_wz*3600)
+			self.top.TabPlot.tab1_plot2_4.setData(self.dt, self.data_Nano33_wz)
 		else:
 			self.top.TabPlot.tab1_plot2_4.setData()
 		
@@ -934,6 +941,7 @@ class mainWindow(QMainWindow):
 			# self.top.TabPlot.tab3_plot1_1.setData(self.x_arr, self.y_arr)
 		# else:
 			# self.top.TabPlot.tab3_plot1_1.setData()
+		'''
 		if(self.SRS200_track_chk):
 			self.top.TabPlot.tab3_plot1_2.setData(self.x200_arr, self.y200_arr) 
 			
@@ -969,7 +977,7 @@ class mainWindow(QMainWindow):
 			self.top.TabPlot.tab3_plot1.setYRange(y_min, y_max, padding=0)
 		else:
 			self.top.TabPlot.tab3_plot1_3.setData()
-			
+		'''
 			
 	def calibADXLIMUnGYRO(self, data_SRS200_wz, data_Nano33_wx, data_Nano33_wy, data_Nano33_wz, data_PP_wz, data_Adxl355_ax, data_Adxl355_ay,
 									data_Adxl355_az, data_Nano33_ax, data_Nano33_ay, data_Nano33_az, data_T, data_IMU_speed):

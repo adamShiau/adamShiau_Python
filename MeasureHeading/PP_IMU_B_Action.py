@@ -24,6 +24,7 @@ DEBUG_COM = 0
 TEST_MODE = 0
 DISABLE_PP = 0
 DISABLE_IMU_SPEED = 1
+DISABLE_NANO33 = 1
 DISABLE_SRS200 = 0
 
 class IMU_Action(QThread):
@@ -248,9 +249,10 @@ class IMU_Action(QThread):
 						# else:
 							# temp_Adxl355_az = temp_Adxl355_az[1:]
 							
-						temp_Nano33_wx = self.COM.read2Binary()
-						temp_Nano33_wy = self.COM.read2Binary()
-						temp_Nano33_wz = self.COM.read2Binary()
+						if(not DISABLE_NANO33):
+							temp_Nano33_wx = self.COM.read2Binary()
+							temp_Nano33_wy = self.COM.read2Binary()
+							temp_Nano33_wz = self.COM.read2Binary()
 					# data_VBOX_temp
 						if(not DISABLE_IMU_SPEED):
 							data_VBOX_temp = self.COM.read12Binary()
@@ -352,6 +354,7 @@ class IMU_Action(QThread):
 							# temp_Nano33_wy = self.convert2Sign_2B(temp_Nano33_wy)
 							# temp_Nano33_wz = self.convert2Sign_2B(temp_Nano33_wz)
 							temp_dt = self.convert2Unsign_4B(temp_dt)
+							print(temp_dt)
 							
 							# if((temp_dt-self.dt_old)>100000 and self.valid_flag == 1):
 								# print(temp_dt, end=', ')
@@ -380,9 +383,14 @@ class IMU_Action(QThread):
 							temp_Adxl355_ay =self.convert2Sign_3B(temp_Adxl355_ay)
 							temp_Adxl355_az =self.convert2Sign_3B(temp_Adxl355_az)
 							temp_T = self.convert2Unsign_2B(temp_T)
-							temp_Nano33_wx = self.convert2Sign_2B(temp_Nano33_wx)
-							temp_Nano33_wy = self.convert2Sign_2B(temp_Nano33_wy)
-							temp_Nano33_wz = self.convert2Sign_2B(temp_Nano33_wz)
+							if(not DISABLE_NANO33):
+								temp_Nano33_wx = self.convert2Sign_2B(temp_Nano33_wx)
+								temp_Nano33_wy = self.convert2Sign_2B(temp_Nano33_wy)
+								temp_Nano33_wz = self.convert2Sign_2B(temp_Nano33_wz)
+							else:
+								temp_Nano33_wx = 0
+								temp_Nano33_wy = 0
+								temp_Nano33_wz = 0
 							# print(temp_T)
 						
 						# if(DEBUG_COM):

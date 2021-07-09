@@ -23,9 +23,12 @@ DEBUG = 0
 DEBUG_COM = 0
 TEST_MODE = 0
 DISABLE_PP = 0
-DISABLE_IMU_SPEED = 1
+DISABLE_VBOX = 0
+DISABLE_NANO33 = 0
 DISABLE_SRS200 = 0
-
+DISABLE_ADXL355 = 0
+SRS_HEADER = 192
+SRS_OFFSET_7 = 13
 class IMU_Action(QThread):
 	update_COMArray = pyqtSignal(object)
 	fog_update = pyqtSignal(object,object)
@@ -38,12 +41,13 @@ class IMU_Action(QThread):
 	fog_update11 = pyqtSignal(object, object, object, object, object, object, object, object, object, object, object)
 	fog_update12 = pyqtSignal(object, object, object, object, object, object, object, object, object, object, object, object)
 	fog_update13 = pyqtSignal(object, object, object, object, object, object, object, object, object, object, object, object, object)
+	fog_update20 = pyqtSignal(object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object )
 	fog_finished = pyqtSignal()
 	'''當valid_cnt累加到valid_cnt_num時valid_flag會變1，此時才會送數據到main，目的為了避開程式一開始亂跳的情形 '''
 	valid_flag = 0
 	drop_cnt=0
 	valid_cnt = 0
-	valid_cnt_num = 50
+	valid_cnt_num = 5
 	TIME_PERIOD = 0.01
 	''' 計算一定的點數後再傳到main作圖，點數太小的話buffer會累積造成lag'''
 	data_frame_update_point = 1
@@ -179,6 +183,9 @@ class IMU_Action(QThread):
 				p_p[0] = p_p[self.data_frame_update_point]
 				for i in range(0,self.data_frame_update_point): #更新data_frame_update_point筆資料到data and dt array
 					''' 當arduino送來的第一個check byte不符合時則檢查到對時才往下'''
+					SRS200 = np.empty(0)
+					data_SRS200 = np.empty(0)
+					VBOX = np.empty(0)
 					if(not TEST_MODE): 
 						val = self.COM.read1Binary()
 						while(val[0] != self.check_byte):
@@ -204,7 +211,7 @@ class IMU_Action(QThread):
 							# print(i, end=', ')
 							# print(self.COM.read1Binary()[0])
 					else:
-						data_VBOX_temp = np.empty
+						# data_VBOX_temp = np.empty
 						# temp_Nano33_ax = self.COM.read2Binary()
 						# temp_Nano33_ay = self.COM.read2Binary()
 						# temp_Nano33_az = self.COM.read2Binary()
@@ -217,62 +224,80 @@ class IMU_Action(QThread):
 						# temp_Nano33_wz = np.random.randn()*100
 						
 						temp_dt = self.COM.read4Binary()
+						
 						if(not DISABLE_SRS200):
 							temp_SRS200_wz = self.COM.read4Binary()
-						# if(temp_SRS200_wz[0] != 192):
-								# temp_SRS200_wz = np.array([0,0,0,0])
-						# else:
-							# temp_SRS200_wz = temp_SRS200_wz[1:]
+							# temp_SRS200_wz = self.COM.read12Binary()
+							SRS200_buffer = self.COM.read1Binary()
+							
+						print('SRS200_buffer: ', SRS200_buffer[0])
+						''' *******read SRS200********** '''
+						'''
+						for j in temp_SRS200_wz:
+							SRS200 = np.append(SRS200, j).astype(int)
+							# print(hex(i), end='\t')
+						# print('')
+						print('SRS200_buffer: ', SRS200_buffer[0])
+						# print('SRS200: ', SRS200)
+						while(1):
+							for idx_k in range(0, len(SRS200)):
+								if( (SRS200[idx_k]==SRS_HEADER)and(SRS200[idx_k+1]==SRS_HEADER) ):
+									if(SRS200[idx_k+7]==SRS_OFFSET_7):
+										break
+									
+									elif( (SRS200[idx_k+1]==SRS_HEADER)and(SRS200[idx_k+2]==SRS_HEADER) ):
+										idx_k = idx_k + 1
+										break
+									# print('idx_k: ', idx_k)
+							break
+						for l in range(idx_k+5, idx_k+1, -1):
+							data_SRS200 = np.append(data_SRS200, SRS200[l]).astype(int)
+						# print('data_SRS200: ', data_SRS200)
+						# w_SRS200 = self.convert2Unsign_4B(data_SRS200)/100
+						# print('w_SRS200: ', w_SRS200)
+						'''
+							
 						if(not DISABLE_PP):
 							temp_PP_wz = self.COM.read4Binary()
-						# if(temp_PP_wz[0] != 193):
-								# temp_PP_wz = np.array([0,0,0,0])
-						# else:
-							# temp_PP_wz = temp_PP_wz[1:]
 						
+						if(not DISABLE_ADXL355):
+							temp_Adxl355_ax = self.COM.read3Binary()
+							temp_Adxl355_ay = self.COM.read3Binary()
+							temp_Adxl355_az = self.COM.read3Binary()
+							temp_T = self.COM.read2Binary()
+
 							
-						temp_Adxl355_ax = self.COM.read3Binary()
-						# if(temp_Adxl355_ax[0] != 194):
-								# temp_Adxl355_ax = np.array([0,0,0])
-						# else:
-							# temp_Adxl355_ax = temp_Adxl355_ax[1:]
-						temp_Adxl355_ay = self.COM.read3Binary()
-						# if(temp_Adxl355_ay[0] != 195):
-								# temp_Adxl355_ay = np.array([0,0,0])
-						# else:
-							# temp_Adxl355_ay = temp_Adxl355_ay[1:]
-						temp_Adxl355_az = self.COM.read3Binary()
-						temp_T = self.COM.read2Binary()
-						# if(temp_Adxl355_az[0] != 196):
-								# temp_Adxl355_az = np.array([0,0,0])
-						# else:
-							# temp_Adxl355_az = temp_Adxl355_az[1:]
+						if(not DISABLE_NANO33):
+							temp_Nano33_wx = self.COM.read2Binary()
+							temp_Nano33_wy = self.COM.read2Binary()
+							temp_Nano33_wz = self.COM.read2Binary()
 							
-						temp_Nano33_wx = self.COM.read2Binary()
-						temp_Nano33_wy = self.COM.read2Binary()
-						temp_Nano33_wz = self.COM.read2Binary()
-					# data_VBOX_temp
-						if(not DISABLE_IMU_SPEED):
-							data_VBOX_temp = self.COM.read12Binary()
-							data_VBOX_temp = self.COM.read12Binary()
-							data_VBOX_temp = self.COM.read12Binary()
-							# data_VBOX_temp = self.COM.read12Binary()
-							# for i in range(0,4):
-								# data_VBOX_temp[i] = temp_IMU_speed[i]
-								# print(data_VBOX_temp[i])
-							# data_VBOX_temp = self.COM.read4Binary()
-							# for i in range(0,4):
-								# data_VBOX_temp[i] = temp_IMU_speed[i]
-								# print(data_VBOX_temp[i])
-							# data_VBOX_temp = self.COM.read4Binary()
-							# for i in range(0,4):
-								# data_VBOX_temp[i] = temp_IMU_speed[i]
-								# print(data_VBOX_temp[i])
-						# print('temp_IMU_speed: ');
-						# print(temp_IMU_speed)
-						# print(temp_IMU_speed[0], end='\t')
-						# print(temp_IMU_speed[1], end='\t')
-						# print(temp_IMU_speed[2])
+						if(not DISABLE_VBOX):
+							data_VBOX_temp = self.COM.read26Binary()
+							for idx_VBOX in data_VBOX_temp:
+								VBOX = np.append(VBOX, idx_VBOX).astype(int)
+							# print('VBOX: ', end='')
+							# print(VBOX)
+							gpssat = VBOX[0]
+							latitude = self.convert2Sign_4B([VBOX[1], VBOX[2], VBOX[3], VBOX[4]])
+							longitude = self.convert2Sign_4B([VBOX[5], VBOX[6], VBOX[7], VBOX[8]])
+							velocity = self.convert2Sign_3B([VBOX[9], VBOX[10], VBOX[11]]) 
+							altitude = self.convert2Sign_3B([VBOX[12], VBOX[13], VBOX[14]]) 
+							v_velocity = self.convert2Sign_3B([VBOX[15], VBOX[16], VBOX[17]]) 
+							pitch = self.convert2Unsign_2B([VBOX[18], VBOX[19]])
+							roll = self.convert2Unsign_2B([VBOX[20], VBOX[21]])
+							heading = self.convert2Unsign_2B([VBOX[22], VBOX[23]])
+							accz = self.convert2Unsign_2B([VBOX[24], VBOX[25]])
+							print('gpssat: ', gpssat)
+							print('latitude: ', latitude)
+							print('longitude: ', longitude)
+							print('velocity: ', velocity)
+							print('altitude: ', altitude)
+							print('v_velocity: ', v_velocity)
+							print('pitch: ', pitch)
+							print('roll: ', roll)
+							print('heading: ', heading)
+							print('accz: ', accz)
 					
 					
 					# print(self.COM.port.inWaiting())
@@ -335,6 +360,7 @@ class IMU_Action(QThread):
 					''' 當arduino送來的第一個check byte不符合時則跳出for loop，發生在arduino傳來的時間爆掉時'''
 					if(not TEST_MODE):
 						val2 = self.COM.read1Binary()
+						# print('val2[0]: ', val2[0])
 						if(val2[0] != self.check_byte2):
 							valid_byte = 0
 							valid_flag = 0
@@ -352,6 +378,7 @@ class IMU_Action(QThread):
 							# temp_Nano33_wy = self.convert2Sign_2B(temp_Nano33_wy)
 							# temp_Nano33_wz = self.convert2Sign_2B(temp_Nano33_wz)
 							temp_dt = self.convert2Unsign_4B(temp_dt)
+							# print(temp_dt)
 							
 							# if((temp_dt-self.dt_old)>100000 and self.valid_flag == 1):
 								# print(temp_dt, end=', ')
@@ -363,6 +390,8 @@ class IMU_Action(QThread):
 								temp_SRS200_wz = 0
 							else:
 								temp_SRS200_wz = self.convert2Sign_4B(temp_SRS200_wz)
+								# temp_SRS200_wz = self.convert2Unsign_4B(data_SRS200)
+								# print('1. temp_SRS200_wz: ', temp_SRS200_wz)
 							
 							
 							if(DISABLE_PP):
@@ -370,19 +399,31 @@ class IMU_Action(QThread):
 							else:
 								temp_PP_wz = self.convert2Sign_4B(temp_PP_wz)
 								
-							# if(DISABLE_IMU_SPEED):
+							# if(DISABLE_VBOX):
 								# temp_IMU_speed = 0
 							# else:
 								# temp_IMU_speed = self.convert2Unsign_3B(temp_IMU_speed)
 							temp_IMU_speed = 0
+								
 							# print('temp_IMU_speed 2: ', temp_IMU_speed)
-							temp_Adxl355_ax =self.convert2Sign_3B(temp_Adxl355_ax)
-							temp_Adxl355_ay =self.convert2Sign_3B(temp_Adxl355_ay)
-							temp_Adxl355_az =self.convert2Sign_3B(temp_Adxl355_az)
-							temp_T = self.convert2Unsign_2B(temp_T)
-							temp_Nano33_wx = self.convert2Sign_2B(temp_Nano33_wx)
-							temp_Nano33_wy = self.convert2Sign_2B(temp_Nano33_wy)
-							temp_Nano33_wz = self.convert2Sign_2B(temp_Nano33_wz)
+							if(not DISABLE_ADXL355):
+								temp_Adxl355_ax =self.convert2Sign_3B(temp_Adxl355_ax)
+								temp_Adxl355_ay =self.convert2Sign_3B(temp_Adxl355_ay)
+								temp_Adxl355_az =self.convert2Sign_3B(temp_Adxl355_az)
+								temp_T = self.convert2Unsign_2B(temp_T)
+							else:
+								temp_Adxl355_ax =0
+								temp_Adxl355_ay =0
+								temp_Adxl355_az =0
+								temp_T = 0
+							if(not DISABLE_NANO33):
+								temp_Nano33_wx = self.convert2Sign_2B(temp_Nano33_wx)
+								temp_Nano33_wy = self.convert2Sign_2B(temp_Nano33_wy)
+								temp_Nano33_wz = self.convert2Sign_2B(temp_Nano33_wz)
+							else:
+								temp_Nano33_wx = 0
+								temp_Nano33_wy = 0
+								temp_Nano33_wz = 0
 							# print(temp_T)
 						
 						# if(DEBUG_COM):
@@ -390,7 +431,11 @@ class IMU_Action(QThread):
 						self.kal_flag = globals.kal_status
 						''' Kalmman filter'''
 						#update
+						# print('i: ', i)
+						# print('p_p[i]: ', p_p[i])
+						# print('globals.kal_R: ', globals.kal_R)
 						k[i] = p_p[i]/(p_p[i] + globals.kal_R) #k_n
+						# print('k[i]: ', k[i])
 						kal_SRS200_wz[i] = kal_p_SRS200_wz[i] + k[i]*(temp_SRS200_wz - kal_p_SRS200_wz[i])
 						kal_PP_wz[i] = kal_p_PP_wz[i] + k[i]*(temp_PP_wz - kal_p_PP_wz[i])
 						kal_Nano33_wx[i] = kal_p_Nano33_wx[i] + k[i]*(temp_Nano33_wx - kal_p_Nano33_wx[i])
@@ -469,6 +514,7 @@ class IMU_Action(QThread):
 						# print(temp_dt, end=', ')
 						# print(dt_init, end=', ')
 						# print(dt)
+						# print('valid_cnt:', self.valid_cnt)
 				#end of for loop
 				# print(data_IMU_speed)
 				self.valid_cnt = self.valid_cnt + 1
@@ -499,10 +545,12 @@ class IMU_Action(QThread):
 						self.dt_init_flag = 0
 						dt_init = dt[0]
 						
+						
 					if(self.runFlag) :
 						# print(dt-self.dt_old)
-						self.fog_update11.emit(dt-dt_init, data_SRS200_wz, data_PP_wz, data_Adxl355_ax, data_Adxl355_ay, data_Adxl355_az, data_T, data_IMU_speed, 
-							data_Nano33_wx, data_Nano33_wy, data_Nano33_wz)
+						self.fog_update20.emit(dt-dt_init, data_SRS200_wz, data_PP_wz, data_Adxl355_ax, data_Adxl355_ay, data_Adxl355_az, data_T, data_IMU_speed, 
+							data_Nano33_wx, data_Nano33_wy, data_Nano33_wz, latitude, longitude, velocity, altitude, v_velocity, 
+							pitch, roll, heading, accz)
 						# if((dt-self.dt_old)<200):
 							# self.fog_update11.emit(dt-dt_init, data_SRS200_wz, data_PP_wz, data_Adxl355_ax, data_Adxl355_ay, data_Adxl355_az, data_T, data_IMU_speed, 
 													# data_Nano33_wx, data_Nano33_wy, data_Nano33_wz)

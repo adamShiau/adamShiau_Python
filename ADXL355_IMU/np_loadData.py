@@ -3,11 +3,11 @@ import sys
 import numpy as np
 import matplotlib.pyplot as plt
 
-NAME = '2021-04-22-RT-8'
+NAME = 'IMU_test'
 
 print(sys.path)
 Var = np.loadtxt(NAME+'.txt', comments='#', delimiter=',')
-Var2 = np.loadtxt(NAME+'_track.txt', comments='#', delimiter=',')
+# Var2 = np.loadtxt(NAME+'_track.txt', comments='#', delimiter=',')
 print(Var.shape)
 print(Var[1,1])
 
@@ -26,24 +26,24 @@ Nano33_wz = Var[:,5]
 ax = Var[:,6]
 ay = Var[:,7]
 az = Var[:,8]
-v = Var[:,9]
-vbox = Var[:,10]
-T = Var[:,11]
+# v = Var[:,9]
+# vbox = Var[:,10]
+# T = Var[:,11]
 
-x200 = Var2[:,0]
-y200 = Var2[:,1]
-xPP = Var2[:,2]
-yPP = Var2[:,3]
-xNano33 = Var2[:,4]
-yNano33 = Var2[:,5]
+# x200 = Var2[:,0]
+# y200 = Var2[:,1]
+# xPP = Var2[:,2]
+# yPP = Var2[:,3]
+# xNano33 = Var2[:,4]
+# yNano33 = Var2[:,5]
 
-plt.figure(3)
+plt.figure(1)
 plt.plot(diff_t,marker = '*')
 plt.title("diff_t") # title
 plt.xlabel("t(s)") # x label
 plt.ylabel("difft(ms)") # y label
 
-# plt.figure(1)
+# plt.figure(2)
 # plt.plot(t, SRS_wz, label='SRS200')
 # plt.plot(t, PP_wz, label='Sparrow')
 # plt.plot(t, Nano33_wz, label='Nano33')
@@ -52,14 +52,22 @@ plt.ylabel("difft(ms)") # y label
 # plt.ylabel("DPS") # y label
 # plt.legend()
 
-plt.figure(2)
-plt.plot(x200, y200, label='SRS200')
-plt.plot(xPP, yPP, label='Sparrow')
-plt.plot(xNano33, yNano33, label='Nano33')
-plt.title("track") # title
-plt.xlabel("m") # x label
-plt.ylabel("m") # y label
-plt.legend()
+# plt.figure(3)
+# plt.plot(t, Nano33_wx, label='Nano33_wx')
+# plt.plot(t, Nano33_wy, label='Nano33_wy')
+# plt.title("Nano33_w") # title
+# plt.xlabel("t(s)") # x label
+# plt.ylabel("DPS") # y label
+# plt.legend()
+
+# plt.figure(2)
+# plt.plot(x200, y200, label='SRS200')
+# plt.plot(xPP, yPP, label='Sparrow')
+# plt.plot(xNano33, yNano33, label='Nano33')
+# plt.title("track") # title
+# plt.xlabel("m") # x label
+# plt.ylabel("m") # y label
+# plt.legend()
 
 # plt.figure(2)
 # plt.plot(t, SRS_wz)
@@ -82,19 +90,19 @@ plt.legend()
 # plt.xlabel("pts") # x label
 # plt.ylabel("degree") # y label
 
-# plt.figure(3)
+# plt.figure(4)
 # plt.plot(t, ax)
 # plt.title("ax") # title
 # plt.xlabel("t(s)") # x label
 # plt.ylabel("a(g)") # y label
 
-# plt.figure(4)
+# plt.figure(5)
 # plt.plot(t, ay)
 # plt.title("ay") # title
 # plt.xlabel("t(s)") # x label
 # plt.ylabel("a(g)") # y label
 
-# plt.figure(5)
+# plt.figure(6)
 # plt.plot(t, az)
 # plt.title("az") # title
 # plt.xlabel("t(s)") # x label

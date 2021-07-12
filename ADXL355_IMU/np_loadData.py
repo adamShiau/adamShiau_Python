@@ -3,7 +3,7 @@ import sys
 import numpy as np
 import matplotlib.pyplot as plt
 
-NAME = 'IMU_test'
+NAME = '123'
 
 print(sys.path)
 Var = np.loadtxt(NAME+'.txt', comments='#', delimiter=',')
@@ -26,6 +26,7 @@ Nano33_wz = Var[:,5]
 ax = Var[:,6]
 ay = Var[:,7]
 az = Var[:,8]
+vbox_az = Var[:,19]
 # v = Var[:,9]
 # vbox = Var[:,10]
 # T = Var[:,11]
@@ -43,14 +44,20 @@ plt.title("diff_t") # title
 plt.xlabel("t(s)") # x label
 plt.ylabel("difft(ms)") # y label
 
-# plt.figure(2)
-# plt.plot(t, SRS_wz, label='SRS200')
-# plt.plot(t, PP_wz, label='Sparrow')
-# plt.plot(t, Nano33_wz, label='Nano33')
-# plt.title("wz") # title
-# plt.xlabel("t(s)") # x label
-# plt.ylabel("DPS") # y label
-# plt.legend()
+plt.figure(2)
+plt.plot(t, SRS_wz, label='SRS200')
+plt.plot(t, PP_wz, label='Sparrow')
+plt.plot(t, Nano33_wz, label='Nano33')
+plt.title("wz") # title
+plt.xlabel("t(s)") # x label
+plt.ylabel("DPS") # y label
+plt.legend()
+
+plt.figure(3)
+plt.plot(t, vbox_az)
+plt.title("vbox_az") # title
+plt.xlabel("t(s)") # x label
+plt.ylabel("g") # y label
 
 # plt.figure(3)
 # plt.plot(t, Nano33_wx, label='Nano33_wx')

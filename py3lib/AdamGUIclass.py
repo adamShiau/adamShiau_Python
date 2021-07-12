@@ -344,6 +344,26 @@ class chkBoxBlock_4(QWidget):
 		self.groupBox.show()
 		return self.groupBox
 		
+class chkBoxBlock_5(QWidget):
+	def __init__(self, title='', name1='', name2='', name3='', name4='', name5='', parent=None):
+		super(chkBoxBlock_5, self).__init__(parent)
+		self.groupBox = QGroupBox(title)
+		self.cb1 = QCheckBox(title+'_'+name1)
+		self.cb2 = QCheckBox(title+'_'+name2)
+		self.cb3 = QCheckBox(title+'_'+name3)
+		self.cb4 = QCheckBox(title+'_'+name4)
+		self.cb5 = QCheckBox(title+'_'+name5)
+	def layout(self):
+		layout = QVBoxLayout()
+		layout.addWidget(self.cb1)
+		layout.addWidget(self.cb2)
+		layout.addWidget(self.cb3)
+		layout.addWidget(self.cb4)
+		layout.addWidget(self.cb5)
+		self.groupBox.setLayout(layout)
+		self.groupBox.show()
+		return self.groupBox
+		
 class chkBoxBlock(QWidget):
 	def __init__(self, name1='', name2='', name3='', name4='', name5='', name6='', parent=None):
 		super(chkBoxBlock, self).__init__(parent)

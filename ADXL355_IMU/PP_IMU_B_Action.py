@@ -284,10 +284,10 @@ class IMU_Action(QThread):
 							velocity = self.convert2Sign_3B([VBOX[9], VBOX[10], VBOX[11]]) 
 							altitude = self.convert2Sign_3B([VBOX[12], VBOX[13], VBOX[14]]) 
 							v_velocity = self.convert2Sign_3B([VBOX[15], VBOX[16], VBOX[17]]) 
-							pitch = self.convert2Unsign_2B([VBOX[18], VBOX[19]])
-							roll = self.convert2Unsign_2B([VBOX[20], VBOX[21]])
-							heading = self.convert2Unsign_2B([VBOX[22], VBOX[23]])
-							accz = self.convert2Unsign_2B([VBOX[24], VBOX[25]])
+							pitch = self.convert2Sign_2B([VBOX[18], VBOX[19]])
+							roll = self.convert2Sign_2B([VBOX[20], VBOX[21]])
+							heading = self.convert2Sign_2B([VBOX[22], VBOX[23]])
+							accz = self.convert2Sign_2B([VBOX[24], VBOX[25]])
 							print('gpssat: ', gpssat)
 							print('latitude: ', latitude)
 							print('longitude: ', longitude)
@@ -548,8 +548,8 @@ class IMU_Action(QThread):
 						
 					if(self.runFlag) :
 						# print(dt-self.dt_old)
-						self.fog_update20.emit(dt-dt_init, data_SRS200_wz, data_PP_wz, data_Adxl355_ax, data_Adxl355_ay, data_Adxl355_az, data_T, data_IMU_speed, 
-							data_Nano33_wx, data_Nano33_wy, data_Nano33_wz, latitude, longitude, velocity, altitude, v_velocity, 
+						self.fog_update20.emit(dt-dt_init, data_SRS200_wz, data_PP_wz, data_Adxl355_ax, data_Adxl355_ay, data_Adxl355_az, data_T, 
+							data_Nano33_wx, data_Nano33_wy, data_Nano33_wz, gpssat, latitude, longitude, velocity, altitude, v_velocity, 
 							pitch, roll, heading, accz)
 						# if((dt-self.dt_old)<200):
 							# self.fog_update11.emit(dt-dt_init, data_SRS200_wz, data_PP_wz, data_Adxl355_ax, data_Adxl355_ay, data_Adxl355_az, data_T, data_IMU_speed, 

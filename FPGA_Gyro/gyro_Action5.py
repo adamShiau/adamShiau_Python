@@ -148,7 +148,7 @@ class gyro_Action(QObject):
 					
 					
 					temp_step_SM = self.COM.read1Binary()
-					# print('ERR:', temp_data, end=', ')
+					print('ERR:', temp_data)
 					# print('STEP:', temp_step, end=', ')
 					# print('SM:', temp_step_SM[0], end=', ')
 					# print('i: ', i)
@@ -195,7 +195,7 @@ class gyro_Action(QObject):
 						step = np.append(step[1:], temp_step)
 				self.valid_cnt = self.valid_cnt + 1
 				print(self.COM.port.inWaiting(), end=', ')
-				print(data)
+				# print(data)
 				# print(time)
 				if(self.valid_cnt == 1):
 					self.valid_flag = 1

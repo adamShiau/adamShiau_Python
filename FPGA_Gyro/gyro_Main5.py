@@ -51,7 +51,8 @@ STEP_TRIG_DLY = '13 '
 GAINPRE = '14 '
 FB_ON = '15 '
 '''adc conversion '''
-ADC_COEFFI = (5/8192) #PD attnuates 5 times befor enter ADC
+ADC_COEFFI = (5/8192)/2 #PD attnuates 5 times befor enter ADC
+# ADC_COEFFI = 1
 TIME_COEFFI = 0.0001
 ''' define initial value'''
 # MOD_H_INIT = 0

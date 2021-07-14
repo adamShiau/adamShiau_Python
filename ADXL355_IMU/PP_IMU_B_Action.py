@@ -20,7 +20,7 @@ import IMU_Globals as globals
 
 THREAD_DELY = sys.float_info.min
 DEBUG = 0
-DEBUG_COM = 0
+DEBUG_COM = 1
 TEST_MODE = 0
 DISABLE_PP = 0
 DISABLE_VBOX = 0
@@ -230,7 +230,7 @@ class IMU_Action(QThread):
 							# temp_SRS200_wz = self.COM.read12Binary()
 							SRS200_buffer = self.COM.read1Binary()
 							
-						print('SRS200_buffer: ', SRS200_buffer[0])
+						# print('SRS200_buffer: ', SRS200_buffer[0])
 						''' *******read SRS200********** '''
 						'''
 						for j in temp_SRS200_wz:
@@ -288,16 +288,16 @@ class IMU_Action(QThread):
 							roll = self.convert2Sign_2B([VBOX[20], VBOX[21]])
 							heading = self.convert2Sign_2B([VBOX[22], VBOX[23]])
 							accz = self.convert2Sign_2B([VBOX[24], VBOX[25]])
-							print('gpssat: ', gpssat)
-							print('latitude: ', latitude)
-							print('longitude: ', longitude)
-							print('velocity: ', velocity)
-							print('altitude: ', altitude)
-							print('v_velocity: ', v_velocity)
-							print('pitch: ', pitch)
-							print('roll: ', roll)
-							print('heading: ', heading)
-							print('accz: ', accz)
+							# print('gpssat: ', gpssat)
+							# print('latitude: ', latitude)
+							# print('longitude: ', longitude)
+							# print('velocity: ', velocity)
+							# print('altitude: ', altitude)
+							# print('v_velocity: ', v_velocity)
+							# print('pitch: ', pitch)
+							# print('roll: ', roll)
+							# print('heading: ', heading)
+							# print('accz: ', accz)
 					
 					
 					# print(self.COM.port.inWaiting())

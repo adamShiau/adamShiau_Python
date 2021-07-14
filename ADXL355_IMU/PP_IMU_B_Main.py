@@ -328,7 +328,7 @@ class mainWindow(QMainWindow):
 			print('roll_chk:', self.roll_chk)
 		elif(cb.text()==self.top.TabPlot.tab1_attitude_cb.cb2.text()):
 			self.pitch_chk = cb.isChecked()
-			print(pitch_chk)
+			print('pitch_chk:', self.pitch_chk)
 		elif(cb.text()==self.top.TabPlot.tab1_attitude_cb.cb3.text()):
 			self.heading_chk = cb.isChecked()
 			print('heading_chk:', self.heading_chk)

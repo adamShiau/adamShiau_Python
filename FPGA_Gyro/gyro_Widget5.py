@@ -32,6 +32,8 @@ class mainWidget(QWidget):
 		self.Q = spinBlock(title='Q', minValue=0, maxValue=100000, double=False, step=10)
 		self.R = spinBlock(title='R', minValue=0, maxValue=100000, double=False, step=10)
 		self.trigDelay = spinBlock(title='trigDelay', minValue=0, maxValue=150, double=False, step=1)
+		self.HD_Q = spinBlock(title='FPGA_Q', minValue=0, maxValue=100000, double=False, step=1)
+		self.HD_R = spinBlock(title='FPGA_R', minValue=0, maxValue=100000, double=False, step=1)
 		'''radio btn'''
 		self.Kal_rb = QRadioButton('Kalman filter')
 		self.Kal_rb.setChecked(0)
@@ -70,6 +72,8 @@ class mainWidget(QWidget):
 		mainLayout.addWidget(self.Q, 8,10,1,2) 
 		mainLayout.addWidget(self.R, 8,12,1,2)  
 		mainLayout.addWidget(self.trigDelay, 9,10,1,2) 
+		mainLayout.addWidget(self.HD_Q, 10,10,1,2) 
+		mainLayout.addWidget(self.HD_R, 10,12,1,2) 
 		
 		self.setLayout(mainLayout)
  

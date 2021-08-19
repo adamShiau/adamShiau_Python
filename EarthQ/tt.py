@@ -69,7 +69,7 @@ if __name__ == '__main__':
 	rst_n = 1 #self.run_flag
 	g_idx = 1
 	print('current path: ', dirname)
-	for i in range(1, 50):
+	for i in range(1, 100):
 		
 		status, filepath1 = autoCreateDir(dataPath,  datetime.datetime.now().year,  g_busy)
 		status, filepath2 = autoCreateDir(filepath1, datetime.datetime.now().month, g_busy)
@@ -79,7 +79,26 @@ if __name__ == '__main__':
 		print('g_data_ptr= ', g_data_ptr, end='\t')
 		print('rst_n= ', rst_n, end='\t')
 		print('g_idx= ', g_idx)
-		aa, g_busy = open_and_save_data(g_data_ptr, max_dataNum, rst_n, filepath2, g_idx, 456, 123)
+		# aa, g_busy = open_and_save_data(g_data_ptr, max_dataNum, rst_n, filepath2, g_idx, 456, 123)
+		############################
+		if(g_data_ptr == max_dataNum): 
+			f=open(os.path.join(filepath2, str(g_idx)) +'.txt', 'w')
+			f.writelines('#' + datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S') + '\n')
+			np.savetxt(f, np.vstack([i, 123]).T, fmt='%d, %d')
+			g_busy = 1
+			# status = 0
+			f.close
+		elif(g_data_ptr == 1 or rst_n == 0):
+			np.savetxt(f, np.vstack([i, 123]).T, fmt='%d, %d')
+			f.writelines('#' + datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S') + '\n')
+			f.close
+			g_busy = 0
+			# status = 1
+		else:
+			np.savetxt(f, np.vstack([i, 123]).T, fmt='%d, %d')
+			g_busy = 1
+			# status = 2
+		############################
 		if(status == 0):
 			g_idx = 0 #如果建立新資料夾，重製檔案名稱_idx
 		if(rst_n):
@@ -91,7 +110,7 @@ if __name__ == '__main__':
 			rst_n = 0
 		if(i==60):
 			rst_n = 1
-	
+		time.sleep(0.1)
 	# print('status1: ', status1)
 	# print('filepath1: ', filepath1)
 	# print('status2: ', status2)

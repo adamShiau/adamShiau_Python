@@ -8,9 +8,9 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import * 
 from PyQt5.QtWidgets import *
 import numpy as np
-import PP_IMU_B_Widget as UI 
-import PP_IMU_B_Action as ACT
-import IMU_Globals as globals
+import NCU_EQ_Widget as UI 
+import NCU_EQ_Action as ACT
+import NCU_EQ_Globals as globals
 
 PRINT_VBOX_MAIN = 1
 TITLE_TEXT = "IMU_PLOT"
@@ -41,6 +41,13 @@ TRACK_X_MAX = 150
 TRACK_X_MIN = -TRACK_X_MAX
 TRACK_Y_MAX = 150
 TRACK_Y_MIN = -TRACK_Y_MAX
+
+SAVE_DATA_NUM = 100
+DIRNAME = os.path.dirname(__file__) #get path of current file 
+# print(dirname)
+DATAPATH = os.path.join(dirname, 'data') #enter the directory name to save data
+# print(dataPath)
+
 ''' VBOX conversion factor'''
 # https://reurl.cc/rgOZzy
 latitude_factor = 0.0000001		#degree
@@ -55,6 +62,8 @@ accz_factor = 0.01				#m/s^2
 
 class mainWindow(QMainWindow):
 	''' define and initiate global variable '''
+	EQ_idx = 0
+	EQ_cnt = SAVE_DATA_NUM 
 	label_update_cnt = 0
 	MV_status = 0
 	offset_SRS200_wz = 0
@@ -431,7 +440,9 @@ class mainWindow(QMainWindow):
 	def versionBox(self):
 		versionBox = QMessageBox()
 		versionBox.about(self, "Version", VERSION_TEXT)
-		
+	
+	
+	
 	def openFileBox(self):
 		saveBox = QMessageBox()
 		SaveFileName,_ = QFileDialog.getSaveFileName(self,
@@ -515,10 +526,45 @@ class mainWindow(QMainWindow):
 		# self.dx200_arr = np.zeros(0)
 		# self.dy200_arr = np.zeros(0)
 		# self.top.com_plot.ax2.clear()
+	def open_and_save_EQ_file(self, cnt):
+		print('cnt:', cnt)
+		if(cnt==100): 
+			self.f=open(str(self.EQ_idx)+'.txt', 'w')
+		elif(cnt==1):
+			self.f.close
+			self.EQ_idx = self.EQ_idx + 1
+		else:
+			np.savetxt(self.f, np.vstack([cnt, cnt]).T, fmt='%d, %d')
 		
+	def autoCreateDir(dataPath, dirName):
+		filepath = os.path.join(dataPath, str(dirName))
+		folder_exist = os.path.exists(filepath)
+		if not folder_exist:
+			print('\ncreate folder: ', filepath)
+			os.mkdir(filepath)
+			success = 1
+		else:
+			print('\nfolder exist!')
+			success = 0
+		return success, filepath
+		
+	def open_and_save_data(cnt, dataNum, filePath, data1, data2, idx):
+		if(cnt==dataNum): 
+			f=open(os.path.join(filePath, str(idx)) +'.txt', 'w')
+			f.writelines('#' + datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S') + '\n')
+			status = 1
+		elif(cnt==1):
+			f.writelines('#' + datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S') + '\n')
+			f.close
+			status = 0
+		else:
+			np.savetxt(f, np.vstack([data1, data2]).T, fmt='%d, %d')
+			status = 2
+		return status
+	
 	def open_file(self, filename):
 		self.f=open(filename, 'w')
-		self.f2=open(filename[0:-4] + '_track.txt', 'w')
+		# self.f2=open(filename[0:-4] + '_track.txt', 'w')
 		start_time_header = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
 		self.f.writelines('#' + start_time_header + '\n')
 		#dt, data_SRS200_wz_f, data_PP_wz_f, data_Adxl355_ax_f, data_Adxl355_ay_f, data_Adxl355_az_f
@@ -527,7 +573,7 @@ class mainWindow(QMainWindow):
 		# +'Adxl355_ay:g, Adxl355_az:g, VBOX_speed(m/s), v_speed(m/s), T, latitude(deg), longitude(deg) altitude(m), gpssat, pitch(deg), roll(deg), heading(deg)' + '\n')
 		#dt:s, SRS200:DPS, PP:DPS, Nano33_wx:DPS, Nano33_wy:DPS, Nano33_wz:DPS, Adxl355_ax:g, Adxl355_ay:g, Adxl355_az:g, adxl355_speed, VBOX_speed, T
 		self.f.writelines('#' + 'dt:s, SRS200:DPS, PP:DPS, Nano33_wx:DPS, Nano33_wy:DPS, Nano33_wz:DPS, Adxl355_ax:g, '
-		+'Adxl355_ay:g, Adxl355_az:g, VBOX_speed(m/s), latitude(deg), longitude(deg), gpssat, altitude(m), v_velocity(m/s)' + '\n')
+		+'Adxl355_ay:g, Adxl355_az:g' + '\n')
 		#   dt, srs200,   pp,    nano33_wx, nano33_wy, nano33_wz,  adxl_ax, adxl_ay,  adxl_az,  vbox_v,  lat,    lon,    gps,    h,   v_velo
 		# self.f2.writelines('#' + 'SRS200_x, SRS200_y, PP_x, PP_y, Nano33_x, Nano33_y' + '\n')
 	def caliThreadStart(self):
@@ -587,7 +633,7 @@ class mainWindow(QMainWindow):
 			stop_time_header = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
 			self.f.writelines('#' + stop_time_header + '\n')
 			self.f.close()
-			self.f2.close()
+			# self.f2.close()
 		# '''
 		self.data_SRS200_wz = np.empty(0)
 		self.data_Nano33_wx = np.empty(0)
@@ -653,7 +699,21 @@ class mainWindow(QMainWindow):
 			# print('heading: ', heading)
 			print('accz: ', accz)
 		if(self.act.runFlag):
-		
+			
+			if(self.EQ_cnt == SAVE_DATA_NUM):
+				flag, file_path1 = self.autoCreateDir(DATAPATH, datetime.datetime.now().year)
+				flag, file_path2 = self.autoCreateDir(temp_path, datetime.datetime.now().month)
+			
+			self.open_and_save_data(self.EQ_cnt, SAVE_DATA_NUM, file_path2, datetime.datetime.now(), 115, self.EQ_idx):
+			
+			if(flag):
+				self.EQ_idx = 0
+			if(self.EQ_cnt == 1):
+				self.EQ_cnt = SAVE_DATA_NUM
+				self.EQ_idx = self.EQ_idx + 1
+			else:
+				self.EQ_cnt = self.EQ_cnt - 1
+				
 			if(DEBUG_COM):
 				print('2. data_SRS200_wz: ', end='\t');
 				print(data_SRS200_wz)
@@ -903,10 +963,9 @@ class mainWindow(QMainWindow):
 				# data_latitude_f, data_longitude_f, data_altitude_f, data_gpssat_f, data_pitch_f, data_roll_f, data_heading_f, data_accz_f])).T, 
 					# fmt='%5.3f,%5.5f,%5.5f,%5.5f,%5.5f,%5.5f,%5.5f,%5.5f,%5.5f,%5.5f,%5.3f,%5d,%5.7f,%5.7f,%5.2f,%2d, %5.2f,%5.2f,%5.2f,%2.2f')
 			np.savetxt(self.f, (np.vstack([dt, data_SRS200_wz_f/3600, data_PP_wz_f/3600, data_Nano33_wx_f, data_Nano33_wy_f, data_Nano33_wz_f, 
-				data_Adxl355_ax_f, data_Adxl355_ay_f, data_Adxl355_az_f, 0, data_velocity_f, 0,
-				data_latitude_f, data_longitude_f, data_gpssat_f, data_altitude_f, data_v_velocity_f])).T, 
-					fmt='%5.3f,  %5.5f,  %5.5f,   %5.5f,    %5.5f,       %5.5f,     %5.5f,        %5.5f,     %5.5f, %d,   %5.4f, %d,        %5.7f,     %5.7f,  %5d,     %5.2f,        %5.3f')
-						#   dt, srs200,   pp,    nano33_wx, nano33_wy, nano33_wz,  adxl_ax,       adxl_ay,    adxl_az,  v  vbox_v, T       lat,       lon,    gps,        h,         v_velo
+				data_Adxl355_ax_f, data_Adxl355_ay_f, data_Adxl355_az_f])).T, 
+					fmt='%5.3f,  %5.5f,  %5.5f,   %5.5f,    %5.5f,       %5.5f,     %5.5f,        %5.5f,     %5.5f')
+						#   dt, srs200,   pp,    nano33_wx, nano33_wy, nano33_wz,  adxl_ax,       adxl_ay,    adxl_az
 		if(DEBUG) :
 			print('len(dt): ', len(self.dt))
 			print('len(self.data_SRS200_wz): ', len(self.data_SRS200_wz))
@@ -937,51 +996,66 @@ class mainWindow(QMainWindow):
 		# self.top.TabPlot.tab1_plot1_2.setData(self.dt, self.data_PP_wz)
 			
 		''' ********Tab1 plot1**********'''
-		if(self.SRS200_wz_chk):
-			self.top.TabPlot.tab1_plot1_1.setData(self.dt, self.data_SRS200_wz)#dph
-		else:
-			self.top.TabPlot.tab1_plot1_1.setData()
+		# if(self.SRS200_wz_chk):
+			# self.top.TabPlot.tab1_plot1_1.setData(self.dt, self.data_SRS200_wz)#dph
+		# else:
+			# self.top.TabPlot.tab1_plot1_1.setData()
 			
-		if(self.PP_wz_chk):
-			self.top.TabPlot.tab1_plot1_2.setData(self.dt, self.data_PP_wz)#dph
-		else:
-			self.top.TabPlot.tab1_plot1_2.setData()
+		self.top.TabPlot.tab1_plot_w1.setData(self.dt, self.data_SRS200_wz)#dph
 			
+		# if(self.PP_wz_chk):
+			# self.top.TabPlot.tab1_plot1_2.setData(self.dt, self.data_PP_wz)#dph
+		# else:
+			# self.top.TabPlot.tab1_plot1_2.setData()
+		self.top.TabPlot.tab1_plot_w2.setData(self.dt, self.data_PP_wz)#dph
+			
+		'''
 		if(self.Nano33_wx_chk):
 			self.top.TabPlot.tab1_plot1_3.setData(self.dt, self.data_Nano33_wx*3600)#dph
 			# self.top.TabPlot.tab1_plot1_3.setData(self.dt, self.data_Nano33_wx)#dps
 		else:
 			self.top.TabPlot.tab1_plot1_3.setData()
+		'''
+		self.top.TabPlot.tab1_plot_w3.setData(self.dt, self.data_Nano33_wx*3600)#dph
 			
+		'''
 		if(self.Nano33_wy_chk):
 			self.top.TabPlot.tab1_plot1_4.setData(self.dt, self.data_Nano33_wy*3600)#dph
 			# self.top.TabPlot.tab1_plot1_4.setData(self.dt, self.data_Nano33_wy)
 		else:
 			self.top.TabPlot.tab1_plot1_4.setData()
+		'''
+		self.top.TabPlot.tab1_plot_w4.setData(self.dt, self.data_Nano33_wy*3600)#dph
 			
+		'''
 		if(self.Nano33_wz_chk):
 			self.top.TabPlot.tab1_plot1_5.setData(self.dt, self.data_Nano33_wz*3600)
 			# self.top.TabPlot.tab1_plot1_5.setData(self.dt, self.data_Nano33_wz)
 		else:
 			self.top.TabPlot.tab1_plot1_5.setData()
-			
+		'''
+		self.top.TabPlot.tab1_plot_w5.setData(self.dt, self.data_Nano33_wz*3600)#dph
+		
+		
 		''' ********Tab1 plot2**********'''
-		if(self.Adxl355_ax_chk):
-			self.top.TabPlot.tab1_plot2_1.setData(self.dt, self.data_Adxl355_ax)
-		else:
-			self.top.TabPlot.tab1_plot2_1.setData()
-			
-		if(self.Adxl355_ay_chk):
-			self.top.TabPlot.tab1_plot2_2.setData(self.dt, self.data_Adxl355_ay)
-			# print(self.data_Adxl355_ay)
-		else:
-			self.top.TabPlot.tab1_plot2_2.setData()
-			
-		if(self.Adxl355_az_chk):
-			self.top.TabPlot.tab1_plot2_3.setData(self.dt, self.data_Adxl355_az)
-		else:
-			self.top.TabPlot.tab1_plot2_3.setData()
-			
+		# if(self.Adxl355_ax_chk):
+			# self.top.TabPlot.tab1_plot2_1.setData(self.dt, self.data_Adxl355_ax)
+		# else:
+			# self.top.TabPlot.tab1_plot2_1.setData()
+		self.top.TabPlot.tab1_plot_a1.setData(self.dt, self.data_Adxl355_ax)#g
+		
+		# if(self.Adxl355_ay_chk):
+			# self.top.TabPlot.tab1_plot2_2.setData(self.dt, self.data_Adxl355_ay)
+		# else:
+			# self.top.TabPlot.tab1_plot2_2.setData()
+		self.top.TabPlot.tab1_plot_a2.setData(self.dt, self.data_Adxl355_ay)#g
+		
+		# if(self.Adxl355_az_chk):
+			# self.top.TabPlot.tab1_plot2_3.setData(self.dt, self.data_Adxl355_az)
+		# else:
+			# self.top.TabPlot.tab1_plot2_3.setData()
+		self.top.TabPlot.tab1_plot_a3.setData(self.dt, self.data_Adxl355_az)#g
+		
 		# if(self.Adxl355_T_chk):
 			# self.top.TabPlot.tab1_plot3_4.setData(self.dt, self.data_T)
 		# else:
@@ -1000,79 +1074,7 @@ class mainWindow(QMainWindow):
 			# self.top.TabPlot.tab1_plot3.figure.canvas.flush_events()
 			
 			
-		''' ********Tab1 plot3**********'''
-		if(self.VBOX_v_chk):
-			self.top.TabPlot.tab1_plot3_1.setData(self.dt, self.data_velocity) #km/h
-		else:
-			self.top.TabPlot.tab1_plot3_1.setData()
-		if(self.IMU_v_chk):
-			# self.top.TabPlot.tab1_plot3_2.setData(self.dt, self.data_IMU_speed*3.6) #km/h
-			self.top.TabPlot.tab1_plot3_2.setData(self.dt, self.data_accz)
-		else:
-			self.top.TabPlot.tab1_plot3_2.setData()
-			
-		''' ********Tab1 plot4**********'''
-		if(self.roll_chk):
-			self.top.TabPlot.tab1_plot4_1.setData(self.dt, self.data_roll)
-		else:
-			self.top.TabPlot.tab1_plot4_1.setData()
-			
-		if(self.pitch_chk):
-			self.top.TabPlot.tab1_plot4_2.setData(self.dt, self.data_pitch)
-		else:
-			self.top.TabPlot.tab1_plot4_2.setData()
 		
-		if(self.heading_chk):
-			self.top.TabPlot.tab1_plot4_3.setData(self.dt, self.data_heading) 
-		else:
-			self.top.TabPlot.tab1_plot4_3.setData()
-			
-			
-		# if(self.IMU_v_chk or self.Adxl355_v_chk):
-			# self.top.TabPlot.tab1_plot4.figure.canvas.draw()		
-			# self.top.TabPlot.tab1_plot4.figure.canvas.flush_events()
-		
-		# if(self.Nano33_track_chk):
-			# self.top.TabPlot.tab3_plot1_1.setData(self.x_arr, self.y_arr)
-		# else:
-			# self.top.TabPlot.tab3_plot1_1.setData()
-		'''
-		if(self.SRS200_track_chk):
-			self.top.TabPlot.tab3_plot1_2.setData(self.x200_arr, self.y200_arr) 
-			
-			x_max = self.x200_arr[-1] + TRACK_X_MAX
-			x_min = self.x200_arr[-1] + TRACK_X_MIN
-			y_max = self.y200_arr[-1] + TRACK_Y_MAX
-			y_min = self.y200_arr[-1] + TRACK_Y_MIN
-			self.top.TabPlot.tab3_plot1.setXRange(x_min, x_max, padding=0)
-			self.top.TabPlot.tab3_plot1.setYRange(y_min, y_max, padding=0)
-		else:
-			self.top.TabPlot.tab3_plot1_2.setData()
-			
-		if(self.Nano33_track_chk):
-			self.top.TabPlot.tab3_plot1_1.setData(self.xNano33_arr, self.yNano33_arr) 
-			
-			x_max = self.xNano33_arr[-1] + TRACK_X_MAX
-			x_min = self.xNano33_arr[-1] + TRACK_X_MIN
-			y_max = self.yNano33_arr[-1] + TRACK_Y_MAX
-			y_min = self.yNano33_arr[-1] + TRACK_Y_MIN
-			self.top.TabPlot.tab3_plot1.setXRange(x_min, x_max, padding=0)
-			self.top.TabPlot.tab3_plot1.setYRange(y_min, y_max, padding=0)
-		else:
-			self.top.TabPlot.tab3_plot1_1.setData()
-			
-		if(self.PP_track_chk):
-			self.top.TabPlot.tab3_plot1_3.setData(self.xPP_arr, self.yPP_arr) 
-			
-			x_max = self.xPP_arr[-1] + TRACK_X_MAX
-			x_min = self.xPP_arr[-1] + TRACK_X_MIN
-			y_max = self.yPP_arr[-1] + TRACK_Y_MAX
-			y_min = self.yPP_arr[-1] + TRACK_Y_MIN
-			self.top.TabPlot.tab3_plot1.setXRange(x_min, x_max, padding=0)
-			self.top.TabPlot.tab3_plot1.setYRange(y_min, y_max, padding=0)
-		else:
-			self.top.TabPlot.tab3_plot1_3.setData()
-		'''
 			
 	def calibADXLIMUnGYRO(self, data_SRS200_wz, data_Nano33_wx, data_Nano33_wy, data_Nano33_wz, data_PP_wz, data_Adxl355_ax, data_Adxl355_ay,
 									data_Adxl355_az, data_Nano33_ax, data_Nano33_ay, data_Nano33_az, data_T, data_IMU_speed):

@@ -16,7 +16,7 @@ from py3lib import *
 import math
 import time 
 import datetime
-import IMU_Globals as globals
+import NCU_EQ_Globals as globals
 
 THREAD_DELY = sys.float_info.min
 DEBUG = 0

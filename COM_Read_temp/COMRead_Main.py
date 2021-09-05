@@ -1,25 +1,25 @@
 import os 
 import sys 
+import time as timer
 sys.path.append("../") 
-import time 
 import datetime
 from scipy import signal
 from PyQt5.QtGui import * 
 from PyQt5.QtCore import * 
 from PyQt5.QtWidgets import *
 import numpy as np
-import COMRead_2_Widget as UI 
-import COMRead_2_Action as ACT
+import COMRead_Widget as UI 
+import COMRead_Action as ACT
 
 TEST_MODE = 0
 DEBUG = 0
 gyro200_factor = 0.0121
 SAMPLING_TIME = 0.01
+NUM = 400
 class mainWindow(QMainWindow):
 	''' global vars'''
-	data = np.empty(0)
-	dt = np.empty(0)
-	data_integrate = 0
+	data1 = np.empty(0)
+	time = np.empty(0)
 	save_status = False
 	''' pyqtSignal'''
 	usbconnect_status = pyqtSignal(object) #to trigger the btn to enable state
@@ -63,29 +63,35 @@ class mainWindow(QMainWindow):
 		self.act.update2.connect(self.plotCOM)
 		self.act.finished.connect(self.myThreadStop) #runFlag=0時fog_finished會emit，之後關掉thread1
 		
+	def myThreadStart(self):
+		self.save_status = self.openFileBox()
+		self.act.runFlag = True
+		self.act.start()
+		print('Main, self.act.runFlag:', self.act.runFlag)
+		print('act.test_mode_flag: ', self.act.test_mode_flag)
+		if(self.act.test_mode_flag == 0):
+			self.act.COM.port.flushInput()
 		
 	def buttonStop(self):#set runFlag=0
 		self.act.runFlag = False
 		print('self.act.runFlag: ', self.act.runFlag)
 		
-	def myThreadStart(self):
-		self.save_status = self.openFileBox()
-		self.act.runFlag = True
-		self.act.start()
-		print('self.act.runFlag:', self.act.runFlag)
-		self.act.COM.port.flushInput()
+	
 		
 	def myThreadStop(self):
+		# print('finish')
 		self.act.quit() 
 		self.act.wait()
-		self.data = np.empty(0)
-		self.dt = np.empty(0)
-		self.data_integrate = 0
-		if(self.save_status):
-			stop_time_header = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
-			self.f.writelines('#' + stop_time_header + '\n')
-			self.f.close()
-			
+		self.initializeDate()
+		# if(self.save_status):
+			# stop_time_header = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
+			# self.f.writelines('#' + stop_time_header + '\n')
+			# self.f.close()
+	
+	def initializeDate(self):
+		self.data1 = np.empty(0)
+		self.time = np.empty(0)
+	
 	""" comport functin """
 	def update_comport(self):
 		self.act.COM.selectCom()
@@ -107,7 +113,7 @@ class mainWindow(QMainWindow):
 		if (TEST_MODE):
 			usbConnStatus = True
 		else:
-			usbConnStatus = self.act.COM.connect_comboBox(baudrate = 115200, timeout = 1, port_name=self.cp)
+			usbConnStatus = self.act.COM.connect_comboBox(baudrate = 230400, timeout = 1, port_name=self.cp)
 		print("status:" + str(usbConnStatus))
 		if usbConnStatus:
 			self.top.usb.SetConnectText(Qt.blue, self.cp + " Connect")
@@ -118,36 +124,27 @@ class mainWindow(QMainWindow):
 			print("Connect failed")
 			
 	""" end of comport functin """
-		
-	def plotCOM(self, dt, data):
-		dt = dt*1e-6
-		if (len(self.dt) >= 300):
-			self.data = self.data[self.act.data_frame_update_point:]
-			self.dt = self.dt[self.act.data_frame_update_point:]
-			
-		# data_temp = (data - 500)*gyro200_factor/3600 #convert to DPS
-		data_temp = data
-		
-		#print buffer to label
-		self.top.buffer_lb.lb.setText(str(self.act.bufferSize))
-		self.data = np.append(self.data, data_temp)
-		self.dt = np.append(self.dt, dt)
-		'''由角速率積分計算角度，積分時間為data_frame_update_point*(1/ODR), ODR=100Hz'''
-		self.data_integrate = self.data_integrate - np.sum(data_temp)*SAMPLING_TIME #負號是方向判斷的問題
-		self.top.SRS200_gauge.lb.setText(str(round(self.data_integrate, 2)))
-		#guage plot
-		self.top.SRS200_gauge.gauge.item.setRotation(self.data_integrate)
-		''' '''
-		if(self.save_status):
-			np.savetxt(self.f, (np.vstack([dt, data_temp])).T, fmt='%5.5f,%5.5f')
-		
-		if(DEBUG) :
-			print('len(data)', len(self.data))
-			print('len(dt)', len(self.dt))
-			print(dt)
-			print(data)
-		self.top.plot1.setData(self.dt, self.data)
 	
+	def plotCOM(self, time, data1):
+		# time = time*1e-6
+		t1 = float(datetime.datetime.now().strftime('%S.%f'))
+		print('Main: t1= (s)', t1)
+		if (len(self.time) >= 200000):
+			self.data1 = self.data1[NUM:]
+			self.time = self.time[NUM:]
+		self.top.buffer_lb.lb.setText(str(self.act.bufferSize))
+		self.data1 = np.append(self.data1, data1)
+		self.time = np.append(self.time, time)
+		print('len(self.time): ', len(self.time), end='\t')
+		# print(time)
+		print(self.time[0], end='\t')
+		print(self.time[-1])
+		# self.top.plot1.setData(self.time, self.data1)
+		self.top.plot1.setData(self.data1)
+		# self.data1 = np.empty(0)
+		# self.time = np.empty(0)
+		t2 = float(datetime.datetime.now().strftime('%S.%f'))
+		print('Main dt= (ms)', (t2 - t1)*1000)
 	def openFileBox(self):
 		saveBox = QMessageBox()
 		SaveFileName,_ = QFileDialog.getSaveFileName(self,

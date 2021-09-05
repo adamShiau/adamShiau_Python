@@ -22,7 +22,7 @@ class COMRead_Widget(QWidget):
 		self.win.resize(1000,600)
 		self.win.setWindowTitle('pyqtgraph example: Plotting')
 		plot1 = self.win.addPlot(title="p1")
-		self.plot1 = plot1.plot(pen='r')
+		self.plot1 = plot1.plot(pen='r', style=QtCore.Qt.DashLine)
 		''' usb '''
 		self.usb = AdamGUIclass.usbConnect()
 		''' lb '''
@@ -31,7 +31,8 @@ class COMRead_Widget(QWidget):
 		self.read_btn = AdamGUIclass.btn('read')
 		self.stop_btn = AdamGUIclass.btn('stop')
 		''' gauge'''
-		self.SRS200_gauge = gaugePlotwLabel('theta', 'theta (degree)')
+		# self.SRS200_gauge = gaugePlotwLabel('theta', 'theta (degree)')
+		
 		self.main_UI()
 
 	def main_UI(self):
@@ -41,7 +42,7 @@ class COMRead_Widget(QWidget):
 		mainLayout.addWidget(self.win, 1,0,40,40)
 		mainLayout.addWidget(self.read_btn, 1,41,1,1)
 		mainLayout.addWidget(self.stop_btn, 2,41,1,1)
-		mainLayout.addWidget(self.SRS200_gauge, 5,41,15,15)
+		# mainLayout.addWidget(self.SRS200_gauge, 5,41,15,15)
 		self.setLayout(mainLayout)
  
 

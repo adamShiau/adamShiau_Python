@@ -12,7 +12,7 @@ import NCU_EQ_Widget as UI
 import NCU_EQ_Action as ACT
 import NCU_EQ_Globals as globals
 
-PRINT_VBOX_MAIN = 1
+PRINT_VBOX_MAIN = 0
 TITLE_TEXT = "IMU_PLOT"
 VERSION_TEXT = 'Compare FOG with MEMS，2020/12/01'
 READOUT_FILENAME = "Signal_Read_Out.txt"
@@ -42,10 +42,10 @@ TRACK_X_MIN = -TRACK_X_MAX
 TRACK_Y_MAX = 150
 TRACK_Y_MIN = -TRACK_Y_MAX
 
-SAVE_DATA_NUM = 100
+MAX_DATA_NUM = 1_000_000
 DIRNAME = os.path.dirname(__file__) #get path of current file 
 # print(dirname)
-DATAPATH = os.path.join(dirname, 'data') #enter the directory name to save data
+DATAPATH = os.path.join(DIRNAME, 'data') #enter the directory name to save data
 # print(dataPath)
 
 ''' VBOX conversion factor'''
@@ -62,8 +62,8 @@ accz_factor = 0.01				#m/s^2
 
 class mainWindow(QMainWindow):
 	''' define and initiate global variable '''
-	EQ_idx = 0
-	EQ_cnt = SAVE_DATA_NUM 
+	# EQ_idx = 0
+	# EQ_cnt = SAVE_DATA_NUM 
 	label_update_cnt = 0
 	MV_status = 0
 	offset_SRS200_wz = 0
@@ -97,6 +97,14 @@ class mainWindow(QMainWindow):
 	''' data save'''
 	save_status = False
 	track_cnt = 0
+	''' auto save global variable'''
+	g_busy = 0
+	g_data_ptr = MAX_DATA_NUM
+	g_idx = 1
+	old_dirName_year = datetime.datetime.now().year
+	old_dirName_month = datetime.datetime.now().month
+	test_data = 0
+	g_stop = 0
 	def __init__(self, parent = None):
 		super (mainWindow, self).__init__(parent)
 		# self.COM = act.UART()
@@ -441,21 +449,6 @@ class mainWindow(QMainWindow):
 		versionBox = QMessageBox()
 		versionBox.about(self, "Version", VERSION_TEXT)
 	
-	
-	
-	def openFileBox(self):
-		saveBox = QMessageBox()
-		SaveFileName,_ = QFileDialog.getSaveFileName(self,
-						"Save Data to", #視窗名稱
-						"./", #起始路徑
-						"Text Files (*.txt)") #存檔類型
-		if (SaveFileName != ''):
-			# saveBox.about(self, "Save File", "File saving on " + self.SaveFileName)
-			self.open_file(SaveFileName)
-			return 1
-		else :
-			saveBox.about(self, "Save File", "No file saving")
-			return 0
 			
 # """ comport functin """
 	def update_comport(self):
@@ -522,47 +515,65 @@ class mainWindow(QMainWindow):
 		self.xPP_arr = np.zeros(0)
 		self.yPP_arr = np.zeros(0)
 		
-		
-		# self.dx200_arr = np.zeros(0)
-		# self.dy200_arr = np.zeros(0)
-		# self.top.com_plot.ax2.clear()
-	def open_and_save_EQ_file(self, cnt):
-		print('cnt:', cnt)
-		if(cnt==100): 
-			self.f=open(str(self.EQ_idx)+'.txt', 'w')
-		elif(cnt==1):
-			self.f.close
-			self.EQ_idx = self.EQ_idx + 1
-		else:
-			np.savetxt(self.f, np.vstack([cnt, cnt]).T, fmt='%d, %d')
-		
-	def autoCreateDir(dataPath, dirName):
+	def autoCreateDir(self, dataPath, dirName, busy, rst_n):
 		filepath = os.path.join(dataPath, str(dirName))
-		folder_exist = os.path.exists(filepath)
-		if not folder_exist:
-			print('\ncreate folder: ', filepath)
-			os.mkdir(filepath)
-			success = 1
+		if (not busy and rst_n):
+			folder_exist = os.path.exists(filepath)
+			if not folder_exist:
+				print('\ncreate folder: ', filepath)
+				os.mkdir(filepath)
+				status = 0
+			else:
+				print('folder exist!')
+				status = 1
 		else:
-			print('\nfolder exist!')
-			success = 0
-		return success, filepath
-		
-	def open_and_save_data(cnt, dataNum, filePath, data1, data2, idx):
-		if(cnt==dataNum): 
-			f=open(os.path.join(filePath, str(idx)) +'.txt', 'w')
-			f.writelines('#' + datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S') + '\n')
-			status = 1
-		elif(cnt==1):
-			f.writelines('#' + datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S') + '\n')
-			f.close
-			status = 0
-		else:
-			np.savetxt(f, np.vstack([data1, data2]).T, fmt='%d, %d')
 			status = 2
-		return status
+		return status, filepath
+	
+	def open_and_save_data(self, data_ptr, max_dataNum, rst_n, filePath, idx, data1, data2, data3, data4, data5, data6, data7, data8, data9):
+		
+		if(data_ptr == max_dataNum): 
+			print('create txt')
+			self.fauto=open(os.path.join(filePath, str(datetime.datetime.now().day) + '-' + str(idx)) +'.txt', 'w')
+			self.fauto.writelines('#' + datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S') + '\n')
+			np.savetxt(self.fauto, np.vstack([data1, data2, data3, data4, data5, data6, data7, data8, data9]).T, 
+				fmt='%5.3f,\t\t%5.5f,\t%5.5f,\t%5.5f,\t%5.5f,\t%5.5f,\t%5.5f,\t%5.5f,\t%5.5f')
+					#   dt, srs200,   pp,    nano33_wx, nano33_wy, nano33_wz,  adxl_ax,       adxl_ay,    adxl_az
+			busy = 1
+			status = 0
+			
+		elif(data_ptr == 1 or rst_n == 0):
+			print('close txt')
+			np.savetxt(self.fauto, np.vstack([data1, data2, data3, data4, data5, data6, data7, data8, data9]).T, 
+				fmt='%5.3f,\t\t%5.5f,\t%5.5f,\t%5.5f,\t%5.5f,\t%5.5f,\t%5.5f,\t%5.5f,\t%5.5f')
+			self.fauto.writelines('#' + datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S') + '\n')
+			self.fauto.close()
+			busy = 0
+			status = 1
+		else:
+			# print('save txt')
+			np.savetxt(self.fauto, np.vstack([data1, data2, data3, data4, data5, data6, data7, data8, data9]).T, 
+				fmt='%5.3f,\t\t%5.5f,\t%5.5f,\t%5.5f,\t%5.5f,\t%5.5f,\t%5.5f,\t%5.5f,\t%5.5f')
+			busy = 1
+			status = 2
+		return status, busy
+	
+	def openFileBox(self):
+		saveBox = QMessageBox()
+		SaveFileName,_ = QFileDialog.getSaveFileName(self,
+						"Save Data to", #視窗名稱
+						"./", #起始路徑
+						"Text Files (*.txt)") #存檔類型
+		if (SaveFileName != ''):
+			# saveBox.about(self, "Save File", "File saving on " + self.SaveFileName)
+			self.open_file(SaveFileName)
+			return 1
+		else :
+			saveBox.about(self, "Save File", "No file saving")
+			return 0
 	
 	def open_file(self, filename):
+		print('in open_file')
 		self.f=open(filename, 'w')
 		# self.f2=open(filename[0:-4] + '_track.txt', 'w')
 		start_time_header = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
@@ -630,11 +641,22 @@ class mainWindow(QMainWindow):
 		self.act.wait()
 		# '''
 		if(self.save_status):
+			print('in close_file')
 			stop_time_header = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
 			self.f.writelines('#' + stop_time_header + '\n')
 			self.f.close()
 			# self.f2.close()
-		# '''
+			
+		''' ********auto save function************'''
+		dummy, self.g_busy = self.open_and_save_data(self.g_data_ptr, MAX_DATA_NUM, self.act.runFlag, self.temp_filepath, self.g_idx, 
+			self.dt[-1],self.data_SRS200_wz[-1]/3600,self.data_PP_wz[-1]/3600,self.data_Nano33_wx[-1],self.data_Nano33_wy[-1],
+			self.data_Nano33_wz[-1],self.data_Adxl355_ax[-1],self.data_Adxl355_ay[-1],self.data_Adxl355_az[-1])
+		
+		self.g_idx = self.g_idx + 1
+		self.g_data_ptr = MAX_DATA_NUM
+		self.g_stop = 1	 #用於stop後再read遇到換年/月情況
+		''' ********end of auto save function************'''
+			
 		self.data_SRS200_wz = np.empty(0)
 		self.data_Nano33_wx = np.empty(0)
 		self.data_Nano33_wy = np.empty(0)
@@ -683,7 +705,6 @@ class mainWindow(QMainWindow):
 		self.data_PP_wz_f_old = 0
 		
 		
-
 	def plotADXLIMUnGYRO(self, dt, data_SRS200_wz, data_PP_wz, data_Adxl355_ax, data_Adxl355_ay, data_Adxl355_az, data_T, 
 						data_Nano33_wx, data_Nano33_wy, data_Nano33_wz, gpssat, latitude, longitude, velocity, altitude, v_velocity, 
 							pitch, roll, heading, accz):
@@ -698,21 +719,6 @@ class mainWindow(QMainWindow):
 			# print('roll: ', roll)
 			# print('heading: ', heading)
 			print('accz: ', accz)
-		if(self.act.runFlag):
-			
-			if(self.EQ_cnt == SAVE_DATA_NUM):
-				flag, file_path1 = self.autoCreateDir(DATAPATH, datetime.datetime.now().year)
-				flag, file_path2 = self.autoCreateDir(temp_path, datetime.datetime.now().month)
-			
-			self.open_and_save_data(self.EQ_cnt, SAVE_DATA_NUM, file_path2, datetime.datetime.now(), 115, self.EQ_idx):
-			
-			if(flag):
-				self.EQ_idx = 0
-			if(self.EQ_cnt == 1):
-				self.EQ_cnt = SAVE_DATA_NUM
-				self.EQ_idx = self.EQ_idx + 1
-			else:
-				self.EQ_cnt = self.EQ_cnt - 1
 				
 			if(DEBUG_COM):
 				print('2. data_SRS200_wz: ', end='\t');
@@ -751,7 +757,34 @@ class mainWindow(QMainWindow):
 		data_Adxl355_ax_f = (data_Adxl355_ax-self.offset_Adxl355_ax)*ADxlm_factor
 		data_Adxl355_ay_f = (data_Adxl355_ay-self.offset_Adxl355_ay)*ADxlm_factor
 		data_Adxl355_az_f = (data_Adxl355_az-self.offset_Adxl355_az)*ADxlm_factor
+		
+		'''***************auto save data ************************** '''
+		if(not self.save_status and self.act.runFlag): #若使用手動輸入檔名，則disable自動存檔功能
+			dirName_year = datetime.datetime.now().year
+			dirName_month = datetime.datetime.now().month
+			if(dirName_year != self.old_dirName_year or dirName_month != self.old_dirName_month): #當年分或月份改變時(換年or換日)，reset idx,會比busy=0還早發生
+				if(self.g_stop):
+					self.g_idx = 1
+				else:
+					self.g_idx = 0 
+			self.g_stop = 0
+			status, filepath1 = self.autoCreateDir(DATAPATH,  dirName_year,  self.g_busy, self.act.runFlag)
+			status, filepath2 = self.autoCreateDir(filepath1, dirName_month, self.g_busy, self.act.runFlag)
+			self.temp_filepath = filepath2
+			if(self.g_data_ptr == 0):#資料數量指標=1時代表關閉檔案了，此時reset至MAX_DATA_NUM
+				self.g_data_ptr = MAX_DATA_NUM
+			# print('bbbbbbbb')
+			dummy, self.g_busy = self.open_and_save_data(self.g_data_ptr, MAX_DATA_NUM, self.act.runFlag, filepath2, self.g_idx, 
+				dt, data_SRS200_wz_f/3600, data_PP_wz_f/3600, data_Nano33_wx_f, data_Nano33_wy_f, data_Nano33_wz_f,
+				data_Adxl355_ax_f, data_Adxl355_ay_f, data_Adxl355_az_f) 
 			
+			self.g_data_ptr = self.g_data_ptr - 1
+			if(self.g_busy==0): #寫完數據，若發生換年or換日則g_idx此時=0
+				self.g_idx += 1
+			self.old_dirName_year =  dirName_year
+			self.old_dirName_month = dirName_month
+		'''***************end of auto save data ************************** '''
+		
 		''' VBOX data convert to float'''
 		data_latitude_f = 	latitude*latitude_factor
 		data_longitude_f = 	longitude*longitude_factor
@@ -782,52 +815,6 @@ class mainWindow(QMainWindow):
 		
 		
 		
-		'''由加速度積分計算速度'''
-		'''
-		#ADXL355
-		# self.speedx_Adxl355 = self.speedx_Adxl355 + np.sum(data_Adxl355_ax_f)*9.81*SAMPLING_TIME
-		# self.speedy_Adxl355 = self.speedy_Adxl355 + np.sum(data_Adxl355_ay_f)*9.81*SAMPLING_TIME
-		self.current_speedx_Adxl355 = self.current_speedx_Adxl355 + np.sum(data_Adxl355_ax_f)*9.81*SAMPLING_TIME
-		self.current_speedy_Adxl355 = self.current_speedy_Adxl355 + np.sum(data_Adxl355_ay_f)*9.81*SAMPLING_TIME
-		
-		if(self.current_speedx_Adxl355==self.old_speedx_Adxl355):
-			# self.speedx_Adxl355 = 0
-			self.current_speedx_Adxl355 = 0
-		# else:
-			# self.speedx_Adxl355 = self.current_speedx_Adxl355
-			
-		if(self.current_speedy_Adxl355==self.old_speedy_Adxl355):
-			# self.speedy_Adxl355 = 0
-			self.current_speedy_Adxl355 = 0
-		# else:
-			# self.speedy_Adxl355 = self.current_speedy_Adxl355
-			
-		self.speedx_Adxl355 = self.current_speedx_Adxl355
-		self.speedy_Adxl355 = self.current_speedy_Adxl355
-		self.speed_Adxl355 = np.sqrt(np.square(self.speedx_Adxl355)+np.square(self.speedy_Adxl355))
-		self.speed_Adxl355_arr = np.append(self.speed_Adxl355_arr, self.speed_Adxl355)
-		
-		# print(self.speedx_Adxl355, end=', ')
-		# print(self.speedy_Adxl355)
-		#speed output save array
-		speedx_Adxl355_out = np.empty(0)
-		speedy_Adxl355_out = np.empty(0)
-		speed_Adxl355_out = np.empty(0)
-		
-		for i in range(self.act.data_frame_update_point):
-			speedx_Adxl355_out = np.append(speedx_Adxl355_out, self.speedx_Adxl355)
-			speedy_Adxl355_out = np.append(speedy_Adxl355_out, self.speedy_Adxl355)
-			speed_Adxl355_out = np.append(speed_Adxl355_out, self.speed_Adxl355)
-		#guage plot
-		self.top.SRS200_gauge.gauge.item.setRotation(self.thetaz_SRS200)
-		self.top.SRS200_gauge.lb.setText(str(np.round(self.thetaz_SRS200, 2)))
-		self.top.speed_gauge.gauge.item.setRotation(self.speed_Adxl355)
-		# self.top.speed_gauge.lb.setText(str(round(self.speed_Adxl355*3.6, 2)))
-		self.top.speed_gauge.lb.setText(str(np.round(self.speedx_Adxl355*3.6, 2)))
-		self.top.IMU_speed_gauge.gauge.item.setRotation(data_IMU_speed_f[0])
-		# self.top.IMU_speed_gauge.lb.setText(str(round(self.speed_Adxl355*3.6, 2)))
-		self.top.IMU_speed_gauge.lb.setText(str(np.round(data_IMU_speed_f[0]*3.6, 2)))
-		'''
 		''' for track plot'''
 		thetaz_Nano33 = 90 - self.thetaz_Nano33
 		thetaz_PP = 90 - self.thetaz_PP
@@ -900,8 +887,8 @@ class mainWindow(QMainWindow):
 			self.yPP_arr = np.append(self.yPP_arr, self.yPP_sum)
 			self.xNano33_arr = np.append(self.xNano33_arr, self.xNano33_sum)
 			self.yNano33_arr = np.append(self.yNano33_arr, self.yNano33_sum)
-			if(self.save_status):
-				np.savetxt(self.f2, (np.vstack([self.x200_arr[-1], self.y200_arr[-1],self.xPP_arr[-1], self.yPP_arr[-1],self.xNano33_arr[-1], self.yNano33_arr[-1]])).T, fmt='%5.5f,%5.5f,%5.5f,%5.5f,%5.5f,%5.5f')
+			# if(self.save_status):
+				# np.savetxt(self.f2, (np.vstack([self.x200_arr[-1], self.y200_arr[-1],self.xPP_arr[-1], self.yPP_arr[-1],self.xNano33_arr[-1], self.yNano33_arr[-1]])).T, fmt='%5.5f,%5.5f,%5.5f,%5.5f,%5.5f,%5.5f')
 			# print(self.x200_sum, end=', ')
 			# print(self.y200_sum, end=', ')
 			# print(self.xNano33_sum, end=', ')
@@ -938,6 +925,8 @@ class mainWindow(QMainWindow):
 		self.data_Nano33_wx = np.append(self.data_Nano33_wx, data_Nano33_wx_f)
 		self.data_Nano33_wy = np.append(self.data_Nano33_wy, data_Nano33_wy_f)
 		self.data_Nano33_wz = np.append(self.data_Nano33_wz, data_Nano33_wz_f)
+		# print('np:', float(self.data_Nano33_wz[-1]))
+		# print(data_Nano33_wz_f)
 		self.data_PP_wz = np.append(self.data_PP_wz, data_PP_wz_f)
 		self.data_velocity = np.append(self.data_velocity, data_velocity_f)
 		# print('data_velocity_f: ', data_velocity_f)
@@ -955,13 +944,6 @@ class mainWindow(QMainWindow):
 		self.data_T = np.append(self.data_T, (data_T-self.offset_T)*1e-3)
 		
 		if(self.save_status):
-			# np.savetxt(self.f, (np.vstack([dt, data_SRS200_wz_f, data_PP_wz_f, data_Nano33_wx_f, data_Nano33_wy_f, data_Nano33_wz_f, 
-			# self.current_data_Adxl355_ax_f, self.current_data_Adxl355_ay_f, self.current_data_Adxl355_az_f, speed_Adxl355_out, speedx_Adxl355_out, speedy_Adxl355_out, data_T])).T, 
-					# fmt='%5.5f,%5.5f,%5.5f,%5.5f,%5.5f,%5.5f,%5.5f,%5.5f,%5.5f,%5.5f,%5.5f,%5.5f,%5.0f')
-			# np.savetxt(self.f, (np.vstack([dt, data_SRS200_wz_f/3600, data_PP_wz_f/3600, data_Nano33_wx_f, data_Nano33_wy_f, data_Nano33_wz_f, 
-				# data_Adxl355_ax_f, data_Adxl355_ay_f, data_Adxl355_az_f, data_velocity_f, data_v_velocity_f, data_T, 
-				# data_latitude_f, data_longitude_f, data_altitude_f, data_gpssat_f, data_pitch_f, data_roll_f, data_heading_f, data_accz_f])).T, 
-					# fmt='%5.3f,%5.5f,%5.5f,%5.5f,%5.5f,%5.5f,%5.5f,%5.5f,%5.5f,%5.5f,%5.3f,%5d,%5.7f,%5.7f,%5.2f,%2d, %5.2f,%5.2f,%5.2f,%2.2f')
 			np.savetxt(self.f, (np.vstack([dt, data_SRS200_wz_f/3600, data_PP_wz_f/3600, data_Nano33_wx_f, data_Nano33_wy_f, data_Nano33_wz_f, 
 				data_Adxl355_ax_f, data_Adxl355_ay_f, data_Adxl355_az_f])).T, 
 					fmt='%5.3f,  %5.5f,  %5.5f,   %5.5f,    %5.5f,       %5.5f,     %5.5f,        %5.5f,     %5.5f')

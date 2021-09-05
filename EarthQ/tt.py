@@ -48,7 +48,6 @@ def open_and_save_data(data_ptr, max_dataNum, rst_n, filePath, idx, data1, data2
 		np.savetxt(f, np.vstack([data1, data2]).T, fmt='%d, %d')
 		busy = 1
 		status = 0
-		f.close
 	elif(data_ptr == 1 or rst_n == 0):
 		np.savetxt(f, np.vstack([data1, data2]).T, fmt='%d, %d')
 		f.writelines('#' + datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S') + '\n')

@@ -59,15 +59,15 @@ TIME_COEFFI = 0.0001
 ''' define initial value'''
 # MOD_H_INIT = 0
 # MOD_L_INIT = -1000
-MOD_H_INIT = 3200
-MOD_L_INIT = -4500
-FREQ_INIT = 87
-ERR_OFFSET_INIT = 0
+MOD_H_INIT = 2200
+MOD_L_INIT = -3500
+FREQ_INIT = 99
+ERR_OFFSET_INIT = 1
 POLARITY_INIT = 0
 WAIT_CNT_INIT = 43
 ERR_TH_INIT = 0
 ERR_AVG_INIT = 5
-GAIN_SEL_INIT = 8
+GAIN_SEL_INIT = 6
 GAINPRE_SEL_INIT = 0
 STEP_MAX_INIT = 10000
 V2PI_INIT = 30000
@@ -497,7 +497,7 @@ class mainWindow(QMainWindow):
 		time_f = time*TIME_COEFFI
 		self.data  = np.append(self.data, data_f)
 		self.time  = np.append(self.time, time_f)
-		if (len(self.data) >= 1000):
+		if (len(self.data) >= 300):
 			self.data = self.data[self.act.data_frame_update_point:]
 			self.time = self.time[self.act.data_frame_update_point:]
 		

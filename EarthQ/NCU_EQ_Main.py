@@ -762,7 +762,7 @@ class mainWindow(QMainWindow):
 		if(not self.save_status and self.act.runFlag): #若使用手動輸入檔名，則disable自動存檔功能
 			dirName_year = datetime.datetime.now().year
 			dirName_month = datetime.datetime.now().month
-			if(dirName_year != self.old_dirName_year or dirName_month != self.old_dirName_month): #當年分或月份改變時(換年or換日)，reset idx,會比busy=0還早發生
+			if(dirName_year != self.old_dirName_year or dirName_month != self.old_dirName_month): #當年分或月份改變時(換年or換日)，reset idx。會比busy=0還早發生
 				if(self.g_stop):
 					self.g_idx = 1
 				else:

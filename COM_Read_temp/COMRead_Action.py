@@ -81,6 +81,9 @@ class COMRead_Action(QThread):
 					checkByte = self.COM.read1Binary()
 					while(checkByte[0] != CHECK_BYTE_VAL):
 						checkByte = self.COM.read1Binary()
+						print(self.bufferSize, end='\t')
+						print(checkByte[0])
+						pass
 					'''--------------------------------------------------------- '''
 					# com_time = self.COM.read4Binary()
 					com_data1 = self.COM.read4Binary()

@@ -58,6 +58,12 @@ class gyro_Action(QObject):
 	bufferSize = 0
 	dt_init_flag = 1
 	kal_flag = 0
+	''' for err corrention'''
+	old_data = 0
+	old_time = 0
+	old_step = 0
+	old_data_flag = 0
+	flag1_errtime = 0
 	def __init__(self, loggername):	
 		super().__init__()
 		self.COM = usb.FT232(loggername)
@@ -84,12 +90,22 @@ class gyro_Action(QObject):
 	def comport_select(self):
 		self.COM.checkCom()
 		
+	def printData(self, data):
+		print(hex(data[0]), end='\t')
+		print(hex(data[1]), end='\t')
+		print(hex(data[2]), end='\t')
+		print(hex(data[3]))
+		
+	def errCorrection(self, data):
+		pass
+		
 	def updateOpenLoop(self):
 		data = np.zeros(self.data_frame_update_point)
 		time = np.zeros(self.data_frame_update_point)
 		step = np.zeros(self.data_frame_update_point)
 		data_sum = 0
 		step_sum = 0
+		byte_temp_time = np.empty(0)
 		''' for kalmman filter'''
 		#initial guess value
 		x0 = 0
@@ -129,13 +145,38 @@ class gyro_Action(QObject):
 					val = self.COM.read1Binary()
 					while(val[0] != self.check_byte):
 						val = self.COM.read1Binary()
+						print('val[0]: ', val[0])
 					
 					temp_time = self.COM.read4Binary()
-					temp_time = self.convert2Unsign_4B(temp_time)
+					# for j in temp_time:
+						# byte_temp_time = np.append(byte_temp_time, j).astype(int)
+					if(i==5):
+						self.old_data_flag = 1
 					
+					# temp_time = self.convert2Unsign_4B(byte_temp_time)
+					temp_time = self.convert2Unsign_4B(temp_time)
+					print('temp_time: ', temp_time)
+					print('old_time: ', self.old_time)
+					
+					
+							
 					
 					temp_data = self.COM.read4Binary()
+					# self.printData(temp_data)
 					temp_data = self.convert2Sign_4B(temp_data)
+					# if(self.old_data_flag==1):
+						# print('diff_time:', abs(self.old_time-temp_time))
+						# if(abs(self.old_time-temp_time)>200): 
+							# temp_time = self.old_time + 100
+					
+					print('temp_data: ', temp_data, end='\n\n')
+					
+					
+					
+					# byte_temp_time = np.empty(0)
+					# flag0_errtime = 0
+					# flag1_errtime = 0
+					
 					if(FAKE_DATA):
 						if(i<7):
 							temp_data = 100
@@ -144,12 +185,32 @@ class gyro_Action(QObject):
 					
 					
 					temp_step = self.COM.read4Binary()
+					
 					temp_step = self.convert2Sign_4B(temp_step)
 					
 					
 					temp_step_SM = self.COM.read1Binary()
-					print('time:', temp_time)
-					print('ERR:', temp_data)
+					
+					if(self.old_data_flag==1):
+						print('diff_time:', abs(self.old_time-temp_time))
+						if(abs(self.old_time-temp_time)>200): 
+							temp_time = self.old_time + 100
+						print('diff_err: ', abs(self.old_data-temp_data))
+						if(abs(self.old_data-temp_data)>10000): 
+							temp_data = self.old_data + 0
+						print('diff_step: ', abs(self.old_step-temp_step))
+						if(abs(self.old_step-temp_step)>10000): 
+							temp_step = self.old_step + 0
+					
+					self.old_time = temp_time
+					self.old_data = temp_data
+					self.old_step = temp_step
+					
+					
+					# print('time:', temp_time)
+					# print('ERR:', temp_data)
+					
+					
 					# print('STEP:', temp_step, end=', ')
 					# print('SM:', temp_step_SM[0], end=', ')
 					# print('i: ', i)
@@ -159,7 +220,8 @@ class gyro_Action(QObject):
 					# print('x_p: ', x_p[i])
 					# print('Kal_status:', Kal_status)
 					self.kal_flag = globals.kal_status
-					''' Kalmman filter'''
+					
+					# ''' Kalmman filter'''
 					#update
 					k[i] = p_p[i]/(p_p[i] + globals.kal_R) #k_n
 					x[i] = x_p[i] + k[i]*(temp_data - x_p[i])  #x_nn

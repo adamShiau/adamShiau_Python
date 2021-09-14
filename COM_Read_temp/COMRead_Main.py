@@ -113,7 +113,7 @@ class mainWindow(QMainWindow):
 		if (TEST_MODE):
 			usbConnStatus = True
 		else:
-			usbConnStatus = self.act.COM.connect_comboBox(baudrate = 230400, timeout = 1, port_name=self.cp)
+			usbConnStatus = self.act.COM.connect_comboBox(baudrate = 115200, timeout = 1, port_name=self.cp)
 		print("status:" + str(usbConnStatus))
 		if usbConnStatus:
 			self.top.usb.SetConnectText(Qt.blue, self.cp + " Connect")

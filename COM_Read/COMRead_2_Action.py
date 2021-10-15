@@ -30,6 +30,8 @@ class COMRead_Action(QThread):
 	data_frame_update_point = 10
 	bufferSize = 0
 	check_byte = 170
+	check_byte2 = 171
+	check_byte3 = 172
 	'''當valid_cnt累加到valid_cnt_num時valid_flag會變1，此時才會送數據到main，目的為了避開程式一開始亂跳的情形 '''
 	valid_flag = 0
 	valid_cnt = 0

@@ -737,6 +737,9 @@ class mainWindow(QMainWindow):
 			self.data_Adxl355_ax = self.data_Adxl355_ax[self.act.data_frame_update_point:]
 			self.data_Adxl355_ay = self.data_Adxl355_ay[self.act.data_frame_update_point:]
 			self.data_Adxl355_az = self.data_Adxl355_az[self.act.data_frame_update_point:]
+			std_SRS200_wz = np.round(np.std(self.data_SRS200_wz), 3)
+			# print('std_SRS200_wz: ', std_SRS200_wz, end='\t')
+			# print(data_SRS200_wz)
 			
 			self.data_velocity = self.data_velocity[self.act.data_frame_update_point:]
 			self.data_roll = self.data_roll[self.act.data_frame_update_point:]

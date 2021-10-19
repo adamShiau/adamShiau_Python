@@ -75,6 +75,7 @@ class IMU_Action(QThread):
 	check_byte = 170
 	check_byte2 = 171
 	check_byte3 = 172
+	check_byte_time = 174
 	''' buffer size 會傳到main做monitor'''
 	bufferSize = 0
 	dt_init_flag = 1
@@ -243,12 +244,20 @@ class IMU_Action(QThread):
 						# temp_Nano33_wy = np.random.randn()*100
 						# temp_Nano33_wz = np.random.randn()*100
 						
-						temp_dt = self.COM.read4Binary()
 						
+						# val_time = self.COM.read1Binary()
+						# print(val_time[0])
+						# if(val_time[0] != self.check_byte_time):
+							# valid_byte = 0
+							# valid_flag = 0
+							# self.valid_cnt = (self.valid_cnt_num-2)
+							# drop_flag = 1
+							# break #break for loop
+						temp_dt = self.COM.read4Binary()
 						if(not DISABLE_SRS200):
 							temp_SRS200_wz = self.COM.read4Binary()
-							# temp_SRS200_wz = self.COM.read12Binary()
 							SRS200_buffer = self.COM.read1Binary()
+							# print(temp_SRS200_wz)
 							
 						# print('SRS200_buffer: ', SRS200_buffer[0])
 						''' *******read SRS200********** '''

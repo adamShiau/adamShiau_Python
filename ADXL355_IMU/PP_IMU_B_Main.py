@@ -12,7 +12,7 @@ import PP_IMU_B_Widget as UI
 import PP_IMU_B_Action as ACT
 import IMU_Globals as globals
 
-PRINT_VBOX_MAIN = 1
+PRINT_VBOX_MAIN = 0
 TITLE_TEXT = "IMU_PLOT"
 VERSION_TEXT = 'Compare FOG with MEMS，2020/12/01'
 READOUT_FILENAME = "Signal_Read_Out.txt"
@@ -246,7 +246,7 @@ class mainWindow(QMainWindow):
 		self.top.kal_rb.toggled.connect(lambda:self.rb_toggled(self.top.kal_rb))
 	
 	def setCheckBox_init(self):
-		self.top.TabPlot.tab1_gyro_cb.cb1.setChecked(True) #set gyro wz initial as PP
+		self.top.TabPlot.tab1_gyro_cb.cb2.setChecked(True) #set gyro wz initial as PP
 		self.top.TabPlot.tab1_adxlXLM_cb.cb3.setChecked(True) #set adxl355 XLM initial as az
 		# self.top.TabPlot.tab1_nano33XLM_cb.cb1.setChecked(True) #set nano33 XLM initial as ax
 		self.top.TabPlot.tab1_speed_cb.cb1.setChecked(True) #set speed_initial as VBOX

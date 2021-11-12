@@ -24,9 +24,9 @@ DEBUG_COM = 1
 TEST_MODE = 0
 DISABLE_PP = 0
 DISABLE_VBOX = 1
-DISABLE_NANO33 = 0
+DISABLE_NANO33 = 1
 DISABLE_SRS200 = 0
-DISABLE_ADXL355 = 0
+DISABLE_ADXL355 = 1
 SRS_HEADER = 192
 SRS_OFFSET_7 = 13
 PRINT_VBOX_BAD_FLAG = 0
@@ -65,7 +65,7 @@ class IMU_Action(QThread):
 	valid_cnt = 0
 	valid_cnt_num = 5
 	TIME_PERIOD = 0.01
-	
+	g_temp_dt = 0
 	''' 計算一定的點數後再傳到main作圖，點數太小的話buffer會累積造成lag'''
 	data_frame_update_point = 1
 	''' run glag 初始值'''
@@ -185,7 +185,7 @@ class IMU_Action(QThread):
 					self.drop_cnt = self.drop_cnt+1
 					self.COM.port.flushInput()
 				if(not TEST_MODE):
-					while(not (self.COM.port.inWaiting()>(self.data_frame_update_point*34))) : #rx buffer 不到 arduino傳來的總byte數*data_frame_update_point時不做任何事
+					while(not (self.COM.port.inWaiting()>(self.data_frame_update_point*16))) : #rx buffer 不到 arduino傳來的總byte數*data_frame_update_point時不做任何事
 						# print(self.COM.port.inWaiting())
 						pass
 						
@@ -207,9 +207,16 @@ class IMU_Action(QThread):
 					if(not TEST_MODE): 
 						val = self.COM.read1Binary()
 						val3 = self.COM.read1Binary()
+						# while(val[0] != self.check_byte or val3[0] != self.check_byte3):
+							# val = self.COM.read1Binary()
+							# val3 = self.COM.read1Binary()
+							# print("val:", val[0], end=', ')
+							# print(val3[0])
 						while(val[0] != self.check_byte or val3[0] != self.check_byte3):
-							val = self.COM.read1Binary()
+							val = val3
 							val3 = self.COM.read1Binary()
+							print("val:", val[0], end=', ')
+							print(val3[0])
 					'''--------------------------------------------------------- '''
 					#read new value
 					if(TEST_MODE):
@@ -380,18 +387,10 @@ class IMU_Action(QThread):
 					
 					# print(self.COM.port.inWaiting())
 						
-					if(DEBUG_COM):
+					# if(DEBUG_COM):
 						# print(datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S'))
 						# print('buffer: ',end=', ' )
 						# print(self.bufferSize)
-						if(not TEST_MODE):
-							# print('val[0]: ',end=' ' )
-							# print(val[0],end=' ' )
-							# print('va2[0]: ',end=' ' ) 
-							# print(val2[0],end=' ')
-							# print('drop_cnt: ',end=' ' )
-							# print(self.drop_cnt)
-							pass
 						# print('temp_Nano33_a: ');
 						# print(temp_Nano33_ax[0], end='\t')
 						# print(temp_Nano33_ax[1], end='\t')
@@ -504,8 +503,10 @@ class IMU_Action(QThread):
 								temp_Nano33_wz = 0
 							# print(temp_T)
 						
-						# if(DEBUG_COM):
-							# print(temp_dt);
+						if(DEBUG_COM):
+							
+							print(temp_dt - self.g_temp_dt);
+						self.g_temp_dt = temp_dt
 						self.kal_flag = globals.kal_status
 						''' Kalmman filter'''
 						#update

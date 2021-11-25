@@ -209,8 +209,10 @@ class IMU_Action(QThread):
 						val = self.COM.read1Binary()
 						val3 = self.COM.read1Binary()
 						while(val[0] != self.check_byte or val3[0] != self.check_byte3):
-							val = self.COM.read1Binary()
+							val = val3
 							val3 = self.COM.read1Binary()
+							print("val:", val[0], end=', ')
+							print(val3[0])
 					'''--------------------------------------------------------- '''
 					#read new value
 					if(TEST_MODE):

@@ -466,7 +466,7 @@ class mainWindow(QMainWindow):
 	def auto_usbConnect_COM5(self):
 		# self.usbconnect_status = pyqtSignal(object)
 		self.cp = 'COM5'
-		print(self.cp);
+		print('self.cp: ', self.cp);
 		if (TEST_MODE):
 			usbConnStatus = True
 		else:
@@ -579,7 +579,8 @@ class mainWindow(QMainWindow):
 		
 	def myThreadStart(self):
 		# '''
-		self.save_status = self.openFileBox()
+		# self.save_status = self.openFileBox()
+		self.save_status = 0
 		# '''
 		# file_name = self.top.save_edit.edit.text() 
 		# self.f=open(file_name,'a')

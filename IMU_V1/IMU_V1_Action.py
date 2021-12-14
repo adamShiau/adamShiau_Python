@@ -44,7 +44,7 @@ class IMU_Action(QThread):
 	fog_update12 = pyqtSignal(object, object, object, object, object, object, object, object, object, object, object, object)
 	fog_update13 = pyqtSignal(object, object, object, object, object, object, object, object, object, object, object, object, object)
 	fog_update20 = pyqtSignal(object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object )
-	fog_finished = pyqtSignal()
+	fog_finished = pyqtSignal(int)
 	''' VBOX global variable'''
 	gpssat = 0
 	latitude = 0
@@ -651,7 +651,7 @@ class IMU_Action(QThread):
 						# self.dt_old = dt
 						# time.sleep(THREAD_DELY)
 			#end of while self.runFlag:
-			self.fog_finished.emit()
+			self.fog_finished.emit(1)
 			temp_dt_before = 0
 			self.valid_flag = 0
 			self.valid_cnt = 0

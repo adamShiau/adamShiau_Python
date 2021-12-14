@@ -24,7 +24,18 @@ DEBUG2 = 1
 FAKE_DATA = 0
 # MV_MODE = 1
 
-class gyro_Action(QObject):
+class fogTrigger(QThread):
+	runFlag = 0
+	trig = pyqtSignal(int)
+	def __init__(self):
+		super().__init__()
+		
+	def run(self):
+		while(self.runFlag):
+			self.trig.emit(1)
+			# time.sleep(0.1)
+
+class gyro_Action(QThread):
 	update_COMArray = pyqtSignal(object)
 	fog_update = pyqtSignal(object,object)
 	fog_update2 = pyqtSignal(object,object, object)
@@ -37,7 +48,7 @@ class gyro_Action(QObject):
 	openLoop_updata2 = pyqtSignal(object, object)
 	openLoop_updata3 = pyqtSignal(object, object, object)
 	openLoop_updata4 = pyqtSignal(object, object, object, object)
-	fog_finished = pyqtSignal()
+	fog_finished = pyqtSignal(int)
 	valid_flag = 0
 	valid_cnt = 0
 	TIME_PERIOD = 0.01
@@ -87,7 +98,7 @@ class gyro_Action(QObject):
 	def errCorrection(self, data):
 		pass
 		
-	def updateOpenLoop(self):
+	def run(self):
 		data = np.zeros(self.data_frame_update_point)
 		time = np.zeros(self.data_frame_update_point)
 		step = np.zeros(self.data_frame_update_point)
@@ -118,12 +129,12 @@ class gyro_Action(QObject):
 		y_p[self.data_frame_update_point] = y0
 		p_p[self.data_frame_update_point] = p0 + globals.kal_Q
 		''' '''
-		print("runFlag=", self.runFlag)
+		
 		if self.runFlag:
 			self.COM.port.flushInput()
-			
+			# print('run flag:', self.runFlag)
 			while self.runFlag:
-				while(not (self.COM.port.inWaiting()>(self.data_frame_update_point*1))) : #rx buffer 不到 (self.data_frame_update_point*9) byte數目時不做任何事
+				while(not (self.COM.port.inWaiting()>(self.data_frame_update_point*19))) : #rx buffer 不到 (self.data_frame_update_point*9) byte數目時不做任何事
 					# print(self.COM.port.inWaiting())
 					pass
 				x_p[0] = x_p[self.data_frame_update_point]
@@ -133,11 +144,19 @@ class gyro_Action(QObject):
 				for i in range(0,self.data_frame_update_point): 
 					val = self.COM.read1Binary()
 					val3 = self.COM.read1Binary()
+					if(self.runFlag == False):
+						print('action 1')
+						break
+					# print("val:", val[0], end=', ')
+					# print(val3[0])
 					while(val[0] != self.check_byte or val3[0] != self.check_byte3):
 							val = val3
 							val3 = self.COM.read1Binary()
 							print("val:", val[0], end=', ')
 							print(val3[0])
+							if(self.runFlag == False):
+								print('action 2')
+								break
 					self.bufferSize = self.COM.port.inWaiting()
 					
 					# for j in temp_time:
@@ -198,8 +217,6 @@ class gyro_Action(QObject):
 					# val_step = step_MV
 					
 					time = np.append(time[1:], temp_time)
-					# data = np.append(data[1:], temp_data)
-					# step = np.append(step[1:], temp_step)
 					PD_temperature = np.append(PD_temperature[1:], temp_PD_temperature)
 					if(self.kal_flag == True):
 						data = np.append(data[1:], x[i]) #kalmman filter
@@ -212,10 +229,11 @@ class gyro_Action(QObject):
 					self.valid_flag = 1
 				if(self.valid_flag):
 					self.openLoop_updata4.emit(time, data, step, PD_temperature)
-					
+			# print('out while')
+		print('action stop')
 		self.valid_flag = 0
 		self.valid_cnt = 0
-		self.fog_finished.emit()
+		self.fog_finished.emit(1)
 		
 			
 	def convert2Sign_4B(self, datain) :

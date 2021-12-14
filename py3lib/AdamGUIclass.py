@@ -449,11 +449,11 @@ class labelBlock(QWidget):
 class editBlock(QGroupBox):
 	def __init__(self, title, parent=None):
 		super(editBlock, self).__init__(parent)
-		self.edit = QLineEdit()
+		self.le = QLineEdit()
 		self.setTitle(title)
 
 		layout = QHBoxLayout() 
-		layout.addWidget(self.edit)     
+		layout.addWidget(self.le)     
 		self.setLayout(layout)
 		
 class editBlockwBtn(QGroupBox):
@@ -466,6 +466,18 @@ class editBlockwBtn(QGroupBox):
 		layout = QGridLayout() 
 		layout.addWidget(self.bt, 0, 0, 1, 1)  
 		layout.addWidget(self.le, 1, 0, 2, 2)  		
+		self.setLayout(layout)
+		
+class editBlockwChkBox(QGroupBox):
+	def __init__(self, title='', val='enter file name', parent=None):
+		super(editBlockwChkBox, self).__init__(parent)
+		self.setTitle(title)
+		self.cb = QCheckBox('save')
+		self.le = QLineEdit(val)
+
+		layout = QGridLayout() 
+		layout.addWidget(self.cb, 0, 0, 1, 1)  
+		layout.addWidget(self.le, 0, 1, 1, 2)  		
 		self.setLayout(layout)
 
 

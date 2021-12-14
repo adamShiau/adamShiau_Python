@@ -13,8 +13,8 @@ import numpy as np
 # import py3lib.FileToArray as file
 # import py3lib.QuLogger as Qlogger 
 # import py3lib.FileToArray as fil2a 
-import Sparrow_mini_Widget as UI 
-import Sparrow_mini_Action as ACT
+import Sparrow_mini_v2_Widget as UI 
+import Sparrow_mini_v2_Action as ACT
 import gyro_Globals as globals
 TITLE_TEXT = "OPEN LOOP"
 VERSION_TEXT = 'fog open loop 2020/12/25'
@@ -115,7 +115,7 @@ class mainWindow(QMainWindow):
 		self.act = ACT.gyro_Action(self.loggername)
 		self.mainUI()
 		self.mainMenu()
-		self.thread1 = QThread() #開一個thread
+		# self.thread1 = QThread() #開一個thread
 		self.linkFunction()
 		# self.disableBtn()
 		self.data = np.empty(0)
@@ -168,11 +168,12 @@ class mainWindow(QMainWindow):
 		self.top.stop_btn.bt.clicked.connect(self.buttonStop) # set runFlag=0
 		''' thread connect '''
 		# self.thread1.started.connect(lambda:self.act.updateOpenLoop(Kal_status = self.Kal_status))
-		self.thread1.started.connect(self.act.updateOpenLoop)
+		# self.thread1.started.connect(self.act.updateOpenLoop)
 
 		''' emit connect '''
 		self.act.fog_finished.connect(self.myThreadStop) #runFlag=0時fog_finished會emit，之後關掉thread1
 		self.act.openLoop_updata4.connect(self.plotData)
+		# self.act.openLoop_updata4.connect(self.printData)
 		#btn enable signal
 		self.usbconnect_status.connect(self.setBtnStatus) #確定usb連接成功時才enable btn
 		self.usbconnect_status.connect(self.setInitValue)
@@ -524,16 +525,6 @@ class mainWindow(QMainWindow):
 			
 # """ end of comport functin """
 			
-	def buttonStop(self):#set runFlag=0
-		# self.act.setStop()
-		# cmd = OPENLOOP_START + str(0) + '\n'
-		# print(cmd)
-		# self.act.COM.writeLine(cmd)
-		self.act.COM.writeBinary(DATA_OUT_START)
-		self.send32BitCmd(0)
-		self.act.runFlag = False
-		self.act.dt_init_flag = 1
-	
 	def rb_toggled(self, rb):
 		globals.kal_status = rb.isChecked()
 		print('globals.kal_status:', globals.kal_status)
@@ -556,12 +547,20 @@ class mainWindow(QMainWindow):
 		self.act.COM.writeBinary(DATA_OUT_START)
 		self.send32BitCmd(1)
 		self.resetTimer()
-		self.act.runFlag = True
-		self.thread1.start()
+		self.act.startRun()
+		# self.act.runFlag = True
+		self.act.start()
+
+	def buttonStop(self):#set runFlag=0
+		# self.act.runFlag = False
+		self.act.dt_init_flag = 1
+		self.act.stopRun()
+		# self.act.terminate() 
 		
 	def myThreadStop(self):
-		self.thread1.quit() 
-		self.thread1.wait()
+		self.act.COM.writeBinary(DATA_OUT_START)
+		self.send32BitCmd(0)
+		
 		if(self.save_cb_flag == True):
 			self.save_cb_flag == False
 			self.top.save_text.cb.setChecked(0)
@@ -572,6 +571,16 @@ class mainWindow(QMainWindow):
 		self.time  = np.empty(0)
 		self.step  = np.empty(0)
 		
+		
+	def printData(self, time, data, step, PD_temperature):
+		self.top.buffer_lb.lb.setText(str(self.act.bufferSize))
+		self.top.temperature_lb.lb.setText(str(PD_temperature[0]))
+		data_f = data*ADC_COEFFI 
+		time_f = time*TIME_COEFFI
+		step_f = step*self.sf_a_var + self.sf_b_var
+		print('time: ', time_f)
+		print('err : ', data_f)
+		print('step: ', step_f)
 		
 	def plotData(self, time, data, step, PD_temperature):
 		if(self.act.runFlag):
@@ -606,7 +615,8 @@ class mainWindow(QMainWindow):
 		# self.top.com_plot1.ax.plot(self.data, color = 'r', linestyle = '-', marker = '*', label="err")
 		self.top.com_plot1.figure.canvas.draw()		
 		self.top.com_plot1.figure.canvas.flush_events()
-		print('step avg: ', np.round(np.average(self.step), 3))
+		if(self.act.runFlag):
+			print('step avg: ', np.round(np.average(self.step), 3))
 		self.top.com_plot2.ax.plot(self.time, self.step, color = 'r', linestyle = '-', marker = '*', label="step")
 		# self.top.com_plot2.ax.plot(self.step, color = 'r', linestyle = '-', marker = '*', label="step")
 		self.top.com_plot2.figure.canvas.draw()		

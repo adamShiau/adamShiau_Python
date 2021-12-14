@@ -13,8 +13,8 @@ import numpy as np
 # import py3lib.FileToArray as file
 # import py3lib.QuLogger as Qlogger 
 # import py3lib.FileToArray as fil2a 
-import Sparrow_mini_Widget as UI 
-import Sparrow_mini_Action as ACT
+import Sparrow_mini_trig_Widget as UI 
+import Sparrow_mini_trig_Action as ACT
 import gyro_Globals as globals
 TITLE_TEXT = "OPEN LOOP"
 VERSION_TEXT = 'fog open loop 2020/12/25'
@@ -113,9 +113,10 @@ class mainWindow(QMainWindow):
 		self.loggername = "Total"
 		self.top = UI.mainWidget()
 		self.act = ACT.gyro_Action(self.loggername)
+		self.fogTrigger = ACT.fogTrigger()
 		self.mainUI()
 		self.mainMenu()
-		self.thread1 = QThread() #開一個thread
+		# self.thread1 = QThread() #開一個thread
 		self.linkFunction()
 		# self.disableBtn()
 		self.data = np.empty(0)
@@ -164,15 +165,18 @@ class mainWindow(QMainWindow):
 		self.top.usb.bt_update.clicked.connect(self.update_comport)
 		self.top.usb.cs.currentIndexChanged.connect(self.uadate_comport_label)
 		self.top.usb.bt_connect.clicked.connect(self.usbConnect)
+		
+		''' thread btn connect '''
 		self.top.read_btn.bt.clicked.connect(self.thread1Start) # set runFlag=1
 		self.top.stop_btn.bt.clicked.connect(self.buttonStop) # set runFlag=0
-		''' thread connect '''
 		# self.thread1.started.connect(lambda:self.act.updateOpenLoop(Kal_status = self.Kal_status))
-		self.thread1.started.connect(self.act.updateOpenLoop)
+		# self.thread1.started.connect(self.act.updateOpenLoop)
 
 		''' emit connect '''
 		self.act.fog_finished.connect(self.myThreadStop) #runFlag=0時fog_finished會emit，之後關掉thread1
-		self.act.openLoop_updata4.connect(self.plotData)
+		self.act.openLoop_updata4.connect(self.plotData) 
+		# self.act.openLoop_updata4.connect(self.printData)
+		self.fogTrigger.trig.connect(self.fogTrigCome)
 		#btn enable signal
 		self.usbconnect_status.connect(self.setBtnStatus) #確定usb連接成功時才enable btn
 		self.usbconnect_status.connect(self.setInitValue)
@@ -208,6 +212,7 @@ class mainWindow(QMainWindow):
 
 		# self.top.trigDelay.spin.valueChanged.connect(self.send_trigDelay_CMD)
 
+		
 	# """ comport functin """
 	def update_comport(self):
 		self.act.COM.selectCom()
@@ -523,17 +528,7 @@ class mainWindow(QMainWindow):
 			print("Connect failed")
 			
 # """ end of comport functin """
-			
-	def buttonStop(self):#set runFlag=0
-		# self.act.setStop()
-		# cmd = OPENLOOP_START + str(0) + '\n'
-		# print(cmd)
-		# self.act.COM.writeLine(cmd)
-		self.act.COM.writeBinary(DATA_OUT_START)
-		self.send32BitCmd(0)
-		self.act.runFlag = False
-		self.act.dt_init_flag = 1
-	
+		
 	def rb_toggled(self, rb):
 		globals.kal_status = rb.isChecked()
 		print('globals.kal_status:', globals.kal_status)
@@ -547,9 +542,12 @@ class mainWindow(QMainWindow):
 		start_time_header = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
 		self.f.writelines('#' + start_time_header + '\n')
 	
-	
+	def fogTrigCome(self):
+		# print('trig comming')
+		self.act.COM.writeBinary(DATA_OUT_START)
+		self.send32BitCmd(2)
+		
 	def thread1Start(self):
-		# self.save_status = 1
 		if(self.save_cb_flag == True):
 			self.open_file(self.top.save_text.le.text())
 			
@@ -557,11 +555,32 @@ class mainWindow(QMainWindow):
 		self.send32BitCmd(1)
 		self.resetTimer()
 		self.act.runFlag = True
-		self.thread1.start()
+		self.act.start()
 		
-	def myThreadStop(self):
-		self.thread1.quit() 
-		self.thread1.wait()
+		# self.fogTrigger.runFlag = True
+		# self.fogTrigger.start()
+	
+	def buttonStop(self):#set runFlag=0
+		self.act.COM.writeBinary(DATA_OUT_START)
+		self.send32BitCmd(0)
+		self.act.runFlag = False
+		# self.fogTrigger.runFlag = False
+		self.act.dt_init_flag = 1	
+		print('SSSSTTTOOOOPPPPP11111')
+		self.act.quit() 
+		# self.act.wait()
+		# self.thread1.quit() 
+		# self.thread1.wait()
+		# self.fogTrigger.quit() 
+		# self.fogTrigger.wait()
+		
+	def myThreadStop(self, val):
+		# self.thread1.quit() 
+		# self.thread1.wait()
+		# self.act.quit() 
+		# self.act.wait()
+		# self.fogTrigger.quit() 
+		# self.fogTrigger.wait()
 		if(self.save_cb_flag == True):
 			self.save_cb_flag == False
 			self.top.save_text.cb.setChecked(0)
@@ -571,13 +590,21 @@ class mainWindow(QMainWindow):
 		self.data  = np.empty(0)
 		self.time  = np.empty(0)
 		self.step  = np.empty(0)
-		
+		print(val)
+		print('SSSSTTTOOOOPPPPP')
+	
+	def printData(self, time, data, step, PD_temperature):
+		data_f = data*ADC_COEFFI 
+		time_f = time*TIME_COEFFI
+		step_f = step*self.sf_a_var + self.sf_b_var
+		print(datetime.datetime.now())
+		print(time_f)
+		print(data_f)
 		
 	def plotData(self, time, data, step, PD_temperature):
 		if(self.act.runFlag):
 			self.top.com_plot1.ax.clear()
 			self.top.com_plot2.ax.clear()
-			
 		#update label#
 		self.top.buffer_lb.lb.setText(str(self.act.bufferSize))
 		# self.top.temperature_lb.lb.setText(str(self.act.temp_PD_temperature/2))
@@ -595,23 +622,23 @@ class mainWindow(QMainWindow):
 			self.data = self.data[self.act.data_frame_update_point:]
 			self.step = self.step[self.act.data_frame_update_point:]
 			self.time = self.time[self.act.data_frame_update_point:]
-		
+		# print(time_f)
+		# print('len(time_f):', len(time_f))
 		if(self.save_cb_flag == True):
 			# np.savetxt(self.f, (np.vstack([time_f, data_f, step])).T, fmt='%5.5f, %5.5f, %d')
 			np.savetxt(self.f, (np.vstack([time_f, data_f, step, PD_temperature])).T, fmt='%5.5f, %5.5f, %d, %3.1f')
-		# print(time)
-		# print('len(time):', len(time))
-		# print('len(data):', len(data))
+		print(self.time)
+		print('len(self.time):', len(self.time))
+		
 		self.top.com_plot1.ax.plot(self.time, self.data, color = 'r', linestyle = '-', marker = '*', label="err")
 		# self.top.com_plot1.ax.plot(self.data, color = 'r', linestyle = '-', marker = '*', label="err")
 		self.top.com_plot1.figure.canvas.draw()		
 		self.top.com_plot1.figure.canvas.flush_events()
-		print('step avg: ', np.round(np.average(self.step), 3))
+		# print('step avg: ', np.round(np.average(self.step), 3))
 		self.top.com_plot2.ax.plot(self.time, self.step, color = 'r', linestyle = '-', marker = '*', label="step")
 		# self.top.com_plot2.ax.plot(self.step, color = 'r', linestyle = '-', marker = '*', label="step")
 		self.top.com_plot2.figure.canvas.draw()		
 		self.top.com_plot2.figure.canvas.flush_events()
-		
 		
 
         

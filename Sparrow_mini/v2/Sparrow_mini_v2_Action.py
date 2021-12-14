@@ -24,7 +24,7 @@ DEBUG2 = 1
 FAKE_DATA = 0
 # MV_MODE = 1
 
-class gyro_Action(QObject):
+class gyro_Action(QThread):
 	update_COMArray = pyqtSignal(object)
 	fog_update = pyqtSignal(object,object)
 	fog_update2 = pyqtSignal(object,object, object)
@@ -43,6 +43,7 @@ class gyro_Action(QObject):
 	TIME_PERIOD = 0.01
 	data_frame_update_point = 15
 	runFlag = 0
+	stopFlag = 0
 	#IMU 靜止時之offset
 	offset_wx = 0
 	wxVth = 0
@@ -70,13 +71,22 @@ class gyro_Action(QObject):
 	old_data_flag = 0
 	flag1_errtime = 0
 	valid_cnt_num = 5
-	def __init__(self, loggername):	
+	def __init__(self, parent = None):	
 		super().__init__()
+		# QThread.__init__(self)
 		self.COM = UART()
-		self.logger = logging.getLogger(loggername)
+		# self.logger = logging.getLogger(loggername)
 		# MAIN.mainWindow.Kal_update.emit.connect(self.test)
 		# self.SaveFileName = ''
-
+		
+	def startRun(self):
+		self.runFlag = 1
+		self.stopFlag = 0
+		print('startRun')
+	
+	def stopRun(self):
+		self.stopFlag = 1
+		print('stopRun')
 		
 	def printData(self, data):
 		print(hex(data[0]), end='\t')
@@ -87,7 +97,7 @@ class gyro_Action(QObject):
 	def errCorrection(self, data):
 		pass
 		
-	def updateOpenLoop(self):
+	def run(self):
 		data = np.zeros(self.data_frame_update_point)
 		time = np.zeros(self.data_frame_update_point)
 		step = np.zeros(self.data_frame_update_point)
@@ -118,12 +128,12 @@ class gyro_Action(QObject):
 		y_p[self.data_frame_update_point] = y0
 		p_p[self.data_frame_update_point] = p0 + globals.kal_Q
 		''' '''
-		print("runFlag=", self.runFlag)
-		if self.runFlag:
+		# print("runFlag=", self.runFlag)
+		if (self.runFlag):
 			self.COM.port.flushInput()
 			
-			while self.runFlag:
-				while(not (self.COM.port.inWaiting()>(self.data_frame_update_point*1))) : #rx buffer 不到 (self.data_frame_update_point*9) byte數目時不做任何事
+			while (self.runFlag):
+				while(not (self.COM.port.inWaiting()>(self.data_frame_update_point*19))) : #rx buffer 不到 (self.data_frame_update_point*9) byte數目時不做任何事
 					# print(self.COM.port.inWaiting())
 					pass
 				x_p[0] = x_p[self.data_frame_update_point]
@@ -131,13 +141,17 @@ class gyro_Action(QObject):
 				p_p[0] = p_p[self.data_frame_update_point]
 				
 				for i in range(0,self.data_frame_update_point): 
+					# if(not self.runFlag):
+						# break
+					# print('runFlag:', self.runFlag)
 					val = self.COM.read1Binary()
 					val3 = self.COM.read1Binary()
 					while(val[0] != self.check_byte or val3[0] != self.check_byte3):
-							val = val3
-							val3 = self.COM.read1Binary()
-							print("val:", val[0], end=', ')
-							print(val3[0])
+						val = val3
+						val3 = self.COM.read1Binary()
+						print("val:", val[0], end=', ')
+						print(val3[0])
+						
 					self.bufferSize = self.COM.port.inWaiting()
 					
 					# for j in temp_time:
@@ -207,15 +221,24 @@ class gyro_Action(QObject):
 					else:
 						data = np.append(data[1:], temp_data)
 						step = np.append(step[1:], temp_step)
+				#end of for
 				self.valid_cnt = self.valid_cnt + 1
 				if(self.valid_cnt == 1):
 					self.valid_flag = 1
 				if(self.valid_flag):
+					# print(time)
 					self.openLoop_updata4.emit(time, data, step, PD_temperature)
-					
+					if(self.stopFlag):
+						self.runFlag = 0
+						print('stopFlag')
+			#end of while
+		#end of if	
+		print('ready to stop')
+		self.fog_finished.emit()
+			
 		self.valid_flag = 0
 		self.valid_cnt = 0
-		self.fog_finished.emit()
+		# self.fog_finished.emit()
 		
 			
 	def convert2Sign_4B(self, datain) :

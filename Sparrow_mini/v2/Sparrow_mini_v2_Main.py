@@ -21,7 +21,7 @@ VERSION_TEXT = 'fog open loop 2020/12/25'
 READOUT_FILENAME = "Signal_Read_Out.txt"
 MAX_SAVE_INDEX = 3000
 TEST_MODE = False
-DLY_CMD = 0.05 #delay between command
+DLY_CMD = 0.01 #delay between command
 DEBUG = 1
 track_max = 50
 track_min = -50
@@ -68,8 +68,8 @@ ADC_COEFFI = (4/8192) #PD attnuates 5 times befor enter ADC
 TIME_COEFFI = 0.0001
 ''' define initial value'''
 
-MOD_H_INIT 			= 3400
-MOD_L_INIT 			= -3400
+MOD_H_INIT 			= 3300
+MOD_L_INIT 			= -3300
 FREQ_INIT 			= 138
 ERR_OFFSET_INIT 	= 0
 POLARITY_INIT 		= 1
@@ -84,7 +84,7 @@ CONST_STEP_INIT		= 0
 FPGA_Q_INIT			= 1
 FPGA_R_INIT			= 6
 SW_Q_INIT			= 1
-SW_R_INIT			= 30
+SW_R_INIT			= 10
 SF_A = 1
 SF_B = 0
 
@@ -103,6 +103,10 @@ class mainWindow(QMainWindow):
 	save_cb_flag = 0
 	sf_a_var = 0
 	sf_b_var = 0
+	start_time = 0
+	end_time = 0
+	first_data_flag = 1
+	time_offset = 0
 	''' pyqtSignal'''
 	usbconnect_status = pyqtSignal(object) #to trigger the btn to enable state
 	def __init__(self, parent = None):
@@ -115,29 +119,14 @@ class mainWindow(QMainWindow):
 		self.act = ACT.gyro_Action(self.loggername)
 		self.mainUI()
 		self.mainMenu()
-		# self.thread1 = QThread() #開一個thread
 		self.linkFunction()
-		# self.disableBtn()
 		self.data = np.empty(0)
 		self.step = np.empty(0)
 		self.time = np.empty(0)
 		self.setInitValue(False)
 		self.setBtnStatus(False)
 		self.get_rbVal()
-		
-	# def send_initial_value(self):
-		
-	
-	# def disableBtn(self):
-		# self.top.usb.btn.setEnabled(False)
-		# self.top.read_btn.read.setEnabled(False)
-		# self.top.stop_btn.stop.setEnabled(False)
-		
-	# def enableBtn(self):
-		# self.top.usb.btn.setEnabled(True)
-		# self.top.read_btn.read.setEnabled(True)
-		# self.top.stop_btn.stop.setEnabled(True)
-	
+			
 	def mainUI(self):
 		mainLayout = QGridLayout()
 		self.setCentralWidget(QWidget(self))
@@ -146,17 +135,10 @@ class mainWindow(QMainWindow):
 		
 	def mainMenu(self):
 		mainMenu = self.menuBar() #放menu的地方，一定要有
-
 		version_Menu = mainMenu.addMenu("version") #生成menu item
 		version = QAction("Version", self) #生成menu item裡面的細項，名稱叫"Version"
 		version.triggered.connect(self.versionBox)#把細項連接到要執行的動作
-		version_Menu.addAction(version)#把連接好動作的細項加回menu item
-		
-		# openFile_Menu = mainMenu.addMenu("open file")
-		# openFile = QAction("open", self)
-		# openFile.triggered.connect(self.openFileBox)
-		# openFile_Menu.addAction(openFile)
-		
+		version_Menu.addAction(version)#把連接好動作的細項加回menu item		
 
 
 	def linkFunction(self):
@@ -164,16 +146,19 @@ class mainWindow(QMainWindow):
 		self.top.usb.bt_update.clicked.connect(self.update_comport)
 		self.top.usb.cs.currentIndexChanged.connect(self.uadate_comport_label)
 		self.top.usb.bt_connect.clicked.connect(self.usbConnect)
+
+		''' thread connect '''
 		self.top.read_btn.bt.clicked.connect(self.thread1Start) # set runFlag=1
 		self.top.stop_btn.bt.clicked.connect(self.buttonStop) # set runFlag=0
-		''' thread connect '''
-		# self.thread1.started.connect(lambda:self.act.updateOpenLoop(Kal_status = self.Kal_status))
-		# self.thread1.started.connect(self.act.updateOpenLoop)
 
 		''' emit connect '''
 		self.act.fog_finished.connect(self.myThreadStop) #runFlag=0時fog_finished會emit，之後關掉thread1
-		self.act.openLoop_updata4.connect(self.plotData)
-		# self.act.openLoop_updata4.connect(self.printData)
+		
+		if(globals.PRINT_MODE):
+			self.act.openLoop_updata4.connect(self.printData)
+		else:
+			self.act.openLoop_updata4.connect(self.plotData)
+		
 		#btn enable signal
 		self.usbconnect_status.connect(self.setBtnStatus) #確定usb連接成功時才enable btn
 		self.usbconnect_status.connect(self.setInitValue)
@@ -205,9 +190,6 @@ class mainWindow(QMainWindow):
 		
 		''' check box'''
 		self.top.save_text.cb.toggled.connect(lambda:self.cb_toogled(self.top.save_text.cb))
-
-
-		# self.top.trigDelay.spin.valueChanged.connect(self.send_trigDelay_CMD)
 
 	# """ comport functin """
 	def update_comport(self):
@@ -278,8 +260,8 @@ class mainWindow(QMainWindow):
 			self.send32BitCmd(FB_ON_INIT)
 			self.act.COM.writeBinary(CONST_STEP_ADDR)
 			self.send32BitCmd(CONST_STEP_INIT)
-			globals.kal_Q = 1
-			globals.kal_R = 30
+			globals.kal_Q = SW_Q_INIT
+			globals.kal_R = SW_R_INIT
 			
 			self.top.freq.spin.setValue(FREQ_INIT)
 			time.sleep(DLY_CMD)
@@ -318,9 +300,6 @@ class mainWindow(QMainWindow):
 			self.top.sf_b.le.setText('0') 
 			self.sf_a_var = float(self.top.sf_a.le.text())
 			self.sf_b_var = float(self.top.sf_b.le.text())
-			# print('init sf_a_var:', self.sf_a_var)
-			# print('init sf_b_var:', self.sf_b_var)
-			# print(self.sf_a_var+self.sf_b_var)
 
 	def SF_A_EDIT(self):
 		self.sf_a_var = float(self.top.sf_a.le.text())
@@ -337,9 +316,13 @@ class mainWindow(QMainWindow):
 	def send32BitCmd(self, value):
 		if(value < 0):
 			value = (1<<32) + value
+		# time.sleep(DLY_CMD)
 		self.act.COM.writeBinary(value>>24 & 0xFF)
+		time.sleep(DLY_CMD)
 		self.act.COM.writeBinary(value>>16 & 0xFF)
+		time.sleep(DLY_CMD)
 		self.act.COM.writeBinary(value>>8 & 0xFF)
+		time.sleep(DLY_CMD)
 		self.act.COM.writeBinary(value & 0xFF)
 		time.sleep(DLY_CMD)
 	
@@ -546,15 +529,18 @@ class mainWindow(QMainWindow):
 			
 		self.act.COM.writeBinary(DATA_OUT_START)
 		self.send32BitCmd(1)
+		# self.send32BitCmd(3)
+		self.start_time = time.time()
 		self.resetTimer()
-		self.act.startRun()
-		# self.act.runFlag = True
+		self.act.startRun() # set self.act.runFlag = True
 		self.act.start()
+		
 
 	def buttonStop(self):#set runFlag=0
 		# self.act.runFlag = False
 		self.act.dt_init_flag = 1
 		self.act.stopRun()
+		
 		# self.act.terminate() 
 		
 	def myThreadStop(self):
@@ -567,17 +553,24 @@ class mainWindow(QMainWindow):
 			stop_time_header = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
 			self.f.writelines('#' + stop_time_header + '\n')
 			self.f.close()
+		self.first_data_flag = 1
 		self.data  = np.empty(0)
 		self.time  = np.empty(0)
 		self.step  = np.empty(0)
 		
 		
-	def printData(self, time, data, step, PD_temperature):
+	def printData(self, time_in, data, step, PD_temperature):
+		if(self.first_data_flag):
+			self.first_data_flag = 0
+			self.end_time = time.time()
+			self.time_offset = 0.5*(self.end_time - self.start_time)
+			print(self.time_offset)
 		self.top.buffer_lb.lb.setText(str(self.act.bufferSize))
 		self.top.temperature_lb.lb.setText(str(PD_temperature[0]))
 		data_f = data*ADC_COEFFI 
-		time_f = time*TIME_COEFFI
+		time_f = time_in*TIME_COEFFI
 		step_f = step*self.sf_a_var + self.sf_b_var
+		
 		print('time: ', time_f)
 		print('err : ', data_f)
 		print('step: ', step_f)

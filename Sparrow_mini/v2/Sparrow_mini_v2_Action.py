@@ -24,6 +24,8 @@ DEBUG2 = 1
 FAKE_DATA = 0
 # MV_MODE = 1
 
+
+
 class gyro_Action(QThread):
 	update_COMArray = pyqtSignal(object)
 	fog_update = pyqtSignal(object,object)
@@ -41,7 +43,10 @@ class gyro_Action(QThread):
 	valid_flag = 0
 	valid_cnt = 0
 	TIME_PERIOD = 0.01
-	data_frame_update_point = 15
+	if(globals.PRINT_MODE):
+		data_frame_update_point = 1
+	else: 
+		data_frame_update_point = 15
 	runFlag = 0
 	stopFlag = 0
 	#IMU 靜止時之offset
@@ -96,7 +101,16 @@ class gyro_Action(QThread):
 		
 	def errCorrection(self, data):
 		pass
-		
+	
+	def run123(self):
+		while(1):
+			if(self.COM.port.inWaiting()>0):
+				print(self.COM.port.inWaiting(), end=', ')
+				var = self.COM.read1Binary()
+				print(var[0])
+			
+			
+	
 	def run(self):
 		data = np.zeros(self.data_frame_update_point)
 		time = np.zeros(self.data_frame_update_point)
@@ -128,6 +142,7 @@ class gyro_Action(QThread):
 		y_p[self.data_frame_update_point] = y0
 		p_p[self.data_frame_update_point] = p0 + globals.kal_Q
 		''' '''
+
 		# print("runFlag=", self.runFlag)
 		if (self.runFlag):
 			self.COM.port.flushInput()
@@ -179,14 +194,7 @@ class gyro_Action(QThread):
 					temp_step = self.convert2Sign_4B(temp_step)
 					temp_PD_temperature = self.convert2Unsign_4B(temp_PD_temperature)/2
 					
-					# print('PD temp: ', temp_PD_temperature, end='\n')
-					# print('temp_time: ', temp_time, end='\n')
-					# print('temp_data: ', temp_data, end='\n')
-					# print('temp_step: ', temp_step, end='\n\n')
-					# print('buffer: ', self.bufferSize)
-					
 					self.kal_flag = globals.kal_status
-					
 					''' Kalmman filter'''
 					'''------update------'''
 					k[i] = p_p[i]/(p_p[i] + globals.kal_R) #k_n
@@ -201,19 +209,8 @@ class gyro_Action(QThread):
 					
 					''' end of kalmman filter'''
 					
-					# data_sum = data_sum - data[0]
-					# data_sum = data_sum + temp_data
-					# data_MV = data_sum/self.data_frame_update_point
-					# val_data = data_MV
-					
-					# step_sum = step_sum - step[0]
-					# step_sum = step_sum + temp_step
-					# step_MV = step_sum/self.data_frame_update_point
-					# val_step = step_MV
 					
 					time = np.append(time[1:], temp_time)
-					# data = np.append(data[1:], temp_data)
-					# step = np.append(step[1:], temp_step)
 					PD_temperature = np.append(PD_temperature[1:], temp_PD_temperature)
 					if(self.kal_flag == True):
 						data = np.append(data[1:], x[i]) #kalmman filter
@@ -222,15 +219,18 @@ class gyro_Action(QThread):
 						data = np.append(data[1:], temp_data)
 						step = np.append(step[1:], temp_step)
 				#end of for
+				self.openLoop_updata4.emit(time, data, step, PD_temperature)
+				if(self.stopFlag):
+					self.runFlag = 0
+					print('stopFlag')
 				self.valid_cnt = self.valid_cnt + 1
 				if(self.valid_cnt == 1):
 					self.valid_flag = 1
-				if(self.valid_flag):
-					# print(time)
-					self.openLoop_updata4.emit(time, data, step, PD_temperature)
-					if(self.stopFlag):
-						self.runFlag = 0
-						print('stopFlag')
+				# if(self.valid_flag):
+					# self.openLoop_updata4.emit(time, data, step, PD_temperature)
+					# if(self.stopFlag):
+						# self.runFlag = 0
+						# print('stopFlag')
 			#end of while
 		#end of if	
 		print('ready to stop')

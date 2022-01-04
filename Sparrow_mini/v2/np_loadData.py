@@ -3,11 +3,12 @@ import sys
 import numpy as np
 import matplotlib.pyplot as plt
 
-NAME = '12-7'
+
+NAME = 'temp'
 
 print(sys.path)
 Var = np.loadtxt(NAME+'.txt', comments='#', delimiter=',')
-# Var2 = np.loadtxt(NAME+'_track.txt', comments='#', delimiter=',')
+# Var = np.loadtxt(NAME+'', comments='#', delimiter=',')
 print(Var.shape)
 print(Var[1,1])
 
@@ -47,22 +48,47 @@ plt.title("diff_t") # title
 plt.xlabel("t(s)") # x label
 plt.ylabel("difft(ms)") # y label
 
-plt.figure(2)
-plt.plot(t, err, label='err signal')
-plt.plot(t, PD_T, label='PD temp')
-plt.title("Err") # title
-plt.xlabel("t(s)") # x label
-plt.ylabel("LSB") # y label
-plt.legend()
+# plt.figure(2)
+# plt.plot(t, err, label='err signal')
+# plt.plot(t, PD_T, label='PD temp')
+# plt.title("Err") # title
+# plt.xlabel("t(s)") # x label
+# plt.ylabel("LSB") # y label
+# plt.legend()
+
+#####double Y anix#######
+fig, ax1 = plt.subplots()
+
+color = 'tab:red'
+ax1.set_xlabel('time (s)')
+ax1.set_ylabel('V', color=color)
+ax1.plot(t, err, color=color)
+ax1.tick_params(axis='y', labelcolor=color)
+
+ax2 = ax1.twinx()  # instantiate a second axes that shares the same x-axis
+color = 'tab:blue'
+ax2.set_ylabel('PD temp. (degree C)', color=color)  # we already handled the x-label with ax1
+ax2.plot(t, PD_T, color=color)
+ax2.tick_params(axis='y', labelcolor=color)
+
+fig.tight_layout()  # otherwise the right y-label is slightly clipped
+
+print('avg(err): ', np.average(err))
+print('std(err): ', np.std(err))
+#####
+
+
+
 
 plt.figure(3)
 plt.plot(t, step, label='step signal')
-plt.plot(t, PD_T, label='PD temp')
+# plt.plot(t, PD_T, label='PD temp')
 plt.title("STEP") # title
 plt.xlabel("t(s)") # x label
 plt.ylabel("LSB") # y label
 plt.legend()
-
+print('avg(step): ', np.average(step))
+print('std(step): ', np.std(step))
 
 # plt.figure(3)
 # plt.plot(t, Nano33_wx, label='Nano33_wx')

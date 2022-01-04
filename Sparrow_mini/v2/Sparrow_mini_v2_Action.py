@@ -46,7 +46,7 @@ class gyro_Action(QThread):
 	if(globals.PRINT_MODE):
 		data_frame_update_point = 1
 	else: 
-		data_frame_update_point = 15
+		data_frame_update_point = 30
 	runFlag = 0
 	stopFlag = 0
 	#IMU 靜止時之offset

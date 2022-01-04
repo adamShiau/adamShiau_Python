@@ -52,7 +52,8 @@ FPGA_Q_ADDR	=		13
 FPGA_R_ADDR = 		14
 
 DAC_GAIN_ADDR = 	50
-DATA_OUT_START=		99
+DATA_RATE_ADDR =	98
+DATA_OUT_START_ADDR =	99
 
 STEP_MAX = 10
 V2PIN = 11
@@ -87,7 +88,7 @@ SW_Q_INIT			= 1
 SW_R_INIT			= 10
 SF_A = 1
 SF_B = 0
-
+DATA_RATE_INIT		= 2135
 
 # STEP_MAX_INIT = 10000
 # V2PI_INIT = 30000
@@ -107,6 +108,8 @@ class mainWindow(QMainWindow):
 	end_time = 0
 	first_data_flag = 1
 	time_offset = 0
+	trig_mode = 0
+	temp_time = 0
 	''' pyqtSignal'''
 	usbconnect_status = pyqtSignal(object) #to trigger the btn to enable state
 	def __init__(self, parent = None):
@@ -165,6 +168,8 @@ class mainWindow(QMainWindow):
 		
 		''' radio btn'''
 		self.top.Kal_rb.toggled.connect(lambda:self.rb_toggled(self.top.Kal_rb))
+		self.top.trig_mode_rb.rb1.toggled.connect(self.trig_mode_rb_chk) 
+		self.top.trig_mode_rb.rb1.toggled.connect(self.slider_en)
 		''' line edit '''
 		self.top.sf_a.le.editingFinished.connect(self.SF_A_EDIT)
 		self.top.sf_b.le.editingFinished.connect(self.SF_B_EDIT)
@@ -186,8 +191,9 @@ class mainWindow(QMainWindow):
 		self.top.gain1.spin.valueChanged.connect(self.send_GAIN1_CMD)
 		self.top.gain2.spin.valueChanged.connect(self.send_GAIN2_CMD)
 		self.top.fb_on.spin.valueChanged.connect(self.send_FB_ON_CMD)
-		self.top.dac_gain.spin.valueChanged.connect(self.send_DAC_GAIN_CMD)
-		
+		self.top.dac_gain.spin.valueChanged.connect(self.send_DAC_GAIN_CMD) 
+		''' slider '''
+		self.top.dataRate_sd.sd.valueChanged.connect(self.send_DATA_RATE_CMD) 
 		''' check box'''
 		self.top.save_text.cb.toggled.connect(lambda:self.cb_toogled(self.top.save_text.cb))
 
@@ -260,8 +266,11 @@ class mainWindow(QMainWindow):
 			self.send32BitCmd(FB_ON_INIT)
 			self.act.COM.writeBinary(CONST_STEP_ADDR)
 			self.send32BitCmd(CONST_STEP_INIT)
+			self.act.COM.writeBinary(DATA_RATE_ADDR)
+			self.send32BitCmd(DATA_RATE_INIT)
 			globals.kal_Q = SW_Q_INIT
-			globals.kal_R = SW_R_INIT
+			globals.kal_R = SW_R_INIT 
+			
 			
 			self.top.freq.spin.setValue(FREQ_INIT)
 			time.sleep(DLY_CMD)
@@ -291,7 +300,9 @@ class mainWindow(QMainWindow):
 			time.sleep(DLY_CMD)
 			self.top.HD_Q.spin.setValue(FPGA_Q_INIT)
 			time.sleep(DLY_CMD)
-			self.top.HD_R.spin.setValue(FPGA_R_INIT)
+			self.top.HD_R.spin.setValue(FPGA_R_INIT) 
+			time.sleep(DLY_CMD)
+			self.top.dataRate_sd.sd.setValue(DATA_RATE_INIT) 
 			time.sleep(DLY_CMD)
 			self.top.SW_Q.spin.setValue(globals.kal_Q)
 			self.top.SW_R.spin.setValue(globals.kal_R)
@@ -437,6 +448,12 @@ class mainWindow(QMainWindow):
 		globals.kal_R = value
 		print(value);
 		print('kal_R:', globals.kal_R)
+		
+	def send_DATA_RATE_CMD(self):
+		value = self.top.dataRate_sd.sd.value()	
+		print('set dataRate: ', value)
+		self.act.COM.writeBinary(DATA_RATE_ADDR)
+		self.send32BitCmd(value)
 				
 	# def send_V2PIN_CMD(self):
 		# value = self.top.v2piN.spin.value()	
@@ -512,9 +529,21 @@ class mainWindow(QMainWindow):
 		globals.kal_status = rb.isChecked()
 		print('globals.kal_status:', globals.kal_status)
 		
+	def trig_mode_rb_chk(self):
+		self.trig_mode = self.top.trig_mode_rb.rb1.isChecked()
+		print('trig INT mode: ', self.trig_mode)
+		
+	def slider_en(self):
+		if(self.trig_mode == True): #internal mode
+			self.top.dataRate_sd.setEnabled(True)
+		else:
+			self.top.dataRate_sd.setEnabled(False)
+		
 	def get_rbVal(self):
 		globals.Kal_status = self.top.Kal_rb.isChecked()
 		print('Kal:', globals.Kal_status)
+		self.trig_mode = self.top.trig_mode_rb.rb1.isChecked()
+		print('trig INT mode: ', self.trig_mode)
 	
 	def open_file(self, filename):
 		self.f=open(filename, 'w')
@@ -526,12 +555,16 @@ class mainWindow(QMainWindow):
 		# self.save_status = 1
 		if(self.save_cb_flag == True):
 			self.open_file(self.top.save_text.le.text())
-			
-		self.act.COM.writeBinary(DATA_OUT_START)
-		self.send32BitCmd(1)
-		# self.send32BitCmd(3)
-		self.start_time = time.time()
+		
 		self.resetTimer()
+		if(self.trig_mode): 	#internal mode
+			self.act.COM.writeBinary(DATA_OUT_START_ADDR)
+			self.send32BitCmd(1)
+		else: 				#sync mode
+			self.act.COM.writeBinary(DATA_OUT_START_ADDR)
+			self.send32BitCmd(2)
+		self.start_time = time.time()
+		
 		self.act.startRun() # set self.act.runFlag = True
 		self.act.start()
 		
@@ -544,7 +577,7 @@ class mainWindow(QMainWindow):
 		# self.act.terminate() 
 		
 	def myThreadStop(self):
-		self.act.COM.writeBinary(DATA_OUT_START)
+		self.act.COM.writeBinary(DATA_OUT_START_ADDR)
 		self.send32BitCmd(0)
 		
 		if(self.save_cb_flag == True):
@@ -579,12 +612,11 @@ class mainWindow(QMainWindow):
 		if(self.act.runFlag):
 			self.top.com_plot1.ax.clear()
 			self.top.com_plot2.ax.clear()
-			
+		update_rate = 1/((time[1] - time[0])*TIME_COEFFI)
 		#update label#
 		self.top.buffer_lb.lb.setText(str(self.act.bufferSize))
-		# self.top.temperature_lb.lb.setText(str(self.act.temp_PD_temperature/2))
-		# print('len(temp_PD): ', len(temp_PD))
 		self.top.temperature_lb.lb.setText(str(PD_temperature[0]))
+		self.top.dataRate_lb.lb.setText(str(np.round(update_rate, 1)))
 		
 		data_f = data*ADC_COEFFI 
 		time_f = time*TIME_COEFFI
@@ -599,7 +631,6 @@ class mainWindow(QMainWindow):
 			self.time = self.time[self.act.data_frame_update_point:]
 		
 		if(self.save_cb_flag == True):
-			# np.savetxt(self.f, (np.vstack([time_f, data_f, step])).T, fmt='%5.5f, %5.5f, %d')
 			np.savetxt(self.f, (np.vstack([time_f, data_f, step, PD_temperature])).T, fmt='%5.5f, %5.5f, %d, %3.1f')
 		# print(time)
 		# print('len(time):', len(time))
@@ -609,6 +640,7 @@ class mainWindow(QMainWindow):
 		self.top.com_plot1.figure.canvas.draw()		
 		self.top.com_plot1.figure.canvas.flush_events()
 		if(self.act.runFlag):
+			# print('update rate: ', np.round(update_rate, 1), end=', ')
 			print('step avg: ', np.round(np.average(self.step), 3))
 		self.top.com_plot2.ax.plot(self.time, self.step, color = 'r', linestyle = '-', marker = '*', label="step")
 		# self.top.com_plot2.ax.plot(self.step, color = 'r', linestyle = '-', marker = '*', label="step")

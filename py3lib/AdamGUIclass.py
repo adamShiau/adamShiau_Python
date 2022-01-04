@@ -246,6 +246,21 @@ class gaugePlotwLabel(QGraphicsView):
 		layout.addWidget(self.title, 2, 19, 1, 1)
 		self.setLayout(layout)
 		
+class sliderBlock(QGroupBox):
+	def __init__(self, title, minValue, maxValue, curValue, step = 1, interval = 100, parent=None):
+		super(sliderBlock, self).__init__(parent)
+		self.setTitle(title)
+		self.sd = QSlider(Qt.Horizontal)
+		self.sd.setMinimum(minValue)
+		self.sd.setMaximum(maxValue)
+		self.sd.setValue(curValue)
+		self.sd.setSingleStep(step)
+		self.sd.setTickInterval(interval)
+		self.sd.setTickPosition(QSlider.TicksBelow)
+		layout = QVBoxLayout() 
+		layout.addWidget(self.sd)     
+		self.setLayout(layout)
+
 class spinBlock(QGroupBox):
 	def __init__(self, title, minValue, maxValue, double = False, step = 1, Decimals = 2, parent=None):
 		super(spinBlock, self).__init__(parent)
@@ -282,6 +297,21 @@ class spinBlockOneLabel(QGroupBox):
 		layout.addWidget(self.lb)  		
 		self.setLayout(layout)
 	
+class radioBot_2(QWidget):
+	def __init__(self, title='', name1='', name2='', parent=None):
+		super(radioBot_2, self).__init__(parent)
+		self.groupBox = QGroupBox(title)
+		self.rb1 = QRadioButton(name1)
+		self.rb2 = QRadioButton(name2)
+		
+	def H_layout(self):
+		layout = QHBoxLayout()
+		layout.addWidget(self.rb1)
+		layout.addWidget(self.rb2)
+		self.groupBox.setLayout(layout)
+		self.groupBox.show()
+		return self.groupBox
+	
 class chkBoxBlock_1(QWidget):
 	def __init__(self, title='', name='', parent=None):
 		super(chkBoxBlock_1, self).__init__(parent)
@@ -302,8 +332,16 @@ class chkBoxBlock_2(QWidget):
 		self.cb1 = QCheckBox(title+'_'+name1)
 		self.cb2 = QCheckBox(title+'_'+name2)
 		
-	def layout(self):
+	def V_layout(self):
 		layout = QVBoxLayout()
+		layout.addWidget(self.cb1)
+		layout.addWidget(self.cb2)
+		self.groupBox.setLayout(layout)
+		self.groupBox.show()
+		return self.groupBox
+		
+	def H_layout(self):
+		layout = QHBoxLayout()
 		layout.addWidget(self.cb1)
 		layout.addWidget(self.cb2)
 		self.groupBox.setLayout(layout)

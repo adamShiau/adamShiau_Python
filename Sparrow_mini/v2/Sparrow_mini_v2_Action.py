@@ -193,6 +193,8 @@ class gyro_Action(QThread):
 					temp_data = self.convert2Sign_4B(temp_data)
 					temp_step = self.convert2Sign_4B(temp_step)
 					temp_PD_temperature = self.convert2Unsign_4B(temp_PD_temperature)/2
+					# print("temp_time:", temp_time);
+					# print("temp_data:", temp_time);
 					
 					self.kal_flag = globals.kal_status
 					''' Kalmman filter'''

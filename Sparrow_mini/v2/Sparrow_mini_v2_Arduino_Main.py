@@ -17,7 +17,7 @@ import Sparrow_mini_v2_Widget as UI
 import Sparrow_mini_v2_Action as ACT
 import gyro_Globals as globals
 TITLE_TEXT = "OPEN LOOP"
-VERSION_TEXT = 'fog open loop 2020/12/25'
+VERSION_TEXT = 'PIG V2'
 READOUT_FILENAME = "Signal_Read_Out.txt"
 MAX_SAVE_INDEX = 3000
 TEST_MODE = False
@@ -34,35 +34,41 @@ gyro200_factor = 0.0121
 # wx_offset = 107.065
 # wy_offset = -513.717
 
-'''define uart address '''
-MOD_FREQ_ADDR = 		0
-MOD_AMP_H_ADDR = 		1
-MOD_AMP_L_ADDR = 		2
-ERR_OFFSET_ADDR =		3
-POLARITY_ADDR = 		4
-WAIT_CNT_ADDR = 		5
-ERR_TH_ADDR = 			6
-ERR_AVG_ADDR = 			7
-TIMER_RST_ADDR = 		8
-GAIN1_ADDR = 			9
-GAIN2_ADDR = 			10
-FB_ON_ADDR = 			11
-CONST_STEP_ADDR = 		12
-FPGA_Q_ADDR	=			13
-FPGA_R_ADDR = 			14
+'''-------define CMD address map-------'''
+'''0~7 for output mode setting'''
+'''8~255 for parameter setting'''
+MODE_STOP 			= 0
+MODE_FOG			= 1
+MODE_IMU			= 2
+MODE_EQ				= 3
+CMD_FOG_MOD_FREQ	= 8
+CMD_FOG_MOD_AMP_H	= 9
+CMD_FOG_MOD_AMP_L	= 10
+CMD_FOG_ERR_OFFSET	= 11
+CMD_FOG_POLARITY	= 12
+CMD_FOG_WAIT_CNT	= 13
+CMD_FOG_ERR_TH		= 14
+CMD_FOG_ERR_AVG		= 15
+CMD_FOG_TIMER_RST	= 16
+CMD_FOG_GAIN1		= 17
+CMD_FOG_GAIN2		= 18
+CMD_FOG_FB_ON		= 19
+CMD_FOG_CONST_STEP	= 20
+CMD_FOG_FPGA_Q		= 21
+CMD_FOG_FPGA_R		= 22
+CMD_FOG_DAC_GAIN 	= 23
+CMD_FOG_INT_DELAY	= 24
+CMD_FOG_OUT_START	= 25
 
-DAC_GAIN_ADDR = 		50
-DATA_RATE_ADDR =		98
-DATA_OUT_START_ADDR =	99
 
-STEP_MAX = 10
-V2PIN = 11
-OPENLOOP_START = 12
-STEP_TRIG_DLY = 13
+# STEP_MAX = 10
+# V2PIN = 11
+# OPENLOOP_START = 12
+# STEP_TRIG_DLY = 13
 # GAINPRE = '14 '
 # FB_ON = '15 '
-FPGA_Q =14
-FPGA_R = 15
+# FPGA_Q =14
+# FPGA_R = 15
 '''adc conversion '''
 ADC_COEFFI = (4/8192) #PD attnuates 5 times befor enter ADC
 # ADC_COEFFI = 1
@@ -240,33 +246,33 @@ class mainWindow(QMainWindow):
 
 	def setInitValue(self, EN):
 		if(EN):
-			self.act.COM.writeBinary(MOD_FREQ_ADDR)
+			self.act.COM.writeBinary(CMD_FOG_MOD_FREQ)
 			self.send32BitCmd(FREQ_INIT)
-			self.act.COM.writeBinary(MOD_AMP_H_ADDR)
+			self.act.COM.writeBinary(CMD_FOG_MOD_AMP_H)
 			self.send32BitCmd(MOD_H_INIT)
-			self.act.COM.writeBinary(MOD_AMP_L_ADDR)
+			self.act.COM.writeBinary(CMD_FOG_MOD_AMP_L)
 			self.send32BitCmd(MOD_L_INIT)
-			self.act.COM.writeBinary(ERR_OFFSET_ADDR)
+			self.act.COM.writeBinary(CMD_FOG_ERR_OFFSET)
 			self.send32BitCmd(ERR_OFFSET_INIT)
-			self.act.COM.writeBinary(POLARITY_ADDR)
+			self.act.COM.writeBinary(CMD_FOG_POLARITY)
 			self.send32BitCmd(POLARITY_INIT)
-			self.act.COM.writeBinary(WAIT_CNT_ADDR)
+			self.act.COM.writeBinary(CMD_FOG_WAIT_CNT)
 			self.send32BitCmd(WAIT_CNT_INIT)
-			self.act.COM.writeBinary(ERR_TH_ADDR)
+			self.act.COM.writeBinary(CMD_FOG_ERR_TH)
 			self.send32BitCmd(ERR_TH_INIT)
-			self.act.COM.writeBinary(ERR_AVG_ADDR)
+			self.act.COM.writeBinary(CMD_FOG_ERR_AVG)
 			self.send32BitCmd(ERR_AVG_INIT)
-			self.act.COM.writeBinary(GAIN1_ADDR)
+			self.act.COM.writeBinary(CMD_FOG_GAIN1)
 			self.send32BitCmd(GAIN1_SEL_INIT)
-			self.act.COM.writeBinary(GAIN2_ADDR)
+			self.act.COM.writeBinary(CMD_FOG_GAIN2)
 			self.send32BitCmd(GAIN2_SEL_INIT)
-			self.act.COM.writeBinary(DAC_GAIN_ADDR)
+			self.act.COM.writeBinary(CMD_FOG_DAC_GAIN)
 			self.send32BitCmd(DAC_GAIN_INIT)
-			self.act.COM.writeBinary(FB_ON_ADDR)
+			self.act.COM.writeBinary(CMD_FOG_FB_ON)
 			self.send32BitCmd(FB_ON_INIT)
-			self.act.COM.writeBinary(CONST_STEP_ADDR)
+			self.act.COM.writeBinary(CMD_FOG_CONST_STEP)
 			self.send32BitCmd(CONST_STEP_INIT)
-			self.act.COM.writeBinary(DATA_RATE_ADDR)
+			self.act.COM.writeBinary(CMD_FOG_INT_DELAY)
 			self.send32BitCmd(DATA_RATE_INIT)
 			globals.kal_Q = SW_Q_INIT
 			globals.kal_R = SW_R_INIT 
@@ -321,7 +327,7 @@ class mainWindow(QMainWindow):
 		print('sf_b_var: ', self.sf_b_var)
 	
 	def resetTimer(self):
-		self.act.COM.writeBinary(TIMER_RST_ADDR)
+		self.act.COM.writeBinary(CMD_FOG_TIMER_RST)
 		self.send32BitCmd(1)
 		
 	def send32BitCmd(self, value):
@@ -347,94 +353,94 @@ class mainWindow(QMainWindow):
 		print('set freq: ', value)
 		self.top.freq.lb.setText(str(round(1/(2*(value+1)*10e-6),2))+' KHz')
 		# print(hex(value))
-		self.act.COM.writeBinary(MOD_FREQ_ADDR)
+		self.act.COM.writeBinary(CMD_FOG_MOD_FREQ)
 		self.send32BitCmd(value)
 		
 	def send_MOD_H_CMD(self):
 		value = self.top.mod_H.spin.value()	
 		print('set mod_H: ', value)
-		self.act.COM.writeBinary(MOD_AMP_H_ADDR)
+		self.act.COM.writeBinary(CMD_FOG_MOD_AMP_H)
 		self.send32BitCmd(value)
 	
 	def send_MOD_L_CMD(self):
 		value = self.top.mod_L.spin.value()	
 		print('set mod_L: ', value)
-		self.act.COM.writeBinary(MOD_AMP_L_ADDR)
+		self.act.COM.writeBinary(CMD_FOG_MOD_AMP_L)
 		self.send32BitCmd(value)
 	
 	def send_ERR_OFFSET_CMD(self):
 		value = self.top.err_offset.spin.value()	
 		print('set err offset: ', value)
-		self.act.COM.writeBinary(ERR_OFFSET_ADDR)
+		self.act.COM.writeBinary(CMD_FOG_ERR_OFFSET)
 		self.send32BitCmd(value)
 		
 	def send_POLARITY_CMD(self):
 		value = self.top.polarity.spin.value()	
 		print('set polarity: ', value)
-		self.act.COM.writeBinary(POLARITY_ADDR)
+		self.act.COM.writeBinary(CMD_FOG_POLARITY)
 		self.send32BitCmd(value)
 		
 	def send_WAIT_CNT_CMD(self):
 		value = self.top.wait_cnt.spin.value()
 		print('set wait cnt: ', value)
-		self.act.COM.writeBinary(WAIT_CNT_ADDR)
+		self.act.COM.writeBinary(CMD_FOG_WAIT_CNT)
 		self.send32BitCmd(value)
 		
 	def send_ERR_TH_CMD(self):
 		value = self.top.err_th.spin.value()	
 		print('set err_th: ', value)
-		self.act.COM.writeBinary(ERR_TH_ADDR)
+		self.act.COM.writeBinary(CMD_FOG_ERR_TH)
 		self.send32BitCmd(value)
 		
 	def send_AVG_CMD(self):
 		value = self.top.avg.spin.value()
 		print('set err_avg: ', value)
-		self.act.COM.writeBinary(ERR_AVG_ADDR)
+		self.act.COM.writeBinary(CMD_FOG_ERR_AVG)
 		self.send32BitCmd(value)
 
 	def send_GAIN1_CMD(self):
 		value = self.top.gain1.spin.value()	
 		print('set gain1: ', value)
-		self.act.COM.writeBinary(GAIN1_ADDR)
+		self.act.COM.writeBinary(CMD_FOG_GAIN1)
 		time.sleep(DLY_CMD)
 		self.send32BitCmd(value)
 		
 	def send_GAIN2_CMD(self):
 		value = self.top.gain2.spin.value()	
 		print('set gain2: ', value)
-		self.act.COM.writeBinary(GAIN2_ADDR)
+		self.act.COM.writeBinary(CMD_FOG_GAIN2)
 		time.sleep(DLY_CMD)
 		self.send32BitCmd(value)
 		
 	def send_FB_ON_CMD(self):
 		value = self.top.fb_on.spin.value()	
 		print('set FB on: ', value)
-		self.act.COM.writeBinary(FB_ON_ADDR)
+		self.act.COM.writeBinary(CMD_FOG_FB_ON)
 		time.sleep(DLY_CMD)
 		self.send32BitCmd(value)
 	
 	def send_DAC_GAIN_CMD(self):
 		value = self.top.dac_gain.spin.value()
 		print('set DAC gain: ', value)
-		self.act.COM.writeBinary(DAC_GAIN_ADDR)
+		self.act.COM.writeBinary(CMD_FOG_DAC_GAIN)
 		self.send32BitCmd(value)
 	
 	def send_CONST_STEP_CMD(self):
 		value = self.top.const_step.spin.value()	
 		print('set constant step: ', value)
-		self.act.COM.writeBinary(CONST_STEP_ADDR)
+		self.act.COM.writeBinary(CMD_FOG_CONST_STEP)
 		self.send32BitCmd(value)
 		
 	def send_HD_Q(self):
 		value = self.top.HD_Q.spin.value()	
 		print('set FPGA Q: ', value)
-		self.act.COM.writeBinary(FPGA_Q_ADDR)
+		self.act.COM.writeBinary(CMD_FOG_FPGA_Q)
 		self.send32BitCmd(value)
 				
 	def send_HD_R(self):
 		value = self.top.HD_R.spin.value()	
 		print('set FPGA R: ', value)
-		self.act.COM.writeBinary(FPGA_R_ADDR)
+		self.act.COM.writeBinary(CMD_FOG_FPGA_R)
 		self.send32BitCmd(value)
 	
 	def update_kal_Q(self):
@@ -452,7 +458,7 @@ class mainWindow(QMainWindow):
 	def send_DATA_RATE_CMD(self):
 		value = self.top.dataRate_sd.sd.value()	
 		print('set dataRate: ', value)
-		self.act.COM.writeBinary(DATA_RATE_ADDR)
+		self.act.COM.writeBinary(CMD_FOG_INT_DELAY)
 		self.send32BitCmd(value)
 				
 	# def send_V2PIN_CMD(self):
@@ -550,35 +556,33 @@ class mainWindow(QMainWindow):
 		start_time_header = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
 		self.f.writelines('#' + start_time_header + '\n')
 	
-	
 	def thread1Start(self):
-		# self.save_status = 1
 		if(self.save_cb_flag == True):
 			self.open_file(self.top.save_text.le.text())
 		
 		self.resetTimer()
 		if(self.trig_mode): 	#internal mode
-			self.act.COM.writeBinary(DATA_OUT_START_ADDR)
+			self.act.COM.writeBinary(MODE_IMU)
 			self.send32BitCmd(1)
 		else: 				#sync mode
-			self.act.COM.writeBinary(DATA_OUT_START_ADDR)
+			self.act.COM.writeBinary(MODE_IMU)
 			self.send32BitCmd(2)
 		self.start_time = time.time()
 		
 		self.act.startRun() # set self.act.runFlag = True
 		self.act.start()
-		
+		pass
 
 	def buttonStop(self):#set runFlag=0
-		# self.act.runFlag = False
 		self.act.dt_init_flag = 1
 		self.act.stopRun()
 		
-		# self.act.terminate() 
+		# self.act.COM.writeBinary(MODE_STOP)
+		# self.send32BitCmd(1)
 		
 	def myThreadStop(self):
-		self.act.COM.writeBinary(DATA_OUT_START_ADDR)
-		self.send32BitCmd(0)
+		self.act.COM.writeBinary(MODE_FOG)
+		self.send32BitCmd(3)
 		
 		if(self.save_cb_flag == True):
 			self.save_cb_flag == False

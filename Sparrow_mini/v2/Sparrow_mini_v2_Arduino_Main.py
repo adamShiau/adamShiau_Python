@@ -562,10 +562,10 @@ class mainWindow(QMainWindow):
 		
 		self.resetTimer()
 		if(self.trig_mode): 	#internal mode
-			self.act.COM.writeBinary(MODE_IMU)
+			self.act.COM.writeBinary(MODE_FOG)
 			self.send32BitCmd(1)
 		else: 				#sync mode
-			self.act.COM.writeBinary(MODE_IMU)
+			self.act.COM.writeBinary(MODE_FOG)
 			self.send32BitCmd(2)
 		self.start_time = time.time()
 		
@@ -582,7 +582,7 @@ class mainWindow(QMainWindow):
 		
 	def myThreadStop(self):
 		self.act.COM.writeBinary(MODE_FOG)
-		self.send32BitCmd(3)
+		self.send32BitCmd(4)
 		
 		if(self.save_cb_flag == True):
 			self.save_cb_flag == False

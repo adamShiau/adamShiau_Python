@@ -181,6 +181,7 @@ class gyro_Action(QThread):
 					temp_data = self.COM.read4Binary()
 					# self.printData(temp_data)
 					temp_step = self.COM.read4Binary()
+					# print(temp_step)
 					temp_PD_temperature = self.COM.read4Binary()
 					
 					val2 = self.COM.read1Binary()
@@ -242,6 +243,14 @@ class gyro_Action(QThread):
 		self.valid_cnt = 0
 		# self.fog_finished.emit()
 		
+			
+	def convert2Sign_4BS(self, datain) :
+		shift_data = (datain[0]<<24|datain[1]<<16|datain[2]<<8|datain[3])
+		if((datain[2]>>7) == 1):
+			# return (shift_data - (1<<32))
+			return (shift_data - (1<<16))
+		else :
+			return shift_data
 			
 	def convert2Sign_4B(self, datain) :
 		shift_data = (datain[0]<<24|datain[1]<<16|datain[2]<<8|datain[3])

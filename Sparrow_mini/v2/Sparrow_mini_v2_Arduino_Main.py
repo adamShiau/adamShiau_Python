@@ -582,7 +582,7 @@ class mainWindow(QMainWindow):
 		
 	def myThreadStop(self):
 		self.act.COM.writeBinary(MODE_FOG)
-		self.send32BitCmd(4)
+		self.send32BitCmd(3)
 		
 		if(self.save_cb_flag == True):
 			self.save_cb_flag == False

@@ -461,24 +461,7 @@ class mainWindow(QMainWindow):
 		print('set dataRate: ', value)
 		self.act.COM.writeBinary(CMD_FOG_INT_DELAY)
 		self.send32BitCmd(value)
-				
-	# def send_V2PIN_CMD(self):
-		# value = self.top.v2piN.spin.value()	
-		# cmd = V2PIN + str(value) + '\n'
-		# print(cmd)
-		# self.act.COM.writeLine(cmd)
 		
-	
-		
-	# def send_trigDelay_CMD(self):
-		# value = self.top.trigDelay.spin.value()	
-		# cmd = STEP_TRIG_DLY + str(value) + '\n'
-		# print(cmd)
-		# self.act.COM.writeLine(cmd)
-		
-
-		
-
 	'''------------------------------------------------- '''
 	
 	def versionBox(self):
@@ -563,10 +546,10 @@ class mainWindow(QMainWindow):
 		
 		self.resetTimer()
 		if(self.trig_mode): 	#internal mode
-			self.act.COM.writeBinary(MODE_FOG)
+			self.act.COM.writeBinary(MODE_IMU)
 			self.send32BitCmd(1)
 		else: 				#sync mode
-			self.act.COM.writeBinary(MODE_FOG)
+			self.act.COM.writeBinary(MODE_IMU)
 			self.send32BitCmd(2)
 		self.start_time = time.time()
 		
@@ -578,11 +561,11 @@ class mainWindow(QMainWindow):
 		self.act.dt_init_flag = 1
 		self.act.stopRun()
 		
-		# self.act.COM.writeBinary(MODE_STOP)
-		# self.send32BitCmd(1)
+		# self.act.COM.writeBinary(MODE_IMU)
+		# self.send32BitCmd(4)
 		
 	def myThreadStop(self):
-		self.act.COM.writeBinary(MODE_FOG)
+		self.act.COM.writeBinary(MODE_IMU)
 		self.send32BitCmd(4)
 		
 		if(self.save_cb_flag == True):

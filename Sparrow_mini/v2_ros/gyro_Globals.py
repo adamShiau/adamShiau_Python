@@ -5,4 +5,4 @@ global PRINT_MODE
 kal_status = 0
 kal_Q = 1
 kal_R = 10
-PRINT_MODE = 1 #1 : print mode; 0: plot mode
+PRINT_MODE = 0 #1 : print mode; 0: plot mode

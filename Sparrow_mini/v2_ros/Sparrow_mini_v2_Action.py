@@ -1,18 +1,18 @@
 import os
 import sys
-sys.path.append("../../")
+# sys.path.append("../../")
 import time
 import numpy as np 
 import scipy as sp
 from scipy import signal
-from py3lib.COMPort import UART
-import py3lib.FileToArray as fil2a
+from COMPort import UART
+# import py3lib.FileToArray as fil2a
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 import logging
-import py3lib
-from py3lib import *
+# import py3lib
+# from py3lib import *
 import math
 import time 
 import datetime

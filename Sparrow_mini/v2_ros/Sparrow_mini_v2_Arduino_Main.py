@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+#-*- coding:UTF-8 -*-
 import os 
 import sys 
 sys.path.append("../../") 
@@ -9,13 +11,16 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import * 
 from PyQt5.QtWidgets import *
 import numpy as np
-# import py3lib
-# import py3lib.FileToArray as file
-# import py3lib.QuLogger as Qlogger 
-# import py3lib.FileToArray as fil2a 
 import Sparrow_mini_v2_Widget as UI 
 import Sparrow_mini_v2_Action as ACT
 import gyro_Globals as globals
+# ''' ros lib'''
+
+# from __future__ import print_function
+# import rospy
+# from sensor_msgs.msg import Imu
+# from std_msgs.msg import String
+'''*********'''
 TITLE_TEXT = "OPEN LOOP"
 VERSION_TEXT = 'PIG V2'
 READOUT_FILENAME = "Signal_Read_Out.txt"
@@ -546,10 +551,10 @@ class mainWindow(QMainWindow):
 		
 		self.resetTimer()
 		if(self.trig_mode): 	#internal mode
-			self.act.COM.writeBinary(MODE_IMU)
+			self.act.COM.writeBinary(MODE_FOG)
 			self.send32BitCmd(1)
 		else: 				#sync mode
-			self.act.COM.writeBinary(MODE_IMU)
+			self.act.COM.writeBinary(MODE_FOG)
 			self.send32BitCmd(2)
 		self.start_time = time.time()
 		
@@ -565,7 +570,7 @@ class mainWindow(QMainWindow):
 		# self.send32BitCmd(4)
 		
 	def myThreadStop(self):
-		self.act.COM.writeBinary(MODE_IMU)
+		self.act.COM.writeBinary(MODE_FOG)
 		self.send32BitCmd(4)
 		
 		if(self.save_cb_flag == True):

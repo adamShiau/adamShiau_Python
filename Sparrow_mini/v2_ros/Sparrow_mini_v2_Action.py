@@ -1,3 +1,9 @@
+#!/usr/bin/env python
+#-*- coding:UTF-8 -*-
+from __future__ import print_function
+import rospy
+from sensor_msgs.msg import Imu
+from std_msgs.msg import String
 import os
 import sys
 # sys.path.append("../../")
@@ -77,7 +83,7 @@ class gyro_Action(QThread):
 	flag1_errtime = 0
 	valid_cnt_num = 5
 	def __init__(self, parent = None):	
-		super().__init__()
+		super(gyro_Action, self).__init__()
 		# QThread.__init__(self)
 		self.COM = UART()
 		# self.logger = logging.getLogger(loggername)
@@ -161,11 +167,12 @@ class gyro_Action(QThread):
 					# print('runFlag:', self.runFlag)
 					val = self.COM.read1Binary()
 					val3 = self.COM.read1Binary()
-					while(val[0] != self.check_byte or val3[0] != self.check_byte3):
+					while(val != self.check_byte or val3 != self.check_byte3):
 						val = val3
 						val3 = self.COM.read1Binary()
-						print("val:", val[0], end=', ')
-						print(val3[0])
+						print("val:", val, end=', ')
+						print(val3)
+				
 						
 					self.bufferSize = self.COM.port.inWaiting()
 					
@@ -185,7 +192,7 @@ class gyro_Action(QThread):
 					temp_PD_temperature = self.COM.read4Binary()
 					
 					val2 = self.COM.read1Binary()
-					if(val2[0] != self.check_byte2):
+					if(val2 != self.check_byte2):
 						valid_flag = 0
 						self.valid_cnt = (self.valid_cnt_num-2)
 						break #b

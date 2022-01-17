@@ -1,3 +1,9 @@
+#!/usr/bin/env python
+#-*- coding:UTF-8 -*-
+from __future__ import print_function
+import rospy
+from sensor_msgs.msg import Imu
+from std_msgs.msg import String
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *

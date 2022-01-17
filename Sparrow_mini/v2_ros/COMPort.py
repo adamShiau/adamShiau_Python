@@ -1,8 +1,14 @@
+#!/usr/bin/env python
+#-*- coding:UTF-8 -*-
+from __future__ import print_function
+import rospy
+from sensor_msgs.msg import Imu
+from std_msgs.msg import String
 import serial
 import serial.tools.list_ports
 import platform
 import logging
-import py3lib.QuLogger
+# import py3lib.QuLogger
 import numpy as np
 
 ft232_name_in = "0403:6001"
@@ -139,15 +145,7 @@ class UART:
 	def read1Binary(self):
 		try:
 			data = self.port.read(1)
-		except:
-			self.logger.error("readBinary failed")
-			return "ERROR"
-		else:
-			return data
-	
-	def read4Binary(self):
-		try:
-			data = self.port.read(4)
+			data = ord(data)
 		except:
 			self.logger.error("readBinary failed")
 			return "ERROR"
@@ -155,16 +153,26 @@ class UART:
 			return data
 	
 	# def read4Binary(self):
-		# try:
-			# data = [ord(self.port.read(1)), 
-					# ord(self.port.read(1)), 
-					# ord(self.port.read(1)), 
-					# ord(self.port.read(1))]
-		# except:
-			# self.logger.error("readBinary failed")
-			# return "ERROR"
-		# else:
-			# return data
+	# 	try:
+	# 		data = self.port.read(4)
+	# 	except:
+	# 		self.logger.error("readBinary failed")
+	# 		return "ERROR"
+	# 	else:
+	# 		return data
+	
+	def read4Binary(self):
+		try:
+			data = [ord(self.port.read(1)), 
+					ord(self.port.read(1)), 
+					ord(self.port.read(1)), 
+					ord(self.port.read(1))]
+		except:
+			self.logger.error("readBinary failed")
+			return "ERROR"
+		else:
+			return data
+			
 	def read5Binary(self):
 		try:
 			data = self.port.read(5)

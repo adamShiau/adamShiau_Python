@@ -1,5 +1,9 @@
 #!/usr/bin/env python
 #-*- coding:UTF-8 -*-
+from __future__ import print_function
+import rospy
+from sensor_msgs.msg import Imu
+from std_msgs.msg import String
 import os 
 import sys 
 sys.path.append("../../") 
@@ -16,10 +20,7 @@ import Sparrow_mini_v2_Action as ACT
 import gyro_Globals as globals
 # ''' ros lib'''
 
-# from __future__ import print_function
-# import rospy
-# from sensor_msgs.msg import Imu
-# from std_msgs.msg import String
+
 '''*********'''
 TITLE_TEXT = "OPEN LOOP"
 VERSION_TEXT = 'PIG V2'

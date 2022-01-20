@@ -18,9 +18,7 @@ import time
 import datetime
 import gyro_Globals as globals
 
-TEST_MODE = False
 DEBUG = 0
-
 
 
 class gyro_Action(QThread):

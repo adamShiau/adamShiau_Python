@@ -18,10 +18,10 @@ import time
 import datetime
 import gyro_Globals as globals
 
-TEST_MODE = False
-DEBUG = 0
-
-
+DEBUG = 1
+SENS_GYRO_250 		= 0.00875
+SENS_AXLM_4G 		= 0.000122
+SENS_ADXL355_8G 	= 0.0000156
 
 class gyro_Action(QThread):
 	update_COMArray = pyqtSignal(object)
@@ -109,10 +109,12 @@ class gyro_Action(QThread):
 			
 	
 	def run(self):
-		data = np.zeros(self.data_frame_update_point)
+		err = np.zeros(self.data_frame_update_point)
 		time = np.zeros(self.data_frame_update_point)
 		step = np.zeros(self.data_frame_update_point)
 		PD_temperature = np.zeros(self.data_frame_update_point)
+		nano33_wx = np.zeros(self.data_frame_update_point)
+		nano33_wy = np.zeros(self.data_frame_update_point)
 		data_sum = 0
 		step_sum = 0
 		byte_temp_time = np.empty(0)
@@ -174,12 +176,20 @@ class gyro_Action(QThread):
 					# temp_time = self.convert2Unsign_4B(byte_temp_time)
 					
 					# print('old_time: ', self.old_time)
-					temp_time = self.COM.read4Binary()
-					temp_data = self.COM.read4Binary()
-					# self.printData(temp_data)
-					temp_step = self.COM.read4Binary()
-					# print(temp_step)
-					temp_PD_temperature = self.COM.read4Binary()
+					temp_time = 			self.COM.read4Binary()
+					temp_err = 				self.COM.read4Binary()
+					temp_step = 			self.COM.read4Binary()
+					temp_PD_temperature = 	self.COM.read4Binary()
+					temp_adxl355_x = 		self.COM.read3Binary()
+					temp_adxl355_y = 		self.COM.read3Binary()
+					temp_adxl355_z = 		self.COM.read3Binary()
+					temp_nano33_wx = 		self.COM.read2Binary()
+					temp_nano33_wy = 		self.COM.read2Binary()
+					temp_nano33_wz = 		self.COM.read2Binary()
+					temp_nano33_ax = 		self.COM.read2Binary()
+					temp_nano33_ay = 		self.COM.read2Binary()
+					temp_nano33_az = 		self.COM.read2Binary()
+					
 					
 					val2 = self.COM.read1Binary()
 					if(val2[0] != self.check_byte2):
@@ -187,21 +197,38 @@ class gyro_Action(QThread):
 						self.valid_cnt = (self.valid_cnt_num-2)
 						break #b
 							
-					temp_time = self.convert2Unsign_4B(temp_time)
-					temp_data = self.convert2Sign_4B(temp_data)
-					temp_step = self.convert2Sign_4B(temp_step)
-					temp_PD_temperature = self.convert2Unsign_4B(temp_PD_temperature)/2
+					temp_time = 			self.convert2Unsign_4B(temp_time)
+					temp_err = 				self.convert2Sign_4B(temp_err)
+					temp_step = 			self.convert2Sign_4B(temp_step)
+					temp_PD_temperature = 	self.convert2Unsign_4B(temp_PD_temperature)/2
+					temp_adxl355_x = 		self.convert2Sign_adxl355(temp_adxl355_x)
+					temp_adxl355_y = 		self.convert2Sign_adxl355(temp_adxl355_y)
+					temp_adxl355_z = 		self.convert2Sign_adxl355(temp_adxl355_z)
+					temp_nano33_wx = 		self.convert2Sign_nano33(temp_nano33_wx)
+					temp_nano33_wy = 		self.convert2Sign_nano33(temp_nano33_wy)
+					temp_nano33_wz = 		self.convert2Sign_nano33(temp_nano33_wz)
+					temp_nano33_ax = 		self.convert2Sign_nano33(temp_nano33_ax)
+					temp_nano33_ay = 		self.convert2Sign_nano33(temp_nano33_ay)
+					temp_nano33_az = 		self.convert2Sign_nano33(temp_nano33_az)
 					if(DEBUG):
-						print("time:", temp_time, end='\t');
-						print("err:", temp_data, end='\t\t');
-						print("step:", temp_step, end='\t');
-						print("PD_T:", temp_PD_temperature);
+						# print("time:", temp_time, end='\t');
+						# print("err:", temp_err, end='\t\t');
+						# print("step:", temp_step, end='\t');
+						# print("PD_T:", temp_PD_temperature);
+						# print("adxl355_x:", temp_adxl355_x*SENS_ADXL355_8G);
+						# print("adxl355_y:", temp_adxl355_y*SENS_ADXL355_8G);
+						# print("adxl355_z:", temp_adxl355_z*SENS_ADXL355_8G);
+						# print("temp_nano33_ax:", temp_nano33_ax*SENS_AXLM_4G);
+						# print("temp_nano33_ay:", temp_nano33_ay*SENS_AXLM_4G);
+						# print("temp_nano33_az:", temp_nano33_az*SENS_AXLM_4G);
+						print("temp_nano33_wx:", temp_nano33_wx*SENS_GYRO_250);
+						print("temp_nano33_wy:", temp_nano33_wy*SENS_GYRO_250);
 					
 					self.kal_flag = globals.kal_status
 					''' Kalmman filter'''
 					'''------update------'''
 					k[i] = p_p[i]/(p_p[i] + globals.kal_R) #k_n
-					x[i] = x_p[i] + k[i]*(temp_data - x_p[i])  #x_nn
+					x[i] = x_p[i] + k[i]*(temp_err - x_p[i])  #x_nn
 					y[i] = y_p[i] + k[i]*(temp_step - y_p[i])  #y_nn
 					p[i] = (1 - k[i])*p_p[i] #p_nn
 
@@ -216,13 +243,16 @@ class gyro_Action(QThread):
 					time = np.append(time[1:], temp_time)
 					PD_temperature = np.append(PD_temperature[1:], temp_PD_temperature)
 					if(self.kal_flag == True):
-						data = np.append(data[1:], x[i]) #kalmman filter
+						err = np.append(err[1:], x[i]) #kalmman filter
 						step = np.append(step[1:], y[i]) #kalmman filter
 					else:
-						data = np.append(data[1:], temp_data)
+						err = np.append(err[1:], temp_err)
 						step = np.append(step[1:], temp_step)
+					nano33_wx = np.append(nano33_wx[1:], temp_nano33_ax)
+					nano33_wy = np.append(nano33_wx[1:], temp_nano33_ay)
 				#end of for
-				self.openLoop_updata4.emit(time, data, step, PD_temperature)
+				# self.openLoop_updata4.emit(time, err, step, PD_temperature)
+				self.openLoop_updata4.emit(time, nano33_wx, nano33_wy, PD_temperature)
 				if(self.stopFlag):
 					self.runFlag = 0
 					print('stopFlag')
@@ -290,3 +320,16 @@ class gyro_Action(QThread):
 		else :
 			return datain
 			
+	def convert2Sign_adxl355(self, datain) :
+		shift_data = (datain[0]<<12|datain[1]<<4|datain[2]>>4)
+		if((datain[0]>>7) == 1):
+			return (shift_data - (1<<20))
+		else :
+			return shift_data
+			
+	def convert2Sign_nano33(self, datain) :
+		shift_data = (datain[1]<<8|datain[0])
+		if((datain[1]>>7) == 1):
+			return (shift_data - (1<<16))
+		else :
+			return shift_data

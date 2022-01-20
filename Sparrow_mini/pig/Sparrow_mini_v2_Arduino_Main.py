@@ -73,6 +73,7 @@ CMD_FOG_OUT_START	= 25
 ADC_COEFFI = (4/8192) #PD attnuates 5 times befor enter ADC
 # ADC_COEFFI = 1
 TIME_COEFFI = 0.0001
+# TIME_COEFFI = 1
 ''' define initial value'''
 
 MOD_H_INIT 			= 3300
@@ -562,10 +563,10 @@ class mainWindow(QMainWindow):
 		
 		self.resetTimer()
 		if(self.trig_mode): 	#internal mode
-			self.act.COM.writeBinary(MODE_FOG)
+			self.act.COM.writeBinary(MODE_IMU)
 			self.send32BitCmd(1)
 		else: 				#sync mode
-			self.act.COM.writeBinary(MODE_FOG)
+			self.act.COM.writeBinary(MODE_IMU)
 			self.send32BitCmd(2)
 		self.start_time = time.time()
 		
@@ -581,8 +582,8 @@ class mainWindow(QMainWindow):
 		# self.send32BitCmd(1)
 		
 	def myThreadStop(self):
-		self.act.COM.writeBinary(MODE_FOG)
-		self.send32BitCmd(3)
+		self.act.COM.writeBinary(MODE_IMU)
+		self.send32BitCmd(4)
 		
 		if(self.save_cb_flag == True):
 			self.save_cb_flag == False
@@ -645,7 +646,7 @@ class mainWindow(QMainWindow):
 		self.top.com_plot1.figure.canvas.flush_events()
 		if(self.act.runFlag):
 			# print('update rate: ', np.round(update_rate, 1), end=', ')
-			# print('step avg: ', np.round(np.average(self.step), 3))
+			print('step avg: ', np.round(np.average(self.step), 3))
 			pass
 		self.top.com_plot2.ax.plot(self.time, self.step, color = 'r', linestyle = '-', marker = '*', label="step")
 		# self.top.com_plot2.ax.plot(self.step, color = 'r', linestyle = '-', marker = '*', label="step")

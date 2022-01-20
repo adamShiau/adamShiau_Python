@@ -13,15 +13,15 @@ import numpy as np
 # import py3lib.FileToArray as file
 # import py3lib.QuLogger as Qlogger 
 # import py3lib.FileToArray as fil2a 
-import Sparrow_mini_v2_Widget as UI 
-import Sparrow_mini_v2_Action as ACT
+import Sparrow_mini_Widget as UI 
+import Sparrow_mini_Action as ACT
 import gyro_Globals as globals
 TITLE_TEXT = "OPEN LOOP"
-VERSION_TEXT = 'PIG V2'
+VERSION_TEXT = 'fog open loop 2020/12/25'
 READOUT_FILENAME = "Signal_Read_Out.txt"
 MAX_SAVE_INDEX = 3000
 TEST_MODE = False
-DLY_CMD = 0.01 #delay between command
+DLY_CMD = 0.05 #delay between command
 DEBUG = 1
 track_max = 50
 track_min = -50
@@ -34,49 +34,42 @@ gyro200_factor = 0.0121
 # wx_offset = 107.065
 # wy_offset = -513.717
 
-'''-------define CMD address map-------'''
-'''0~7 for output mode setting'''
-'''8~255 for parameter setting'''
-MODE_STOP 			= 0
-MODE_FOG			= 1
-MODE_IMU			= 2
-MODE_EQ				= 3
-CMD_FOG_MOD_FREQ	= 8
-CMD_FOG_MOD_AMP_H	= 9
-CMD_FOG_MOD_AMP_L	= 10
-CMD_FOG_ERR_OFFSET	= 11
-CMD_FOG_POLARITY	= 12
-CMD_FOG_WAIT_CNT	= 13
-CMD_FOG_ERR_TH		= 14
-CMD_FOG_ERR_AVG		= 15
-CMD_FOG_TIMER_RST	= 16
-CMD_FOG_GAIN1		= 17
-CMD_FOG_GAIN2		= 18
-CMD_FOG_FB_ON		= 19
-CMD_FOG_CONST_STEP	= 20
-CMD_FOG_FPGA_Q		= 21
-CMD_FOG_FPGA_R		= 22
-CMD_FOG_DAC_GAIN 	= 23
-CMD_FOG_INT_DELAY	= 24
-CMD_FOG_OUT_START	= 25
+'''define uart address '''
+MOD_FREQ_ADDR = 	0
+MOD_AMP_H_ADDR = 	1
+MOD_AMP_L_ADDR = 	2
+ERR_OFFSET_ADDR =	3
+POLARITY_ADDR = 	4
+WAIT_CNT_ADDR = 	5
+ERR_TH_ADDR = 		6
+ERR_AVG_ADDR = 		7
+TIMER_RST_ADDR = 	8
+GAIN1_ADDR = 		9
+GAIN2_ADDR = 		10
+FB_ON_ADDR = 		11
+CONST_STEP_ADDR = 	12
+FPGA_Q_ADDR	=		13
+FPGA_R_ADDR = 		14
 
+DAC_GAIN_ADDR = 	50
+DATA_OUT_START=		99
 
-# STEP_MAX = 10
-# V2PIN = 11
-# OPENLOOP_START = 12
-# STEP_TRIG_DLY = 13
+STEP_MAX = 10
+V2PIN = 11
+OPENLOOP_START = 12
+STEP_TRIG_DLY = 13
 # GAINPRE = '14 '
 # FB_ON = '15 '
-# FPGA_Q =14
-# FPGA_R = 15
+FPGA_Q =14
+FPGA_R = 15
 '''adc conversion '''
 ADC_COEFFI = (4/8192) #PD attnuates 5 times befor enter ADC
 # ADC_COEFFI = 1
 TIME_COEFFI = 0.0001
 ''' define initial value'''
 
-MOD_H_INIT 			= 3300
-MOD_L_INIT 			= -3300
+MOD_H_INIT 			= 3400
+MOD_L_INIT 			= -3400
 FREQ_INIT 			= 138
 ERR_OFFSET_INIT 	= 0
 POLARITY_INIT 		= 1
@@ -91,10 +84,10 @@ CONST_STEP_INIT		= 0
 FPGA_Q_INIT			= 1
 FPGA_R_INIT			= 6
 SW_Q_INIT			= 1
-SW_R_INIT			= 10
+SW_R_INIT			= 30
 SF_A = 1
 SF_B = 0
-DATA_RATE_INIT		= 2135
+
 
 # STEP_MAX_INIT = 10000
 # V2PI_INIT = 30000
@@ -110,12 +103,6 @@ class mainWindow(QMainWindow):
 	save_cb_flag = 0
 	sf_a_var = 0
 	sf_b_var = 0
-	start_time = 0
-	end_time = 0
-	first_data_flag = 1
-	time_offset = 0
-	trig_mode = 0
-	temp_time = 0
 	''' pyqtSignal'''
 	usbconnect_status = pyqtSignal(object) #to trigger the btn to enable state
 	def __init__(self, parent = None):
@@ -128,14 +115,29 @@ class mainWindow(QMainWindow):
 		self.act = ACT.gyro_Action(self.loggername)
 		self.mainUI()
 		self.mainMenu()
+		self.thread1 = QThread() #開一個thread
 		self.linkFunction()
+		# self.disableBtn()
 		self.data = np.empty(0)
 		self.step = np.empty(0)
 		self.time = np.empty(0)
 		self.setInitValue(False)
 		self.setBtnStatus(False)
 		self.get_rbVal()
-			
+		
+	# def send_initial_value(self):
+		
+	
+	# def disableBtn(self):
+		# self.top.usb.btn.setEnabled(False)
+		# self.top.read_btn.read.setEnabled(False)
+		# self.top.stop_btn.stop.setEnabled(False)
+		
+	# def enableBtn(self):
+		# self.top.usb.btn.setEnabled(True)
+		# self.top.read_btn.read.setEnabled(True)
+		# self.top.stop_btn.stop.setEnabled(True)
+	
 	def mainUI(self):
 		mainLayout = QGridLayout()
 		self.setCentralWidget(QWidget(self))
@@ -144,10 +146,17 @@ class mainWindow(QMainWindow):
 		
 	def mainMenu(self):
 		mainMenu = self.menuBar() #放menu的地方，一定要有
+
 		version_Menu = mainMenu.addMenu("version") #生成menu item
 		version = QAction("Version", self) #生成menu item裡面的細項，名稱叫"Version"
 		version.triggered.connect(self.versionBox)#把細項連接到要執行的動作
-		version_Menu.addAction(version)#把連接好動作的細項加回menu item		
+		version_Menu.addAction(version)#把連接好動作的細項加回menu item
+		
+		# openFile_Menu = mainMenu.addMenu("open file")
+		# openFile = QAction("open", self)
+		# openFile.triggered.connect(self.openFileBox)
+		# openFile_Menu.addAction(openFile)
+		
 
 
 	def linkFunction(self):
@@ -155,27 +164,21 @@ class mainWindow(QMainWindow):
 		self.top.usb.bt_update.clicked.connect(self.update_comport)
 		self.top.usb.cs.currentIndexChanged.connect(self.uadate_comport_label)
 		self.top.usb.bt_connect.clicked.connect(self.usbConnect)
-
-		''' thread connect '''
 		self.top.read_btn.bt.clicked.connect(self.thread1Start) # set runFlag=1
 		self.top.stop_btn.bt.clicked.connect(self.buttonStop) # set runFlag=0
+		''' thread connect '''
+		# self.thread1.started.connect(lambda:self.act.updateOpenLoop(Kal_status = self.Kal_status))
+		self.thread1.started.connect(self.act.updateOpenLoop)
 
 		''' emit connect '''
 		self.act.fog_finished.connect(self.myThreadStop) #runFlag=0時fog_finished會emit，之後關掉thread1
-		
-		if(globals.PRINT_MODE):
-			self.act.openLoop_updata4.connect(self.printData)
-		else:
-			self.act.openLoop_updata4.connect(self.plotData)
-		
+		self.act.openLoop_updata4.connect(self.plotData)
 		#btn enable signal
 		self.usbconnect_status.connect(self.setBtnStatus) #確定usb連接成功時才enable btn
 		self.usbconnect_status.connect(self.setInitValue)
 		
 		''' radio btn'''
 		self.top.Kal_rb.toggled.connect(lambda:self.rb_toggled(self.top.Kal_rb))
-		self.top.trig_mode_rb.rb1.toggled.connect(self.trig_mode_rb_chk) 
-		self.top.trig_mode_rb.rb1.toggled.connect(self.slider_en)
 		''' line edit '''
 		self.top.sf_a.le.editingFinished.connect(self.SF_A_EDIT)
 		self.top.sf_b.le.editingFinished.connect(self.SF_B_EDIT)
@@ -197,11 +200,13 @@ class mainWindow(QMainWindow):
 		self.top.gain1.spin.valueChanged.connect(self.send_GAIN1_CMD)
 		self.top.gain2.spin.valueChanged.connect(self.send_GAIN2_CMD)
 		self.top.fb_on.spin.valueChanged.connect(self.send_FB_ON_CMD)
-		self.top.dac_gain.spin.valueChanged.connect(self.send_DAC_GAIN_CMD) 
-		''' slider '''
-		self.top.dataRate_sd.sd.valueChanged.connect(self.send_DATA_RATE_CMD) 
+		self.top.dac_gain.spin.valueChanged.connect(self.send_DAC_GAIN_CMD)
+		
 		''' check box'''
 		self.top.save_text.cb.toggled.connect(lambda:self.cb_toogled(self.top.save_text.cb))
+
+
+		# self.top.trigDelay.spin.valueChanged.connect(self.send_trigDelay_CMD)
 
 	# """ comport functin """
 	def update_comport(self):
@@ -246,37 +251,34 @@ class mainWindow(QMainWindow):
 
 	def setInitValue(self, EN):
 		if(EN):
-			self.act.COM.writeBinary(CMD_FOG_MOD_FREQ)
+			self.act.COM.writeBinary(MOD_FREQ_ADDR)
 			self.send32BitCmd(FREQ_INIT)
-			self.act.COM.writeBinary(CMD_FOG_MOD_AMP_H)
+			self.act.COM.writeBinary(MOD_AMP_H_ADDR)
 			self.send32BitCmd(MOD_H_INIT)
-			self.act.COM.writeBinary(CMD_FOG_MOD_AMP_L)
+			self.act.COM.writeBinary(MOD_AMP_L_ADDR)
 			self.send32BitCmd(MOD_L_INIT)
-			self.act.COM.writeBinary(CMD_FOG_ERR_OFFSET)
+			self.act.COM.writeBinary(ERR_OFFSET_ADDR)
 			self.send32BitCmd(ERR_OFFSET_INIT)
-			self.act.COM.writeBinary(CMD_FOG_POLARITY)
+			self.act.COM.writeBinary(POLARITY_ADDR)
 			self.send32BitCmd(POLARITY_INIT)
-			self.act.COM.writeBinary(CMD_FOG_WAIT_CNT)
+			self.act.COM.writeBinary(WAIT_CNT_ADDR)
 			self.send32BitCmd(WAIT_CNT_INIT)
-			self.act.COM.writeBinary(CMD_FOG_ERR_TH)
+			self.act.COM.writeBinary(ERR_TH_ADDR)
 			self.send32BitCmd(ERR_TH_INIT)
-			self.act.COM.writeBinary(CMD_FOG_ERR_AVG)
+			self.act.COM.writeBinary(ERR_AVG_ADDR)
 			self.send32BitCmd(ERR_AVG_INIT)
-			self.act.COM.writeBinary(CMD_FOG_GAIN1)
+			self.act.COM.writeBinary(GAIN1_ADDR)
 			self.send32BitCmd(GAIN1_SEL_INIT)
-			self.act.COM.writeBinary(CMD_FOG_GAIN2)
+			self.act.COM.writeBinary(GAIN2_ADDR)
 			self.send32BitCmd(GAIN2_SEL_INIT)
-			self.act.COM.writeBinary(CMD_FOG_DAC_GAIN)
+			self.act.COM.writeBinary(DAC_GAIN_ADDR)
 			self.send32BitCmd(DAC_GAIN_INIT)
-			self.act.COM.writeBinary(CMD_FOG_FB_ON)
+			self.act.COM.writeBinary(FB_ON_ADDR)
 			self.send32BitCmd(FB_ON_INIT)
-			self.act.COM.writeBinary(CMD_FOG_CONST_STEP)
+			self.act.COM.writeBinary(CONST_STEP_ADDR)
 			self.send32BitCmd(CONST_STEP_INIT)
-			self.act.COM.writeBinary(CMD_FOG_INT_DELAY)
-			self.send32BitCmd(DATA_RATE_INIT)
-			globals.kal_Q = SW_Q_INIT
-			globals.kal_R = SW_R_INIT 
-			
+			globals.kal_Q = 1
+			globals.kal_R = 30
 			
 			self.top.freq.spin.setValue(FREQ_INIT)
 			time.sleep(DLY_CMD)
@@ -306,9 +308,7 @@ class mainWindow(QMainWindow):
 			time.sleep(DLY_CMD)
 			self.top.HD_Q.spin.setValue(FPGA_Q_INIT)
 			time.sleep(DLY_CMD)
-			self.top.HD_R.spin.setValue(FPGA_R_INIT) 
-			time.sleep(DLY_CMD)
-			self.top.dataRate_sd.sd.setValue(DATA_RATE_INIT) 
+			self.top.HD_R.spin.setValue(FPGA_R_INIT)
 			time.sleep(DLY_CMD)
 			self.top.SW_Q.spin.setValue(globals.kal_Q)
 			self.top.SW_R.spin.setValue(globals.kal_R)
@@ -317,6 +317,9 @@ class mainWindow(QMainWindow):
 			self.top.sf_b.le.setText('0') 
 			self.sf_a_var = float(self.top.sf_a.le.text())
 			self.sf_b_var = float(self.top.sf_b.le.text())
+			# print('init sf_a_var:', self.sf_a_var)
+			# print('init sf_b_var:', self.sf_b_var)
+			# print(self.sf_a_var+self.sf_b_var)
 
 	def SF_A_EDIT(self):
 		self.sf_a_var = float(self.top.sf_a.le.text())
@@ -327,19 +330,15 @@ class mainWindow(QMainWindow):
 		print('sf_b_var: ', self.sf_b_var)
 	
 	def resetTimer(self):
-		self.act.COM.writeBinary(CMD_FOG_TIMER_RST)
+		self.act.COM.writeBinary(TIMER_RST_ADDR)
 		self.send32BitCmd(1)
 		
 	def send32BitCmd(self, value):
 		if(value < 0):
 			value = (1<<32) + value
-		# time.sleep(DLY_CMD)
 		self.act.COM.writeBinary(value>>24 & 0xFF)
-		time.sleep(DLY_CMD)
 		self.act.COM.writeBinary(value>>16 & 0xFF)
-		time.sleep(DLY_CMD)
 		self.act.COM.writeBinary(value>>8 & 0xFF)
-		time.sleep(DLY_CMD)
 		self.act.COM.writeBinary(value & 0xFF)
 		time.sleep(DLY_CMD)
 	
@@ -353,94 +352,94 @@ class mainWindow(QMainWindow):
 		print('set freq: ', value)
 		self.top.freq.lb.setText(str(round(1/(2*(value+1)*10e-6),2))+' KHz')
 		# print(hex(value))
-		self.act.COM.writeBinary(CMD_FOG_MOD_FREQ)
+		self.act.COM.writeBinary(MOD_FREQ_ADDR)
 		self.send32BitCmd(value)
 		
 	def send_MOD_H_CMD(self):
 		value = self.top.mod_H.spin.value()	
 		print('set mod_H: ', value)
-		self.act.COM.writeBinary(CMD_FOG_MOD_AMP_H)
+		self.act.COM.writeBinary(MOD_AMP_H_ADDR)
 		self.send32BitCmd(value)
 	
 	def send_MOD_L_CMD(self):
 		value = self.top.mod_L.spin.value()	
 		print('set mod_L: ', value)
-		self.act.COM.writeBinary(CMD_FOG_MOD_AMP_L)
+		self.act.COM.writeBinary(MOD_AMP_L_ADDR)
 		self.send32BitCmd(value)
 	
 	def send_ERR_OFFSET_CMD(self):
 		value = self.top.err_offset.spin.value()	
 		print('set err offset: ', value)
-		self.act.COM.writeBinary(CMD_FOG_ERR_OFFSET)
+		self.act.COM.writeBinary(ERR_OFFSET_ADDR)
 		self.send32BitCmd(value)
 		
 	def send_POLARITY_CMD(self):
 		value = self.top.polarity.spin.value()	
 		print('set polarity: ', value)
-		self.act.COM.writeBinary(CMD_FOG_POLARITY)
+		self.act.COM.writeBinary(POLARITY_ADDR)
 		self.send32BitCmd(value)
 		
 	def send_WAIT_CNT_CMD(self):
 		value = self.top.wait_cnt.spin.value()
 		print('set wait cnt: ', value)
-		self.act.COM.writeBinary(CMD_FOG_WAIT_CNT)
+		self.act.COM.writeBinary(WAIT_CNT_ADDR)
 		self.send32BitCmd(value)
 		
 	def send_ERR_TH_CMD(self):
 		value = self.top.err_th.spin.value()	
 		print('set err_th: ', value)
-		self.act.COM.writeBinary(CMD_FOG_ERR_TH)
+		self.act.COM.writeBinary(ERR_TH_ADDR)
 		self.send32BitCmd(value)
 		
 	def send_AVG_CMD(self):
 		value = self.top.avg.spin.value()
 		print('set err_avg: ', value)
-		self.act.COM.writeBinary(CMD_FOG_ERR_AVG)
+		self.act.COM.writeBinary(ERR_AVG_ADDR)
 		self.send32BitCmd(value)
 
 	def send_GAIN1_CMD(self):
 		value = self.top.gain1.spin.value()	
 		print('set gain1: ', value)
-		self.act.COM.writeBinary(CMD_FOG_GAIN1)
+		self.act.COM.writeBinary(GAIN1_ADDR)
 		time.sleep(DLY_CMD)
 		self.send32BitCmd(value)
 		
 	def send_GAIN2_CMD(self):
 		value = self.top.gain2.spin.value()	
 		print('set gain2: ', value)
-		self.act.COM.writeBinary(CMD_FOG_GAIN2)
+		self.act.COM.writeBinary(GAIN2_ADDR)
 		time.sleep(DLY_CMD)
 		self.send32BitCmd(value)
 		
 	def send_FB_ON_CMD(self):
 		value = self.top.fb_on.spin.value()	
 		print('set FB on: ', value)
-		self.act.COM.writeBinary(CMD_FOG_FB_ON)
+		self.act.COM.writeBinary(FB_ON_ADDR)
 		time.sleep(DLY_CMD)
 		self.send32BitCmd(value)
 	
 	def send_DAC_GAIN_CMD(self):
 		value = self.top.dac_gain.spin.value()
 		print('set DAC gain: ', value)
-		self.act.COM.writeBinary(CMD_FOG_DAC_GAIN)
+		self.act.COM.writeBinary(DAC_GAIN_ADDR)
 		self.send32BitCmd(value)
 	
 	def send_CONST_STEP_CMD(self):
 		value = self.top.const_step.spin.value()	
 		print('set constant step: ', value)
-		self.act.COM.writeBinary(CMD_FOG_CONST_STEP)
+		self.act.COM.writeBinary(CONST_STEP_ADDR)
 		self.send32BitCmd(value)
 		
 	def send_HD_Q(self):
 		value = self.top.HD_Q.spin.value()	
 		print('set FPGA Q: ', value)
-		self.act.COM.writeBinary(CMD_FOG_FPGA_Q)
+		self.act.COM.writeBinary(FPGA_Q_ADDR)
 		self.send32BitCmd(value)
 				
 	def send_HD_R(self):
 		value = self.top.HD_R.spin.value()	
 		print('set FPGA R: ', value)
-		self.act.COM.writeBinary(CMD_FOG_FPGA_R)
+		self.act.COM.writeBinary(FPGA_R_ADDR)
 		self.send32BitCmd(value)
 	
 	def update_kal_Q(self):
@@ -454,12 +453,6 @@ class mainWindow(QMainWindow):
 		globals.kal_R = value
 		print(value);
 		print('kal_R:', globals.kal_R)
-		
-	def send_DATA_RATE_CMD(self):
-		value = self.top.dataRate_sd.sd.value()	
-		print('set dataRate: ', value)
-		self.act.COM.writeBinary(CMD_FOG_INT_DELAY)
-		self.send32BitCmd(value)
 				
 	# def send_V2PIN_CMD(self):
 		# value = self.top.v2piN.spin.value()	
@@ -531,96 +524,65 @@ class mainWindow(QMainWindow):
 			
 # """ end of comport functin """
 			
+	def buttonStop(self):#set runFlag=0
+		# self.act.setStop()
+		# cmd = OPENLOOP_START + str(0) + '\n'
+		# print(cmd)
+		# self.act.COM.writeLine(cmd)
+		self.act.COM.writeBinary(DATA_OUT_START)
+		self.send32BitCmd(0)
+		self.act.runFlag = False
+		self.act.dt_init_flag = 1
+	
 	def rb_toggled(self, rb):
 		globals.kal_status = rb.isChecked()
 		print('globals.kal_status:', globals.kal_status)
 		
-	def trig_mode_rb_chk(self):
-		self.trig_mode = self.top.trig_mode_rb.rb1.isChecked()
-		print('trig INT mode: ', self.trig_mode)
-		
-	def slider_en(self):
-		if(self.trig_mode == True): #internal mode
-			self.top.dataRate_sd.setEnabled(True)
-		else:
-			self.top.dataRate_sd.setEnabled(False)
-		
 	def get_rbVal(self):
 		globals.Kal_status = self.top.Kal_rb.isChecked()
 		print('Kal:', globals.Kal_status)
-		self.trig_mode = self.top.trig_mode_rb.rb1.isChecked()
-		print('trig INT mode: ', self.trig_mode)
 	
 	def open_file(self, filename):
 		self.f=open(filename, 'w')
 		start_time_header = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
 		self.f.writelines('#' + start_time_header + '\n')
 	
+	
 	def thread1Start(self):
+		# self.save_status = 1
 		if(self.save_cb_flag == True):
 			self.open_file(self.top.save_text.le.text())
-		
+			
+		self.act.COM.writeBinary(DATA_OUT_START)
+		self.send32BitCmd(1)
 		self.resetTimer()
-		if(self.trig_mode): 	#internal mode
-			self.act.COM.writeBinary(MODE_FOG)
-			self.send32BitCmd(1)
-		else: 				#sync mode
-			self.act.COM.writeBinary(MODE_FOG)
-			self.send32BitCmd(2)
-		self.start_time = time.time()
-		
-		self.act.startRun() # set self.act.runFlag = True
-		self.act.start()
-		pass
-
-	def buttonStop(self):#set runFlag=0
-		self.act.dt_init_flag = 1
-		self.act.stopRun()
-		
-		# self.act.COM.writeBinary(MODE_STOP)
-		# self.send32BitCmd(1)
+		self.act.runFlag = True
+		self.thread1.start()
 		
 	def myThreadStop(self):
-		self.act.COM.writeBinary(MODE_FOG)
-		self.send32BitCmd(3)
-		
+		self.thread1.quit() 
+		self.thread1.wait()
 		if(self.save_cb_flag == True):
 			self.save_cb_flag == False
 			self.top.save_text.cb.setChecked(0)
 			stop_time_header = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
 			self.f.writelines('#' + stop_time_header + '\n')
 			self.f.close()
-		self.first_data_flag = 1
 		self.data  = np.empty(0)
 		self.time  = np.empty(0)
 		self.step  = np.empty(0)
 		
 		
-	def printData(self, time_in, data, step, PD_temperature):
-		if(self.first_data_flag):
-			self.first_data_flag = 0
-			self.end_time = time.time()
-			self.time_offset = 0.5*(self.end_time - self.start_time)
-			print(self.time_offset)
-		self.top.buffer_lb.lb.setText(str(self.act.bufferSize))
-		self.top.temperature_lb.lb.setText(str(PD_temperature[0]))
-		data_f = data*ADC_COEFFI 
-		time_f = time_in*TIME_COEFFI
-		step_f = step*self.sf_a_var + self.sf_b_var
-		
-		print('time: ', time_f)
-		print('err : ', data_f)
-		print('step: ', step_f)
-		
 	def plotData(self, time, data, step, PD_temperature):
 		if(self.act.runFlag):
 			self.top.com_plot1.ax.clear()
 			self.top.com_plot2.ax.clear()
-		update_rate = 1/((time[1] - time[0])*TIME_COEFFI)
+			
 		#update label#
 		self.top.buffer_lb.lb.setText(str(self.act.bufferSize))
+		# self.top.temperature_lb.lb.setText(str(self.act.temp_PD_temperature/2))
+		# print('len(temp_PD): ', len(temp_PD))
 		self.top.temperature_lb.lb.setText(str(PD_temperature[0]))
-		self.top.dataRate_lb.lb.setText(str(np.round(update_rate, 1)))
 		
 		data_f = data*ADC_COEFFI 
 		time_f = time*TIME_COEFFI
@@ -635,6 +597,7 @@ class mainWindow(QMainWindow):
 			self.time = self.time[self.act.data_frame_update_point:]
 		
 		if(self.save_cb_flag == True):
+			# np.savetxt(self.f, (np.vstack([time_f, data_f, step])).T, fmt='%5.5f, %5.5f, %d')
 			np.savetxt(self.f, (np.vstack([time_f, data_f, step, PD_temperature])).T, fmt='%5.5f, %5.5f, %d, %3.1f')
 		# print(time)
 		# print('len(time):', len(time))
@@ -643,10 +606,7 @@ class mainWindow(QMainWindow):
 		# self.top.com_plot1.ax.plot(self.data, color = 'r', linestyle = '-', marker = '*', label="err")
 		self.top.com_plot1.figure.canvas.draw()		
 		self.top.com_plot1.figure.canvas.flush_events()
-		if(self.act.runFlag):
-			# print('update rate: ', np.round(update_rate, 1), end=', ')
-			# print('step avg: ', np.round(np.average(self.step), 3))
-			pass
+		print('step avg: ', np.round(np.average(self.step), 3))
 		self.top.com_plot2.ax.plot(self.time, self.step, color = 'r', linestyle = '-', marker = '*', label="step")
 		# self.top.com_plot2.ax.plot(self.step, color = 'r', linestyle = '-', marker = '*', label="step")
 		self.top.com_plot2.figure.canvas.draw()		

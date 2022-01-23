@@ -399,12 +399,8 @@ class gyro_Action(QThread):
 						# print("adxl355_x:", temp_adxl355_x*SENS_ADXL355_8G);
 						# print("adxl355_y:", temp_adxl355_y*SENS_ADXL355_8G);
 						# print("adxl355_z:", temp_adxl355_z*SENS_ADXL355_8G);
-						# print("temp_nano33_ax:", temp_nano33_ax*SENS_AXLM_4G);
-						# print("temp_nano33_ay:", temp_nano33_ay*SENS_AXLM_4G);
-						# print("temp_nano33_az:", temp_nano33_az*SENS_AXLM_4G);
-						# print("temp_nano33_wx:", temp_nano33_wx*SENS_GYRO_250);
-						# print("temp_nano33_wy:", temp_nano33_wy*SENS_GYRO_250);
-						self.printNano33Acc(temp_nano33_ax, temp_nano33_ay, temp_nano33_az, '\n')
+						self.printNano33Gyro(temp_nano33_wx, temp_nano33_wy, temp_nano33_wz, '\n')
+						# self.printNano33Acc(temp_nano33_ax, temp_nano33_ay, temp_nano33_az, '\n')
 					
 					self.kal_flag = globals.kal_status
 					''' Kalmman filter'''

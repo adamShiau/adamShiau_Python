@@ -97,16 +97,8 @@ FPGA_R_INIT			= 6
 SW_Q_INIT			= 1
 SW_R_INIT			= 10
 SF_A_INIT = 0.0004
-SF_B_INIT = -1.4
+SF_B_INIT = -1.0
 DATA_RATE_INIT		= 2135
-
-# STEP_MAX_INIT = 10000
-# V2PI_INIT = 30000
-# V2PIN_INIT = -30000
-# STEP_TRIG_DLY_INIT = 0
-# MODE_INIT = 0
-# FPGA_Q_INIT = 10
-# FPGA_R_INIT = 5
 
 class mainWindow(QMainWindow):
 	# Kal_status = 0
@@ -567,10 +559,10 @@ class mainWindow(QMainWindow):
 		
 		self.resetTimer()
 		if(self.trig_mode): 	#internal mode
-			self.act.COM.writeBinary(MODE_IMU_FAKE)
+			self.act.COM.writeBinary(MODE_IMU)
 			self.send32BitCmd(1)
 		else: 				#sync mode
-			self.act.COM.writeBinary(MODE_IMU_FAKE)
+			self.act.COM.writeBinary(MODE_IMU)
 			self.send32BitCmd(2)
 		self.start_time = time.time()
 		
@@ -586,7 +578,7 @@ class mainWindow(QMainWindow):
 		# self.send32BitCmd(1)
 		
 	def myThreadStop(self):
-		self.act.COM.writeBinary(MODE_IMU_FAKE)
+		self.act.COM.writeBinary(MODE_IMU)
 		self.send32BitCmd(4)
 		
 		if(self.save_cb_flag == True):
@@ -654,7 +646,7 @@ class mainWindow(QMainWindow):
 		# print('len(time):', len(time))
 		# print('len(data):', len(data))
 		self.top.com_plot1.ax.plot(self.time, self.data, color = 'r', linestyle = '-', marker = '', label="err")
-		# self.top.com_plot1.ax.plot(self.time, self.step, color = 'b', linestyle = '-', marker = '', label="step")
+		self.top.com_plot1.ax.plot(self.time, self.step, color = 'b', linestyle = '-', marker = '', label="step")
 		# self.top.com_plot1.ax.plot(self.data, color = 'r', linestyle = '-', marker = '*', label="err")
 		self.top.com_plot1.figure.canvas.draw()		
 		self.top.com_plot1.figure.canvas.flush_events()

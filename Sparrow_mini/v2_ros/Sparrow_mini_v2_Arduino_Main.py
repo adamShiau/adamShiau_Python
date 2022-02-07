@@ -15,13 +15,13 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import * 
 from PyQt5.QtWidgets import *
 import numpy as np
+# import py3lib
+# import py3lib.FileToArray as file
+# import py3lib.QuLogger as Qlogger 
+# import py3lib.FileToArray as fil2a 
 import Sparrow_mini_v2_Widget as UI 
 import Sparrow_mini_v2_Action as ACT
 import gyro_Globals as globals
-# ''' ros lib'''
-
-
-'''*********'''
 TITLE_TEXT = "OPEN LOOP"
 VERSION_TEXT = 'PIG V2'
 READOUT_FILENAME = "Signal_Read_Out.txt"
@@ -37,6 +37,8 @@ xlm_factor = 0.000122 #4g / 32768
 gyro_factor = 0.0090 #250 / 32768 
 gyro200_factor = 0.0121
 
+BAUD_RATE_1 = 115200
+BAUD_RATE_2 = 115200*2
 # wx_offset = 107.065
 # wy_offset = -513.717
 
@@ -47,6 +49,7 @@ MODE_STOP 			= 0
 MODE_FOG			= 1
 MODE_IMU			= 2
 MODE_EQ				= 3
+MODE_IMU_FAKE		= 4
 CMD_FOG_MOD_FREQ	= 8
 CMD_FOG_MOD_AMP_H	= 9
 CMD_FOG_MOD_AMP_L	= 10
@@ -78,8 +81,8 @@ CMD_FOG_OUT_START	= 25
 '''adc conversion '''
 # ADC_COEFFI = (4/8192) #PD attnuates 5 times befor enter ADC
 ADC_COEFFI = 1
-# TIME_COEFFI = 0.0001
-TIME_COEFFI = 0.01
+TIME_COEFFI = 0.0001
+# TIME_COEFFI = 1
 ''' define initial value'''
 
 MOD_H_INIT 			= 3300
@@ -93,23 +96,15 @@ ERR_AVG_INIT 		= 6
 GAIN1_SEL_INIT 		= 7
 GAIN2_SEL_INIT 		= 0
 DAC_GAIN_INIT 		= 300
-FB_ON_INIT			= 0
+FB_ON_INIT			= 1
 CONST_STEP_INIT		= 0
 FPGA_Q_INIT			= 1
 FPGA_R_INIT			= 6
 SW_Q_INIT			= 1
 SW_R_INIT			= 10
-SF_A = 1
-SF_B = 0
+SF_A_INIT = 0.0004
+SF_B_INIT = -1.0
 DATA_RATE_INIT		= 2135
-
-# STEP_MAX_INIT = 10000
-# V2PI_INIT = 30000
-# V2PIN_INIT = -30000
-# STEP_TRIG_DLY_INIT = 0
-# MODE_INIT = 0
-# FPGA_Q_INIT = 10
-# FPGA_R_INIT = 5
 
 class mainWindow(QMainWindow):
 	# Kal_status = 0
@@ -171,7 +166,8 @@ class mainWindow(QMainWindow):
 		self.act.fog_finished.connect(self.myThreadStop) #runFlag=0時fog_finished會emit，之後關掉thread1
 		
 		if(globals.PRINT_MODE):
-			self.act.openLoop_updata4.connect(self.printData)
+			# self.act.openLoop_updata4.connect(self.printData)
+			self.act.imu_update10.connect(self.printImu)
 		else:
 			self.act.openLoop_updata4.connect(self.plotData)
 		
@@ -320,8 +316,8 @@ class mainWindow(QMainWindow):
 			self.top.SW_Q.spin.setValue(globals.kal_Q)
 			self.top.SW_R.spin.setValue(globals.kal_R)
 			''' line editor'''
-			self.top.sf_a.le.setText('1') 
-			self.top.sf_b.le.setText('0') 
+			self.top.sf_a.le.setText(str(SF_A_INIT)) 
+			self.top.sf_b.le.setText(str(SF_B_INIT)) 
 			self.sf_a_var = float(self.top.sf_a.le.text())
 			self.sf_b_var = float(self.top.sf_b.le.text())
 
@@ -467,7 +463,24 @@ class mainWindow(QMainWindow):
 		print('set dataRate: ', value)
 		self.act.COM.writeBinary(CMD_FOG_INT_DELAY)
 		self.send32BitCmd(value)
+				
+	# def send_V2PIN_CMD(self):
+		# value = self.top.v2piN.spin.value()	
+		# cmd = V2PIN + str(value) + '\n'
+		# print(cmd)
+		# self.act.COM.writeLine(cmd)
 		
+	
+		
+	# def send_trigDelay_CMD(self):
+		# value = self.top.trigDelay.spin.value()	
+		# cmd = STEP_TRIG_DLY + str(value) + '\n'
+		# print(cmd)
+		# self.act.COM.writeLine(cmd)
+		
+
+		
+
 	'''------------------------------------------------- '''
 	
 	def versionBox(self):
@@ -509,7 +522,7 @@ class mainWindow(QMainWindow):
 		if (TEST_MODE):
 			usbConnStatus = True
 		else:
-			usbConnStatus = self.act.COM.connect_comboBox(baudrate = 115200, timeout = 1, port_name=self.cp)
+			usbConnStatus = self.act.COM.connect_comboBox(baudrate = BAUD_RATE_2, timeout = 1, port_name=self.cp)
 		print("status:" + str(usbConnStatus))
 		if usbConnStatus:
 			self.top.usb.SetConnectText(Qt.blue, self.cp + " Connect")
@@ -552,10 +565,10 @@ class mainWindow(QMainWindow):
 		
 		self.resetTimer()
 		if(self.trig_mode): 	#internal mode
-			self.act.COM.writeBinary(MODE_FOG)
+			self.act.COM.writeBinary(MODE_IMU)
 			self.send32BitCmd(1)
 		else: 				#sync mode
-			self.act.COM.writeBinary(MODE_FOG)
+			self.act.COM.writeBinary(MODE_IMU)
 			self.send32BitCmd(2)
 		self.start_time = time.time()
 		
@@ -567,11 +580,11 @@ class mainWindow(QMainWindow):
 		self.act.dt_init_flag = 1
 		self.act.stopRun()
 		
-		# self.act.COM.writeBinary(MODE_IMU)
-		# self.send32BitCmd(4)
+		# self.act.COM.writeBinary(MODE_STOP)
+		# self.send32BitCmd(1)
 		
 	def myThreadStop(self):
-		self.act.COM.writeBinary(MODE_FOG)
+		self.act.COM.writeBinary(MODE_IMU)
 		self.send32BitCmd(4)
 		
 		if(self.save_cb_flag == True):
@@ -602,10 +615,19 @@ class mainWindow(QMainWindow):
 		print('err : ', data_f)
 		print('step: ', step_f)
 		
+	def printImu(self, time_in, err, step, PD_temperature, 
+		nano33_wx, nano33_wy, nano33_wz,
+		nano33_ax, nano33_ay, nano33_az):
+		print('%.4f'% (time_in*TIME_COEFFI), end='\t')
+		self.act.printNano33Acc (nano33_ax, nano33_ay, nano33_az, '\t')
+		self.act.printNano33Gyro(nano33_wx, nano33_wy, nano33_wz, '\n')
+		
 	def plotData(self, time, data, step, PD_temperature):
 		if(self.act.runFlag):
 			self.top.com_plot1.ax.clear()
 			self.top.com_plot2.ax.clear()
+		
+			
 		update_rate = 1/((time[1] - time[0])*TIME_COEFFI)
 		#update label#
 		self.top.buffer_lb.lb.setText(str(self.act.bufferSize))
@@ -629,13 +651,15 @@ class mainWindow(QMainWindow):
 		# print(time)
 		# print('len(time):', len(time))
 		# print('len(data):', len(data))
-		self.top.com_plot1.ax.plot(self.time, self.data, color = 'r', linestyle = '-', marker = '*', label="err")
+		self.top.com_plot1.ax.plot(self.time, self.data, color = 'r', linestyle = '-', marker = '', label="err")
+		self.top.com_plot1.ax.plot(self.time, self.step, color = 'b', linestyle = '-', marker = '', label="step")
 		# self.top.com_plot1.ax.plot(self.data, color = 'r', linestyle = '-', marker = '*', label="err")
 		self.top.com_plot1.figure.canvas.draw()		
 		self.top.com_plot1.figure.canvas.flush_events()
 		if(self.act.runFlag):
 			# print('update rate: ', np.round(update_rate, 1), end=', ')
-			print('step avg: ', np.round(np.average(self.step), 3))
+			# print('step avg: ', np.round(np.average(self.step), 3))
+			pass
 		self.top.com_plot2.ax.plot(self.time, self.step, color = 'r', linestyle = '-', marker = '*', label="step")
 		# self.top.com_plot2.ax.plot(self.step, color = 'r', linestyle = '-', marker = '*', label="step")
 		self.top.com_plot2.figure.canvas.draw()		

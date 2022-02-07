@@ -4,7 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-NAME = '123'
+NAME = '2022-01-27'
 
 print(sys.path)
 Var = np.loadtxt(NAME+'.txt', comments='#', delimiter=',')
@@ -57,6 +57,7 @@ plt.ylabel("difft(ms)") # y label
 # plt.legend()
 
 #####double Y anix#######
+# plt.figure(2)
 fig, ax1 = plt.subplots()
 
 color = 'tab:red'

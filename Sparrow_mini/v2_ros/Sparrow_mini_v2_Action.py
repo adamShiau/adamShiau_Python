@@ -11,14 +11,15 @@ import time
 import numpy as np 
 import scipy as sp
 from scipy import signal
-from py3lib.COMPort import UART
-import py3lib.FileToArray as fil2a
+from COMPort import UART
+#from py3lib.COMPort import UART
+#import py3lib.FileToArray as fil2a
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 import logging
-import py3lib
-from py3lib import *
+#import py3lib
+#from py3lib import *
 import math
 import time 
 import datetime
@@ -81,8 +82,7 @@ class gyro_Action(QThread):
 	flag1_errtime = 0
 	valid_cnt_num = 5
 	def __init__(self, parent = None):	
-		super().__init__()
-		# QThread.__init__(self)
+		QThread.__init__(self)
 		self.COM = UART()
 		# self.logger = logging.getLogger(loggername)
 		# MAIN.mainWindow.Kal_update.emit.connect(self.test)
@@ -158,8 +158,8 @@ class gyro_Action(QThread):
 			self.COM.port.flushInput()
 			
 			while (self.runFlag):
-				while(not (self.COM.port.inWaiting()>(self.data_frame_update_point*10))) : #rx buffer 不到 (self.data_frame_update_point*9) byte數目時不做任何事
-					# print(self.COM.port.inWaiting())
+				while(not (self.COM.port.inWaiting()>(self.data_frame_update_point*10))) : 
+					#print(self.COM.port.inWaiting())
 					pass
 				x_p[0] = x_p[self.data_frame_update_point]
 				y_p[0] = y_p[self.data_frame_update_point]
@@ -171,11 +171,11 @@ class gyro_Action(QThread):
 					# print('runFlag:', self.runFlag)
 					val = self.COM.read1Binary()
 					val3 = self.COM.read1Binary()
-					while(val[0] != self.check_byte or val3[0] != self.check_byte3):
+					while(val != self.check_byte or val3 != self.check_byte3):
 						val = val3
 						val3 = self.COM.read1Binary()
-						print("val:", val[0], end=', ')
-						print(val3[0])
+						print("val:", val, end=', ')
+						print(val3)
 						
 					self.bufferSize = self.COM.port.inWaiting()
 					
@@ -200,10 +200,14 @@ class gyro_Action(QThread):
 					temp_nano33_ax = 		self.COM.read2Binary()
 					temp_nano33_ay = 		self.COM.read2Binary()
 					temp_nano33_az = 		self.COM.read2Binary()
-					
-					
+					#print("time:", temp_time);
+					#print("time:", temp_err);
+					#print("time:", temp_step);
+					#print("time:", temp_PD_temperature);
+					#print("adxl355_x:", temp_adxl355_x);
+
 					val2 = self.COM.read1Binary()
-					if(val2[0] != self.check_byte2):
+					if(val2 != self.check_byte2):
 						valid_flag = 0
 						self.valid_cnt = (self.valid_cnt_num-2)
 						break #b
@@ -222,19 +226,19 @@ class gyro_Action(QThread):
 					temp_nano33_ay = 		self.convert2Sign_nano33(temp_nano33_ay)
 					temp_nano33_az = 		self.convert2Sign_nano33(temp_nano33_az)
 					if(DEBUG):
-						# print("time:", temp_time, end='\t');
-						# print("err:", temp_err, end='\t\t');
-						# print("step:", temp_step, end='\t');
-						# print("PD_T:", temp_PD_temperature);
-						# print("adxl355_x:", temp_adxl355_x*SENS_ADXL355_8G);
-						# print("adxl355_y:", temp_adxl355_y*SENS_ADXL355_8G);
-						# print("adxl355_z:", temp_adxl355_z*SENS_ADXL355_8G);
-						# print("temp_nano33_ax:", temp_nano33_ax*SENS_AXLM_4G);
-						# print("temp_nano33_ay:", temp_nano33_ay*SENS_AXLM_4G);
-						# print("temp_nano33_az:", temp_nano33_az*SENS_AXLM_4G);
-						# print("temp_nano33_wx:", temp_nano33_wx*SENS_GYRO_250);
-						# print("temp_nano33_wy:", temp_nano33_wy*SENS_GYRO_250);
-						self.printNano33Acc(temp_nano33_ax, temp_nano33_ay, temp_nano33_az, '\n')
+						 print("time:", temp_time, end='\t');
+						 print("err:", temp_err, end='\t\t');
+						 print("step:", temp_step, end='\t');
+						 print("PD_T:", temp_PD_temperature);
+						 print("adxl355_x:", temp_adxl355_x*SENS_ADXL355_8G);
+						 print("adxl355_y:", temp_adxl355_y*SENS_ADXL355_8G);
+						 print("adxl355_z:", temp_adxl355_z*SENS_ADXL355_8G);
+						 print("temp_nano33_ax:", temp_nano33_ax*SENS_AXLM_4G);
+						 print("temp_nano33_ay:", temp_nano33_ay*SENS_AXLM_4G);
+						 print("temp_nano33_az:", temp_nano33_az*SENS_AXLM_4G);
+						 print("temp_nano33_wx:", temp_nano33_wx*SENS_GYRO_250);
+						 print("temp_nano33_wy:", temp_nano33_wy*SENS_GYRO_250);
+						#self.printNano33Acc(temp_nano33_ax, temp_nano33_ay, temp_nano33_az, '\n')
 					
 					self.kal_flag = globals.kal_status
 					''' Kalmman filter'''
@@ -523,6 +527,7 @@ class gyro_Action(QThread):
 			return datain
 			
 	def convert2Sign_adxl355(self, datain) :
+
 		shift_data = (datain[0]<<12|datain[1]<<4|datain[2]>>4)
 		if((datain[0]>>7) == 1):
 			return (shift_data - (1<<20))

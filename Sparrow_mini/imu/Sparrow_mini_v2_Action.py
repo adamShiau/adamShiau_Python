@@ -18,7 +18,7 @@ import time
 import datetime
 import gyro_Globals as globals
 
-DEBUG = 0
+DEBUG = 1
 SENS_GYRO_250 		= 0.00875
 SENS_AXLM_4G 		= 0.000122
 SENS_ADXL355_8G 	= 0.0000156
@@ -75,8 +75,8 @@ class gyro_Action(QThread):
 	flag1_errtime = 0
 	valid_cnt_num = 5
 	def __init__(self, parent = None):	
-		super().__init__()
-		# QThread.__init__(self)
+		# super().__init__()
+		QThread.__init__(self)
 		self.COM = UART()
 		# self.logger = logging.getLogger(loggername)
 		# MAIN.mainWindow.Kal_update.emit.connect(self.test)
@@ -194,7 +194,12 @@ class gyro_Action(QThread):
 					temp_nano33_ax = 		self.COM.read2Binary()
 					temp_nano33_ay = 		self.COM.read2Binary()
 					temp_nano33_az = 		self.COM.read2Binary()
-					
+					# print("time:", temp_time);
+					# print("temp_err:", temp_err);
+					# print("temp_step:", temp_step);
+					# print("temp_PD_temperature:", temp_PD_temperature);
+					# print("adxl355_x:", temp_adxl355_x);
+
 					
 					val2 = self.COM.read1Binary()
 					if(val2[0] != self.check_byte2):
@@ -216,19 +221,19 @@ class gyro_Action(QThread):
 					temp_nano33_ay = 		self.convert2Sign_nano33(temp_nano33_ay)
 					temp_nano33_az = 		self.convert2Sign_nano33(temp_nano33_az)
 					if(DEBUG):
-						# print("time:", temp_time, end='\t');
-						# print("err:", temp_err, end='\t\t');
-						# print("step:", temp_step, end='\t');
-						# print("PD_T:", temp_PD_temperature);
-						# print("adxl355_x:", temp_adxl355_x*SENS_ADXL355_8G);
-						# print("adxl355_y:", temp_adxl355_y*SENS_ADXL355_8G);
-						# print("adxl355_z:", temp_adxl355_z*SENS_ADXL355_8G);
-						# print("temp_nano33_ax:", temp_nano33_ax*SENS_AXLM_4G);
-						# print("temp_nano33_ay:", temp_nano33_ay*SENS_AXLM_4G);
-						# print("temp_nano33_az:", temp_nano33_az*SENS_AXLM_4G);
-						# print("temp_nano33_wx:", temp_nano33_wx*SENS_GYRO_250);
-						# print("temp_nano33_wy:", temp_nano33_wy*SENS_GYRO_250);
-						self.printNano33Acc(temp_nano33_ax, temp_nano33_ay, temp_nano33_az, '\n')
+						print("time:", temp_time, end='\t');
+						print("err:", temp_err, end='\t\t');
+						print("step:", temp_step, end='\t');
+						print("PD_T:", temp_PD_temperature);
+						print("adxl355_x:", temp_adxl355_x*SENS_ADXL355_8G);
+						print("adxl355_y:", temp_adxl355_y*SENS_ADXL355_8G);
+						print("adxl355_z:", temp_adxl355_z*SENS_ADXL355_8G);
+						print("temp_nano33_ax:", temp_nano33_ax*SENS_AXLM_4G);
+						print("temp_nano33_ay:", temp_nano33_ay*SENS_AXLM_4G);
+						print("temp_nano33_az:", temp_nano33_az*SENS_AXLM_4G);
+						print("temp_nano33_wx:", temp_nano33_wx*SENS_GYRO_250);
+						print("temp_nano33_wy:", temp_nano33_wy*SENS_GYRO_250);
+						# self.printNano33Acc(temp_nano33_ax, temp_nano33_ay, temp_nano33_az, '\n')
 					
 					self.kal_flag = globals.kal_status
 					''' Kalmman filter'''

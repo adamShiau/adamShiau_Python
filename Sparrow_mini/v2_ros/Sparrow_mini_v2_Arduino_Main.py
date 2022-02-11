@@ -1,5 +1,5 @@
-!/usr/bin/env python
--*- coding:UTF-8 -*-
+#!/usr/bin/env python
+#-*- coding:UTF-8 -*-
 from __future__ import print_function
 import rospy
 from sensor_msgs.msg import Imu
@@ -106,6 +106,8 @@ SF_A_INIT = 0.0004
 SF_B_INIT = -1.0
 DATA_RATE_INIT		= 2135
 
+os.system('sudo chmod +777 /dev/ttyACM0')
+
 class mainWindow(QMainWindow):
 	# Kal_status = 0
 	''' global var'''
@@ -166,8 +168,8 @@ class mainWindow(QMainWindow):
 		self.act.fog_finished.connect(self.myThreadStop) #runFlag=0時fog_finished會emit，之後關掉thread1
 		
 		if(globals.PRINT_MODE):
-			# self.act.openLoop_updata4.connect(self.printData)
-			self.act.imu_update10.connect(self.printImu)
+			self.act.openLoop_updata4.connect(self.printData)
+			#self.act.imu_update10.connect(self.printImu)
 		else:
 			self.act.openLoop_updata4.connect(self.plotData)
 		
@@ -565,10 +567,10 @@ class mainWindow(QMainWindow):
 		
 		self.resetTimer()
 		if(self.trig_mode): 	#internal mode
-			self.act.COM.writeBinary(MODE_IMU)
+			self.act.COM.writeBinary(MODE_IMU_FAKE)
 			self.send32BitCmd(1)
 		else: 				#sync mode
-			self.act.COM.writeBinary(MODE_IMU)
+			self.act.COM.writeBinary(MODE_IMU_FAKE)
 			self.send32BitCmd(2)
 		self.start_time = time.time()
 		
@@ -584,7 +586,7 @@ class mainWindow(QMainWindow):
 		# self.send32BitCmd(1)
 		
 	def myThreadStop(self):
-		self.act.COM.writeBinary(MODE_IMU)
+		self.act.COM.writeBinary(MODE_IMU_FAKE)
 		self.send32BitCmd(4)
 		
 		if(self.save_cb_flag == True):
@@ -610,10 +612,19 @@ class mainWindow(QMainWindow):
 		data_f = data*ADC_COEFFI 
 		time_f = time_in*TIME_COEFFI
 		step_f = step*self.sf_a_var + self.sf_b_var
+		if(self.act.runFlag):
+			# print('update rate: ', np.round(update_rate, 1), end=', ')
+			# print('step avg: ', np.round(np.average(self.step), 3))
+			msg = Imu()
+			msg.header.stamp = rospy.Time.now()
+			msg.header.frame_id = 'base_link'
+			msg.angular_velocity.z = time_f
+			pub.publish(msg)
+			pass
 		
-		print('time: ', time_f)
-		print('err : ', data_f)
-		print('step: ', step_f)
+		#print('time: ', time_f)
+		#print('err : ', data_f)
+		#print('step: ', step_f)
 		
 	def printImu(self, time_in, err, step, PD_temperature, 
 		nano33_wx, nano33_wy, nano33_wz,
@@ -659,6 +670,11 @@ class mainWindow(QMainWindow):
 		if(self.act.runFlag):
 			# print('update rate: ', np.round(update_rate, 1), end=', ')
 			# print('step avg: ', np.round(np.average(self.step), 3))
+			msg = Imu()
+			msg.header.stamp = rospy.Time.now()
+			msg.header.frame_id = 'base_link'
+			msg.angular_velocity.z = 123.456
+			pub.publish(msg)
 			pass
 		self.top.com_plot2.ax.plot(self.time, self.step, color = 'r', linestyle = '-', marker = '*', label="step")
 		# self.top.com_plot2.ax.plot(self.step, color = 'r', linestyle = '-', marker = '*', label="step")
@@ -672,4 +688,7 @@ if __name__ == '__main__':
 	app = QApplication(sys.argv)
 	main = mainWindow()
 	main.show()
+	rospy.init_node('Sparrow_v1_node')
+	pub = rospy.Publisher('/imu_raw', Imu, queue_size=1)
+	#rospy.spin()
 	os._exit(app.exec_())

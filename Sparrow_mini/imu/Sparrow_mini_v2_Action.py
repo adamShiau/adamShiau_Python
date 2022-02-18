@@ -18,7 +18,7 @@ import time
 import datetime
 import gyro_Globals as globals
 
-DEBUG = 1
+DEBUG = 0
 SENS_GYRO_250 		= 0.00875
 SENS_AXLM_4G 		= 0.000122
 SENS_ADXL355_8G 	= 0.0000156

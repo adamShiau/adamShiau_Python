@@ -43,7 +43,7 @@ MODE_STOP 			= 0
 MODE_FOG			= 1
 MODE_IMU			= 2
 MODE_EQ				= 3
-MODE_IMU_FAKE		= 4
+MODE_IMU_FAKE		= 2
 CMD_FOG_MOD_FREQ	= 8
 CMD_FOG_MOD_AMP_H	= 9
 CMD_FOG_MOD_AMP_L	= 10
@@ -84,10 +84,10 @@ MOD_L_INIT 			= -3300
 FREQ_INIT 			= 138
 ERR_OFFSET_INIT 	= 0
 POLARITY_INIT 		= 1
-WAIT_CNT_INIT 		= 69
+WAIT_CNT_INIT 		= 65
 ERR_TH_INIT 		= 0
 ERR_AVG_INIT 		= 6
-GAIN1_SEL_INIT 		= 7
+GAIN1_SEL_INIT 		= 8
 GAIN2_SEL_INIT 		= 0
 DAC_GAIN_INIT 		= 300
 FB_ON_INIT			= 1
@@ -95,9 +95,9 @@ CONST_STEP_INIT		= 0
 FPGA_Q_INIT			= 1
 FPGA_R_INIT			= 6
 SW_Q_INIT			= 1
-SW_R_INIT			= 10
-SF_A_INIT = 0.0004
-SF_B_INIT = -1.0
+SW_R_INIT			= 6
+SF_A_INIT = 0.0002
+SF_B_INIT = -1.21
 DATA_RATE_INIT		= 2135
 
 class mainWindow(QMainWindow):
@@ -652,7 +652,8 @@ class mainWindow(QMainWindow):
 		self.top.com_plot1.figure.canvas.flush_events()
 		if(self.act.runFlag):
 			# print('update rate: ', np.round(update_rate, 1), end=', ')
-			# print('step avg: ', np.round(np.average(self.step), 3))
+			print(np.round(np.average(self.step), 3), end='\t')
+			print(np.round(np.std(self.step), 3))
 			pass
 		self.top.com_plot2.ax.plot(self.time, self.step, color = 'r', linestyle = '-', marker = '*', label="step")
 		# self.top.com_plot2.ax.plot(self.step, color = 'r', linestyle = '-', marker = '*', label="step")

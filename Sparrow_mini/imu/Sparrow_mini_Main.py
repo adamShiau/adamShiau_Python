@@ -67,7 +67,30 @@ ADC_COEFFI = (4/8192) #PD attnuates 5 times befor enter ADC
 # ADC_COEFFI = 1
 TIME_COEFFI = 0.0001
 ''' define initial value'''
+###2
+MOD_H_INIT 			= 3400
+MOD_L_INIT 			= -3400
+FREQ_INIT 			= 135
+ERR_OFFSET_INIT 	= 0
+POLARITY_INIT 		= 1
+WAIT_CNT_INIT 		= 65
+ERR_TH_INIT 		= 0
+ERR_AVG_INIT 		= 6
+GAIN1_SEL_INIT 		= 6
+GAIN2_SEL_INIT 		= 0
+DAC_GAIN_INIT 		= 420
+FB_ON_INIT			= 0
+CONST_STEP_INIT		= 0
+FPGA_Q_INIT			= 1
+FPGA_R_INIT			= 6
+SW_Q_INIT			= 1
+SW_R_INIT			= 30
+SF_A = 1
+SF_B = 0
 
+
+'''
+###1 
 MOD_H_INIT 			= 3400
 MOD_L_INIT 			= -3400
 FREQ_INIT 			= 138
@@ -76,7 +99,7 @@ POLARITY_INIT 		= 1
 WAIT_CNT_INIT 		= 69
 ERR_TH_INIT 		= 0
 ERR_AVG_INIT 		= 6
-GAIN1_SEL_INIT 		= 7
+GAIN1_SEL_INIT 		= 8
 GAIN2_SEL_INIT 		= 0
 DAC_GAIN_INIT 		= 300
 FB_ON_INIT			= 0
@@ -87,7 +110,7 @@ SW_Q_INIT			= 1
 SW_R_INIT			= 30
 SF_A = 1
 SF_B = 0
-
+'''
 
 # STEP_MAX_INIT = 10000
 # V2PI_INIT = 30000

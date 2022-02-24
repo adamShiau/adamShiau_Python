@@ -56,7 +56,6 @@ crc crcSlow(uint8_t  message[], int nBytes)
 {
     crc  remainder = 0;	
 
-    for(int i=; )
     printf("msg: %x\n", message);
     /*
      * Perform modulo-2 division, a byte at a time.

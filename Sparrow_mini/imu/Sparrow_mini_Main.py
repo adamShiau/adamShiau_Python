@@ -5,6 +5,7 @@ import time
 import datetime
 from scipy import signal
 # import logging
+import PyQt5.sip
 from PyQt5.QtGui import * 
 from PyQt5.QtCore import * 
 from PyQt5.QtWidgets import *
@@ -13,8 +14,9 @@ import numpy as np
 # import py3lib.FileToArray as file
 # import py3lib.QuLogger as Qlogger 
 # import py3lib.FileToArray as fil2a 
-import Sparrow_mini_Widget as UI 
-import Sparrow_mini_Action as ACT
+import Sparrow_mini_v2_Widget as UI 
+# import Sparrow_mini_Action as ACT
+import Sparrow_mini_crc_Action as ACT
 import gyro_Globals as globals
 TITLE_TEXT = "OPEN LOOP"
 VERSION_TEXT = 'fog open loop 2020/12/25'
@@ -52,6 +54,7 @@ FPGA_Q_ADDR	=		13
 FPGA_R_ADDR = 		14
 
 DAC_GAIN_ADDR = 	50
+DATA_RATE_ADDR =	98
 DATA_OUT_START=		99
 
 STEP_MAX = 10
@@ -68,28 +71,28 @@ ADC_COEFFI = (4/8192) #PD attnuates 5 times befor enter ADC
 TIME_COEFFI = 0.0001
 ''' define initial value'''
 ###2
-MOD_H_INIT 			= 3400
-MOD_L_INIT 			= -3400
-FREQ_INIT 			= 135
-ERR_OFFSET_INIT 	= 0
-POLARITY_INIT 		= 1
-WAIT_CNT_INIT 		= 65
-ERR_TH_INIT 		= 0
-ERR_AVG_INIT 		= 6
-GAIN1_SEL_INIT 		= 6
-GAIN2_SEL_INIT 		= 0
-DAC_GAIN_INIT 		= 420
-FB_ON_INIT			= 0
-CONST_STEP_INIT		= 0
-FPGA_Q_INIT			= 1
-FPGA_R_INIT			= 6
-SW_Q_INIT			= 1
-SW_R_INIT			= 30
-SF_A = 1
-SF_B = 0
+# MOD_H_INIT 			= 3400
+# MOD_L_INIT 			= -3400
+# FREQ_INIT 			= 135
+# ERR_OFFSET_INIT 	= 0
+# POLARITY_INIT 		= 1
+# WAIT_CNT_INIT 		= 65
+# ERR_TH_INIT 		= 0
+# ERR_AVG_INIT 		= 6
+# GAIN1_SEL_INIT 		= 6
+# GAIN2_SEL_INIT 		= 0
+# DAC_GAIN_INIT 		= 420
+# FB_ON_INIT			= 0
+# CONST_STEP_INIT		= 0
+# FPGA_Q_INIT			= 1
+# FPGA_R_INIT			= 6
+# SW_Q_INIT			= 1
+# SW_R_INIT			= 30
+# SF_A = 1
+# SF_B = 0
 
 
-'''
+
 ###1 
 MOD_H_INIT 			= 3400
 MOD_L_INIT 			= -3400
@@ -110,7 +113,8 @@ SW_Q_INIT			= 1
 SW_R_INIT			= 30
 SF_A = 1
 SF_B = 0
-'''
+DATA_RATE_INIT		= 1863
+
 
 # STEP_MAX_INIT = 10000
 # V2PI_INIT = 30000
@@ -143,7 +147,7 @@ class mainWindow(QMainWindow):
 		# self.disableBtn()
 		self.data = np.empty(0)
 		self.step = np.empty(0)
-		self.time = np.empty(0)
+		self.time_s = np.empty(0)
 		self.setInitValue(False)
 		self.setBtnStatus(False)
 		self.get_rbVal()
@@ -227,7 +231,8 @@ class mainWindow(QMainWindow):
 		
 		''' check box'''
 		self.top.save_text.cb.toggled.connect(lambda:self.cb_toogled(self.top.save_text.cb))
-
+		''' slider '''
+		self.top.dataRate_sd.sd.valueChanged.connect(self.send_DATA_RATE_CMD) 
 
 		# self.top.trigDelay.spin.valueChanged.connect(self.send_trigDelay_CMD)
 
@@ -300,8 +305,10 @@ class mainWindow(QMainWindow):
 			self.send32BitCmd(FB_ON_INIT)
 			self.act.COM.writeBinary(CONST_STEP_ADDR)
 			self.send32BitCmd(CONST_STEP_INIT)
-			globals.kal_Q = 1
-			globals.kal_R = 30
+			self.act.COM.writeBinary(DATA_RATE_ADDR)
+			self.send32BitCmd(DATA_RATE_INIT)
+			globals.kal_Q = SW_Q_INIT
+			globals.kal_R = SW_R_INIT 
 			
 			self.top.freq.spin.setValue(FREQ_INIT)
 			time.sleep(DLY_CMD)
@@ -477,11 +484,11 @@ class mainWindow(QMainWindow):
 		print(value);
 		print('kal_R:', globals.kal_R)
 				
-	# def send_V2PIN_CMD(self):
-		# value = self.top.v2piN.spin.value()	
-		# cmd = V2PIN + str(value) + '\n'
-		# print(cmd)
-		# self.act.COM.writeLine(cmd)
+	def send_DATA_RATE_CMD(self):
+		value = self.top.dataRate_sd.sd.value()	
+		print('set dataRate: ', value)
+		self.act.COM.writeBinary(DATA_RATE_ADDR)
+		self.send32BitCmd(value)
 		
 	
 		
@@ -592,45 +599,52 @@ class mainWindow(QMainWindow):
 			self.f.writelines('#' + stop_time_header + '\n')
 			self.f.close()
 		self.data  = np.empty(0)
-		self.time  = np.empty(0)
+		self.time_s  = np.empty(0)
 		self.step  = np.empty(0)
 		
 		
-	def plotData(self, time, data, step, PD_temperature):
+	def plotData(self, time_s, data, step, PD_temperature):
 		if(self.act.runFlag):
 			self.top.com_plot1.ax.clear()
 			self.top.com_plot2.ax.clear()
 			
+		# print(len(time), end=', ')
+		# print(len(data))
 		#update label#
+		update_rate = 1/((time_s[1] - time_s[0])*TIME_COEFFI)
+		self.top.dataRate_lb.lb.setText(str(np.round(update_rate, 1)))
 		self.top.buffer_lb.lb.setText(str(self.act.bufferSize))
 		# self.top.temperature_lb.lb.setText(str(self.act.temp_PD_temperature/2))
 		# print('len(temp_PD): ', len(temp_PD))
 		self.top.temperature_lb.lb.setText(str(PD_temperature[0]))
 		
 		data_f = data*ADC_COEFFI 
-		time_f = time*TIME_COEFFI
+		time_f = time_s*TIME_COEFFI
 		step_f = step*self.sf_a_var + self.sf_b_var
 		# data_f = data 
 		self.data  = np.append(self.data, data_f)
-		self.time  = np.append(self.time, time_f)
+		self.time_s  = np.append(self.time_s, time_f)
 		self.step = np.append(self.step, step_f)
 		if (len(self.data) >= 1000):
 			self.data = self.data[self.act.data_frame_update_point:]
 			self.step = self.step[self.act.data_frame_update_point:]
-			self.time = self.time[self.act.data_frame_update_point:]
-		
+			self.time_s = self.time_s[self.act.data_frame_update_point:]
+		# print(len(self.time), end=', ')
+		# print(len(self.data))
+		# print(self.time)
+		# print(time.time())
 		if(self.save_cb_flag == True):
 			# np.savetxt(self.f, (np.vstack([time_f, data_f, step])).T, fmt='%5.5f, %5.5f, %d')
 			np.savetxt(self.f, (np.vstack([time_f, data_f, step, PD_temperature])).T, fmt='%5.5f, %5.5f, %d, %3.1f')
 		# print(time)
 		# print('len(time):', len(time))
 		# print('len(data):', len(data))
-		self.top.com_plot1.ax.plot(self.time, self.data, color = 'r', linestyle = '-', marker = '*', label="err")
+		self.top.com_plot1.ax.plot(self.time_s, self.data, color = 'r', linestyle = '-', label="err")
 		# self.top.com_plot1.ax.plot(self.data, color = 'r', linestyle = '-', marker = '*', label="err")
 		self.top.com_plot1.figure.canvas.draw()		
 		self.top.com_plot1.figure.canvas.flush_events()
-		print('step avg: ', np.round(np.average(self.step), 3))
-		self.top.com_plot2.ax.plot(self.time, self.step, color = 'r', linestyle = '-', marker = '*', label="step")
+		# print('step avg: ', np.round(np.average(self.step), 3))
+		self.top.com_plot2.ax.plot(self.time_s, self.step, color = 'r', linestyle = '-', label="step")
 		# self.top.com_plot2.ax.plot(self.step, color = 'r', linestyle = '-', marker = '*', label="step")
 		self.top.com_plot2.figure.canvas.draw()		
 		self.top.com_plot2.figure.canvas.flush_events()

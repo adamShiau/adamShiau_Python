@@ -32,6 +32,13 @@ class UART:
 
 		return self.find_com
 		
+	def manualConnect(self, baudrate = 115200, timeout = 1, port_name = ''):
+		self.baudrate = baudrate
+		self.timeout = timeout
+		self.cp = port_name
+		self.find_com = True
+		self.port = self.comDetect()
+		
 	def connect_comboBox(self, baudrate = 115200, timeout = 1, port_name = ''):
 		self.baudrate = baudrate
 		self.timeout = timeout
@@ -91,6 +98,17 @@ class UART:
 		
 		for i in range(self.portNum):
 			self.comPort = np.append(self.comPort, portlist[i])
+			
+	def printCom(self):
+		comPort = np.empty(0)
+		portlist = serial.tools.list_ports.comports()
+		portNum = len(portlist)
+		if(portNum > 0):
+			for i in range(portNum):
+				comPort = np.append(comPort, portlist[i])
+				print(comPort[i])
+		else:
+			print("No com port!")
 
 	def checkCom(self):
 		find_com = False

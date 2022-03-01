@@ -23,7 +23,7 @@ class mainWidget(QWidget):
 		self.mod_L = spinBlock(title='MOD_L', minValue=-32768, maxValue=0, double=False, step=100)
 		self.gain1 = spinBlock(title='GAIN1', minValue=0, maxValue=14, double=False, step=1)
 		self.gain2 = spinBlock(title='GAIN2', minValue=0, maxValue=14, double=False, step=1)
-		self.const_step = spinBlock(title='const_step', minValue=0, maxValue=32767, double=False, step=500)
+		self.const_step = spinBlock(title='const_step', minValue=-32768, maxValue=32767, double=False, step=1)
 		self.dac_gain = spinBlock(title='DAC_GAIN', minValue=0, maxValue=1023, double=False, step=10)
 		# self.v2piN = spinBlock(title='V2PI_N', minValue=-32768, maxValue=-2000, double=False, step=1000)
 		self.fb_on = spinBlock(title='mode(0:OPEN)', minValue=0, maxValue=2, double=False, step=1)

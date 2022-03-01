@@ -36,6 +36,12 @@ gyro200_factor = 0.0121
 # wx_offset = 107.065
 # wy_offset = -513.717
 
+MODE_STOP 			= 0
+MODE_FOG			= 1
+MODE_IMU			= 2
+MODE_EQ				= 3
+MODE_IMU_FAKE		= 4
+
 '''define uart address '''
 MOD_FREQ_ADDR = 	0
 MOD_AMP_H_ADDR = 	1
@@ -56,6 +62,8 @@ FPGA_R_ADDR = 		14
 DAC_GAIN_ADDR = 	50
 DATA_RATE_ADDR =	98
 DATA_OUT_START=		99
+
+
 
 STEP_MAX = 10
 V2PIN = 11
@@ -113,6 +121,7 @@ SW_Q_INIT			= 1
 SW_R_INIT			= 30
 SF_A = 1
 SF_B = 0
+
 DATA_RATE_INIT		= 1863
 
 
@@ -559,7 +568,7 @@ class mainWindow(QMainWindow):
 		# cmd = OPENLOOP_START + str(0) + '\n'
 		# print(cmd)
 		# self.act.COM.writeLine(cmd)
-		self.act.COM.writeBinary(DATA_OUT_START)
+		self.act.COM.writeBinary(DATA_OUT_START) 
 		self.send32BitCmd(0)
 		self.act.runFlag = False
 		self.act.dt_init_flag = 1

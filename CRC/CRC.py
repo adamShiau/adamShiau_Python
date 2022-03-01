@@ -53,7 +53,7 @@ def crcSlow(message, nBytes):
 			print(hex(remainder));
 	return remainder
 
-def checkHeader(HEADER, nbyte) :
+def checkHeader2(HEADER, nbyte) :
 	headerArr = np.zeros(nbyte)
 	headerArr = COM.read4Binary()
 	hold = 1
@@ -64,10 +64,6 @@ def checkHeader(HEADER, nbyte) :
 			(headerArr[2] == HEADER[2]) and 
 			(headerArr[3] == HEADER[3]) 
 			):
-				# print('\n', hex(headerArr[0]))
-				# print(hex(headerArr[1]))
-				# print(hex(headerArr[2]))
-				# print(hex(headerArr[3]))
 				hold = 0
 				print("pass")
 				return headerArr
@@ -79,20 +75,46 @@ def checkHeader(HEADER, nbyte) :
 			x =  int.from_bytes(COM.read1Binary(), 'big')
 			tempArr[3] = x
 			headerArr = tempArr
-	
+
+def checkHeader(self, HEADER) :
+		headerArr = bytearray(COM.read4Binary())
+		hold = 1
+		while(hold):
+			
+			if(	(headerArr[0] == HEADER[0]) and 
+				(headerArr[1] == HEADER[1]) and 
+				(headerArr[2] == HEADER[2]) and 
+				(headerArr[3] == HEADER[3]) 
+				):
+					hold = 0
+					return headerArr
+			else:
+				headerArr[0] = headerArr[1]
+				headerArr[1] = headerArr[2]
+				headerArr[2] = headerArr[3]
+				headerArr[3] = self.COM.read1Binary()[0]
+				print(hex(headerArr[0]), end=', ')
+				print(hex(headerArr[1]), end=', ')
+				print(hex(headerArr[2]), end=', ')
+				print(hex(headerArr[3]))
+
 COM.printCom()
-COM.manualConnect(115200, 1, 'COM5')
+COM.manualConnect(230400, 1, 'COM3')
 	
 i = 0	
-
-COM.writeBinary(99)
+COM.port.flushInput()
+COM.writeBinary(1)
 send32BitCmd(1)
 for i in range(110):
-	tt = checkHeader(HEADER, 4)
-	print('\n', hex(tt[0]))
-	print(hex(tt[1]))
-	print(hex(tt[2]))
-	print(hex(tt[3]))
+	print(i, end=', ')
+	# tt = checkHeader(HEADER, 4)
+	# print('\n', hex(tt[0]))
+	# print(hex(tt[1]))
+	# print(hex(tt[2]))
+	# print(hex(tt[3]))
+	
+	# print(COM.port.inWaiting())
+	print(hex(COM.read1Binary()[0]))
 	# headerArr = COM.read4Binary()
 	# print(hex(headerArr[0]))
 	# print(hex(headerArr[1]))
@@ -100,6 +122,6 @@ for i in range(110):
 	# print(hex(headerArr[3]))
 	# if(headerArr[0] == HEADER[0]):
 		# print('yes!!!!!!!!!!')
-COM.writeBinary(99)
+COM.writeBinary(1)
 send32BitCmd(0)
 # print("crc = ", hex(crcSlow(msg, 2)))

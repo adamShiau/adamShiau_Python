@@ -14,7 +14,7 @@ import numpy as np
 # import py3lib.QuLogger as Qlogger 
 # import py3lib.FileToArray as fil2a 
 import Sparrow_mini_v2_Widget as UI 
-import Sparrow_mini_v2_Action as ACT
+import Sparrow_mini_crc_v2_Action as ACT
 import gyro_Globals as globals
 TITLE_TEXT = "OPEN LOOP"
 VERSION_TEXT = 'PIG V2'
@@ -32,7 +32,7 @@ gyro_factor = 0.0090 #250 / 32768
 gyro200_factor = 0.0121
 
 BAUD_RATE_1 = 115200
-BAUD_RATE_2 = 115200*2
+BAUD_RATE_2 = 230400
 # wx_offset = 107.065
 # wy_offset = -513.717
 
@@ -43,7 +43,7 @@ MODE_STOP 			= 0
 MODE_FOG			= 1
 MODE_IMU			= 2
 MODE_EQ				= 3
-MODE_IMU_FAKE		= 2
+MODE_IMU_FAKE		= 4
 CMD_FOG_MOD_FREQ	= 8
 CMD_FOG_MOD_AMP_H	= 9
 CMD_FOG_MOD_AMP_L	= 10
@@ -98,7 +98,7 @@ SW_Q_INIT			= 1
 SW_R_INIT			= 6
 SF_A_INIT = 0.0002
 SF_B_INIT = -1.21
-DATA_RATE_INIT		= 2135
+DATA_RATE_INIT		= 1863
 
 class mainWindow(QMainWindow):
 	# Kal_status = 0
@@ -200,39 +200,6 @@ class mainWindow(QMainWindow):
 		''' check box'''
 		self.top.save_text.cb.toggled.connect(lambda:self.cb_toogled(self.top.save_text.cb))
 
-	# """ comport functin """
-	def update_comport(self):
-		self.act.COM.selectCom()
-		self.top.usb.cs.clear()
-		if(self.act.COM.portNum > 0):
-			for i in range(self.act.COM.portNum):
-				self.top.usb.cs.addItem(self.act.COM.comPort[i][0])
-			idx = self.top.usb.cs.currentIndex()
-			self.top.usb.lb.setText(self.act.COM.comPort[idx][1])
-	
-	def uadate_comport_label(self):
-		idx = self.top.usb.cs.currentIndex()
-		self.top.usb.lb.setText(self.act.COM.comPort[idx][1])
-		self.cp = self.act.COM.comPort[idx][0]
-	
-	def usbConnect(self):
-		# self.usbconnect_status = pyqtSignal(object)
-		print(self.cp);
-		if (TEST_MODE):
-			usbConnStatus = True
-		else:
-			usbConnStatus = self.act.COM.connect_comboBox(baudrate = 115200, timeout = 1, port_name=self.cp)
-		print("status:" + str(usbConnStatus))
-		if usbConnStatus:
-			self.top.usb.SetConnectText(Qt.blue, self.cp + " Connect")
-			self.usbconnect_status.emit(1)
-			print("Connect build")
-		else:
-			self.top.usb.SetConnectText(Qt.red,"Connect failed", True)
-			print("Connect failed")
-			
-# """ end of comport functin """
-	
 	def checkBoxInit(self):
 		self.top.save_text.cb.setChecked(0)
 	
@@ -559,10 +526,10 @@ class mainWindow(QMainWindow):
 		
 		self.resetTimer()
 		if(self.trig_mode): 	#internal mode
-			self.act.COM.writeBinary(MODE_IMU_FAKE)
+			self.act.COM.writeBinary(MODE_FOG)
 			self.send32BitCmd(1)
 		else: 				#sync mode
-			self.act.COM.writeBinary(MODE_IMU_FAKE)
+			self.act.COM.writeBinary(MODE_FOG)
 			self.send32BitCmd(2)
 		self.start_time = time.time()
 		
@@ -578,7 +545,7 @@ class mainWindow(QMainWindow):
 		# self.send32BitCmd(1)
 		
 	def myThreadStop(self):
-		self.act.COM.writeBinary(MODE_IMU_FAKE)
+		self.act.COM.writeBinary(MODE_FOG)
 		self.send32BitCmd(4)
 		
 		if(self.save_cb_flag == True):
@@ -652,8 +619,8 @@ class mainWindow(QMainWindow):
 		self.top.com_plot1.figure.canvas.flush_events()
 		if(self.act.runFlag):
 			# print('update rate: ', np.round(update_rate, 1), end=', ')
-			print(np.round(np.average(self.step), 3), end='\t')
-			print(np.round(np.std(self.step), 3))
+			# print(np.round(np.average(self.step), 3), end='\t')
+			# print(np.round(np.std(self.step), 3))
 			pass
 		self.top.com_plot2.ax.plot(self.time, self.step, color = 'r', linestyle = '-', marker = '*', label="step")
 		# self.top.com_plot2.ax.plot(self.step, color = 'r', linestyle = '-', marker = '*', label="step")

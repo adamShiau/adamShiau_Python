@@ -97,7 +97,7 @@ FPGA_R_INIT			= 6
 SW_Q_INIT			= 1
 SW_R_INIT			= 6
 SF_A_INIT = 0.0002
-SF_B_INIT = -1.21
+SF_B_INIT = -2.21
 DATA_RATE_INIT		= 1863
 
 class mainWindow(QMainWindow):
@@ -210,6 +210,7 @@ class mainWindow(QMainWindow):
 
 	def setInitValue(self, EN):
 		if(EN):
+			# print('enter set init value')
 			self.act.COM.writeBinary(CMD_FOG_MOD_FREQ)
 			self.send32BitCmd(FREQ_INIT)
 			self.act.COM.writeBinary(CMD_FOG_MOD_AMP_H)
@@ -281,7 +282,8 @@ class mainWindow(QMainWindow):
 			self.top.sf_b.le.setText(str(SF_B_INIT)) 
 			self.sf_a_var = float(self.top.sf_a.le.text())
 			self.sf_b_var = float(self.top.sf_b.le.text())
-
+			# print('leave set init value')
+			
 	def SF_A_EDIT(self):
 		self.sf_a_var = float(self.top.sf_a.le.text())
 		print('sf_a_var: ', self.sf_a_var)
@@ -308,6 +310,7 @@ class mainWindow(QMainWindow):
 		time.sleep(DLY_CMD)
 	
 	def setBtnStatus(self, flag):
+		# print('setBtnStatus')
 		self.top.read_btn.bt.setEnabled(flag)
 		self.top.stop_btn.bt.setEnabled(flag)
 		
@@ -425,21 +428,6 @@ class mainWindow(QMainWindow):
 		self.act.COM.writeBinary(CMD_FOG_INT_DELAY)
 		self.send32BitCmd(value)
 				
-	# def send_V2PIN_CMD(self):
-		# value = self.top.v2piN.spin.value()	
-		# cmd = V2PIN + str(value) + '\n'
-		# print(cmd)
-		# self.act.COM.writeLine(cmd)
-		
-	
-		
-	# def send_trigDelay_CMD(self):
-		# value = self.top.trigDelay.spin.value()	
-		# cmd = STEP_TRIG_DLY + str(value) + '\n'
-		# print(cmd)
-		# self.act.COM.writeLine(cmd)
-		
-
 		
 
 	'''------------------------------------------------- '''
@@ -526,10 +514,10 @@ class mainWindow(QMainWindow):
 		
 		self.resetTimer()
 		if(self.trig_mode): 	#internal mode
-			self.act.COM.writeBinary(MODE_FOG)
+			self.act.COM.writeBinary(MODE_IMU)
 			self.send32BitCmd(1)
 		else: 				#sync mode
-			self.act.COM.writeBinary(MODE_FOG)
+			self.act.COM.writeBinary(MODE_IMU)
 			self.send32BitCmd(2)
 		self.start_time = time.time()
 		
@@ -545,7 +533,7 @@ class mainWindow(QMainWindow):
 		# self.send32BitCmd(1)
 		
 	def myThreadStop(self):
-		self.act.COM.writeBinary(MODE_FOG)
+		self.act.COM.writeBinary(MODE_IMU)
 		self.send32BitCmd(4)
 		
 		if(self.save_cb_flag == True):
@@ -613,7 +601,7 @@ class mainWindow(QMainWindow):
 		# print('len(time):', len(time))
 		# print('len(data):', len(data))
 		self.top.com_plot1.ax.plot(self.time, self.data, color = 'r', linestyle = '-', marker = '', label="err")
-		self.top.com_plot1.ax.plot(self.time, self.step, color = 'b', linestyle = '-', marker = '', label="step")
+		# self.top.com_plot1.ax.plot(self.time, self.step, color = 'b', linestyle = '-', marker = '', label="step")
 		# self.top.com_plot1.ax.plot(self.data, color = 'r', linestyle = '-', marker = '*', label="err")
 		self.top.com_plot1.figure.canvas.draw()		
 		self.top.com_plot1.figure.canvas.flush_events()
@@ -622,7 +610,7 @@ class mainWindow(QMainWindow):
 			# print(np.round(np.average(self.step), 3), end='\t')
 			# print(np.round(np.std(self.step), 3))
 			pass
-		self.top.com_plot2.ax.plot(self.time, self.step, color = 'r', linestyle = '-', marker = '*', label="step")
+		self.top.com_plot2.ax.plot(self.time, self.step, color = 'r', linestyle = '-', marker = '', label="step")
 		# self.top.com_plot2.ax.plot(self.step, color = 'r', linestyle = '-', marker = '*', label="step")
 		self.top.com_plot2.figure.canvas.draw()		
 		self.top.com_plot2.figure.canvas.flush_events()

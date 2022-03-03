@@ -223,7 +223,7 @@ class gyro_Action(QThread):
 	
 	def run(self):
 		err = np.zeros(self.data_frame_update_point)
-		time = np.zeros(self.data_frame_update_point)
+		time_s = np.zeros(self.data_frame_update_point)
 		step = np.zeros(self.data_frame_update_point)
 		PD_temperature = np.zeros(self.data_frame_update_point)
 		nano33_wx = np.zeros(self.data_frame_update_point)
@@ -263,6 +263,7 @@ class gyro_Action(QThread):
 		if (self.runFlag):
 			self.COM.port.flushInput()
 			print('crc fail : ', self.crc_fail_cnt)
+			start_time = time.time()
 			while (self.runFlag):
 				while(not (self.COM.port.inWaiting()>(self.data_frame_update_point*10))) : #rx buffer 不到 (self.data_frame_update_point*9) byte數目時不做任何事
 					# print(self.COM.port.inWaiting())
@@ -275,7 +276,8 @@ class gyro_Action(QThread):
 				for i in range(0,self.data_frame_update_point): 
 						
 					self.bufferSize = self.COM.port.inWaiting()
-					# print(self.bufferSize)
+					pc_time = time.time() - start_time
+					# print(pc_time)
 					[temp_time, 
 					temp_err, 
 					temp_step, 
@@ -327,7 +329,7 @@ class gyro_Action(QThread):
 					''' end of kalmman filter'''
 					
 					
-					time = np.append(time[1:], temp_time)
+					time_s = np.append(time_s[1:], temp_time)
 					PD_temperature = np.append(PD_temperature[1:], temp_PD_temperature)
 					if(self.kal_flag == True):
 						err = np.append(err[1:], x[i]) #kalmman filter
@@ -342,7 +344,7 @@ class gyro_Action(QThread):
 					# nano33_ay = np.append(nano33_ay[1:], temp_nano33_ay)
 					# nano33_az = np.append(nano33_az[1:], temp_nano33_az)
 				#end of for
-				self.openLoop_updata4.emit(time, err, step, PD_temperature)
+				self.openLoop_updata4.emit(time_s, err, step, PD_temperature)
 				# self.openLoop_updata4.emit(time, nano33_ax*SENS_AXLM_4G, nano33_ay*SENS_AXLM_4G, PD_temperature)
 				# self.openLoop_updata4.emit(time, nano33_wz*SENS_GYRO_250, step, PD_temperature)
 				if(self.stopFlag):

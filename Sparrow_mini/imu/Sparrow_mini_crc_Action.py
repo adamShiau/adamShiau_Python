@@ -129,7 +129,41 @@ class gyro_Action(QObject):
 					remainder = (remainder << 1);
 				# print(hex(remainder));
 		return remainder
-		
+	
+	def readPIG(self, EN=1):
+		if(EN):
+			temp_header = self.checkHeader(HEADER)
+			temp_time = bytearray(self.COM.read4Binary())
+			temp_err = bytearray(self.COM.read4Binary())
+			temp_step = bytearray(self.COM.read4Binary())
+			temp_PD_temperature = bytearray(self.COM.read4Binary())
+			temp_crc = self.COM.read1Binary()
+			msg =  temp_header + temp_time + temp_err + temp_step + temp_PD_temperature
+			crc = self.crcSlow(msg, 20)
+			# print('calculate CRC: ', crc)
+			# print('read CRC: ', temp_crc[0])
+			if(temp_crc[0] == crc):
+				temp_time = self.convert2Unsign_4B(temp_time)
+				temp_err = self.convert2Sign_4B(temp_err)
+				temp_step = self.convert2Sign_4B(temp_step)
+				temp_PD_temperature = self.convert2Unsign_4B(temp_PD_temperature)/2
+				self.old_err = temp_err
+				self.old_step = temp_step
+				self.old_PD_temp = temp_PD_temperature
+			else :
+				self.crc_fail_cnt = self.crc_fail_cnt + 1
+				print('crc fail : ', self.crc_fail_cnt)
+				temp_err = self.old_err
+				temp_step = self.old_step
+				temp_PD_temperature = self.old_PD_temp
+		else:
+			temp_time = self.fake_time
+			temp_err = 0
+			temp_step = 0
+			temp_PD_temperature = 0
+			self.fake_time = self.fake_time + 1
+		return temp_time, temp_err, temp_step, temp_PD_temperature
+	
 	def updateOpenLoop(self):
 		data = np.zeros(self.data_frame_update_point)
 		time_s = np.zeros(self.data_frame_update_point)
@@ -165,8 +199,7 @@ class gyro_Action(QObject):
 		if self.runFlag:
 			self.COM.port.flushInput()
 			start_time = time.time()
-			crc_fail_cnt = 0
-			print('crc fail: ', crc_fail_cnt)
+			print('crc fail: ', self.crc_fail_cnt)
 			while self.runFlag:
 				while(not (self.COM.port.inWaiting()>(self.data_frame_update_point*1))) : #rx buffer 不到 (self.data_frame_update_point*9) byte數目時不做任何事
 					# print(self.COM.port.inWaiting())
@@ -178,45 +211,16 @@ class gyro_Action(QObject):
 				for i in range(0,self.data_frame_update_point): 
 					self.bufferSize = self.COM.port.inWaiting()
 					pc_time = time.time() - start_time
-					temp_header = self.checkHeader(HEADER)
-					temp_time = bytearray(self.COM.read4Binary())
-					temp_data = bytearray(self.COM.read4Binary())
-					temp_step = bytearray(self.COM.read4Binary())
-					temp_PD_temperature = bytearray(self.COM.read4Binary())
-					temp_crc = self.COM.read1Binary()
-					msg =  temp_header + temp_time + temp_data + temp_step + temp_PD_temperature
-					crc = self.crcSlow(msg, 20)
-					# print('\ncrc: ', hex(self.crcSlow(msg, 20)))
-					# print('temp_crc: ', temp_crc[0])
-							
-					if(temp_crc[0] == crc):
-						temp_time = self.convert2Unsign_4B(temp_time)
-						temp_data = self.convert2Sign_4B(temp_data)
-						temp_step = self.convert2Sign_4B(temp_step)
-						temp_PD_temperature = self.convert2Unsign_4B(temp_PD_temperature)/2
-						self.old_err = temp_data
-						old_step = temp_step
-						old_PD_temp = temp_PD_temperature
-					else :
-						crc_fail_cnt = crc_fail_cnt + 1
-						print('crc fail: ', crc_fail_cnt)
-						temp_data = self.old_err
-						temp_step = self.old_step
-						temp_PD_temperature = self.old_PD_temp
-					# print(type(temp_crc))
-					# print(type(crc))
-					# print('header: ', temp_header, end='\n')
-					# print('PD temp: ', temp_PD_temperature, end='\n')
-					# print('temp_time: ', temp_time, end='\n')
-					# print('temp_data: ', temp_data, end='\n')
-					# print('temp_step: ', temp_step, end='\n\n')
-					# print('buffer: ', self.bufferSize)
+					[temp_time, 
+					temp_err, 
+					temp_step, 
+					temp_PD_temperature] = self.readPIG()
 					
 					self.kal_flag = globals.kal_status					
 					''' Kalmman filter'''
 					'''------update------'''
 					k[i] = p_p[i]/(p_p[i] + globals.kal_R) #k_n
-					x[i] = x_p[i] + k[i]*(temp_data - x_p[i])  #x_nn
+					x[i] = x_p[i] + k[i]*(temp_err - x_p[i])  #x_nn
 					y[i] = y_p[i] + k[i]*(temp_step - y_p[i])  #y_nn
 					p[i] = (1 - k[i])*p_p[i] #p_nn
 
@@ -247,7 +251,7 @@ class gyro_Action(QObject):
 						data = np.append(data[1:], x[i]) #kalmman filter
 						step = np.append(step[1:], y[i]) #kalmman filter
 					else:
-						data = np.append(data[1:], temp_data)
+						data = np.append(data[1:], temp_err)
 						step = np.append(step[1:], temp_step)
 				self.valid_cnt = self.valid_cnt + 1
 				if(self.valid_cnt == 1):
@@ -255,7 +259,7 @@ class gyro_Action(QObject):
 				if(self.valid_flag):
 					# print(time_s)
 					self.openLoop_updata4.emit(time_s, data, step, PD_temperature)
-					
+		self.crc_fail_cnt = 0
 		self.valid_flag = 0
 		self.valid_cnt = 0
 		self.fog_finished.emit()

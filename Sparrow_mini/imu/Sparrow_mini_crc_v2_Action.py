@@ -183,21 +183,27 @@ class gyro_Action(QThread):
 			self.fake_time = self.fake_time + 1
 		return temp_time, temp_err, temp_step, temp_PD_temperature
 	
-	def readADXL355(self, EN, SF):
+	def readADXL355(self, EN, SF, PRINT=0):
 		if(EN): 
 			temp_adxl355_x = self.COM.read3Binary()
 			temp_adxl355_y = self.COM.read3Binary()
 			temp_adxl355_z = self.COM.read3Binary()
-			temp_adxl355_x = self.convert2Sign_adxl355(temp_adxl355_x)
-			temp_adxl355_y = self.convert2Sign_adxl355(temp_adxl355_y)
-			temp_adxl355_z = self.convert2Sign_adxl355(temp_adxl355_z)
+			temp_adxl355_x = self.convert2Sign_adxl355(temp_adxl355_x)*SF
+			temp_adxl355_y = self.convert2Sign_adxl355(temp_adxl355_y)*SF
+			temp_adxl355_z = self.convert2Sign_adxl355(temp_adxl355_z)*SF
 		else: 
 			temp_adxl355_x = 0
 			temp_adxl355_y = 0
 			temp_adxl355_z = 0
-		return temp_adxl355_x*SF, temp_adxl355_y*SF, temp_adxl355_z*SF
+		
+		if(PRINT): 
+			print(round(temp_adxl355_x,4), end='\t\t')
+			print(round(temp_adxl355_y,4), end='\t\t')
+			print(round(temp_adxl355_z,4))
+			
+		return temp_adxl355_x, temp_adxl355_y, temp_adxl355_z
 	
-	def readNANO33(self, EN, SF_XLM, SF_GYRO):
+	def readNANO33(self, EN, SF_XLM, SF_GYRO, PRINT=0):
 		if(EN):
 			temp_nano33_wx = self.COM.read2Binary()
 			temp_nano33_wy = self.COM.read2Binary()
@@ -205,12 +211,12 @@ class gyro_Action(QThread):
 			temp_nano33_ax = self.COM.read2Binary()
 			temp_nano33_ay = self.COM.read2Binary()
 			temp_nano33_az = self.COM.read2Binary()
-			temp_nano33_wx = self.convert2Sign_nano33(temp_nano33_wx)
-			temp_nano33_wy = self.convert2Sign_nano33(temp_nano33_wy)
-			temp_nano33_wz = self.convert2Sign_nano33(temp_nano33_wz)
-			temp_nano33_ax = self.convert2Sign_nano33(temp_nano33_ax)
-			temp_nano33_ay = self.convert2Sign_nano33(temp_nano33_ay)
-			temp_nano33_az = self.convert2Sign_nano33(temp_nano33_az)
+			temp_nano33_wx = self.convert2Sign_nano33(temp_nano33_wx)*SF_GYRO
+			temp_nano33_wy = self.convert2Sign_nano33(temp_nano33_wy)*SF_GYRO
+			temp_nano33_wz = self.convert2Sign_nano33(temp_nano33_wz)*SF_GYRO
+			temp_nano33_ax = self.convert2Sign_nano33(temp_nano33_ax)*SF_XLM
+			temp_nano33_ay = self.convert2Sign_nano33(temp_nano33_ay)*SF_XLM
+			temp_nano33_az = self.convert2Sign_nano33(temp_nano33_az)*SF_XLM
 		else:
 			temp_nano33_wx = 0
 			temp_nano33_wy = 0
@@ -218,8 +224,17 @@ class gyro_Action(QThread):
 			temp_nano33_ax = 0
 			temp_nano33_ay = 0
 			temp_nano33_az = 0
-		return [temp_nano33_wx*SF_GYRO, temp_nano33_wy*SF_GYRO, temp_nano33_wz*SF_GYRO, 
-				temp_nano33_ax*SF_XLM, temp_nano33_ay*SF_XLM, temp_nano33_az*SF_XLM]
+			
+		if(PRINT): 
+			print(round(temp_nano33_ax,4), end='\t\t')
+			print(round(temp_nano33_ay,4), end='\t\t')
+			print(round(temp_nano33_az,4), end='\t\t')
+			print(round(temp_nano33_wx,4), end='\t\t')
+			print(round(temp_nano33_wy,4), end='\t\t')
+			print(round(temp_nano33_wz,4))
+			
+		return [temp_nano33_wx, temp_nano33_wy, temp_nano33_wz, 
+				temp_nano33_ax, temp_nano33_ay, temp_nano33_az]
 	
 	def run(self):
 		err = np.zeros(self.data_frame_update_point)
@@ -285,7 +300,8 @@ class gyro_Action(QThread):
 					
 					[temp_adxl355_x,
 					temp_adxl355_y,
-					temp_adxl355_z] = self.readADXL355(EN=1, SF=SENS_ADXL355_8G)
+					temp_adxl355_z] = self.readADXL355(EN=1, SF=SENS_ADXL355_8G
+														,PRINT=0)
 
 					[temp_nano33_wx,
 					temp_nano33_wy,
@@ -293,7 +309,8 @@ class gyro_Action(QThread):
 					temp_nano33_ax,
 					temp_nano33_ay,
 					temp_nano33_az] = self.readNANO33(EN=1, SF_XLM=SENS_AXLM_4G
-														,SF_GYRO=SENS_GYRO_250)
+														,SF_GYRO=SENS_GYRO_250
+														,PRINT=0)
 					
 					if(DEBUG):
 						print("time:", temp_time, end='\t');
@@ -301,23 +318,13 @@ class gyro_Action(QThread):
 						print("step:", temp_step, end='\t');
 						print("PD_T:", temp_PD_temperature);
 						
-						# print("adxl355_x:", temp_adxl355_x*SENS_ADXL355_8G);
-						# print("adxl355_y:", temp_adxl355_y*SENS_ADXL355_8G);
-						# print("adxl355_z:", temp_adxl355_z*SENS_ADXL355_8G);
-						# print("temp_nano33_ax:", temp_nano33_ax*SENS_AXLM_4G);
-						# print("temp_nano33_ay:", temp_nano33_ay*SENS_AXLM_4G);
-						# print("temp_nano33_az:", temp_nano33_az);
-						# print("temp_nano33_wx:", temp_nano33_wx*SENS_GYRO_250);
-						# print("temp_nano33_wy:", temp_nano33_wy*SENS_GYRO_250);
-						# self.printNano33Acc(temp_nano33_ax, temp_nano33_ay, temp_nano33_az, '\n')
-						# self.printNano33Gyro(temp_nano33_wx, temp_nano33_wy, temp_nano33_wz, '\n')
 					
 					self.kal_flag = globals.kal_status
 					''' Kalmman filter'''
 					'''------update------'''
 					k[i] = p_p[i]/(p_p[i] + globals.kal_R) #k_n
 					# x[i] = x_p[i] + k[i]*(temp_err - x_p[i])  #x_nn
-					x[i] = x_p[i] + k[i]*(temp_err - x_p[i])  #x_nn
+					x[i] = x_p[i] + k[i]*(temp_nano33_wz - x_p[i])  #x_nn
 					y[i] = y_p[i] + k[i]*(temp_step - y_p[i])  #y_nn
 					p[i] = (1 - k[i])*p_p[i] #p_nn
 
@@ -335,7 +342,8 @@ class gyro_Action(QThread):
 						err = np.append(err[1:], x[i]) #kalmman filter
 						step = np.append(step[1:], y[i]) #kalmman filter
 					else:
-						err = np.append(err[1:], temp_err)
+						# err = np.append(err[1:], temp_err) 
+						err = np.append(err[1:], temp_nano33_wz) 
 						step = np.append(step[1:], temp_step)
 					# nano33_wx = np.append(nano33_wx[1:], temp_nano33_wx)
 					# nano33_wy = np.append(nano33_wx[1:], temp_nano33_wy)

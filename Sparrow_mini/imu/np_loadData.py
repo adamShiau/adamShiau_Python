@@ -4,7 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-NAME = 'test1'
+NAME = '2022_03_03'
 
 print(sys.path)
 Var = np.loadtxt(NAME+'.txt', comments='#', delimiter=',')
@@ -20,7 +20,7 @@ print('len(t):', len(t))
 print('len(t2):', len(t2))
 print('len(diff_t):', len(diff_t))
 err = Var[:,1]
-step = Var[:,2]
+step = Var[:,2]*0.0032 - 1.11
 PD_T = Var[:,3]
 # Nano33_wx = Var[:,3]
 # Nano33_wy = Var[:,4]
@@ -61,7 +61,7 @@ fig, ax1 = plt.subplots()
 
 color = 'tab:red'
 ax1.set_xlabel('time (s)')
-ax1.set_ylabel('V', color=color)
+ax1.set_ylabel('mems gyro (dps)', color=color)
 ax1.plot(t, err, color=color)
 ax1.tick_params(axis='y', labelcolor=color)
 
@@ -83,9 +83,9 @@ print('std(err): ', np.std(err))
 plt.figure(3)
 plt.plot(t, step, label='step signal')
 # plt.plot(t, PD_T, label='PD temp')
-plt.title("STEP") # title
+plt.title("PIG v2") # title
 plt.xlabel("t(s)") # x label
-plt.ylabel("LSB") # y label
+plt.ylabel("dps") # y label
 plt.legend()
 print('avg(step): ', np.average(step))
 print('std(step): ', np.std(step))

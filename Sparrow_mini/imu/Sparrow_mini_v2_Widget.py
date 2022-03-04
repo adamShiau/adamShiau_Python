@@ -19,7 +19,7 @@ class mainWidget(QWidget):
 		self.avg = spinBlock(title='avg', minValue=0, maxValue=6, double=False, step=1)
 		self.err_offset = spinBlock(title='Err offset', minValue=-10000, maxValue=10000, double=False, step=1)
 		self.polarity = spinBlock(title='polarity', minValue=0, maxValue=1, double=False, step=1)
-		self.mod_H = spinBlock(title='MOD_H', minValue=0, maxValue=32767, double=False, step=100)
+		self.mod_H = spinBlock(title='MOD_H', minValue=-32768, maxValue=32767, double=False, step=100)
 		self.mod_L = spinBlock(title='MOD_L', minValue=-32768, maxValue=0, double=False, step=100)
 		self.gain1 = spinBlock(title='GAIN1', minValue=0, maxValue=14, double=False, step=1)
 		self.gain2 = spinBlock(title='GAIN2', minValue=0, maxValue=14, double=False, step=1)

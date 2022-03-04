@@ -87,8 +87,8 @@ POLARITY_INIT 		= 1
 WAIT_CNT_INIT 		= 65
 ERR_TH_INIT 		= 0
 ERR_AVG_INIT 		= 6
-GAIN1_SEL_INIT 		= 8
-GAIN2_SEL_INIT 		= 0
+GAIN1_SEL_INIT 		= 4
+GAIN2_SEL_INIT 		= 4
 DAC_GAIN_INIT 		= 300
 FB_ON_INIT			= 1
 CONST_STEP_INIT		= 0
@@ -96,8 +96,8 @@ FPGA_Q_INIT			= 1
 FPGA_R_INIT			= 6
 SW_Q_INIT			= 1
 SW_R_INIT			= 6
-SF_A_INIT = 0.0002
-SF_B_INIT = -2.21
+SF_A_INIT = 0.0032
+SF_B_INIT = -1.11
 DATA_RATE_INIT		= 1863
 
 class mainWindow(QMainWindow):
@@ -583,10 +583,10 @@ class mainWindow(QMainWindow):
 		self.top.temperature_lb.lb.setText(str(PD_temperature[0]))
 		self.top.dataRate_lb.lb.setText(str(np.round(update_rate, 1)))
 		
-		data_f = data*ADC_COEFFI 
+		# data_f = data*ADC_COEFFI 
 		time_f = time*TIME_COEFFI
 		step_f = step*self.sf_a_var + self.sf_b_var
-		# data_f = data 
+		data_f = data 
 		self.data  = np.append(self.data, data_f)
 		self.time  = np.append(self.time, time_f)
 		self.step = np.append(self.step, step_f)
@@ -600,8 +600,10 @@ class mainWindow(QMainWindow):
 		# print(time)
 		# print('len(time):', len(time))
 		# print('len(data):', len(data))
+		print('step avg: ', np.round(np.average(self.step), 4), end=', ')
+		print('stdev: ', np.round(np.std(self.step), 4))
 		self.top.com_plot1.ax.plot(self.time, self.data, color = 'r', linestyle = '-', marker = '', label="err")
-		# self.top.com_plot1.ax.plot(self.time, self.step, color = 'b', linestyle = '-', marker = '', label="step")
+		self.top.com_plot1.ax.plot(self.time, self.step, color = 'b', linestyle = '-', marker = '', label="step")
 		# self.top.com_plot1.ax.plot(self.data, color = 'r', linestyle = '-', marker = '*', label="err")
 		self.top.com_plot1.figure.canvas.draw()		
 		self.top.com_plot1.figure.canvas.flush_events()
@@ -610,7 +612,7 @@ class mainWindow(QMainWindow):
 			# print(np.round(np.average(self.step), 3), end='\t')
 			# print(np.round(np.std(self.step), 3))
 			pass
-		self.top.com_plot2.ax.plot(self.time, self.step, color = 'r', linestyle = '-', marker = '', label="step")
+		self.top.com_plot2.ax.plot(self.time, self.step, color = 'b', linestyle = '-', marker = '', label="step")
 		# self.top.com_plot2.ax.plot(self.step, color = 'r', linestyle = '-', marker = '*', label="step")
 		self.top.com_plot2.figure.canvas.draw()		
 		self.top.com_plot2.figure.canvas.flush_events()

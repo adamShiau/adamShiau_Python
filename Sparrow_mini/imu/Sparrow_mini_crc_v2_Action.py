@@ -180,7 +180,8 @@ class gyro_Action(QThread):
 			temp_err = 0
 			temp_step = 0
 			temp_PD_temperature = 0
-			self.fake_time = self.fake_time + 1
+			self.fake_time = self.fake_time + 100
+			time.sleep(0.001)
 		return temp_time, temp_err, temp_step, temp_PD_temperature
 	
 	def readADXL355(self, EN, SF, PRINT=0):
@@ -220,7 +221,7 @@ class gyro_Action(QThread):
 		else:
 			temp_nano33_wx = 0
 			temp_nano33_wy = 0
-			temp_nano33_wz = 0
+			temp_nano33_wz = 0.2
 			temp_nano33_ax = 0
 			temp_nano33_ay = 0
 			temp_nano33_az = 0
@@ -276,31 +277,33 @@ class gyro_Action(QThread):
 
 		# print("runFlag=", self.runFlag)
 		if (self.runFlag):
-			self.COM.port.flushInput()
+			if(globals.TEST_MODE==0):
+				self.COM.port.flushInput()
 			print('crc fail : ', self.crc_fail_cnt)
 			start_time = time.time()
 			while (self.runFlag):
-				while(not (self.COM.port.inWaiting()>(self.data_frame_update_point*10))) : #rx buffer 不到 (self.data_frame_update_point*9) byte數目時不做任何事
-					# print(self.COM.port.inWaiting())
-					pass
+				if(globals.TEST_MODE==0):
+					while(not (self.COM.port.inWaiting()>(self.data_frame_update_point*10))): 
+						# print(self.COM.port.inWaiting())
+						pass
 				x_p[0] = x_p[self.data_frame_update_point]
 				y_p[0] = y_p[self.data_frame_update_point]
 				p_p[0] = p_p[self.data_frame_update_point]
 				
 				# self.COM.port.flushInput()
 				for i in range(0,self.data_frame_update_point): 
-						
-					self.bufferSize = self.COM.port.inWaiting()
+					if(globals.TEST_MODE==0):
+						self.bufferSize = self.COM.port.inWaiting()
 					pc_time = time.time() - start_time
 					# print(pc_time)
 					[temp_time, 
 					temp_err, 
 					temp_step, 
-					temp_PD_temperature] = self.readPIG()
+					temp_PD_temperature] = self.readPIG(EN=0)
 					
 					[temp_adxl355_x,
 					temp_adxl355_y,
-					temp_adxl355_z] = self.readADXL355(EN=1, SF=SENS_ADXL355_8G
+					temp_adxl355_z] = self.readADXL355(EN=0, SF=SENS_ADXL355_8G
 														,PRINT=0)
 
 					[temp_nano33_wx,
@@ -308,7 +311,7 @@ class gyro_Action(QThread):
 					temp_nano33_wz,
 					temp_nano33_ax,
 					temp_nano33_ay,
-					temp_nano33_az] = self.readNANO33(EN=1, SF_XLM=SENS_AXLM_4G
+					temp_nano33_az] = self.readNANO33(EN=0, SF_XLM=SENS_AXLM_4G
 														,SF_GYRO=SENS_GYRO_250
 														,PRINT=0)
 					
@@ -345,13 +348,12 @@ class gyro_Action(QThread):
 						# err = np.append(err[1:], temp_err) 
 						err = np.append(err[1:], temp_nano33_wz) 
 						step = np.append(step[1:], temp_step)
-					# nano33_wx = np.append(nano33_wx[1:], temp_nano33_wx)
-					# nano33_wy = np.append(nano33_wx[1:], temp_nano33_wy)
-					# nano33_wz = np.append(nano33_wz[1:], temp_nano33_wz)
-					# nano33_ax = np.append(nano33_ax[1:], temp_nano33_ax)
-					# nano33_ay = np.append(nano33_ay[1:], temp_nano33_ay)
-					# nano33_az = np.append(nano33_az[1:], temp_nano33_az)
 				#end of for
+				print('action: ', end='\t')
+				print(len(time_s), end='\t')
+				print(len(err), end='\t')
+				print(len(step), end='\t')
+				print(len(PD_temperature))
 				self.openLoop_updata4.emit(time_s, err, step, PD_temperature)
 				# self.openLoop_updata4.emit(time, nano33_ax*SENS_AXLM_4G, nano33_ay*SENS_AXLM_4G, PD_temperature)
 				# self.openLoop_updata4.emit(time, nano33_wz*SENS_GYRO_250, step, PD_temperature)

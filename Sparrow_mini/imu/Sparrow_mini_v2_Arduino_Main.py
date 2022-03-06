@@ -20,7 +20,6 @@ TITLE_TEXT = "OPEN LOOP"
 VERSION_TEXT = 'PIG V2'
 READOUT_FILENAME = "Signal_Read_Out.txt"
 MAX_SAVE_INDEX = 3000
-TEST_MODE = False
 DLY_CMD = 0.01 #delay between command
 DEBUG = 1
 track_max = 50
@@ -209,7 +208,7 @@ class mainWindow(QMainWindow):
 			print('save_cb_flag:', self.save_cb_flag)
 
 	def setInitValue(self, EN):
-		if(EN):
+		if(EN and globals.TEST_MODE==False):
 			# print('enter set init value')
 			self.act.COM.writeBinary(CMD_FOG_MOD_FREQ)
 			self.send32BitCmd(FREQ_INIT)
@@ -459,6 +458,7 @@ class mainWindow(QMainWindow):
 				self.top.usb.cs.addItem(self.act.COM.comPort[i][0])
 			idx = self.top.usb.cs.currentIndex()
 			self.top.usb.lb.setText(self.act.COM.comPort[idx][1])
+		# print('no comport')
 	
 	def uadate_comport_label(self):
 		idx = self.top.usb.cs.currentIndex()
@@ -467,11 +467,13 @@ class mainWindow(QMainWindow):
 	
 	def usbConnect(self):
 		# self.usbconnect_status = pyqtSignal(object)
-		print(self.cp);
-		if (TEST_MODE):
+		
+		if (globals.TEST_MODE):
 			usbConnStatus = True
+			self.cp = 'TEST MODE'
 		else:
 			usbConnStatus = self.act.COM.connect_comboBox(baudrate = BAUD_RATE_2, timeout = 1, port_name=self.cp)
+		print(self.cp);
 		print("status:" + str(usbConnStatus))
 		if usbConnStatus:
 			self.top.usb.SetConnectText(Qt.blue, self.cp + " Connect")
@@ -512,13 +514,15 @@ class mainWindow(QMainWindow):
 		if(self.save_cb_flag == True):
 			self.open_file(self.top.save_text.le.text())
 		
-		self.resetTimer()
-		if(self.trig_mode): 	#internal mode
-			self.act.COM.writeBinary(MODE_IMU)
-			self.send32BitCmd(1)
-		else: 				#sync mode
-			self.act.COM.writeBinary(MODE_IMU)
-			self.send32BitCmd(2)
+		if(globals.TEST_MODE==False): 
+			self.resetTimer()
+			if(self.trig_mode): 	#internal mode
+				self.act.COM.writeBinary(MODE_IMU)
+				self.send32BitCmd(1)
+			else: 				#sync mode
+				self.act.COM.writeBinary(MODE_IMU)
+				self.send32BitCmd(2)
+				
 		self.start_time = time.time()
 		
 		self.act.startRun() # set self.act.runFlag = True
@@ -533,8 +537,9 @@ class mainWindow(QMainWindow):
 		# self.send32BitCmd(1)
 		
 	def myThreadStop(self):
-		self.act.COM.writeBinary(MODE_IMU)
-		self.send32BitCmd(4)
+		if(globals.TEST_MODE==False): 
+			self.act.COM.writeBinary(MODE_IMU)
+			self.send32BitCmd(4)
 		
 		if(self.save_cb_flag == True):
 			self.save_cb_flag == False
@@ -572,6 +577,11 @@ class mainWindow(QMainWindow):
 		self.act.printNano33Gyro(nano33_wx, nano33_wy, nano33_wz, '\n')
 		
 	def plotData(self, time, data, step, PD_temperature):
+		print('main: \t', end='\t')
+		print(len(time), end='\t')
+		print(len(data), end='\t')
+		print(len(step), end='\t')
+		print(len(PD_temperature))
 		if(self.act.runFlag):
 			self.top.com_plot1.ax.clear()
 			self.top.com_plot2.ax.clear()
@@ -596,15 +606,18 @@ class mainWindow(QMainWindow):
 			self.time = self.time[self.act.data_frame_update_point:]
 		
 		if(self.save_cb_flag == True):
+			# if(len(data_f) != self.act.data_frame_update_point):
+				# data_f = np.append(data_f, 999)
 			np.savetxt(self.f, (np.vstack([time_f, data_f, step, PD_temperature])).T, fmt='%5.5f, %5.5f, %d, %3.1f')
 		# print(time)
 		# print('len(time):', len(time))
 		# print('len(data):', len(data))
-		print('step avg: ', np.round(np.average(self.step), 4), end=', ')
-		print('stdev: ', np.round(np.std(self.step), 4))
-		self.top.com_plot1.ax.plot(self.time, self.data, color = 'r', linestyle = '-', marker = '', label="err")
-		self.top.com_plot1.ax.plot(self.time, self.step, color = 'b', linestyle = '-', marker = '', label="step")
-		# self.top.com_plot1.ax.plot(self.data, color = 'r', linestyle = '-', marker = '*', label="err")
+		# print('step avg: ', np.round(np.average(self.step), 4), end=', ')
+		# print('stdev: ', np.round(np.std(self.step), 4))
+		# self.top.com_plot1.ax.plot(self.time, self.data, color = 'r', linestyle = '-', marker = '', label="err")
+		# self.top.com_plot1.ax.plot(self.time, self.step, color = 'b', linestyle = '-', marker = '', label="step")
+		self.top.com_plot1.ax.plot(self.data, color = 'r', linestyle = '-', marker = '*', label="err")
+		self.top.com_plot1.ax.plot(self.step, color = 'b', linestyle = '-', marker = '*', label="err")
 		self.top.com_plot1.figure.canvas.draw()		
 		self.top.com_plot1.figure.canvas.flush_events()
 		if(self.act.runFlag):
@@ -612,8 +625,8 @@ class mainWindow(QMainWindow):
 			# print(np.round(np.average(self.step), 3), end='\t')
 			# print(np.round(np.std(self.step), 3))
 			pass
-		self.top.com_plot2.ax.plot(self.time, self.step, color = 'b', linestyle = '-', marker = '', label="step")
-		# self.top.com_plot2.ax.plot(self.step, color = 'r', linestyle = '-', marker = '*', label="step")
+		# self.top.com_plot2.ax.plot(self.time, self.step, color = 'b', linestyle = '-', marker = '', label="step")
+		self.top.com_plot2.ax.plot(self.step, color = 'r', linestyle = '-', marker = '*', label="step")
 		self.top.com_plot2.figure.canvas.draw()		
 		self.top.com_plot2.figure.canvas.flush_events()
 		

@@ -299,11 +299,11 @@ class gyro_Action(QThread):
 					[temp_time, 
 					temp_err, 
 					temp_step, 
-					temp_PD_temperature] = self.readPIG(EN=0)
+					temp_PD_temperature] = self.readPIG(EN=1)
 					
 					[temp_adxl355_x,
 					temp_adxl355_y,
-					temp_adxl355_z] = self.readADXL355(EN=0, SF=SENS_ADXL355_8G
+					temp_adxl355_z] = self.readADXL355(EN=1, SF=SENS_ADXL355_8G
 														,PRINT=0)
 
 					[temp_nano33_wx,
@@ -311,7 +311,7 @@ class gyro_Action(QThread):
 					temp_nano33_wz,
 					temp_nano33_ax,
 					temp_nano33_ay,
-					temp_nano33_az] = self.readNANO33(EN=0, SF_XLM=SENS_AXLM_4G
+					temp_nano33_az] = self.readNANO33(EN=1, SF_XLM=SENS_AXLM_4G
 														,SF_GYRO=SENS_GYRO_250
 														,PRINT=0)
 					
@@ -353,7 +353,8 @@ class gyro_Action(QThread):
 				print(len(time_s), end='\t')
 				print(len(err), end='\t')
 				print(len(step), end='\t')
-				print(len(PD_temperature))
+				print(len(PD_temperature), end='\t')
+				print(self.crc_fail_cnt)
 				self.openLoop_updata4.emit(time_s, err, step, PD_temperature)
 				# self.openLoop_updata4.emit(time, nano33_ax*SENS_AXLM_4G, nano33_ay*SENS_AXLM_4G, PD_temperature)
 				# self.openLoop_updata4.emit(time, nano33_wz*SENS_GYRO_250, step, PD_temperature)

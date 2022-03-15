@@ -159,10 +159,9 @@ class mainWindow(QMainWindow):
 		self.act.fog_finished.connect(self.myThreadStop) #runFlag=0時fog_finished會emit，之後關掉thread1
 		
 		if(globals.PRINT_MODE):
-			# self.act.openLoop_updata4.connect(self.printData)
-			self.act.imu_update10.connect(self.printImu)
+			self.act.data_update6.connect(self.printImu)
 		else:
-			self.act.openLoop_updata4.connect(self.plotData)
+			self.act.data_update4.connect(self.plotData)
 		
 		#btn enable signal
 		self.usbconnect_status.connect(self.setBtnStatus) #確定usb連接成功時才enable btn
@@ -448,7 +447,19 @@ class mainWindow(QMainWindow):
 		else :
 			saveBox.about(self, "Save File", "No file saving")
 			return 0
-			
+	
+	def showOP_Mode(self):
+		if(globals.TEST_MODE == True):
+			print('TEST_MODE')
+		elif(globals.OP_MODE == MODE_FOG):
+			print('MODE_FOG')
+		elif(globals.OP_MODE == MODE_IMU):
+			print('MODE_IMU')
+		elif(globals.OP_MODE == MODE_EQ):
+			print('MODE_EQ')
+		elif(globals.OP_MODE == MODE_IMU_FAKE):
+			print('MODE_IMU_FAKE')
+	
 # """ comport functin """
 	def update_comport(self):
 		self.act.COM.selectCom()
@@ -475,10 +486,12 @@ class mainWindow(QMainWindow):
 			usbConnStatus = self.act.COM.connect_comboBox(baudrate = BAUD_RATE_2, timeout = 1, port_name=self.cp)
 		print(self.cp);
 		print("status:" + str(usbConnStatus))
+		self.showOP_Mode()
 		if usbConnStatus:
 			self.top.usb.SetConnectText(Qt.blue, self.cp + " Connect")
 			self.usbconnect_status.emit(1)
 			print("Connect build")
+			
 		else:
 			self.top.usb.SetConnectText(Qt.red,"Connect failed", True)
 			print("Connect failed")
@@ -517,10 +530,10 @@ class mainWindow(QMainWindow):
 		if(globals.TEST_MODE==False): 
 			self.resetTimer()
 			if(self.trig_mode): 	#internal mode
-				self.act.COM.writeBinary(MODE_IMU)
+				self.act.COM.writeBinary(globals.OP_MODE)
 				self.send32BitCmd(1)
 			else: 				#sync mode
-				self.act.COM.writeBinary(MODE_IMU)
+				self.act.COM.writeBinary(globals.OP_MODE)
 				self.send32BitCmd(2)
 				
 		self.start_time = time.time()
@@ -538,7 +551,7 @@ class mainWindow(QMainWindow):
 		
 	def myThreadStop(self):
 		if(globals.TEST_MODE==False): 
-			self.act.COM.writeBinary(MODE_IMU)
+			self.act.COM.writeBinary(globals.OP_MODE)
 			self.send32BitCmd(4)
 		
 		if(self.save_cb_flag == True):
@@ -569,19 +582,20 @@ class mainWindow(QMainWindow):
 		print('err : ', data_f)
 		print('step: ', step_f)
 		
-	def printImu(self, time_in, err, step, PD_temperature, 
-		nano33_wx, nano33_wy, nano33_wz,
-		nano33_ax, nano33_ay, nano33_az):
-		print('%.4f'% (time_in*TIME_COEFFI), end='\t')
-		self.act.printNano33Acc (nano33_ax, nano33_ay, nano33_az, '\t')
-		self.act.printNano33Gyro(nano33_wx, nano33_wy, nano33_wz, '\n')
+	def printImu(self, wx, wy, wz, ax, ay, az): 
+		print(round(wx, 4), end='\t\t')
+		print(round(wy, 4), end='\t\t')
+		print(round(wz, 4), end='\t\t')
+		print(round(ax, 4), end='\t\t')
+		print(round(ay, 4), end='\t\t')
+		print(round(az, 4))
 		
 	def plotData(self, time, data, step, PD_temperature):
-		print('main: \t', end='\t')
-		print(len(time), end='\t')
-		print(len(data), end='\t')
-		print(len(step), end='\t')
-		print(len(PD_temperature))
+		# print('main: \t', end='\t')
+		# print(len(time), end='\t')
+		# print(len(data), end='\t')
+		# print(len(step), end='\t')
+		# print(len(PD_temperature))
 		if(self.act.runFlag):
 			self.top.com_plot1.ax.clear()
 			self.top.com_plot2.ax.clear()

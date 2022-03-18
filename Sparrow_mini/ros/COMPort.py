@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 #-*- coding:UTF-8 -*-
 from __future__ import print_function
-import rospy
-from sensor_msgs.msg import Imu
-from std_msgs.msg import String
+#import rospy
+#from sensor_msgs.msg import Imu
+#from std_msgs.msg import String
 import serial
 import serial.tools.list_ports
 import platform
@@ -144,8 +144,8 @@ class UART:
 			
 	def read1Binary(self):
 		try:
-			data = self.port.read(1)
-			data = ord(data)
+			data = ord(self.port.read(1))
+			#data = ord(data)
 		except:
 			self.logger.error("readBinary failed")
 			return "ERROR"

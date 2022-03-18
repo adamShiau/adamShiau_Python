@@ -1,7 +1,13 @@
+#!/usr/bin/env python
+#-*- coding:UTF-8 -*-
+from __future__ import print_function
 import os
 import sys
 import logging
 from AdamGUIclass import *
+# import py3lib
+# from py3lib import *
+# from py3lib.AdamGUIclass import *
 TITLE_TEXT = "Gyro"
 
 class mainWidget(QWidget):
@@ -16,11 +22,11 @@ class mainWidget(QWidget):
 		self.avg = spinBlock(title='avg', minValue=0, maxValue=6, double=False, step=1)
 		self.err_offset = spinBlock(title='Err offset', minValue=-10000, maxValue=10000, double=False, step=1)
 		self.polarity = spinBlock(title='polarity', minValue=0, maxValue=1, double=False, step=1)
-		self.mod_H = spinBlock(title='MOD_H', minValue=0, maxValue=32767, double=False, step=100)
+		self.mod_H = spinBlock(title='MOD_H', minValue=-32768, maxValue=32767, double=False, step=100)
 		self.mod_L = spinBlock(title='MOD_L', minValue=-32768, maxValue=0, double=False, step=100)
 		self.gain1 = spinBlock(title='GAIN1', minValue=0, maxValue=14, double=False, step=1)
 		self.gain2 = spinBlock(title='GAIN2', minValue=0, maxValue=14, double=False, step=1)
-		self.const_step = spinBlock(title='const_step', minValue=0, maxValue=32767, double=False, step=500)
+		self.const_step = spinBlock(title='const_step', minValue=-32768, maxValue=32767, double=False, step=1)
 		self.dac_gain = spinBlock(title='DAC_GAIN', minValue=0, maxValue=1023, double=False, step=10)
 		# self.v2piN = spinBlock(title='V2PI_N', minValue=-32768, maxValue=-2000, double=False, step=1000)
 		self.fb_on = spinBlock(title='mode(0:OPEN)', minValue=0, maxValue=2, double=False, step=1)

@@ -1,17 +1,14 @@
 #!/usr/bin/env python
 #-*- coding:UTF-8 -*-
 from __future__ import print_function
-import rospy
-from sensor_msgs.msg import Imu
-from std_msgs.msg import String
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 from PyQt5 import QtCore, QtGui
 from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
-from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
-from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT as NavigationToolbar
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 from PyQt5.QtWidgets import (QGraphicsView,QGraphicsScene,QApplication)
 
 PLOT_FONTSIZE = 14

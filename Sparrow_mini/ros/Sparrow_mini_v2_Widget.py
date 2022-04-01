@@ -4,16 +4,60 @@ from __future__ import print_function
 import os
 import sys
 import logging
-from AdamGUIclass import *
+from AdamGUIclass_ros import *
 # import py3lib
 # from py3lib import *
 # from py3lib.AdamGUIclass import *
 TITLE_TEXT = "Gyro"
 
+class TabPlot(QTabWidget):
+	def __init__(self, parent=None):
+		super(TabPlot, self).__init__(parent)
+		
+		########Tab1 widget items##################
+		''' Tab1  '''
+		self.tab1 = QWidget()
+		self.com_plot1 = outputPlotSize(16)
+		self.com_plot2 = outputPlotSize(16)
+		self.addTab(self.tab1,"Normal Mode")
+		self.Tab1_UI()
+		''' Tab2 '''
+		self.tab2 = QWidget()
+		self.sf_g = editBlock('g factor')
+		self.ori_x = editBlock('ori. x')
+		self.ori_y = editBlock('ori. y')
+		self.ori_z = editBlock('ori. z')
+		self.ori_w = editBlock('ori. w')
+		self.ori_cov = edit9Block('orientation covariance')
+		self.gyro_cov = edit9Block('gyro covariance')
+		self.axlm_cov = edit9Block('accelerometer covariance')
+		self.addTab(self.tab2,"ROS Mode")
+		self.Tab2_UI()
+		
+	def Tab1_UI(self):
+		layout = QGridLayout()
+		layout.addWidget(self.com_plot1, 0,0,5,10)
+		layout.addWidget(self.com_plot2, 5,0,5,10)		
+		self.tab1.setLayout(layout)
+		
+	def Tab2_UI(self):
+		layout = QGridLayout()
+		layout.addWidget(self.sf_g, 0,0,1,1)
+		layout.addWidget(self.ori_x, 1,0,1,1)
+		layout.addWidget(self.ori_y, 1,1,1,1)
+		layout.addWidget(self.ori_z, 1,2,1,1)
+		layout.addWidget(self.ori_w, 1,3,1,1)
+		layout.addWidget(self.ori_cov, 5,0,3,3)
+		layout.addWidget(self.gyro_cov, 8,0,3,3)
+		layout.addWidget(self.axlm_cov, 11,0,3,3)
+		self.tab2.setLayout(layout)
+
+
 class mainWidget(QWidget):
 	def __init__(self, parent=None):
 		super(mainWidget, self).__init__(parent)
 		self.setWindowTitle(TITLE_TEXT)
+		self.TabPlot = TabPlot()
 		self.usb = usbConnect()
 		self.read_btn = btn('read')
 		self.stop_btn = btn('stop')
@@ -66,9 +110,8 @@ class mainWidget(QWidget):
 		mainLayout = QGridLayout()
 		###usb###
 		mainLayout.addWidget(self.usb.layoutG(), 0,0,1,3)
-		###plot###
-		mainLayout.addWidget(self.com_plot1, 2,0,5,10)
-		mainLayout.addWidget(self.com_plot2, 7,0,5,10)		
+		###Tab###
+		mainLayout.addWidget(self.TabPlot, 2,0,10,10)
 		###label###
 		mainLayout.addWidget(self.buffer_lb, 0,3,1,2)		
 		mainLayout.addWidget(self.temperature_lb, 0,5,1,2) 

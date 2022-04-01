@@ -63,6 +63,7 @@ CMD_FOG_INT_DELAY	= 24
 CMD_FOG_OUT_START	= 25
 
 
+
 # STEP_MAX = 10
 # V2PIN = 11
 # OPENLOOP_START = 12
@@ -72,31 +73,38 @@ CMD_FOG_OUT_START	= 25
 # FPGA_Q =14
 # FPGA_R = 15
 '''adc conversion '''
-# ADC_COEFFI = (4/8192) #PD attnuates 5 times befor enter ADC
-ADC_COEFFI = 1
+ADC_COEFFI = (4/8192) #PD attnuates 5 times befor enter ADC
+# ADC_COEFFI = 1
 TIME_COEFFI = 0.0001
 # TIME_COEFFI = 1
 ''' define initial value'''
 
-MOD_H_INIT 			= 3300
-MOD_L_INIT 			= -3300
-FREQ_INIT 			= 138
+# MOD_H_INIT 			= 3400
+# MOD_L_INIT 			= -3400
+# FREQ_INIT 			= 135
+# DAC_GAIN_INIT 		= 420
+
+MOD_H_INIT 			= 3250
+MOD_L_INIT 			= -3250
+FREQ_INIT 			= 139
+DAC_GAIN_INIT 		= 290
+
 ERR_OFFSET_INIT 	= 0
 POLARITY_INIT 		= 1
 WAIT_CNT_INIT 		= 65
 ERR_TH_INIT 		= 0
 ERR_AVG_INIT 		= 6
-GAIN1_SEL_INIT 		= 4
-GAIN2_SEL_INIT 		= 4
-DAC_GAIN_INIT 		= 300
+GAIN1_SEL_INIT 		= 6
+GAIN2_SEL_INIT 		= 5
 FB_ON_INIT			= 1
 CONST_STEP_INIT		= 0
 FPGA_Q_INIT			= 1
 FPGA_R_INIT			= 6
 SW_Q_INIT			= 1
 SW_R_INIT			= 6
-SF_A_INIT = 0.0032
-SF_B_INIT = -1.11
+SF_A_INIT = 0.00295210451588764*1.02/2
+SF_B_INIT = -0.00137052112589694
+# SF_B_INIT = 0
 DATA_RATE_INIT		= 1863
 
 class mainWindow(QMainWindow):
@@ -607,40 +615,43 @@ class mainWindow(QMainWindow):
 		self.top.temperature_lb.lb.setText(str(PD_temperature[0]))
 		self.top.dataRate_lb.lb.setText(str(np.round(update_rate, 1)))
 		
-		# data_f = data*ADC_COEFFI 
+		if(globals.NANO33_WZ_MODE):
+			data_f = data + 1.682
+		else:
+			data_f = data*ADC_COEFFI 
 		time_f = time*TIME_COEFFI
 		step_f = step*self.sf_a_var + self.sf_b_var
-		data_f = data 
-		self.data  = np.append(self.data, data_f)
+
+		if(globals.NANO33_WZ_MODE):
+			self.data  = np.append(self.data, data_f*3600)
+		else:
+			self.data  = np.append(self.data, data_f)
 		self.time  = np.append(self.time, time_f)
-		self.step = np.append(self.step, step_f)
+		self.step = np.append(self.step, step_f*3600)
+		# self.step = np.append(self.step, step)
 		if (len(self.data) >= 1000):
 			self.data = self.data[self.act.data_frame_update_point:]
 			self.step = self.step[self.act.data_frame_update_point:]
 			self.time = self.time[self.act.data_frame_update_point:]
-		
+		# print(step)
+		# print(step_f*3600)
 		if(self.save_cb_flag == True):
 			# if(len(data_f) != self.act.data_frame_update_point):
 				# data_f = np.append(data_f, 999)
-			np.savetxt(self.f, (np.vstack([time_f, data_f, step, PD_temperature])).T, fmt='%5.5f, %5.5f, %d, %3.1f')
+			np.savetxt(self.f, (np.vstack([time_f, data_f, step, PD_temperature])).T, fmt='%5.5f, %5.9f, %d, %3.1f')
 		# print(time)
 		# print('len(time):', len(time))
 		# print('len(data):', len(data))
-		# print('step avg: ', np.round(np.average(self.step), 4), end=', ')
-		# print('stdev: ', np.round(np.std(self.step), 4))
-		# self.top.com_plot1.ax.plot(self.time, self.data, color = 'r', linestyle = '-', marker = '', label="err")
-		# self.top.com_plot1.ax.plot(self.time, self.step, color = 'b', linestyle = '-', marker = '', label="step")
-		self.top.com_plot1.ax.plot(self.data, color = 'r', linestyle = '-', marker = '*', label="err")
-		self.top.com_plot1.ax.plot(self.step, color = 'b', linestyle = '-', marker = '*', label="err")
+		print('step avg: ', np.round(np.average(self.step), 4), end=', ')
+		print('stdev: ', np.round(np.std(self.step), 4))
+		##### plot 1 ####
+		self.top.com_plot1.ax.plot(self.time, self.data, color = 'b', linestyle = '-', marker = '', label="err")
+		if(globals.NANO33_WZ_MODE):
+			self.top.com_plot1.ax.plot(self.time, self.step, color = 'r', linestyle = '-', marker = '', label="step")
 		self.top.com_plot1.figure.canvas.draw()		
 		self.top.com_plot1.figure.canvas.flush_events()
-		if(self.act.runFlag):
-			# print('update rate: ', np.round(update_rate, 1), end=', ')
-			# print(np.round(np.average(self.step), 3), end='\t')
-			# print(np.round(np.std(self.step), 3))
-			pass
-		# self.top.com_plot2.ax.plot(self.time, self.step, color = 'b', linestyle = '-', marker = '', label="step")
-		self.top.com_plot2.ax.plot(self.step, color = 'r', linestyle = '-', marker = '*', label="step")
+		##### plot 2 ####
+		self.top.com_plot2.ax.plot(self.time, self.step, color = 'r', linestyle = '-', marker = '', label="step")
 		self.top.com_plot2.figure.canvas.draw()		
 		self.top.com_plot2.figure.canvas.flush_events()
 		

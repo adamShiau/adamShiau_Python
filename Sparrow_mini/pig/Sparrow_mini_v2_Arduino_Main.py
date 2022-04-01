@@ -14,13 +14,12 @@ import numpy as np
 # import py3lib.QuLogger as Qlogger 
 # import py3lib.FileToArray as fil2a 
 import Sparrow_mini_v2_Widget as UI 
-import Sparrow_mini_v2_Action as ACT
+import Sparrow_mini_crc_v2_Action as ACT
 import gyro_Globals as globals
 TITLE_TEXT = "OPEN LOOP"
 VERSION_TEXT = 'PIG V2'
 READOUT_FILENAME = "Signal_Read_Out.txt"
 MAX_SAVE_INDEX = 3000
-TEST_MODE = False
 DLY_CMD = 0.01 #delay between command
 DEBUG = 1
 track_max = 50
@@ -31,6 +30,8 @@ xlm_factor = 0.000122 #4g / 32768
 gyro_factor = 0.0090 #250 / 32768 
 gyro200_factor = 0.0121
 
+BAUD_RATE_1 = 115200
+BAUD_RATE_2 = 230400
 # wx_offset = 107.065
 # wy_offset = -513.717
 
@@ -41,24 +42,25 @@ MODE_STOP 			= 0
 MODE_FOG			= 1
 MODE_IMU			= 2
 MODE_EQ				= 3
-CMD_FOG_MOD_FREQ	= 8
-CMD_FOG_MOD_AMP_H	= 9
-CMD_FOG_MOD_AMP_L	= 10
-CMD_FOG_ERR_OFFSET	= 11
-CMD_FOG_POLARITY	= 12
-CMD_FOG_WAIT_CNT	= 13
-CMD_FOG_ERR_TH		= 14
-CMD_FOG_ERR_AVG		= 15
-CMD_FOG_TIMER_RST	= 16
-CMD_FOG_GAIN1		= 17
-CMD_FOG_GAIN2		= 18
-CMD_FOG_FB_ON		= 19
-CMD_FOG_CONST_STEP	= 20
-CMD_FOG_FPGA_Q		= 21
-CMD_FOG_FPGA_R		= 22
-CMD_FOG_DAC_GAIN 	= 23
-CMD_FOG_INT_DELAY	= 24
-CMD_FOG_OUT_START	= 25
+MODE_IMU_FAKE		= 4
+CMD_FOG_MOD_FREQ	= 0
+CMD_FOG_MOD_AMP_H	= 1
+CMD_FOG_MOD_AMP_L	= 2
+CMD_FOG_ERR_OFFSET	= 3
+CMD_FOG_POLARITY	= 4
+CMD_FOG_WAIT_CNT	= 5
+CMD_FOG_ERR_TH		= 6
+CMD_FOG_ERR_AVG		= 7
+CMD_FOG_TIMER_RST	= 8
+CMD_FOG_GAIN1		= 9
+CMD_FOG_GAIN2		= 10
+CMD_FOG_FB_ON		= 11
+CMD_FOG_CONST_STEP	= 12
+CMD_FOG_FPGA_Q		= 13
+CMD_FOG_FPGA_R		= 14
+CMD_FOG_DAC_GAIN 	= 50
+CMD_FOG_INT_DELAY	= 98
+CMD_FOG_OUT_START	= 99
 
 
 # STEP_MAX = 10
@@ -76,34 +78,32 @@ TIME_COEFFI = 0.0001
 # TIME_COEFFI = 1
 ''' define initial value'''
 
-MOD_H_INIT 			= 3300
-MOD_L_INIT 			= -3300
+# MOD_H_INIT 			= 3400
+# MOD_L_INIT 			= -3400
+# FREQ_INIT 			= 135
+# DAC_GAIN_INIT 		= 420
+
+MOD_H_INIT 			= 3250
+MOD_L_INIT 			= -3250
 FREQ_INIT 			= 138
+DAC_GAIN_INIT 		= 290
+
 ERR_OFFSET_INIT 	= 0
 POLARITY_INIT 		= 1
-WAIT_CNT_INIT 		= 69
+WAIT_CNT_INIT 		= 65
 ERR_TH_INIT 		= 0
 ERR_AVG_INIT 		= 6
-GAIN1_SEL_INIT 		= 7
-GAIN2_SEL_INIT 		= 0
-DAC_GAIN_INIT 		= 300
-FB_ON_INIT			= 0
+GAIN1_SEL_INIT 		= 4
+GAIN2_SEL_INIT 		= 4
+FB_ON_INIT			= 1
 CONST_STEP_INIT		= 0
 FPGA_Q_INIT			= 1
 FPGA_R_INIT			= 6
 SW_Q_INIT			= 1
-SW_R_INIT			= 10
-SF_A = 1
-SF_B = 0
-DATA_RATE_INIT		= 2135
-
-# STEP_MAX_INIT = 10000
-# V2PI_INIT = 30000
-# V2PIN_INIT = -30000
-# STEP_TRIG_DLY_INIT = 0
-# MODE_INIT = 0
-# FPGA_Q_INIT = 10
-# FPGA_R_INIT = 5
+SW_R_INIT			= 6
+SF_A_INIT = 0.00295210451588764
+SF_B_INIT = -0.00137052112589694
+DATA_RATE_INIT		= 1863
 
 class mainWindow(QMainWindow):
 	# Kal_status = 0
@@ -165,9 +165,9 @@ class mainWindow(QMainWindow):
 		self.act.fog_finished.connect(self.myThreadStop) #runFlag=0時fog_finished會emit，之後關掉thread1
 		
 		if(globals.PRINT_MODE):
-			self.act.openLoop_updata4.connect(self.printData)
+			self.act.data_update6.connect(self.printImu)
 		else:
-			self.act.openLoop_updata4.connect(self.plotData)
+			self.act.data_update4.connect(self.plotData)
 		
 		#btn enable signal
 		self.usbconnect_status.connect(self.setBtnStatus) #確定usb連接成功時才enable btn
@@ -204,39 +204,6 @@ class mainWindow(QMainWindow):
 		''' check box'''
 		self.top.save_text.cb.toggled.connect(lambda:self.cb_toogled(self.top.save_text.cb))
 
-	# """ comport functin """
-	def update_comport(self):
-		self.act.COM.selectCom()
-		self.top.usb.cs.clear()
-		if(self.act.COM.portNum > 0):
-			for i in range(self.act.COM.portNum):
-				self.top.usb.cs.addItem(self.act.COM.comPort[i][0])
-			idx = self.top.usb.cs.currentIndex()
-			self.top.usb.lb.setText(self.act.COM.comPort[idx][1])
-	
-	def uadate_comport_label(self):
-		idx = self.top.usb.cs.currentIndex()
-		self.top.usb.lb.setText(self.act.COM.comPort[idx][1])
-		self.cp = self.act.COM.comPort[idx][0]
-	
-	def usbConnect(self):
-		# self.usbconnect_status = pyqtSignal(object)
-		print(self.cp);
-		if (TEST_MODE):
-			usbConnStatus = True
-		else:
-			usbConnStatus = self.act.COM.connect_comboBox(baudrate = 115200, timeout = 1, port_name=self.cp)
-		print("status:" + str(usbConnStatus))
-		if usbConnStatus:
-			self.top.usb.SetConnectText(Qt.blue, self.cp + " Connect")
-			self.usbconnect_status.emit(1)
-			print("Connect build")
-		else:
-			self.top.usb.SetConnectText(Qt.red,"Connect failed", True)
-			print("Connect failed")
-			
-# """ end of comport functin """
-	
 	def checkBoxInit(self):
 		self.top.save_text.cb.setChecked(0)
 	
@@ -246,7 +213,8 @@ class mainWindow(QMainWindow):
 			print('save_cb_flag:', self.save_cb_flag)
 
 	def setInitValue(self, EN):
-		if(EN):
+		if(EN and globals.TEST_MODE==False):
+			# print('enter set init value')
 			self.act.COM.writeBinary(CMD_FOG_MOD_FREQ)
 			self.send32BitCmd(FREQ_INIT)
 			self.act.COM.writeBinary(CMD_FOG_MOD_AMP_H)
@@ -314,11 +282,12 @@ class mainWindow(QMainWindow):
 			self.top.SW_Q.spin.setValue(globals.kal_Q)
 			self.top.SW_R.spin.setValue(globals.kal_R)
 			''' line editor'''
-			self.top.sf_a.le.setText('1') 
-			self.top.sf_b.le.setText('0') 
+			self.top.sf_a.le.setText(str(SF_A_INIT)) 
+			self.top.sf_b.le.setText(str(SF_B_INIT)) 
 			self.sf_a_var = float(self.top.sf_a.le.text())
 			self.sf_b_var = float(self.top.sf_b.le.text())
-
+			# print('leave set init value')
+			
 	def SF_A_EDIT(self):
 		self.sf_a_var = float(self.top.sf_a.le.text())
 		print('sf_a_var: ', self.sf_a_var)
@@ -345,6 +314,7 @@ class mainWindow(QMainWindow):
 		time.sleep(DLY_CMD)
 	
 	def setBtnStatus(self, flag):
+		# print('setBtnStatus')
 		self.top.read_btn.bt.setEnabled(flag)
 		self.top.stop_btn.bt.setEnabled(flag)
 		
@@ -462,21 +432,6 @@ class mainWindow(QMainWindow):
 		self.act.COM.writeBinary(CMD_FOG_INT_DELAY)
 		self.send32BitCmd(value)
 				
-	# def send_V2PIN_CMD(self):
-		# value = self.top.v2piN.spin.value()	
-		# cmd = V2PIN + str(value) + '\n'
-		# print(cmd)
-		# self.act.COM.writeLine(cmd)
-		
-	
-		
-	# def send_trigDelay_CMD(self):
-		# value = self.top.trigDelay.spin.value()	
-		# cmd = STEP_TRIG_DLY + str(value) + '\n'
-		# print(cmd)
-		# self.act.COM.writeLine(cmd)
-		
-
 		
 
 	'''------------------------------------------------- '''
@@ -498,7 +453,19 @@ class mainWindow(QMainWindow):
 		else :
 			saveBox.about(self, "Save File", "No file saving")
 			return 0
-			
+	
+	def showOP_Mode(self):
+		if(globals.TEST_MODE == True):
+			print('TEST_MODE')
+		elif(globals.OP_MODE == MODE_FOG):
+			print('MODE_FOG')
+		elif(globals.OP_MODE == MODE_IMU):
+			print('MODE_IMU')
+		elif(globals.OP_MODE == MODE_EQ):
+			print('MODE_EQ')
+		elif(globals.OP_MODE == MODE_IMU_FAKE):
+			print('MODE_IMU_FAKE')
+	
 # """ comport functin """
 	def update_comport(self):
 		self.act.COM.selectCom()
@@ -508,6 +475,7 @@ class mainWindow(QMainWindow):
 				self.top.usb.cs.addItem(self.act.COM.comPort[i][0])
 			idx = self.top.usb.cs.currentIndex()
 			self.top.usb.lb.setText(self.act.COM.comPort[idx][1])
+		# print('no comport')
 	
 	def uadate_comport_label(self):
 		idx = self.top.usb.cs.currentIndex()
@@ -516,16 +484,20 @@ class mainWindow(QMainWindow):
 	
 	def usbConnect(self):
 		# self.usbconnect_status = pyqtSignal(object)
-		print(self.cp);
-		if (TEST_MODE):
+		
+		if (globals.TEST_MODE):
 			usbConnStatus = True
+			self.cp = 'TEST MODE'
 		else:
-			usbConnStatus = self.act.COM.connect_comboBox(baudrate = 115200, timeout = 1, port_name=self.cp)
+			usbConnStatus = self.act.COM.connect_comboBox(baudrate = BAUD_RATE_1, timeout = 1, port_name=self.cp)
+		print(self.cp);
 		print("status:" + str(usbConnStatus))
+		self.showOP_Mode()
 		if usbConnStatus:
 			self.top.usb.SetConnectText(Qt.blue, self.cp + " Connect")
 			self.usbconnect_status.emit(1)
 			print("Connect build")
+			
 		else:
 			self.top.usb.SetConnectText(Qt.red,"Connect failed", True)
 			print("Connect failed")
@@ -561,13 +533,16 @@ class mainWindow(QMainWindow):
 		if(self.save_cb_flag == True):
 			self.open_file(self.top.save_text.le.text())
 		
-		self.resetTimer()
-		if(self.trig_mode): 	#internal mode
-			self.act.COM.writeBinary(MODE_IMU)
-			self.send32BitCmd(1)
-		else: 				#sync mode
-			self.act.COM.writeBinary(MODE_IMU)
-			self.send32BitCmd(2)
+		if(globals.TEST_MODE==False): 
+			self.resetTimer()
+			if(self.trig_mode): 	#internal mode
+				# self.act.COM.writeBinary(globals.OP_MODE)
+				self.act.COM.writeBinary(CMD_FOG_OUT_START)
+				self.send32BitCmd(1)
+			else: 				#sync mode
+				self.act.COM.writeBinary(CMD_FOG_OUT_START)
+				self.send32BitCmd(2)
+				
 		self.start_time = time.time()
 		
 		self.act.startRun() # set self.act.runFlag = True
@@ -578,12 +553,11 @@ class mainWindow(QMainWindow):
 		self.act.dt_init_flag = 1
 		self.act.stopRun()
 		
-		# self.act.COM.writeBinary(MODE_STOP)
-		# self.send32BitCmd(1)
 		
 	def myThreadStop(self):
-		self.act.COM.writeBinary(MODE_IMU)
-		self.send32BitCmd(4)
+		if(globals.TEST_MODE==False): 
+			self.act.COM.writeBinary(globals.OP_MODE)
+			self.send32BitCmd(0)
 		
 		if(self.save_cb_flag == True):
 			self.save_cb_flag == False
@@ -613,10 +587,25 @@ class mainWindow(QMainWindow):
 		print('err : ', data_f)
 		print('step: ', step_f)
 		
+	def printImu(self, wx, wy, wz, ax, ay, az): 
+		print(round(wx, 4), end='\t\t')
+		print(round(wy, 4), end='\t\t')
+		print(round(wz, 4), end='\t\t')
+		print(round(ax, 4), end='\t\t')
+		print(round(ay, 4), end='\t\t')
+		print(round(az, 4))
+		
 	def plotData(self, time, data, step, PD_temperature):
+		# print('main: \t', end='\t')
+		# print(len(time), end='\t')
+		# print(len(data), end='\t')
+		# print(len(step), end='\t')
+		# print(len(PD_temperature))
 		if(self.act.runFlag):
 			self.top.com_plot1.ax.clear()
 			self.top.com_plot2.ax.clear()
+		
+			
 		update_rate = 1/((time[1] - time[0])*TIME_COEFFI)
 		#update label#
 		self.top.buffer_lb.lb.setText(str(self.act.bufferSize))
@@ -629,26 +618,32 @@ class mainWindow(QMainWindow):
 		# data_f = data 
 		self.data  = np.append(self.data, data_f)
 		self.time  = np.append(self.time, time_f)
-		self.step = np.append(self.step, step_f)
+		self.step = np.append(self.step, step_f*3600)
 		if (len(self.data) >= 1000):
 			self.data = self.data[self.act.data_frame_update_point:]
 			self.step = self.step[self.act.data_frame_update_point:]
 			self.time = self.time[self.act.data_frame_update_point:]
-		
 		if(self.save_cb_flag == True):
+			# if(len(data_f) != self.act.data_frame_update_point):
+				# data_f = np.append(data_f, 999)
 			np.savetxt(self.f, (np.vstack([time_f, data_f, step, PD_temperature])).T, fmt='%5.5f, %5.5f, %d, %3.1f')
 		# print(time)
 		# print('len(time):', len(time))
 		# print('len(data):', len(data))
-		self.top.com_plot1.ax.plot(self.time, self.data, color = 'r', linestyle = '-', marker = '*', label="err")
-		# self.top.com_plot1.ax.plot(self.data, color = 'r', linestyle = '-', marker = '*', label="err")
+		# print('step avg: ', np.round(np.average(self.step), 4), end=', ')
+		# print('stdev: ', np.round(np.std(self.step), 4))
+		self.top.com_plot1.ax.plot(self.time, self.data, color = 'b', linestyle = '-', marker = '', label="err")
+		# self.top.com_plot1.ax.plot(self.time, self.step, color = 'r', linestyle = '-', marker = '', label="step")
+		# self.top.com_plot1.ax.plot(self.data, color = 'b', linestyle = '-', marker = '*', label="err")
+		# self.top.com_plot1.ax.plot(self.step, color = 'r', linestyle = '-', marker = '*', label="err")
 		self.top.com_plot1.figure.canvas.draw()		
 		self.top.com_plot1.figure.canvas.flush_events()
 		if(self.act.runFlag):
 			# print('update rate: ', np.round(update_rate, 1), end=', ')
-			print('step avg: ', np.round(np.average(self.step), 3))
+			# print(np.round(np.average(self.step), 3), end='\t')
+			# print(np.round(np.std(self.step), 3))
 			pass
-		self.top.com_plot2.ax.plot(self.time, self.step, color = 'r', linestyle = '-', marker = '*', label="step")
+		self.top.com_plot2.ax.plot(self.time, self.step, color = 'r', linestyle = '-', marker = '', label="step")
 		# self.top.com_plot2.ax.plot(self.step, color = 'r', linestyle = '-', marker = '*', label="step")
 		self.top.com_plot2.figure.canvas.draw()		
 		self.top.com_plot2.figure.canvas.flush_events()

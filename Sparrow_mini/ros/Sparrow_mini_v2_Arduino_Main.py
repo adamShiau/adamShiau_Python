@@ -19,13 +19,10 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import * 
 from PyQt5.QtWidgets import *
 import numpy as np
-# import py3lib
-# import py3lib.FileToArray as file
-# import py3lib.QuLogger as Qlogger 
-# import py3lib.FileToArray as fil2a 
 import Sparrow_mini_v2_Widget as UI 
 import Sparrow_mini_crc_v2_Action as ACT
 import gyro_Globals as globals
+import ros_Globals as ros_globals
 TITLE_TEXT = "OPEN LOOP"
 VERSION_TEXT = 'PIG V2'
 READOUT_FILENAME = "Signal_Read_Out.txt"
@@ -44,6 +41,7 @@ BAUD_RATE_1 = 115200
 BAUD_RATE_2 = 230400
 # wx_offset = 107.065
 # wy_offset = -513.717
+COEFFI_D2R = np.pi/180
 
 '''-------define CMD address map-------'''
 '''0~7 for output mode setting'''
@@ -84,13 +82,20 @@ CMD_FOG_OUT_START	= 25
 '''adc conversion '''
 # ADC_COEFFI = (4/8192) #PD attnuates 5 times befor enter ADC
 ADC_COEFFI = 1
-TIME_COEFFI = 0.001
+TIME_COEFFI = 0.0001
 # TIME_COEFFI = 1
 ''' define initial value'''
 
-MOD_H_INIT 			= 3300
-MOD_L_INIT 			= -3300
+#MOD_H_INIT 			= 3400
+#MOD_L_INIT 			= -3400
+#FREQ_INIT 			= 135
+#DAC_GAIN_INIT 		= 420
+
+MOD_H_INIT 			= 3250
+MOD_L_INIT 			= -3250
 FREQ_INIT 			= 138
+DAC_GAIN_INIT 		= 290
+
 ERR_OFFSET_INIT 	= 0
 POLARITY_INIT 		= 1
 WAIT_CNT_INIT 		= 65
@@ -98,7 +103,6 @@ ERR_TH_INIT 		= 0
 ERR_AVG_INIT 		= 6
 GAIN1_SEL_INIT 		= 4
 GAIN2_SEL_INIT 		= 4
-DAC_GAIN_INIT 		= 300
 FB_ON_INIT			= 1
 CONST_STEP_INIT		= 0
 FPGA_Q_INIT			= 1
@@ -106,8 +110,9 @@ FPGA_R_INIT			= 6
 SW_Q_INIT			= 1
 SW_R_INIT			= 6
 SF_A_INIT = 0.0032
-SF_B_INIT = -1.11
+SF_B_INIT = -1.75
 DATA_RATE_INIT		= 1863
+
 
 class mainWindow(QMainWindow):
 	# Kal_status = 0
@@ -115,6 +120,7 @@ class mainWindow(QMainWindow):
 	save_cb_flag = 0
 	sf_a_var = 0
 	sf_b_var = 0
+	sf_g_var = 0
 	start_time = 0
 	end_time = 0
 	first_data_flag = 1
@@ -194,7 +200,42 @@ class mainWindow(QMainWindow):
 		''' line edit '''
 		self.top.sf_a.le.editingFinished.connect(self.SF_A_EDIT)
 		self.top.sf_b.le.editingFinished.connect(self.SF_B_EDIT)
-
+		self.top.TabPlot.sf_g.le.editingFinished.connect(self.SF_G_EDIT)
+		self.top.TabPlot.ori_x.le.editingFinished.connect(self.ORI_X_EDIT)
+		self.top.TabPlot.ori_y.le.editingFinished.connect(self.ORI_Y_EDIT)
+		self.top.TabPlot.ori_z.le.editingFinished.connect(self.ORI_Z_EDIT)
+		self.top.TabPlot.ori_w.le.editingFinished.connect(self.ORI_W_EDIT)
+		
+		self.top.TabPlot.ori_cov.le1.le.editingFinished.connect(self.ORI_COV_1_EDIT)
+		self.top.TabPlot.ori_cov.le2.le.editingFinished.connect(self.ORI_COV_2_EDIT)
+		self.top.TabPlot.ori_cov.le3.le.editingFinished.connect(self.ORI_COV_3_EDIT)
+		self.top.TabPlot.ori_cov.le4.le.editingFinished.connect(self.ORI_COV_4_EDIT)
+		self.top.TabPlot.ori_cov.le5.le.editingFinished.connect(self.ORI_COV_5_EDIT)
+		self.top.TabPlot.ori_cov.le6.le.editingFinished.connect(self.ORI_COV_6_EDIT)
+		self.top.TabPlot.ori_cov.le7.le.editingFinished.connect(self.ORI_COV_7_EDIT)
+		self.top.TabPlot.ori_cov.le8.le.editingFinished.connect(self.ORI_COV_8_EDIT)
+		self.top.TabPlot.ori_cov.le9.le.editingFinished.connect(self.ORI_COV_9_EDIT)
+		
+		self.top.TabPlot.gyro_cov.le1.le.editingFinished.connect(self.GYRO_COV_1_EDIT)
+		self.top.TabPlot.gyro_cov.le2.le.editingFinished.connect(self.GYRO_COV_2_EDIT)
+		self.top.TabPlot.gyro_cov.le3.le.editingFinished.connect(self.GYRO_COV_3_EDIT)
+		self.top.TabPlot.gyro_cov.le4.le.editingFinished.connect(self.GYRO_COV_4_EDIT)
+		self.top.TabPlot.gyro_cov.le5.le.editingFinished.connect(self.GYRO_COV_5_EDIT)
+		self.top.TabPlot.gyro_cov.le6.le.editingFinished.connect(self.GYRO_COV_6_EDIT)
+		self.top.TabPlot.gyro_cov.le7.le.editingFinished.connect(self.GYRO_COV_7_EDIT)
+		self.top.TabPlot.gyro_cov.le8.le.editingFinished.connect(self.GYRO_COV_8_EDIT)
+		self.top.TabPlot.gyro_cov.le9.le.editingFinished.connect(self.GYRO_COV_9_EDIT)
+		
+		self.top.TabPlot.axlm_cov.le1.le.editingFinished.connect(self.AXLM_COV_1_EDIT)
+		self.top.TabPlot.axlm_cov.le2.le.editingFinished.connect(self.AXLM_COV_2_EDIT)
+		self.top.TabPlot.axlm_cov.le3.le.editingFinished.connect(self.AXLM_COV_3_EDIT)
+		self.top.TabPlot.axlm_cov.le4.le.editingFinished.connect(self.AXLM_COV_4_EDIT)
+		self.top.TabPlot.axlm_cov.le5.le.editingFinished.connect(self.AXLM_COV_5_EDIT)
+		self.top.TabPlot.axlm_cov.le6.le.editingFinished.connect(self.AXLM_COV_6_EDIT)
+		self.top.TabPlot.axlm_cov.le7.le.editingFinished.connect(self.AXLM_COV_7_EDIT)
+		self.top.TabPlot.axlm_cov.le8.le.editingFinished.connect(self.AXLM_COV_8_EDIT)
+		self.top.TabPlot.axlm_cov.le9.le.editingFinished.connect(self.AXLM_COV_9_EDIT)
+		
 		''' spin box connect'''
 		self.top.wait_cnt.spin.valueChanged.connect(self.send_WAIT_CNT_CMD)
 		self.top.avg.spin.valueChanged.connect(self.send_AVG_CMD)
@@ -300,6 +341,78 @@ class mainWindow(QMainWindow):
 			self.top.sf_b.le.setText(str(SF_B_INIT)) 
 			self.sf_a_var = float(self.top.sf_a.le.text())
 			self.sf_b_var = float(self.top.sf_b.le.text())
+			
+			self.top.TabPlot.sf_g.le.setText(str(ros_globals.sf_g_init)) 
+			self.top.TabPlot.ori_x.le.setText(str(ros_globals.ori_x_init)) 
+			self.top.TabPlot.ori_y.le.setText(str(ros_globals.ori_y_init)) 
+			self.top.TabPlot.ori_z.le.setText(str(ros_globals.ori_z_init)) 
+			self.top.TabPlot.ori_w.le.setText(str(ros_globals.ori_w_init)) 
+			
+			self.top.TabPlot.ori_cov.le1.le.setText(str(ros_globals.cov_ori_xx_init)) 
+			self.top.TabPlot.ori_cov.le2.le.setText(str(ros_globals.cov_ori_xy_init)) 
+			self.top.TabPlot.ori_cov.le3.le.setText(str(ros_globals.cov_ori_xz_init)) 
+			self.top.TabPlot.ori_cov.le4.le.setText(str(ros_globals.cov_ori_yx_init)) 
+			self.top.TabPlot.ori_cov.le5.le.setText(str(ros_globals.cov_ori_yy_init)) 
+			self.top.TabPlot.ori_cov.le6.le.setText(str(ros_globals.cov_ori_yz_init)) 
+			self.top.TabPlot.ori_cov.le7.le.setText(str(ros_globals.cov_ori_zx_init)) 
+			self.top.TabPlot.ori_cov.le8.le.setText(str(ros_globals.cov_ori_zy_init)) 
+			self.top.TabPlot.ori_cov.le9.le.setText(str(ros_globals.cov_ori_zz_init)) 
+			
+			self.top.TabPlot.gyro_cov.le1.le.setText(str(ros_globals.cov_w_xx_init)) 
+			self.top.TabPlot.gyro_cov.le2.le.setText(str(ros_globals.cov_w_xy_init)) 
+			self.top.TabPlot.gyro_cov.le3.le.setText(str(ros_globals.cov_w_xz_init)) 
+			self.top.TabPlot.gyro_cov.le4.le.setText(str(ros_globals.cov_w_yx_init)) 
+			self.top.TabPlot.gyro_cov.le5.le.setText(str(ros_globals.cov_w_yy_init)) 
+			self.top.TabPlot.gyro_cov.le6.le.setText(str(ros_globals.cov_w_yz_init)) 
+			self.top.TabPlot.gyro_cov.le7.le.setText(str(ros_globals.cov_w_zx_init)) 
+			self.top.TabPlot.gyro_cov.le8.le.setText(str(ros_globals.cov_w_zy_init)) 
+			self.top.TabPlot.gyro_cov.le9.le.setText(str(ros_globals.cov_w_zz_init)) 
+			
+			self.top.TabPlot.axlm_cov.le1.le.setText(str(ros_globals.cov_a_xx_init)) 
+			self.top.TabPlot.axlm_cov.le2.le.setText(str(ros_globals.cov_a_xy_init)) 
+			self.top.TabPlot.axlm_cov.le3.le.setText(str(ros_globals.cov_a_xz_init)) 
+			self.top.TabPlot.axlm_cov.le4.le.setText(str(ros_globals.cov_a_yx_init)) 
+			self.top.TabPlot.axlm_cov.le5.le.setText(str(ros_globals.cov_a_yy_init)) 
+			self.top.TabPlot.axlm_cov.le6.le.setText(str(ros_globals.cov_a_yz_init)) 
+			self.top.TabPlot.axlm_cov.le7.le.setText(str(ros_globals.cov_a_zx_init)) 
+			self.top.TabPlot.axlm_cov.le8.le.setText(str(ros_globals.cov_a_zy_init)) 
+			self.top.TabPlot.axlm_cov.le9.le.setText(str(ros_globals.cov_a_zz_init)) 
+			
+			self.sf_g_var = float(self.top.TabPlot.sf_g.le.text())
+			self.ori_x_var = float(self.top.TabPlot.ori_x.le.text())
+			self.ori_y_var = float(self.top.TabPlot.ori_y.le.text())
+			self.ori_z_var = float(self.top.TabPlot.ori_z.le.text())
+			self.ori_w_var = float(self.top.TabPlot.ori_w.le.text())
+			self.cov_ori_xx_var = float(self.top.TabPlot.ori_cov.le1.le.text())
+			self.cov_ori_xy_var = float(self.top.TabPlot.ori_cov.le2.le.text())
+			self.cov_ori_xz_var = float(self.top.TabPlot.ori_cov.le3.le.text())
+			self.cov_ori_yx_var = float(self.top.TabPlot.ori_cov.le4.le.text())
+			self.cov_ori_yy_var = float(self.top.TabPlot.ori_cov.le5.le.text())
+			self.cov_ori_yz_var = float(self.top.TabPlot.ori_cov.le6.le.text())
+			self.cov_ori_zx_var = float(self.top.TabPlot.ori_cov.le7.le.text())
+			self.cov_ori_zy_var = float(self.top.TabPlot.ori_cov.le8.le.text())
+			self.cov_ori_zz_var = float(self.top.TabPlot.ori_cov.le9.le.text())
+			
+			self.cov_w_xx_var = float(self.top.TabPlot.gyro_cov.le1.le.text())
+			self.cov_w_xy_var = float(self.top.TabPlot.gyro_cov.le2.le.text())
+			self.cov_w_xz_var = float(self.top.TabPlot.gyro_cov.le3.le.text())
+			self.cov_w_yx_var = float(self.top.TabPlot.gyro_cov.le4.le.text())
+			self.cov_w_yy_var = float(self.top.TabPlot.gyro_cov.le5.le.text())
+			self.cov_w_yz_var = float(self.top.TabPlot.gyro_cov.le6.le.text())
+			self.cov_w_zx_var = float(self.top.TabPlot.gyro_cov.le7.le.text())
+			self.cov_w_zy_var = float(self.top.TabPlot.gyro_cov.le8.le.text())
+			self.cov_w_zz_var = float(self.top.TabPlot.gyro_cov.le9.le.text())
+			
+			self.cov_a_xx_var = float(self.top.TabPlot.axlm_cov.le1.le.text())
+			self.cov_a_xy_var = float(self.top.TabPlot.axlm_cov.le2.le.text())
+			self.cov_a_xz_var = float(self.top.TabPlot.axlm_cov.le3.le.text())
+			self.cov_a_yx_var = float(self.top.TabPlot.axlm_cov.le4.le.text())
+			self.cov_a_yy_var = float(self.top.TabPlot.axlm_cov.le5.le.text())
+			self.cov_a_yz_var = float(self.top.TabPlot.axlm_cov.le6.le.text())
+			self.cov_a_zx_var = float(self.top.TabPlot.axlm_cov.le7.le.text())
+			self.cov_a_zy_var = float(self.top.TabPlot.axlm_cov.le8.le.text())
+			self.cov_a_zz_var = float(self.top.TabPlot.axlm_cov.le9.le.text())
+
 			# print('leave set init value')
 			
 	def SF_A_EDIT(self):
@@ -309,7 +422,135 @@ class mainWindow(QMainWindow):
 	def SF_B_EDIT(self):
 		self.sf_b_var = float(self.top.sf_b.le.text())
 		print('sf_b_var: ', self.sf_b_var)
+		
+	def SF_G_EDIT(self):
+		self.sf_g_var = float(self.top.TabPlot.sf_g.le.text())
+		print('sf_g_var: ', self.sf_g_var) 
+		
+	def ORI_X_EDIT(self):
+		self.ori_x_var = float(self.top.TabPlot.ori_x.le.text())
+		print('ori_x_var: ', self.ori_x_var)
+		
+	def ORI_Y_EDIT(self):
+		self.ori_y_var = float(self.top.TabPlot.ori_y.le.text())
+		print('ori_y_var: ', self.ori_y_var)
+				
+	def ORI_Z_EDIT(self):
+		self.ori_z_var = float(self.top.TabPlot.ori_z.le.text())
+		print('ori_z_var: ', self.ori_z_var)
+				
+	def ORI_W_EDIT(self):
+		self.ori_w_var = float(self.top.TabPlot.ori_w.le.text())
+		print('ori_w_var: ', self.ori_w_var)
+		
+	def ORI_COV_1_EDIT(self):
+		self.cov_ori_xx_var = float(self.top.TabPlot.ori_cov.le1.le.text())
+		print('cov_ori_xx_var: ', self.cov_ori_xx_var)
+
+	def ORI_COV_2_EDIT(self):
+		self.cov_ori_xy_var = float(self.top.TabPlot.ori_cov.le2.le.text())
+		print('cov_ori_xy_var: ', self.cov_ori_xy_var)		
+
+	def ORI_COV_3_EDIT(self):
+		self.cov_ori_xz_var = float(self.top.TabPlot.ori_cov.le3.le.text())
+		print('cov_ori_xz_var: ', self.cov_ori_xz_var)
 	
+	def ORI_COV_4_EDIT(self):
+		self.cov_ori_yx_var = float(self.top.TabPlot.ori_cov.le4.le.text())
+		print('cov_ori_yx_var: ', self.cov_ori_yx_var)
+
+	def ORI_COV_5_EDIT(self):
+		self.cov_ori_yy_var = float(self.top.TabPlot.ori_cov.le5.le.text())
+		print('cov_ori_yy_var: ', self.cov_ori_yy_var)
+		
+	def ORI_COV_6_EDIT(self):
+		self.cov_ori_yz_var = float(self.top.TabPlot.ori_cov.le6.le.text())
+		print('cov_ori_yz_var: ', self.cov_ori_yz_var)
+		
+	def ORI_COV_7_EDIT(self):
+		self.cov_ori_zx_var = float(self.top.TabPlot.ori_cov.le7.le.text())
+		print('cov_ori_zx_var: ', self.cov_ori_zx_var)
+
+	def ORI_COV_8_EDIT(self):
+		self.cov_ori_zy_var = float(self.top.TabPlot.ori_cov.le8.le.text())
+		print('cov_ori_zy_var: ', self.cov_ori_zy_var)
+
+	def ORI_COV_9_EDIT(self):
+		self.cov_ori_zz_var = float(self.top.TabPlot.ori_cov.le9.le.text())
+		print('cov_ori_zz_var: ', self.cov_ori_zz_var)
+
+	def GYRO_COV_1_EDIT(self): 
+		self.cov_w_xx_var = float(self.top.TabPlot.gyro_cov.le1.le.text())
+		print('cov_w_xx_var: ', self.cov_w_xx_var)
+
+	def GYRO_COV_2_EDIT(self):
+		self.cov_w_xy_var = float(self.top.TabPlot.gyro_cov.le2.le.text())
+		print('cov_w_xy_var: ', self.cov_w_xy_var)		
+
+	def GYRO_COV_3_EDIT(self):
+		self.cov_w_xz_var = float(self.top.TabPlot.gyro_cov.le3.le.text())
+		print('cov_w_xz_var: ', self.cov_w_xz_var)
+	
+	def GYRO_COV_4_EDIT(self):
+		self.cov_w_yx_var = float(self.top.TabPlot.gyro_cov.le4.le.text())
+		print('cov_w_yx_var: ', self.cov_w_yx_var)
+
+	def GYRO_COV_5_EDIT(self):
+		self.cov_w_yy_var = float(self.top.TabPlot.gyro_cov.le5.le.text())
+		print('cov_w_yy_var: ', self.cov_w_yy_var)
+		
+	def GYRO_COV_6_EDIT(self):
+		self.cov_w_yz_var = float(self.top.TabPlot.gyro_cov.le6.le.text())
+		print('cov_w_yz_var: ', self.cov_w_yz_var)
+		
+	def GYRO_COV_7_EDIT(self):
+		self.cov_w_zx_var = float(self.top.TabPlot.gyro_cov.le7.le.text())
+		print('cov_w_zx_var: ', self.cov_w_zx_var)
+
+	def GYRO_COV_8_EDIT(self):
+		self.cov_w_zy_var = float(self.top.TabPlot.gyro_cov.le8.le.text())
+		print('cov_w_zy_var: ', self.cov_w_zy_var)
+
+	def GYRO_COV_9_EDIT(self):
+		self.cov_w_zz_var = float(self.top.TabPlot.gyro_cov.le9.le.text())
+		print('cov_w_zz_var: ', self.cov_w_zz_var)
+
+	def AXLM_COV_1_EDIT(self): 
+		self.cov_a_xx_var = float(self.top.TabPlot.axlm_cov.le1.le.text())
+		print('cov_a_xx_var: ', self.cov_a_xx_var)
+
+	def AXLM_COV_2_EDIT(self):
+		self.cov_a_xy_var = float(self.top.TabPlot.axlm_cov.le2.le.text())
+		print('cov_a_xy_var: ', self.cov_a_xy_var)		
+
+	def AXLM_COV_3_EDIT(self):
+		self.cov_a_xz_var = float(self.top.TabPlot.axlm_cov.le3.le.text())
+		print('cov_a_xz_var: ', self.cov_a_xz_var)
+	
+	def AXLM_COV_4_EDIT(self):
+		self.cov_a_yx_var = float(self.top.TabPlot.axlm_cov.le4.le.text())
+		print('cov_a_yx_var: ', self.cov_a_yx_var)
+
+	def AXLM_COV_5_EDIT(self):
+		self.cov_a_yy_var = float(self.top.TabPlot.axlm_cov.le5.le.text())
+		print('cov_a_yy_var: ', self.cov_a_yy_var)
+		
+	def AXLM_COV_6_EDIT(self):
+		self.cov_a_yz_var = float(self.top.TabPlot.axlm_cov.le6.le.text())
+		print('cov_a_yz_var: ', self.cov_a_yz_var)
+		
+	def AXLM_COV_7_EDIT(self):
+		self.cov_a_zx_var = float(self.top.TabPlot.axlm_cov.le7.le.text())
+		print('cov_a_zx_var: ', self.cov_a_zx_var)
+
+	def AXLM_COV_8_EDIT(self):
+		self.cov_a_zy_var = float(self.top.TabPlot.axlm_cov.le8.le.text())
+		print('cov_a_zy_var: ', self.cov_a_zy_var)
+
+	def AXLM_COV_9_EDIT(self):
+		self.cov_a_zz_var = float(self.top.TabPlot.axlm_cov.le9.le.text())
+		print('cov_a_zz_var: ', self.cov_a_zz_var)
+
 	def resetTimer(self):
 		self.act.COM.writeBinary(CMD_FOG_TIMER_RST)
 		self.send32BitCmd(1)
@@ -574,18 +815,31 @@ class mainWindow(QMainWindow):
 		self.step  = np.empty(0)
 	
 	def ros_Imu_publish(self, wx, wy, wz, ax, ay, az):
+
 		msg = Imu()
 		msg.header.stamp = rospy.Time.now()
 		msg.header.frame_id = 'base_link'
-		msg.angular_velocity.x = wx
-		msg.angular_velocity.y = wy
-		msg.angular_velocity.z = wz
-		msg.linear_acceleration.x = ax
-		msg.linear_acceleration.y = ay
-		msg.linear_acceleration.z = az
+		msg.orientation.x = self.ori_x_var
+		msg.orientation.y = self.ori_y_var
+		msg.orientation.z = self.ori_z_var
+		msg.orientation.w = self.ori_w_var
+		msg.orientation_covariance  = [self.cov_ori_xx_var, self.cov_ori_xy_var, self.cov_ori_xz_var,
+										self.cov_ori_yx_var, self.cov_ori_yy_var, self.cov_ori_yz_var,
+										self.cov_ori_zx_var, self.cov_ori_zy_var, self.cov_ori_zz_var]
+		msg.angular_velocity.x = wx*COEFFI_D2R
+		msg.angular_velocity.y = wy*COEFFI_D2R
+		msg.angular_velocity.z = wz*COEFFI_D2R
+		msg.angular_velocity_covariance = [self.cov_w_xx_var, self.cov_w_xy_var, self.cov_w_xz_var,
+											self.cov_w_yx_var, self.cov_w_yy_var, self.cov_w_yz_var,
+											self.cov_w_zx_var, self.cov_w_zy_var, self.cov_w_zz_var]
+		msg.linear_acceleration.x = ax*self.sf_g_var
+		msg.linear_acceleration.y = ay*self.sf_g_var
+		msg.linear_acceleration.z = az*self.sf_g_var
+		msg.linear_acceleration_covariance = [self.cov_a_xx_var, self.cov_a_xy_var, self.cov_a_xz_var,
+												self.cov_a_yx_var, self.cov_a_yy_var, self.cov_a_yz_var,
+												self.cov_a_zx_var, self.cov_a_zy_var, self.cov_a_zz_var]
 		pub.publish(msg)
 	
-		
 	def printData(self, time_in, data, step, PD_temperature):
 		if(self.first_data_flag):
 			self.first_data_flag = 0
@@ -603,6 +857,7 @@ class mainWindow(QMainWindow):
 		print('step: ', step_f)
 		
 	def printImu(self, wx, wy, wz, ax, ay, az): 
+		wz = wz*self.sf_a_var + self.sf_b_var
 		print(round(wx, 4), end='\t\t')
 		print(round(wy, 4), end='\t\t')
 		print(round(wz, 4), end='\t\t')
@@ -618,8 +873,8 @@ class mainWindow(QMainWindow):
 		# print(len(step), end='\t')
 		# print(len(PD_temperature))
 		if(self.act.runFlag):
-			self.top.com_plot1.ax.clear()
-			self.top.com_plot2.ax.clear()
+			self.top.TabPlot.com_plot1.ax.clear()
+			self.top.TabPlot.com_plot2.ax.clear()
 		
 			
 		update_rate = 1/((time[1] - time[0])*TIME_COEFFI)
@@ -628,10 +883,11 @@ class mainWindow(QMainWindow):
 		self.top.temperature_lb.lb.setText(str(PD_temperature[0]))
 		self.top.dataRate_lb.lb.setText(str(np.round(update_rate, 1)))
 		
+		data_f = data 
 		# data_f = data*ADC_COEFFI 
 		time_f = time*TIME_COEFFI
 		step_f = step*self.sf_a_var + self.sf_b_var
-		data_f = data 
+		
 		self.data  = np.append(self.data, data_f)
 		self.time  = np.append(self.time, time_f)
 		self.step = np.append(self.step, step_f)
@@ -646,19 +902,19 @@ class mainWindow(QMainWindow):
 		# print('stdev: ', np.round(np.std(self.step), 4))
 		# self.top.com_plot1.ax.plot(self.time, self.data, color = 'r', linestyle = '-', marker = '', label="err")
 		# self.top.com_plot1.ax.plot(self.time, self.step, color = 'b', linestyle = '-', marker = '', label="step")
-		self.top.com_plot1.ax.plot(self.time, color = 'r', linestyle = '-', marker = '*', label="err")
-		self.top.com_plot1.ax.plot(self.step, color = 'b', linestyle = '-', marker = '*', label="err")
-		self.top.com_plot1.figure.canvas.draw()		
-		self.top.com_plot1.figure.canvas.flush_events()
+		self.top.TabPlot.com_plot1.ax.plot(self.data, color = 'b', linestyle = '-', marker = '*', label="err")
+		self.top.TabPlot.com_plot1.ax.plot(self.step, color = 'r', linestyle = '-', marker = '*', label="err")
+		self.top.TabPlot.com_plot1.figure.canvas.draw()		
+		self.top.TabPlot.com_plot1.figure.canvas.flush_events()
 		if(self.act.runFlag):
 			# print('update rate: ', np.round(update_rate, 1), end=', ')
 			# print(np.round(np.average(self.step), 3), end='\t')
 			# print(np.round(np.std(self.step), 3))
 			pass
 		# self.top.com_plot2.ax.plot(self.time, self.step, color = 'b', linestyle = '-', marker = '', label="step")
-		self.top.com_plot2.ax.plot(self.step, color = 'r', linestyle = '-', marker = '*', label="step")
-		self.top.com_plot2.figure.canvas.draw()		
-		self.top.com_plot2.figure.canvas.flush_events()
+		self.top.TabPlot.com_plot2.ax.plot(self.step, color = 'r', linestyle = '-', marker = '*', label="step")
+		self.top.TabPlot.com_plot2.figure.canvas.draw()		
+		self.top.TabPlot.com_plot2.figure.canvas.flush_events()
 		# self.ros_Imu_publish()
 		
 		

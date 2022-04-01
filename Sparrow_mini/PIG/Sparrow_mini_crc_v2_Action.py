@@ -1,22 +1,18 @@
-#!/usr/bin/env python
-#-*- coding:UTF-8 -*-
-from __future__ import print_function
 import os
 import sys
-# sys.path.append("../../")
+sys.path.append("../../")
 import time
 import numpy as np 
 import scipy as sp
 from scipy import signal
-from COMPort import UART
-# from py3lib.COMPort import UART
-# import py3lib.FileToArray as fil2a
+from py3lib.COMPort import UART
+import py3lib.FileToArray as fil2a
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 import logging
-# import py3lib
-# from py3lib import *
+import py3lib
+from py3lib import *
 import math
 import time 
 import datetime
@@ -47,21 +43,21 @@ class gyro_Action(QThread):
 	runFlag = 0
 	stopFlag = 0
 	#IMU 靜止時之offset
-	# offset_wx = 0
-	# wxVth = 0
-	# offset_wy = 0
-	# wyVth = 0
-	# offset_wz = 0
-	# offset_wz200 = 0
-	# wzVth = 0
-	# offset_ax = 0
-	# axVth = 0
-	# offset_ay = 0
-	# ayVth = 0
+	offset_wx = 0
+	wxVth = 0
+	offset_wy = 0
+	wyVth = 0
+	offset_wz = 0
+	offset_wz200 = 0
+	wzVth = 0
+	offset_ax = 0
+	axVth = 0
+	offset_ay = 0
+	ayVth = 0
 	''' check byte '''
-	# check_byte = 170
-	# check_byte2 = 171
-	# check_byte3 = 172
+	check_byte = 170
+	check_byte2 = 171
+	check_byte3 = 172
 	bufferSize = 0
 	pd_temperature = 0
 	dt_init_flag = 1
@@ -75,9 +71,8 @@ class gyro_Action(QThread):
 	crc_fail_cnt = 0
 	
 	old_data_flag = 0
-	# flag1_errtime = 0
-	# valid_cnt_num = 5
-	# r_cnt = 0
+	flag1_errtime = 0
+	valid_cnt_num = 5
 	def __init__(self, parent = None):	
 		# super().__init__()
 		QThread.__init__(self)
@@ -101,7 +96,7 @@ class gyro_Action(QThread):
 				headerArr[0] = headerArr[1]
 				headerArr[1] = headerArr[2]
 				headerArr[2] = headerArr[3]
-				headerArr[3] = self.COM.read1Binary()
+				headerArr[3] = self.COM.read1Binary()[0]
 	
 	def crcSlow(self, message, nBytes):
 		remainder = 0;
@@ -160,17 +155,19 @@ class gyro_Action(QThread):
 				crc = self.crcSlow(msg, 20)
 			# print('calculate CRC: ', crc)
 			# print('read CRC: ', temp_crc[0])
-			if(temp_crc == crc):
+			if(temp_crc[0] == crc):
 				temp_time = self.convert2Unsign_4B(temp_time)
 				temp_err = self.convert2Sign_4B(temp_err)
 				temp_step = self.convert2Sign_4B(temp_step)
 				temp_PD_temperature = self.convert2Unsign_4B(temp_PD_temperature)/2
+				self.old_time = temp_time
 				self.old_err = temp_err
 				self.old_step = temp_step
 				self.old_PD_temp = temp_PD_temperature
 			else :
 				self.crc_fail_cnt = self.crc_fail_cnt + 1
 				print('crc fail : ', self.crc_fail_cnt)
+				temp_time = self.old_time + 0.005
 				temp_err = self.old_err
 				temp_step = self.old_step
 				temp_PD_temperature = self.old_PD_temp
@@ -187,7 +184,7 @@ class gyro_Action(QThread):
 			print(round(temp_err,3), end='\t\t')
 			print(round(temp_step,3), end='\t\t') 
 			print(round(temp_PD_temperature,3), end='\t\t')
-			print(temp_crc, end='\t\t')
+			print(temp_crc[0], end='\t\t')
 			print(self.crc_fail_cnt)
 			
 		return temp_time, temp_err, temp_step, temp_PD_temperature
@@ -298,6 +295,7 @@ class gyro_Action(QThread):
 				y_p[0] = y_p[self.data_frame_update_point]
 				p_p[0] = p_p[self.data_frame_update_point]
 				
+				# self.COM.port.flushInput()
 				for i in range(0,self.data_frame_update_point): 
 					if(globals.TEST_MODE==0):
 						self.bufferSize = self.COM.port.inWaiting()
@@ -310,7 +308,7 @@ class gyro_Action(QThread):
 					
 					[temp_adxl355_x,
 					temp_adxl355_y,
-					temp_adxl355_z] = self.readADXL355(EN=1, SF=SENS_ADXL355_8G
+					temp_adxl355_z] = self.readADXL355(EN=0, SF=SENS_ADXL355_8G
 														,PRINT=0)
 
 					[temp_nano33_wx,
@@ -318,7 +316,7 @@ class gyro_Action(QThread):
 					temp_nano33_wz,
 					temp_nano33_ax,
 					temp_nano33_ay,
-					temp_nano33_az] = self.readNANO33(EN=1, SF_XLM=SENS_AXLM_4G
+					temp_nano33_az] = self.readNANO33(EN=0, SF_XLM=SENS_AXLM_4G
 														,SF_GYRO=SENS_GYRO_250
 														,PRINT=0)
 					
@@ -328,12 +326,13 @@ class gyro_Action(QThread):
 						print("step:", temp_step, end='\t');
 						print("PD_T:", temp_PD_temperature);
 						
+					
 					self.kal_flag = globals.kal_status
 					''' Kalmman filter'''
 					'''------update------'''
 					k[i] = p_p[i]/(p_p[i] + globals.kal_R) #k_n
-					# x[i] = x_p[i] + k[i]*(temp_err - x_p[i])  #x_nn
-					x[i] = x_p[i] + k[i]*(temp_nano33_wz - x_p[i])  #x_nn
+					x[i] = x_p[i] + k[i]*(temp_err - x_p[i])  #x_nn
+					# x[i] = x_p[i] + k[i]*(temp_nano33_wz - x_p[i])  #x_nn
 					y[i] = y_p[i] + k[i]*(temp_step - y_p[i])  #y_nn
 					p[i] = (1 - k[i])*p_p[i] #p_nn
 
@@ -351,30 +350,42 @@ class gyro_Action(QThread):
 						err = np.append(err[1:], x[i]) #kalmman filter
 						step = np.append(step[1:], y[i]) #kalmman filter
 					else:
-						# err = np.append(err[1:], temp_err) 
-						err = np.append(err[1:], temp_nano33_wz) 
+						err = np.append(err[1:], temp_err) 
+						# err = np.append(err[1:], temp_nano33_wz) 
 						step = np.append(step[1:], temp_step)
+					# print('action: ', end='\t')
+					# print(len(time_s), end='\t')
+					# print(len(err), end='\t')
+					# print(len(step), end='\t')
+					# print(len(PD_temperature), end='\t')
+					# print(self.crc_fail_cnt)
 				#end of for
-				# print('action: ', end='\t')
-				# print(len(time_s), end='\t')
-				# print(len(err), end='\t')
-				# print(len(step), end='\t')
-				# print(len(PD_temperature), end='\t')
-				# print(self.crc_fail_cnt)
+				
 				if(globals.PRINT_MODE):
-					self.data_update6.emit(temp_nano33_wx, temp_nano33_wy, temp_step, 
+					self.data_update6.emit(temp_nano33_wx, temp_nano33_wy, temp_nano33_wz, 
 											   temp_nano33_ax, temp_nano33_ay, temp_nano33_az)
 				else:
 					self.data_update4.emit(time_s, err, step, PD_temperature)
 				if(self.stopFlag):
 					self.runFlag = 0
 					print('stopFlag')
+				# self.valid_cnt = self.valid_cnt + 1
+				# if(self.valid_cnt == 1):
+					# self.valid_flag = 1
+				# if(self.valid_flag):
+					# self.openLoop_updata4.emit(time, data, step, PD_temperature)
+					# if(self.stopFlag):
+						# self.runFlag = 0
+						# print('stopFlag')
 			#end of while
 		#end of if	
 		print('ready to stop')
 		self.fog_finished.emit()
 		self.crc_fail_cnt = 0
 		self.fake_time = 0
+		self.valid_flag = 0
+		self.valid_cnt = 0
+		# self.fog_finished.emit()
 		
 	def printNano33Gyro(self, x, y, z, eol):
 		print('%.6f'% (x), end='\t')

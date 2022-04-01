@@ -166,6 +166,7 @@ class gyro_Action(QThread):
 			else :
 				self.crc_fail_cnt = self.crc_fail_cnt + 1
 				print('crc fail : ', self.crc_fail_cnt)
+				temp_time = self.old_time + 0.005
 				temp_err = self.old_err
 				temp_step = self.old_step
 				temp_PD_temperature = self.old_PD_temp
@@ -302,7 +303,7 @@ class gyro_Action(QThread):
 					[temp_time, 
 					temp_err, 
 					temp_step, 
-					temp_PD_temperature] = self.readPIG(EN=1, FAKE=1, PRINT=0)
+					temp_PD_temperature] = self.readPIG(EN=1, FAKE=0, PRINT=0)
 					
 					[temp_adxl355_x,
 					temp_adxl355_y,
@@ -316,7 +317,7 @@ class gyro_Action(QThread):
 					temp_nano33_ay,
 					temp_nano33_az] = self.readNANO33(EN=1, SF_XLM=SENS_AXLM_4G
 														,SF_GYRO=SENS_GYRO_250
-														,PRINT=1)
+														,PRINT=0)
 					
 					if(DEBUG):
 						print("time:", temp_time, end='\t');
@@ -329,8 +330,8 @@ class gyro_Action(QThread):
 					''' Kalmman filter'''
 					'''------update------'''
 					k[i] = p_p[i]/(p_p[i] + globals.kal_R) #k_n
-					# x[i] = x_p[i] + k[i]*(temp_err - x_p[i])  #x_nn
-					x[i] = x_p[i] + k[i]*(temp_nano33_wz - x_p[i])  #x_nn
+					x[i] = x_p[i] + k[i]*(temp_err - x_p[i])  #x_nn
+					# x[i] = x_p[i] + k[i]*(temp_nano33_wz - x_p[i])  #x_nn
 					y[i] = y_p[i] + k[i]*(temp_step - y_p[i])  #y_nn
 					p[i] = (1 - k[i])*p_p[i] #p_nn
 
@@ -345,11 +346,16 @@ class gyro_Action(QThread):
 					time_s = np.append(time_s[1:], temp_time)
 					PD_temperature = np.append(PD_temperature[1:], temp_PD_temperature)
 					if(self.kal_flag == True):
-						err = np.append(err[1:], x[i]) #kalmman filter
+						if(globals.NANO33_WZ_MODE):
+							err = np.append(err[1:], temp_nano33_wz) 
+						else:
+							err = np.append(err[1:], x[i]) #kalmman filter
 						step = np.append(step[1:], y[i]) #kalmman filter
 					else:
-						# err = np.append(err[1:], temp_err) 
-						err = np.append(err[1:], temp_nano33_wz) 
+						if(globals.NANO33_WZ_MODE):
+							err = np.append(err[1:], temp_nano33_wz) 
+						else:
+							err = np.append(err[1:], temp_err) 
 						step = np.append(step[1:], temp_step)
 				#end of for
 				# print('action: ', end='\t')

@@ -493,7 +493,33 @@ class editBlock(QGroupBox):
 		layout = QHBoxLayout() 
 		layout.addWidget(self.le)     
 		self.setLayout(layout)
-		
+
+class edit9Block(QGroupBox):
+	def __init__(self, title, parent=None):
+		super(edit9Block, self).__init__(parent)
+		self.le1 = editBlock('xx')
+		self.le2 = editBlock('xy')
+		self.le3 = editBlock('xz')
+		self.le4 = editBlock('yx')
+		self.le5 = editBlock('yy')
+		self.le6 = editBlock('yz')
+		self.le7 = editBlock('zx')
+		self.le8 = editBlock('zy')
+		self.le9 = editBlock('zz')
+		self.setTitle(title)
+
+		layout = QGridLayout() 
+		layout.addWidget(self.le1, 0, 0, 1, 1)
+		layout.addWidget(self.le2, 0, 1, 1, 1)
+		layout.addWidget(self.le3, 0, 2, 1, 1)
+		layout.addWidget(self.le4, 1, 0, 1, 1)
+		layout.addWidget(self.le5, 1, 1, 1, 1)
+		layout.addWidget(self.le6, 1, 2, 1, 1)
+		layout.addWidget(self.le7, 2, 0, 1, 1)
+		layout.addWidget(self.le8, 2, 1, 1, 1)
+		layout.addWidget(self.le9, 2, 2, 1, 1)
+		self.setLayout(layout)
+
 class editBlockwBtn(QGroupBox):
 	def __init__(self, title='', val='10', parent=None):
 		super(editBlockwBtn, self).__init__(parent)

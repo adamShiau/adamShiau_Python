@@ -31,7 +31,7 @@ def cal_oadev(data,rate,tauArray):
 		actualTau = np.append(actualTau,n*tau0)
 	return actualTau, dev #Return the actual tau and overlapped Allan deviation
 
-NAME = '6_5_f139_sf_KAL'
+NAME = '0402_noKAL'
 SF_A = 0.00295210451588764*1.02/2
 SF_B = -0.00137052112589694
 dataRate = 100

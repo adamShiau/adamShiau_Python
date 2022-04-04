@@ -10,7 +10,7 @@ MODE_IMU			= 2
 MODE_EQ				= 3
 MODE_IMU_FAKE		= 4
 
-NANO33_WZ_MODE = 0
+NANO33_WZ_MODE = 1
 kal_status = 0
 kal_Q = 1
 kal_R = 10

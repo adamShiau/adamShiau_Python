@@ -4,7 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-NAME = '6_5_f139_sf_KAL'
+NAME = '0402_noKAL'
 SF_A = 0.00295210451588764*1.02/2
 SF_B = -0.00137052112589694
 

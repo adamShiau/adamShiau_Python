@@ -12,8 +12,8 @@ MODE_IMU_FAKE		= 4
 
 NANO33_WZ_MODE = 1
 kal_status = 0
-kal_Q = 1
-kal_R = 10
+# kal_Q = 1
+# kal_R = 10
 PRINT_MODE = 0 #1 : print mode; 0: plot mode
 TEST_MODE = 0
 OP_MODE = MODE_IMU

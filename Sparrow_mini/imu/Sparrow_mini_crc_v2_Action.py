@@ -36,6 +36,8 @@ class gyro_Action(QThread):
 	valid_flag = 0
 	valid_cnt = 0
 	TIME_PERIOD = 0.01
+	kal_Q = 1
+	kal_R = 6
 	if(globals.PRINT_MODE):
 		data_frame_update_point = 1
 	else: 
@@ -69,7 +71,7 @@ class gyro_Action(QThread):
 	old_step = 0
 	old_PD_temp = 0
 	crc_fail_cnt = 0
-	
+	timer_rst_succeed = 0
 	old_data_flag = 0
 	flag1_errtime = 0
 	valid_cnt_num = 5
@@ -160,6 +162,7 @@ class gyro_Action(QThread):
 				temp_err = self.convert2Sign_4B(temp_err)
 				temp_step = self.convert2Sign_4B(temp_step)
 				temp_PD_temperature = self.convert2Unsign_4B(temp_PD_temperature)/2
+				self.old_time = temp_time
 				self.old_err = temp_err
 				self.old_step = temp_step
 				self.old_PD_temp = temp_PD_temperature
@@ -264,8 +267,8 @@ class gyro_Action(QThread):
 		#R:measure variance
 		# Q = 1
 		# R = 100
-		print('action kal_Q:', globals.kal_Q)
-		print('action kal_R:', globals.kal_R)
+		# print('action kal_Q:', globals.kal_Q)
+		# print('action kal_R:', globals.kal_R)
 		x_p = np.zeros(self.data_frame_update_point+1)
 		y_p = np.zeros(self.data_frame_update_point+1)
 		p_p = np.zeros(self.data_frame_update_point+1)
@@ -276,7 +279,7 @@ class gyro_Action(QThread):
 		p0 = p0^2
 		x_p[self.data_frame_update_point] = x0
 		y_p[self.data_frame_update_point] = y0
-		p_p[self.data_frame_update_point] = p0 + globals.kal_Q
+		p_p[self.data_frame_update_point] = p0 + self.kal_Q
 		''' '''
 
 		# print("runFlag=", self.runFlag)
@@ -305,6 +308,12 @@ class gyro_Action(QThread):
 					temp_step, 
 					temp_PD_temperature] = self.readPIG(EN=1, FAKE=0, PRINT=0)
 					
+					if(not self.timer_rst_succeed):
+						if(temp_time < 10000):
+							self.timer_rst_succeed = 1
+						else:
+							break;
+							
 					[temp_adxl355_x,
 					temp_adxl355_y,
 					temp_adxl355_z] = self.readADXL355(EN=1, SF=SENS_ADXL355_8G
@@ -329,7 +338,7 @@ class gyro_Action(QThread):
 					self.kal_flag = globals.kal_status
 					''' Kalmman filter'''
 					'''------update------'''
-					k[i] = p_p[i]/(p_p[i] + globals.kal_R) #k_n
+					k[i] = p_p[i]/(p_p[i] + self.kal_R) #k_n
 					x[i] = x_p[i] + k[i]*(temp_err - x_p[i])  #x_nn
 					# x[i] = x_p[i] + k[i]*(temp_nano33_wz - x_p[i])  #x_nn
 					y[i] = y_p[i] + k[i]*(temp_step - y_p[i])  #y_nn
@@ -338,7 +347,7 @@ class gyro_Action(QThread):
 					'''------predict------'''
 					x_p[i+1] = x[i]
 					y_p[i+1] = y[i]
-					p_p[i+1] = p[i] + globals.kal_Q
+					p_p[i+1] = p[i] + self.kal_Q
 					
 					''' end of kalmman filter'''
 					
@@ -368,7 +377,9 @@ class gyro_Action(QThread):
 					self.data_update6.emit(temp_nano33_wx, temp_nano33_wy, temp_nano33_wz, 
 											   temp_nano33_ax, temp_nano33_ay, temp_nano33_az)
 				else:
-					self.data_update4.emit(time_s, err, step, PD_temperature)
+					# print('self.timer_rst_succeed:', self.timer_rst_succeed)
+					if(self.timer_rst_succeed):
+						self.data_update4.emit(time_s, err, step, PD_temperature)
 				if(self.stopFlag):
 					self.runFlag = 0
 					print('stopFlag')
@@ -388,6 +399,7 @@ class gyro_Action(QThread):
 		self.fake_time = 0
 		self.valid_flag = 0
 		self.valid_cnt = 0
+		self.timer_rst_succeed = 0
 		# self.fog_finished.emit()
 		
 	def printNano33Gyro(self, x, y, z, eol):

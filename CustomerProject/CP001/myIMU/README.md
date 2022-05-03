@@ -100,12 +100,12 @@ $ python myImuRos.py ttyACM0 1 1
 ```python
 from imuLib.ImuReader import ImuReader
 
-myImu = ImuReader("Port Name": str, cali gyro: bool, cali_accelerometer: bool)
+myImu = ImuReader("Port Name": str, cali gyro: int, cali_accelerometer: int)
 ```
 
 #### 2. 宣告Callback函數
 
-宣告一個帶有兩個參數的函數作為 Callback funcion, 之後將此函數註冊於`Imureader.setCallback()`來接收IMU數據。其中第一個參數為IMU原始數據，第二個參數為取樣時間1秒的IMU offset值，此兩參數會接收來自類別`ImuReader`回傳的`dict`變數。當類別`ImuReader`之物件在建立時參數 `cali_gyro` 或 `cali_accelerometer` 為 `True`時對應的 IMU offset才會有值，否則為零:
+宣告一個帶有兩個參數的函數作為 Callback funcion, 之後將此函數註冊於`Imureader.setCallback()`來接收IMU數據。其中第一個參數為IMU原始數據，第二個參數為取樣時間1秒的IMU offset值，此兩參數會接收來自類別`ImuReader`回傳的`dict`變數。當類別`ImuReader`之物件在建立時參數 `cali_gyro` 或 `cali_accelerometer` 為 1 時對應的 IMU offset才會有值，否則為零:
 
 ```python
 #宣告Callback函數

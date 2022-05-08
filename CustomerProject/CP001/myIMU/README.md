@@ -84,8 +84,8 @@ $ python myImuRos.py ttyACM0 1 1
 |:---:|:---:|:---|
 |arg[0] |string| 程式名稱|
 |arg[1]|string|USB對應的 port name|
-|arg[2]|bool|[1/0] : [扣除/不扣除] gyro offset|
-|arg[3]|bool|[1/0] : [扣除/不扣除] accelerometer offset|
+|arg[2]|int|[1/0] : [扣除/不扣除] gyro offset|
+|arg[3]|int|[1/0] : [扣除/不扣除] accelerometer offset|
 
 ---
 

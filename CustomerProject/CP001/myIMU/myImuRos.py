@@ -103,7 +103,7 @@ def checkImudata(t, w1, w2):
 if __name__ == "__main__":
     try:
         print("running myImu.py")
-        myImu = ImuReader("/dev/"+sys.argv[1], bool(sys.argv[2]), bool(sys.argv[3]))
+        myImu = ImuReader("/dev/"+sys.argv[1], int(sys.argv[2]), int(sys.argv[3]))
         myImu.setCallback(myCallBack)
         myImu.connectIMU()
         rospy.init_node('FOG_ROS', disable_signals=True)

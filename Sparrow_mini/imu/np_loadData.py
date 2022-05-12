@@ -26,17 +26,17 @@ PD_T = Var[:,3]
 
 
 
-plt.figure(1)
-plt.plot(diff_t,marker = '*')
-plt.title("diff_t") # title
-plt.xlabel("t(s)") # x label
-plt.ylabel("difft(ms)") # y label
-print('avg(diff_t), [ms]: ', np.average(diff_t))
-print('std(diff_t), [ms]: ', np.std(diff_t))
-print('update rate, [Hz]:', np.round(1e3/np.average(diff_t), 2), end='\n\n')
+# plt.figure(1)
+# plt.plot(diff_t,marker = '*')
+# plt.title("diff_t") # title
+# plt.xlabel("t(s)") # x label
+# plt.ylabel("difft(ms)") # y label
+# print('avg(diff_t), [ms]: ', np.average(diff_t))
+# print('std(diff_t), [ms]: ', np.std(diff_t))
+# print('update rate, [Hz]:', np.round(1e3/np.average(diff_t), 2), end='\n\n')
 
 ##### Err #######
-# '''
+'''
 err_mV = err*1e3
 plt.figure(2)
 plt.subplot(1,2,1)
@@ -52,26 +52,28 @@ plt.subplot(1,2,2)
 plt.hist(err_mV, bins=100, range=None, density=False, color = 'lightblue', cumulative = False, label = "err Histogram")
 plt.legend()
 plt.xlabel('err')
-# '''
+'''
 ##### Nano33 wz #######
-'''
-Nano33_wz = err*3600
-plt.figure(2)
-plt.subplot(1,2,1)
-plt.plot(t, Nano33_wz, label='Nano33_wz')
-plt.title("Nano33 wz") # title
-plt.xlabel("t(s)") # x label
-plt.ylabel("dph") # y label
-plt.legend()
-print('avg(Nano33_wz), [dph]: ', np.round(np.average(Nano33_wz), 4))
-print('std(Nano33_wz), [dph]: ', np.round(np.std(Nano33_wz), 4), end='\n\n')
+# '''
+# Nano33_wz = err*3600
+# plt.figure(2)
+# plt.subplot(1,2,1)
+# plt.plot(t, Nano33_wz, label='Nano33_wz')
+# plt.title("Nano33 wz") # title
+# plt.xlabel("t(s)") # x label
+# plt.ylabel("dph") # y label
+# plt.legend()
+# print('avg(Nano33_wz), [dph]: ', np.round(np.average(Nano33_wz), 4))
+# print('std(Nano33_wz), [dph]: ', np.round(np.std(Nano33_wz), 4), end='\n\n')
 
-plt.subplot(1,2,2)
-plt.hist(Nano33_wz, bins=100, range=None, density=False, color = 'lightblue', cumulative = False, label = "err Histogram")
-plt.legend()
-plt.xlabel('err')
-'''
+# plt.subplot(1,2,2)
+# plt.hist(Nano33_wz, bins=100, range=None, density=False, color = 'lightblue', cumulative = False, label = "err Histogram")
+# plt.legend()
+# plt.xlabel('err')
+# '''
 ##### Step #######
+# t1 = 15902900 - 180000
+# t2 = 15902900 + 180000
 step_dph = 3600*(step*SF_A + SF_B)
 # step_dph = step
 plt.figure(3)
@@ -90,24 +92,27 @@ plt.legend()
 plt.xlabel('step')
 
 #####double Y anix#######
-# fig, ax1 = plt.subplots()
+'''
+Nano33_wz = err*3600
+fig, ax1 = plt.subplots()
 
-# color = 'tab:red'
-# ax1.set_xlabel('time (s)')
-# ax1.set_ylabel('mems gyro (dps)', color=color)
-# ax1.plot(t, err, color=color)
-# ax1.tick_params(axis='y', labelcolor=color)
+color = 'tab:red'
+ax1.set_xlabel('time (s)')
+ax1.set_ylabel('mems gyro (dph)', color=color)
+ax1.plot(t, Nano33_wz, color=color)
+ax1.tick_params(axis='y', labelcolor=color)
 
-# ax2 = ax1.twinx()  # instantiate a second axes that shares the same x-axis
-# color = 'tab:blue'
-# ax2.set_ylabel('PD temp. (degree C)', color=color)  # we already handled the x-label with ax1
-# ax2.plot(t, PD_T, color=color)
-# ax2.tick_params(axis='y', labelcolor=color)
+ax2 = ax1.twinx()  # instantiate a second axes that shares the same x-axis
+color = 'tab:blue'
+ax2.set_ylabel('PD temp. (degree C)', color=color)  # we already handled the x-label with ax1
+ax2.plot(t, PD_T, color=color)
+ax2.tick_params(axis='y', labelcolor=color)
 
-# fig.tight_layout()  # otherwise the right y-label is slightly clipped
+fig.tight_layout()  # otherwise the right y-label is slightly clipped
+'''
 
-# print('avg(err): ', np.average(err))
-# print('std(err): ', np.std(err))
+print('avg(err): ', np.average(err))
+print('std(err): ', np.std(err))
 #####
 
 

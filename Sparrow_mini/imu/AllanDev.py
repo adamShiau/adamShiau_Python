@@ -39,16 +39,12 @@ dataRate = 100
 # Var = np.loadtxt(NAME, comments='#', delimiter=None, skiprows=6)
 Var = np.loadtxt(NAME, comments='#', delimiter=',', skiprows=0)
 t = Var[:,0]
-# ax = Var[:,1]
-# ay = Var[:,2]
-# az = Var[:,3]
-# wx = Var[:,4]
-# wy = Var[:,5]
-# wz = Var[:,6]
-wz = Var[:,2] 
-wz_dps = wz*SF_A + SF_B
+wz_nano = Var[:,1]
+# wz = Var[:,2] 
+# wz_dps = wz*SF_A + SF_B
 # wz_dph = 3600*(wz*SF_A + SF_B)
-thetaz = wz_dps.cumsum()/dataRate #degree
+# thetaz = wz_dps.cumsum()/dataRate #degree
+thetaz = wz_nano.cumsum()/dataRate #degree
 dataLength = t.size
 
 print('load done')
@@ -57,11 +53,16 @@ print(thetaz.size)
 
 
 tau0 = 1/dataRate
-
+'''
+tau = m*tau0
+m < (N-1)/2
+for N = 17697570
+m < 8848785 = 8e6
+'''
 tauArray = np.array([tau0, 3*tau0, 5*tau0, 10*tau0, 30*tau0, 50*tau0, 
                      100*tau0, 300*tau0, 500*tau0, 1000*tau0, 3e3*tau0,
                      5000*tau0, 10000*tau0, 3e4*tau0, 50000*tau0, 100000*tau0,
-					 5e5*tau0, 1e6*tau0, 2e6*tau0])
+					 5e5*tau0, 1e6*tau0, 2e6*tau0, 8e6*tau0])
 # tauArray = np.array([tau0, 3*tau0, 5*tau0, 10*tau0, 30*tau0, 50*tau0, 
 					# 100*tau0, 300*tau0, 500*tau0, 1000*tau0, 3e3*tau0,
 					# 5000*tau0, 10000*tau0, 3e4*tau0, 50000*tau0, 100000*tau0,

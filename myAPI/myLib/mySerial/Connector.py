@@ -11,14 +11,14 @@ class Connector:
         self.__baudRate = baudRate
         self.__is_open = False
         self.__ser = serial.Serial()
-
     # End of constructor
+
 
     def __del__(self):
         # self.disconnect()
         print("class connector's destructor called!")
-
     # End of destructor
+
 
     def connect(self):
         self.__ser.baudrate = self.__baudRate

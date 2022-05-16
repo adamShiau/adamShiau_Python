@@ -3,28 +3,29 @@
 import serial
 import time
 import sys
+import numpy as np
 
 
 class Connector:
-    def __init__(self, portName: str = "COM15", baudRate: int = 230400) -> None:
+    def __init__(self, portName: str = "COM5", baudRate: int = 230400) -> None:
         self.__portName = portName
         self.__baudRate = baudRate
         self.__is_open = False
         self.__ser = serial.Serial()
-    # End of constructor
 
+    # End of constructor
 
     def __del__(self):
         # self.disconnect()
         print("class connector's destructor called!")
-    # End of destructor
 
+    # End of destructor
 
     def connect(self):
         self.__ser.baudrate = self.__baudRate
         self.__ser.port = self.__portName
-        self.__ser.timeout = 1
-        self.__ser.writeTimeout = 1
+        # self.__ser.timeout = 1
+        # self.__ser.writeTimeout = 1
         self.__ser.parity = serial.PARITY_NONE
         self.__ser.stopbits = serial.STOPBITS_ONE
         self.__ser.bytesize = serial.EIGHTBITS
@@ -64,15 +65,20 @@ class Connector:
     # End of Connector::readinto
 
     def readBinaryList(self, mum):
-        data_r = self.__ser.read(mum)
-        data_r = [i for i in data_r]
+        try:
+            data_r = self.__ser.read(mum)
+            data_r = [i for i in data_r]
+        except:
+            print("ERROR")
         # data = [hex(i) for i in data]
-        return data_r
+        else:
+            return data_r
 
     # End of Connector::readBinaryList
 
     def readInputBuffer(self):
-        print("input buffer: %d" % self.__ser.in_waiting)
+        # print("input buffer: %d" % self.__ser.in_waiting)
+        return self.__ser.in_waiting
 
     # End of Connector::readInputBuffer
 
@@ -89,17 +95,20 @@ class Connector:
 
 if __name__ == "__main__":
     print("running Connector.py")
-    old_time = time.perf_counter()
+    old_time = time.perf_counter_ns()
     ser = Connector("COM5")
     ser.connect()
     ser.write([5, 0, 0, 0, 1])
     try:
         while 1:
-            ser.readInputBuffer()
-            print(ser.readBinaryList(29))
-            print("%f\n" % ((time.perf_counter() - old_time) * 1e6))
-            old_time = time.perf_counter()
+            if ser.readInputBuffer() > 0:
+                new = time.perf_counter_ns()
+                print("buf: ", ser.readInputBuffer())
+                print(ser.readBinaryList(29))
+                print("%.1f\n" % ((new - old_time) * 1e-3))
+                old_time = new
 
     except KeyboardInterrupt:
         ser.write([5, 0, 0, 0, 4])
         ser.disconnect()
+    pass

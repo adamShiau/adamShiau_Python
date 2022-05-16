@@ -140,7 +140,7 @@ class mainWindow(QMainWindow):
 		print(self.time[0], end='\t')
 		print(self.time[-1])
 		# self.top.plot1.setData(self.time, self.data1)
-		self.top.plot1.setData(self.data1)
+		# self.top.plot1.setData(self.data1)
 		# self.data1 = np.empty(0)
 		# self.time = np.empty(0)
 		t2 = float(datetime.datetime.now().strftime('%S.%f'))

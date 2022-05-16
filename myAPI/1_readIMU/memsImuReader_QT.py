@@ -1,11 +1,14 @@
 import sys
+# from PyQt5.QtCore import QThread, pyqtSignal
+from PyQt5.QtGui import *
+from PyQt5.QtCore import *
+from PyQt5.QtWidgets import *
 
 sys.path.append("../")
 from myLib.mySerial.Connector import Connector
 from myLib.mySerial import getData
 from myLib.crcCalculator import crcLib
 import time
-from threading import Thread
 import common as cmn
 import numpy as np
 
@@ -23,9 +26,10 @@ POS_NANO33_WX = 14 - 1
 POS_ADXL355_AX = 5 - 1
 POS_CRC = 26 - 1
 print("__name__: ", __name__)
-old = time.perf_counter_ns()
 
-class memsImuReader(Thread):
+
+class memsImuReader(QThread):
+    imudata_qt = pyqtSignal(object, object)
 
     def __init__(self, portName: str = "COM5", baudRate: int = 230400):
         super(memsImuReader, self).__init__()
@@ -33,9 +37,11 @@ class memsImuReader(Thread):
         self.__isRun = True
         self.__isCali = False
         self.__callBack = None
+
         self.__crcFail = 0
-        self.__old_imudata = {k: (-1,)*len(IMU_DATA_STRUCTURE.get(k)) for k in set(IMU_DATA_STRUCTURE)}
+        self.__old_imudata = {k: (-1,) * len(IMU_DATA_STRUCTURE.get(k)) for k in set(IMU_DATA_STRUCTURE)}
         self.__imuoffset = {k: np.zeros(len(IMU_DATA_STRUCTURE.get(k))) for k in set(IMU_DATA_STRUCTURE)}
+        # self.imudata_qt.connect(self.getPyqtsignal)
     # class constructor
 
     def __del__(self):
@@ -51,6 +57,7 @@ class memsImuReader(Thread):
 
     @isRun.setter
     def isRun(self, isFlag):
+        print("setter ", isFlag)
         self.__isRun = isFlag
 
     # End of ImuReader::isRun(setter)
@@ -69,7 +76,7 @@ class memsImuReader(Thread):
 
     def connectIMU(self):
         self.__Connector.connect()
-        self.writeImuCmd(5, 1)
+        # self.writeImuCmd(5, 1)
 
     # End of memsImuReader::connectIMU
 
@@ -79,6 +86,12 @@ class memsImuReader(Thread):
 
     # End of memsImuReader::disconnectIMU
 
+    def startIMU(self):
+        self.writeImuCmd(5, 1)
+
+    def stopIMU(self):
+        self.writeImuCmd(5, 4)
+
     def writeImuCmd(self, cmd, value):
         if value < 0:
             value = (1 << 32) + value
@@ -86,10 +99,12 @@ class memsImuReader(Thread):
         data = bytearray([cmd, (value >> 24 & 0xFF), (value >> 16 & 0xFF), (value >> 8 & 0xFF), (value & 0xFF)])
         self.__Connector.write(data)
         cmn.wait_ms(150)
+
     # End of memsImuReader::writeImuCmd
 
     def setCallback(self, callback):
         self.__callBack = callback
+
     # End of memsImuReader::setCallback
 
     def getImuData(self):
@@ -105,6 +120,7 @@ class memsImuReader(Thread):
         return self.__Connector.readInputBuffer()
 
     def do_cali(self, dictContainer, cali_times):
+
         if self.isCali:
             self.isCali = False
             temp = dictContainer
@@ -119,13 +135,14 @@ class memsImuReader(Thread):
             return dictContainer
 
     def run(self):
+        print("run")
         while True:
             if not self.isRun:
+                print(self.isRun)
                 break
             # End of if-condition
-            dataPacket,  imudata = self.getImuData()
+            dataPacket, imudata = self.getImuData()
             isCrcFail = crcLib.isCrc32Fail(dataPacket, len(dataPacket))
-
             # err correction
             if not isCrcFail:
                 self.__old_imudata = imudata
@@ -134,39 +151,47 @@ class memsImuReader(Thread):
                 print("crc fail occur: ", self.__crcFail)
                 imudata = self.__old_imudata
             # end of err correction
-
             self.__imuoffset = self.do_cali(self.__imuoffset, 100)
-            self.__callBack(imudata, self.__imuoffset)
+
+            # if self.__callBack is not None:
+            #     self.__callBack(imudata, self.__imuoffset)
+            self.imudata_qt.emit(imudata, self.__imuoffset)
+            # cmn.wait_ms(100)
+
     # End of memsImuReader::run
 
 
+def getPyqtsignal(imudata, imuoffset):
+    print("getPyqtsignal: ", imudata)
+    print("getPyqtsignal: ", imuoffset)
+
+
 def myCallBack(imudata, imuoffset):
-    global old
-    new = time.perf_counter_ns()
     # print("\nimudata: ", imudata)
     # print("imuoffset: ", imuoffset)
+    # print("callback")
     imudata = cmn.dictOperation(imudata, imuoffset, "SUB")
-    wx = imudata["NANO33_W"][0]
-    wy = imudata["NANO33_W"][1]
-    wz = imudata["NANO33_W"][2]
-    cnt = imudata["ADXL_A"][0]
-    # print(new)
-    # print(old)
-    # print(cnt)
-    print("%.1f  %.2f  %.2f  %.2f" % ( (new - old)*1e-3, wx, wy, wz))
-    old = new
+    print(imudata)
+
 
 if __name__ == "__main__":
+    app = QApplication(sys.argv)
     myImu = memsImuReader("COM5")
+    myImu.imudata_qt.connect(getPyqtsignal)
     myImu.setCallback(myCallBack)
-    myImu.isCali = False
+    myImu.isCali = True
     myImu.connectIMU()
+    myImu.imudata_qt.connect(getPyqtsignal)
     myImu.start()
+
     try:
-        while True:
-            time.sleep(.1)
+        app.exec_()
+        # while True:
+        #     time.sleep(.1)
     except KeyboardInterrupt:
         myImu.isRun = False
         myImu.disconnectIMU()
-        myImu.join()
+        myImu.wait()
+
         print('KeyboardInterrupt success')
+

@@ -78,23 +78,18 @@ class COMRead_Action(QThread):
 					# while(not (self.COM.port.inWaiting()>(self.data_frame_point))) : #rx buffer 不到n*data_frame_update_point時不做任何事
 						# pass
 					'''read check byte, 當不等於CHECK_BYTE_VAL時重複讀取到符合為止 '''
-					checkByte = self.COM.read1Binary()
-					while(checkByte[0] != CHECK_BYTE_VAL):
-						checkByte = self.COM.read1Binary()
-						print(self.bufferSize, end='\t')
-						print(checkByte[0])
-						pass
+					# checkByte = self.COM.read1Binary()
+					# while(checkByte[0] != CHECK_BYTE_VAL):
+						# checkByte = self.COM.read1Binary()
+						# print(self.bufferSize, end='\t')
+						# print(checkByte[0])
+						# pass
 					'''--------------------------------------------------------- '''
 					# com_time = self.COM.read4Binary()
 					com_data1 = self.COM.read4Binary()
-					
+					print(com_data1)
 					if(DEBUG_COM_BIN):
 						print('incoming com port BIN data: ')
-						# print('com_time: ', end='\t')
-						# print(com_time[0], end='\t')
-						# print(com_time[1], end='\t')
-						# print(com_time[2], end='\t')
-						# print(com_time[3])
 						print('com_data1: ', end='\t')
 						print(hex(com_data1[0]), end='\t')
 						print(hex(com_data1[1]), end='\t')
@@ -102,14 +97,8 @@ class COMRead_Action(QThread):
 						print(hex(com_data1[3]))
 						
 					# com_time = self.convert2Unsign_4B(com_time)
-					com_data1 = self.convert2Sign_4B(com_data1)
+					# com_data1 = self.convert2Sign_4B(com_data1)
 					
-					if(DEBUG_COM_DEC):
-						print('incoming com port DEC data: ')
-						# print('com_time: ', end='\t')
-						# print(com_time)
-						print('com_data1: ', end='\t')
-						print(com_data1)
 				# t = np.append(t, com_time)
 				data1 = np.append(data1, com_data1)
 			
@@ -161,6 +150,6 @@ class COMRead_Action(QThread):
 		else :
 			return datain
 
-# if __name__ == '__main__':
-	# COM = UART()
-	# print(COM.read1Binary())
+if __name__ == '__main__':
+	COM = UART()
+	print(COM.read4Binary())

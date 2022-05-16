@@ -1,7 +1,7 @@
 # -*- coding:UTF-8 -*-
 
-def alignHeader_4B(comportInst, header):
-    datain = comportInst.readBinaryList(4)
+def alignHeader_4B(comportObj, header):
+    datain = comportObj.readBinaryList(4)
     while 1:
         if datain == header:
             return datain
@@ -9,13 +9,13 @@ def alignHeader_4B(comportInst, header):
             datain[0] = datain[1]
             datain[1] = datain[2]
             datain[2] = datain[3]
-            datain[3] = comportInst.readBinaryList(1)[0]
-            print(datain)
+            datain[3] = comportObj.readBinaryList(1)[0]
+            # print(datain)
 # End of alignHeader_4B
 
 
-def getdataPacket(comportInst, head, rbytes=25):
-    rdata = comportInst.readBinaryList(rbytes)
+def getdataPacket(comportObj, head, rbytes=25):
+    rdata = comportObj.readBinaryList(rbytes)
     imuPacket = head + rdata
     return imuPacket
 # End of getdataPacket

@@ -1,4 +1,6 @@
 import time
+import numpy as np
+
 
 def readPIG(dataPacket, dataLen=4, POS_TIME=4, sf_a=1, sf_b=0, EN=True, PRINT=False):
     if EN:
@@ -36,12 +38,12 @@ def readNANO33(dataPacket, EN, dataLen=2, POS_WX=13, sf_xlm=1.0, sf_gyro=1.0, PR
         temp_nano33_ax = dataPacket[POS_WX + 6:POS_WX + 6 + dataLen]
         temp_nano33_ay = dataPacket[POS_WX + 8:POS_WX + 8 + dataLen]
         temp_nano33_az = dataPacket[POS_WX + 10:POS_WX + 10 + dataLen]
-        nano33_wx = convert2Sign_nano33(temp_nano33_wx) * sf_gyro
-        nano33_wy = convert2Sign_nano33(temp_nano33_wy) * sf_gyro
-        nano33_wz = convert2Sign_nano33(temp_nano33_wz) * sf_gyro
-        nano33_ax = convert2Sign_nano33(temp_nano33_ax) * sf_xlm
-        nano33_ay = convert2Sign_nano33(temp_nano33_ay) * sf_xlm
-        nano33_az = convert2Sign_nano33(temp_nano33_az) * sf_xlm
+        nano33_wx = round(convert2Sign_nano33(temp_nano33_wx) * sf_gyro, 5)
+        nano33_wy = round(convert2Sign_nano33(temp_nano33_wy) * sf_gyro, 5)
+        nano33_wz = round(convert2Sign_nano33(temp_nano33_wz) * sf_gyro, 5)
+        nano33_ax = round(convert2Sign_nano33(temp_nano33_ax) * sf_xlm, 5)
+        nano33_ay = round(convert2Sign_nano33(temp_nano33_ay) * sf_xlm, 5)
+        nano33_az = round(convert2Sign_nano33(temp_nano33_az) * sf_xlm, 5)
     else:
         nano33_wx = 0.2
         nano33_wy = 0.2
@@ -51,15 +53,14 @@ def readNANO33(dataPacket, EN, dataLen=2, POS_WX=13, sf_xlm=1.0, sf_gyro=1.0, PR
         nano33_az = 10
 
     if PRINT:
-        print(round(nano33_wx, 4), end='\t\t')
-        print(round(nano33_wy, 4), end='\t\t')
-        print(round(nano33_wz, 4), end='\t\t')
-        print(round(nano33_ax, 4), end='\t\t')
-        print(round(nano33_ay, 4), end='\t\t')
-        print(round(nano33_az, 4))
+        print(nano33_wx, end='\t\t')
+        print(nano33_wy, end='\t\t')
+        print(nano33_wz, end='\t\t')
+        print(nano33_ax, end='\t\t')
+        print(nano33_ay, end='\t\t')
+        print(nano33_az)
 
-    return (nano33_wx, nano33_wy, nano33_wz,
-            nano33_ax, nano33_ay, nano33_az)
+    return (nano33_wx, nano33_wy, nano33_wz), (nano33_ax, nano33_ay, nano33_az)
 # End of readNANO33
 
 
@@ -68,9 +69,10 @@ def readADXL355(dataPacket, dataLen=3, POS_AX=4, EN=1, sf=1.0, PRINT=0):
         temp_adxl355_x = dataPacket[POS_AX:POS_AX + dataLen]
         temp_adxl355_y = dataPacket[POS_AX + 3:POS_AX + 3 + dataLen]
         temp_adxl355_z = dataPacket[POS_AX + 6:POS_AX + 6 + dataLen]
-        adxl355_x = convert2Sign_adxl355(temp_adxl355_x) * sf
-        adxl355_y = convert2Sign_adxl355(temp_adxl355_y) * sf
-        adxl355_z = convert2Sign_adxl355(temp_adxl355_z) * sf
+        # adxl355_x = round(convert2Sign_adxl355(temp_adxl355_x) * sf, 5)
+        adxl355_x = temp_adxl355_x[0]<<24 | temp_adxl355_x[1]<<16 | temp_adxl355_x[2]<<8 | temp_adxl355_y[0]
+        adxl355_y = round(convert2Sign_adxl355(temp_adxl355_y) * sf, 5)
+        adxl355_z = round(convert2Sign_adxl355(temp_adxl355_z) * sf, 5)
     else:
         adxl355_x = 9.8
         adxl355_y = 9.8
@@ -78,12 +80,27 @@ def readADXL355(dataPacket, dataLen=3, POS_AX=4, EN=1, sf=1.0, PRINT=0):
     # End of if-condition
 
     if PRINT:
-        print(round(adxl355_x, 4), end='\t\t')
-        print(round(adxl355_y, 4), end='\t\t')
-        print(round(adxl355_z, 4))
+        print(adxl355_x, end='\t\t')
+        print(adxl355_y, end='\t\t')
+        print(adxl355_z)
     # End of if-condition
 
     return adxl355_x, adxl355_y, adxl355_z
+# End of ImuConnector::readADXL355
+
+
+def readCRC(dataPacket, dataLen=4, POS_CRC=25, EN=1, PRINT=0):
+    if EN:
+        crc = dataPacket[POS_CRC:POS_CRC + dataLen]
+    else:
+        crc = [i for i in range(dataLen)]
+    # End of if-condition
+
+    if PRINT:
+        print(crc)
+    # End of if-condition
+
+    return crc
 # End of ImuConnector::readADXL355
 
 
@@ -127,36 +144,63 @@ def wait_ms(ms):
 # End of wait_ms
 
 
+def dictOperation(dictA, dictB, mode):
+    rt = {k: np.array(dictA.get(k)) for k in set(dictA)}
+    if mode == "ADD":
+        for k in set(dictA):
+            for j in range(len(dictA.get(k))):
+                rt.get(k)[j] = dictA.get(k)[j] + dictB.get(k)[j]
+
+    elif mode == "SUB":
+        for k in set(dictA):
+            for j in range(len(dictA.get(k))):
+                rt.get(k)[j] = dictA.get(k)[j] - dictB.get(k)[j]
+
+    else:
+        print(mode + " method doesn't exist!")
+        pass
+    return rt
+# End of dicOperation
+
+
 if __name__ == "__main__":
     import sys
     sys.path.append("../")
     from myLib.mySerial.Connector import Connector
     from myLib.mySerial import getData
     import time
+    import numpy as np
 
-    SENS_ADXL355_8G = 0.0000156
-    SENS_NANO33_GYRO_250 = 0.00875
-    SENS_NANO33_AXLM_4G = 0.000122
-    POS_NANO33_WX = 14 - 1
-    POS_ADXL355_AX = 5 - 1
+    A = {"A11": [1, 2, 3], "B22": [2, 4, 6, 8]}
+    B = {"A11": [4, 5, 6], "B22": [100, 102, 103, 104]}
+    C = dictOperation(A, B, "ADD")
+    print(C)
 
-    HEADER_KVH = [0xFE, 0x81, 0xFF, 0x55]
-    ser = Connector("COM6")
-    old_time = time.perf_counter()
-    ser.connect()
-    ser.write([5, 0, 0, 0, 1])
-    try:
-        while 1:
-            head = getData.alignHeader_4B(ser, HEADER_KVH)
-            dataPacket = getData.getdataPacket(ser, head, 25)
-            # print(dataPacket)
-            readNANO33(dataPacket, EN=1, PRINT=0, POS_WX=POS_NANO33_WX, sf_xlm=SENS_NANO33_AXLM_4G,
-                       sf_gyro=SENS_NANO33_GYRO_250)
-            readADXL355(dataPacket, EN=1, PRINT=1, POS_AX=POS_ADXL355_AX, sf=SENS_ADXL355_8G)
-            # print("%f\n" % ((time.perf_counter() - old_time) * 1e6))
-            old_time = time.perf_counter()
-
-    except KeyboardInterrupt:
-        ser.write([5, 0, 0, 0, 4])
-        ser.disconnect()
-    pass
+    # SENS_ADXL355_8G = 0.0000156
+    # SENS_NANO33_GYRO_250 = 0.00875
+    # SENS_NANO33_AXLM_4G = 0.000122
+    # POS_NANO33_WX = 14 - 1
+    # POS_ADXL355_AX = 5 - 1
+    # POS_CRC = 26 - 1
+    #
+    # HEADER_KVH = [0xFE, 0x81, 0xFF, 0x55]
+    # ser = Connector("COM5")
+    # old_time = time.perf_counter()
+    # ser.connect()
+    # ser.write([5, 0, 0, 0, 1])
+    # try:
+    #     while 1:
+    #         head = getData.alignHeader_4B(ser, HEADER_KVH)
+    #         dataPacket = getData.getdataPacket(ser, head, 25)
+    #         print(dataPacket)
+    #         readNANO33(dataPacket, EN=1, PRINT=0, POS_WX=POS_NANO33_WX, sf_xlm=SENS_NANO33_AXLM_4G,
+    #                    sf_gyro=SENS_NANO33_GYRO_250)
+    #         readADXL355(dataPacket, EN=1, PRINT=0, POS_AX=POS_ADXL355_AX, sf=SENS_ADXL355_8G)
+    #         readCRC(dataPacket, EN=1, dataLen=4, PRINT=1, POS_CRC=POS_CRC)
+    #         # print("%f\n" % ((time.perf_counter() - old_time) * 1e6))
+    #         old_time = time.perf_counter()
+    #
+    # except KeyboardInterrupt:
+    #     ser.write([5, 0, 0, 0, 4])
+    #     ser.disconnect()
+    # pass

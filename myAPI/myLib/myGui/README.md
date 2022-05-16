@@ -79,5 +79,8 @@ if __name__ == '__main__':
 ```
 
 
+## pytgraph
+
+https://www.pythonguis.com/tutorials/plotting-pyqtgraph/
 
 

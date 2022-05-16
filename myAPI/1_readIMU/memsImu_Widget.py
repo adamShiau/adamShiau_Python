@@ -14,7 +14,8 @@ class memsImuWidget(QMainWindow):
         self.connect_bt = QPushButton("connect")
         self.start_bt = QPushButton("read")
         self.stop_bt = QPushButton("stop")
-        self.plot = mplGraph_1()
+        # self.plot = mplGraph_1()
+        self.plot = pgGraph_1()
 
         layout = QGridLayout()
         layout.addWidget(self.connect_bt, 0, 0, 1, 1)

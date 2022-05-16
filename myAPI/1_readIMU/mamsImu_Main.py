@@ -25,7 +25,7 @@ class mainWindow(QWidget):
         self.wz = np.empty(0)
         self.wzz = np.empty(0)
         self.t0 = time.perf_counter()
-        self.__plot_ref = None
+        self.__plot_ref = self.top.plot.ax.plot()
 
     def mainUI(self):
         mainLayout = QGridLayout()
@@ -69,9 +69,19 @@ class mainWindow(QWidget):
         # print(len(self.wz))
 
         if len(self.wz) > 50:
-            self.plotdata(self.wz)
+            self.plotdata2(self.wz)
             self.wz = np.empty(0)
 
+    def plotdata2(self, wz):
+        # imudata = cmn.dictOperation(imudata, imuoffset, "SUB")
+        # print(wz)
+        # self.wz = self.wz + [imudata["NANO33_W"][2]]
+        self.wzz = np.append(self.wzz, wz)
+        if len(self.wzz) > 1000:
+            self.wzz = self.wzz[50:-1]
+        print(len(self.wzz))
+        print(self.act.readInputBuffer())
+        self.__plot_ref.setData(self.wzz)
 
     def plotdata(self, wz):
         self.top.plot.ax.clear()

@@ -1,44 +1,26 @@
+from PyQt5.QtWidgets import *
+from PyQt5 import QtCore
+from pyqtgraph import PlotWidget, plot
+import pyqtgraph as pg
 import sys
-import matplotlib
-matplotlib.use('Qt5Agg')
 
-from PyQt5 import QtCore, QtGui, QtWidgets
-
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg, NavigationToolbar2QT as NavigationToolbar
-from matplotlib.figure import Figure
+sys.path.append("../")
 
 
-class MplCanvas(FigureCanvasQTAgg):
+class MainWindow(QMainWindow):
+    def __init__(self):
+        super(MainWindow, self).__init__()
 
-    def __init__(self, parent=None, width=5, height=4, dpi=100):
-        fig = Figure(figsize=(width, height), dpi=dpi)
-        self.axes = fig.add_subplot(111)
-        super(MplCanvas, self).__init__(fig)
+        self.pgplot = PlotWidget()
+        self.setCentralWidget(self.pgplot)
+        self.pgplot.setBackground("k")
+        pen = pg.mkPen(color=(255, 0, 0), width=6, style=QtCore.Qt.SolidLine)
 
-
-class MainWindow(QtWidgets.QMainWindow):
-
-    def __init__(self, *args, **kwargs):
-        super(MainWindow, self).__init__(*args, **kwargs)
-
-        sc = MplCanvas(self, width=5, height=4, dpi=100)
-        sc.axes.plot([0,1,2,3,4], [10,1,20,3,40])
-
-        # Create toolbar, passing canvas as first parament, parent (self, the MainWindow) as second.
-        toolbar = NavigationToolbar(sc, self)
-
-        layout = QtWidgets.QVBoxLayout()
-        layout.addWidget(toolbar)
-        layout.addWidget(sc)
-
-        # Create a placeholder widget to hold our toolbar and canvas.
-        widget = QtWidgets.QWidget()
-        widget.setLayout(layout)
-        self.setCentralWidget(widget)
-
-        self.show()
+        self.pgplot.plot([1, 2, 3, 4, 5], pen=pen, symbol="+", symbolSize=30, symbolBrush="w")
 
 
-app = QtWidgets.QApplication(sys.argv)
-w = MainWindow()
-app.exec_()
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
+    w = MainWindow()
+    w.show()
+    sys.exit(app.exec_())

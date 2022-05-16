@@ -6,6 +6,14 @@ from pyqtgraph import PlotWidget, plot
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
+from pyqtgraph import PlotWidget
+
+
+class pgGraph_1(QMainWindow):
+    def __init__(self):
+        super(pgGraph_1, self).__init__()
+        self.ax = PlotWidget()
+        self.setCentralWidget(self.ax)
 
 
 class mplGraph_1(QWidget):

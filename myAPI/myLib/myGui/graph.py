@@ -6,15 +6,60 @@ from pyqtgraph import PlotWidget, plot
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
+import pyqtgraph as pg
 from pyqtgraph import PlotWidget
+
+
+# class pgGraph_1(QMainWindow):
+#     def __init__(self):
+#         super(pgGraph_1, self).__init__()
+#         self.ax = PlotWidget()
+#         self.setCentralWidget(self.ax)
+
+# class pgGraph_2(QMainWindow):
+#     def __init__(self):
+#         super(pgGraph_2, self).__init__()
+#         self.ax1 = PlotWidget()
+#         self.ax2 = PlotWidget()
+#
+#         layout = QGridLayout()
+#         layout.addWidget(self.ax1, 0, 0, 1, 1)
+#         layout.addWidget(self.ax2, 1, 0, 1, 1)
+#         win = QWidget()
+#         win.setLayout(layout)
+#         # self.setLayout(layout)
+#         self.setCentralWidget(win)
+
 
 
 class pgGraph_1(QMainWindow):
     def __init__(self):
         super(pgGraph_1, self).__init__()
-        self.ax = PlotWidget()
-        self.setCentralWidget(self.ax)
 
+        win = pg.GraphicsWindow()
+        win.setBackground('w')
+        # win.setWindowTitle('test')
+        pen = pg.mkPen(color=(255, 0, 0), width=5)
+        p = win.addPlot(title="fog vs mems")
+        self.ax1 = p.plot(pen=pen)
+        self.ax2 = p.plot(pen=pen)
+
+        self.setCentralWidget(win)
+
+
+class pgGraph_2(QMainWindow):
+    def __init__(self):
+        super(pgGraph_2, self).__init__()
+
+        win = pg.GraphicsWindow()
+        p1 = win.addPlot()
+        self.ax1_1 = p1.plot()
+        self.ax1_2 = p1.plot()
+        win.nextRow()
+        p2 = win.addPlot()
+        self.ax2_1 = p2.plot()
+        self.ax2_2 = p2.plot()
+        self.setCentralWidget(win)
 
 class mplGraph_1(QWidget):
     def __init__(self, parent=None, width=10, height=10, dpi=100):
@@ -32,11 +77,11 @@ class mplGraph_1(QWidget):
 class mplGraph_2(QWidget):
     def __init__(self, width=10, height=10, dpi=100):
         super(mplGraph_2, self).__init__()
-        fig = Figure(figsize=(width, height), dpi=dpi)
-        canvas = FigureCanvas(fig)
+        self.fig = Figure(figsize=(width, height), dpi=dpi)
+        canvas = FigureCanvas(self.fig)
         toolbar = NavigationToolbar(canvas=canvas, parent=None)
-        self.ax1 = fig.add_subplot(121)
-        self.ax2 = fig.add_subplot(122)
+        self.ax1 = self.fig.add_subplot(211)
+        self.ax2 = self.fig.add_subplot(212)
         layout = QGridLayout()
         layout.addWidget(canvas, 0, 0, 2, 2)
         layout.addWidget(toolbar, 2, 0, 1, 1)

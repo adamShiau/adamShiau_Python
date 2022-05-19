@@ -27,6 +27,8 @@ def readPIG(dataPacket, dataLen=4, POS_TIME=4, sf_a=1, sf_b=0, EN=True, PRINT=Fa
     # End of if-condition
 
     return fpga_time, err_mv, step_dps, PD_temperature
+
+
 # End of ImuConnector::readPIG
 
 
@@ -61,6 +63,8 @@ def readNANO33(dataPacket, EN, dataLen=2, POS_WX=13, sf_xlm=1.0, sf_gyro=1.0, PR
         print(nano33_az)
 
     return (nano33_wx, nano33_wy, nano33_wz), (nano33_ax, nano33_ay, nano33_az)
+
+
 # End of readNANO33
 
 
@@ -86,8 +90,27 @@ def readADXL355(dataPacket, dataLen=3, POS_AX=4, EN=1, sf=1.0, PRINT=0):
     # End of if-condition
 
     return adxl355_x, adxl355_y, adxl355_z
+
+
 # End of ImuConnector::readADXL355
 
+def readSparrow(dataPacket, POS_SPARROW=25, EN=1, sf_a=1.0, sf_b=0.0, PRINT=0):
+    if EN:
+        sparrow_wz = dataPacket[POS_SPARROW:POS_SPARROW + 4]
+        temperature = dataPacket[POS_SPARROW + 4:POS_SPARROW + 4 + 2]
+        sparrow_wz = round(convert2Sign_4B(sparrow_wz) * sf_a + sf_b, 5)
+    else:
+        sparrow_wz = 0
+    # End of if-condition
+
+    if PRINT:
+        print(sparrow_wz)
+    # End of if-condition
+
+    return sparrow_wz,
+
+
+# End of ImuConnector::readADXL355
 
 def readCRC(dataPacket, dataLen=4, POS_CRC=25, EN=1, PRINT=0):
     if EN:
@@ -101,6 +124,8 @@ def readCRC(dataPacket, dataLen=4, POS_CRC=25, EN=1, PRINT=0):
     # End of if-condition
 
     return crc
+
+
 # End of ImuConnector::readADXL355
 
 
@@ -110,6 +135,8 @@ def convert2Sign_nano33(datain):
         return shift_data - (1 << 16)
     else:
         return shift_data
+
+
 # End of convert2Sign_nano33
 
 
@@ -119,12 +146,16 @@ def convert2Sign_adxl355(datain):
         return shift_data - (1 << 20)
     else:
         return shift_data
+
+
 # End of convert2Sign_adxl355
 
 
 def convert2Unsign_4B(datain):
     shift_data = (datain[0] << 24 | datain[1] << 16 | datain[2] << 8 | datain[3])
     return shift_data
+
+
 # End of convert2Unsign_4B
 
 
@@ -134,6 +165,8 @@ def convert2Sign_4B(datain):
         return shift_data - (1 << 32)
     else:
         return shift_data
+
+
 # End of convert2Sign_4B
 
 
@@ -141,30 +174,42 @@ def wait_ms(ms):
     t_old = time.perf_counter()
     while (time.perf_counter() - t_old) * 1000 < ms:
         pass
+
+
 # End of wait_ms
 
 
 def dictOperation(dictA, dictB, mode):
-    rt = {k: np.array(dictA.get(k)) for k in set(dictA)}
     if mode == "ADD":
+        rt = {k: np.array(dictA.get(k)) for k in set(dictA)}
         for k in set(dictA):
             for j in range(len(dictA.get(k))):
                 rt.get(k)[j] = dictA.get(k)[j] + dictB.get(k)[j]
+        return rt
 
     elif mode == "SUB":
+        rt = {k: np.array(dictA.get(k)) for k in set(dictA)}
         for k in set(dictA):
             for j in range(len(dictA.get(k))):
                 rt.get(k)[j] = dictA.get(k)[j] - dictB.get(k)[j]
+        return rt
+
+    elif mode == "APPEND":
+        for k in set(dictB):
+            for j in range(len(dictB[k])):
+                dictA[k][j] = np.append(dictA[k][j], dictB[k][j])
 
     else:
         print(mode + " method doesn't exist!")
         pass
-    return rt
+
+
 # End of dicOperation
 
 
 if __name__ == "__main__":
     import sys
+
     sys.path.append("../")
     from myLib.mySerial.Connector import Connector
     from myLib.mySerial import getData

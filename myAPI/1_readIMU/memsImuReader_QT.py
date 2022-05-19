@@ -12,6 +12,7 @@ import time
 import common as cmn
 import numpy as np
 
+
 IMU_DATA_STRUCTURE = {
     "NANO33_W": (0, 0, 0),
     "NANO33_A": (0, 0, 0),
@@ -29,19 +30,21 @@ print("__name__: ", __name__)
 
 
 class memsImuReader(QThread):
-    imudata_qt = pyqtSignal(object, object)
+    imudata_qt = pyqtSignal(object, object, object)
 
-    def __init__(self, portName: str = "COM6", baudRate: int = 230400):
+    def __init__(self, portName: str = "COM12", baudRate: int = 230400):
         super(memsImuReader, self).__init__()
         self.__Connector = Connector(portName, baudRate)
         self.__isRun = True
         self.__isCali = False
         self.__callBack = None
-
+        self.arrayNum = 30
         self.__crcFail = 0
         self.__old_imudata = {k: (-1,) * len(IMU_DATA_STRUCTURE.get(k)) for k in set(IMU_DATA_STRUCTURE)}
         self.__imuoffset = {k: np.zeros(len(IMU_DATA_STRUCTURE.get(k))) for k in set(IMU_DATA_STRUCTURE)}
+        # print(self.__imuoffset)
         # self.imudata_qt.connect(self.getPyqtsignal)
+
     # class constructor
 
     def __del__(self):
@@ -114,6 +117,7 @@ class memsImuReader(QThread):
                                         sf_gyro=SENS_NANO33_GYRO_250)
         ADXL_A = cmn.readADXL355(dataPacket, EN=1, PRINT=0, POS_AX=POS_ADXL355_AX, sf=SENS_ADXL355_8G)
         imudata = {"NANO33_W": NANO_W, "NANO33_A": NANO_A, "ADXL_A": ADXL_A}
+
         return dataPacket, imudata
 
     def readInputBuffer(self):
@@ -127,6 +131,8 @@ class memsImuReader(QThread):
             print("---calibrating offset start-----")
             for i in range(cali_times):
                 dataPacket, imudata = self.getImuData()
+                # print(temp)
+                # print(imudata)
                 temp = cmn.dictOperation(temp, imudata, "ADD")
             temp = {k: temp.get(k) / cali_times for k in set(self.__imuoffset)}
             print("---calibrating offset stop-----")
@@ -141,21 +147,37 @@ class memsImuReader(QThread):
                 print(self.isRun)
                 break
             # End of if-condition
-            dataPacket, imudata = self.getImuData()
-            isCrcFail = crcLib.isCrc32Fail(dataPacket, len(dataPacket))
-            # err correction
-            if not isCrcFail:
-                self.__old_imudata = imudata
-            else:
-                self.__crcFail += 1
-                print("crc fail occur: ", self.__crcFail)
-                imudata = self.__old_imudata
-            # end of err correction
+
             self.__imuoffset = self.do_cali(self.__imuoffset, 100)
+
+            imudataArray = {k: [np.empty(0) for i in range(len(IMU_DATA_STRUCTURE.get(k)))]
+                            for k in set(IMU_DATA_STRUCTURE)}
+            t = np.empty(0)
+            for i in range(self.arrayNum):
+                while self.__Connector.readInputBuffer() < self.arrayNum * 10:
+                    # print(self.__Connector.readInputBuffer())
+                    pass
+
+                dataPacket, imudata = self.getImuData()
+                isCrcFail = crcLib.isCrc32Fail(dataPacket, len(dataPacket))
+                t = np.append(t, time.perf_counter())
+                # print(imudata)
+                # print(t)
+                # err correction
+                if not isCrcFail:
+                    self.__old_imudata = imudata
+                else:
+                    self.__crcFail += 1
+                    print("crc fail occur: ", self.__crcFail)
+                    imudata = self.__old_imudata
+                # end of err correction
+                cmn.dictOperation(imudataArray, imudata, "APPEND")
+
+            # end of for loop
 
             # if self.__callBack is not None:
             #     self.__callBack(imudata, self.__imuoffset)
-            self.imudata_qt.emit(imudata, self.__imuoffset)
+            self.imudata_qt.emit(imudataArray, self.__imuoffset, t)
             # cmn.wait_ms(100)
 
     # End of memsImuReader::run
@@ -194,4 +216,3 @@ if __name__ == "__main__":
         myImu.wait()
 
         print('KeyboardInterrupt success')
-

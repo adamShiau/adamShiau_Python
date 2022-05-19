@@ -23,9 +23,11 @@ class mainWindow(QWidget):
         self.mainUI()
         self.linkfunciton()
         self.wz = np.empty(0)
-        self.wzz = np.empty(0)
+        self.az = np.empty(0)
+        self.t = np.empty(0)
         self.t0 = time.perf_counter()
-        self.__plot_ref = self.top.plot.ax.plot()
+        # self.__plot_ref_1 = self.top.plot.ax1.plot()
+        # self.__plot_ref_2 = self.top.plot.ax2.plot()
 
     def mainUI(self):
         mainLayout = QGridLayout()
@@ -50,7 +52,7 @@ class mainWindow(QWidget):
         # self.myImu.setCallback(self.myCallBack)
         self.act.connectIMU()
         self.act.start()
-        self.act.isCali = True
+        self.act.isCali = False
 
         # cmn.wait_ms(5000)
         # myImu.isRun = False
@@ -64,41 +66,49 @@ class mainWindow(QWidget):
         # self.act.disconnectIMU()
         # self.act.wait()
 
-    def collectData(self, imudata, imuoffset):
-        # self.wz = np.append(self.wz, imudata["NANO33_W"][2])
-        self.wz = np.append(self.wz, imudata["ADXL_A"][2])
-        # print(len(self.wz))
+    def collectData(self, imudata, imuoffset, t):
+        imudata = cmn.dictOperation(imudata, imuoffset, "SUB")
+        # print("main: ", len(t))
+        wx = imudata["NANO33_W"][0]
+        wy = imudata["NANO33_W"][1]
+        wz = imudata["NANO33_W"][2]
+        ax = imudata["ADXL_A"][0]
+        ay = imudata["ADXL_A"][1]
+        az = imudata["ADXL_A"][2]
+        self.plotdata2(az, wz, t)
 
-        if len(self.wz) > 50:
-            self.plotdata2(self.wz)
-            self.wz = np.empty(0)
+    def plotdata2(self, az, wz, t):
+        self.az = np.append(self.az, az)
+        self.wz = np.append(self.wz, wz)
+        self.t = np.append(self.t, t)
+        if len(self.wz) > 1000:
+            self.az = self.az[self.act.arrayNum:-1]
+            self.wz = self.wz[self.act.arrayNum:-1]
+            self.t = self.t[self.act.arrayNum:-1]
+        self.top.plot1.ax1.setData(self.t, self.wz)
+        self.top.plot1.ax2.setData(self.t, self.az)
+        self.top.plot2.ax1_1.setData(self.wz)
+        self.top.plot2.ax2_1.setData(self.wz)
 
-    def plotdata2(self, wz):
-        # imudata = cmn.dictOperation(imudata, imuoffset, "SUB")
-        # print(wz)
-        # self.wz = self.wz + [imudata["NANO33_W"][2]]
-        self.wzz = np.append(self.wzz, wz)
-        if len(self.wzz) > 1000:
-            self.wzz = self.wzz[50:-1]
-        print(len(self.wzz), end=", ")
-        print(self.act.readInputBuffer())
-        self.__plot_ref.setData(self.wzz)
+    def plotdata1(self, az, wz, t):
+        self.top.plot1.ax.clear()
+        self.top.plot2.ax1.clear()
+        self.top.plot2.ax2.clear()
+        self.az = np.append(self.az, az)
+        self.wz = np.append(self.wz, wz)
+        self.t = np.append(self.t, t)
+        print(len(self.wz))
+        if len(self.wz) > 1000:
+            self.az = self.az[self.act.arrayNum:-1]
+            self.wz = self.wz[self.act.arrayNum:-1]
+            self.t = self.t[self.act.arrayNum:-1]
+        self.top.plot1.ax.plot(self.t, self.wz)
+        self.top.plot1.ax.plot(self.t, self.az)
+        self.top.plot2.ax1.plot(self.wz)
+        self.top.plot2.ax2.plot(self.az)
 
-    def plotdata(self, wz):
-        self.top.plot.ax.clear()
-        # imudata = cmn.dictOperation(imudata, imuoffset, "SUB")
-        # print(wz)
-        # self.wz = self.wz + [imudata["NANO33_W"][2]]
-        self.wzz = np.append(self.wzz, wz)
-        if len(self.wzz) > 1000:
-            self.wzz = self.wzz[50:-1]
-        print(len(self.wzz))
-        print(self.act.readInputBuffer())
-        # print(len(self.wz))
-        # print("%f, %f, %d" % ((time.perf_counter() - self.t0)*1e6, imudata["NANO33_W"][2], self.act.readInputBuffer()))
-        # self.t0 = time.perf_counter()
-        self.top.plot.ax.plot(self.wzz)
-        self.top.plot.fig.canvas.draw()
+        self.top.plot1.fig.canvas.draw()
+        self.top.plot2.fig.canvas.draw()
 
     # def myCallBack(self, imudata, imuoffset):
     #     self.top.plot.ax.clear()

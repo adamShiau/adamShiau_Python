@@ -28,6 +28,7 @@ def crc_8(message, nBytes):
 
 
 def crc_32(message, nBytes):
+    # print(len(message))
     WIDTH = 32
     TOPBIT = (1 << (WIDTH - 1))
     POLYNOMIAL = 0x04C11DB7
@@ -40,6 +41,7 @@ def crc_32(message, nBytes):
                 remainder = ((remainder << 1) & 0xFFFFFFFF) ^ POLYNOMIAL
             else:
                 remainder = (remainder << 1)
+
     return [remainder >> 24 & 0xFF, remainder >> 16 & 0xFF, remainder >> 8 & 0xFF, remainder & 0xFF]
 
 

@@ -23,7 +23,6 @@ class mainWindow(QWidget):
         self.mainUI()
         self.linkfunciton()
         self.wz = np.empty(0)
-        self.wzz = np.empty(0)
         self.t0 = time.perf_counter()
         self.__plot_ref = self.top.plot.ax.plot()
 
@@ -50,7 +49,7 @@ class mainWindow(QWidget):
         # self.myImu.setCallback(self.myCallBack)
         self.act.connectIMU()
         self.act.start()
-        self.act.isCali = True
+        self.act.isCali = False
 
         # cmn.wait_ms(5000)
         # myImu.isRun = False
@@ -65,23 +64,36 @@ class mainWindow(QWidget):
         # self.act.wait()
 
     def collectData(self, imudata, imuoffset):
-        self.wz = np.append(self.wz, imudata["NANO33_W"][2])
+        # self.wz = np.append(self.wz, imudata["NANO33_W"][2])
+        # self.wz = np.append(self.wz, imudata["ADXL_A"][2])
         # print(len(self.wz))
+        imudata = cmn.dictOperation(imudata, imuoffset, "SUB")
+        wx = imudata["NANO33_W"][0]
+        wy = imudata["NANO33_W"][1]
+        wz = imudata["NANO33_W"][2]
+        ax = imudata["ADXL_A"][0]
+        ay = imudata["ADXL_A"][1]
+        az = imudata["ADXL_A"][2]
+        fog = imudata["SPARROW"][0]
+        # print(wx)
+        # print(wy)
+        # print(wz)
+        # print(ax)
+        # print(ay)
+        # print(fog)
 
-        if len(self.wz) > 50:
-            self.plotdata2(self.wz)
-            self.wz = np.empty(0)
+        self.plotdata2(fog)
 
     def plotdata2(self, wz):
         # imudata = cmn.dictOperation(imudata, imuoffset, "SUB")
         # print(wz)
         # self.wz = self.wz + [imudata["NANO33_W"][2]]
-        self.wzz = np.append(self.wzz, wz)
-        if len(self.wzz) > 1000:
-            self.wzz = self.wzz[50:-1]
-        print(len(self.wzz))
-        print(self.act.readInputBuffer())
-        self.__plot_ref.setData(self.wzz)
+        self.wz = np.append(self.wz, wz)
+        if len(self.wz) > 1000:
+            self.wz = self.wz[self.act.arrayNum:-1]
+        # print(len(self.wz), end=", ")
+        # print(self.act.readInputBuffer())
+        self.__plot_ref.setData(self.wz)
 
     def plotdata(self, wz):
         self.top.plot.ax.clear()

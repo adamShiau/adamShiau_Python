@@ -31,7 +31,7 @@ print("__name__: ", __name__)
 class memsImuReader(QThread):
     imudata_qt = pyqtSignal(object, object)
 
-    def __init__(self, portName: str = "COM5", baudRate: int = 230400):
+    def __init__(self, portName: str = "COM6", baudRate: int = 230400):
         super(memsImuReader, self).__init__()
         self.__Connector = Connector(portName, baudRate)
         self.__isRun = True
@@ -176,7 +176,7 @@ def myCallBack(imudata, imuoffset):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    myImu = memsImuReader("COM5")
+    myImu = memsImuReader("COM6")
     myImu.imudata_qt.connect(getPyqtsignal)
     myImu.setCallback(myCallBack)
     myImu.isCali = True

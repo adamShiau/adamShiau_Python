@@ -21,6 +21,7 @@ SENS_NANO33_GYRO_250 = 0.00875
 SENS_NANO33_AXLM_4G = 0.000122
 POS_NANO33_WX = 14 - 1
 POS_ADXL355_AX = 5 - 1
+POS_SPARROW = 26 - 1
 POS_CRC = 26 - 1
 print("__name__: ", __name__)
 old = time.perf_counter_ns()
@@ -34,8 +35,10 @@ class memsImuReader(Thread):
         self.__isCali = False
         self.__callBack = None
         self.__crcFail = 0
+        self.arrayNum = 20
         self.__old_imudata = {k: (-1,)*len(IMU_DATA_STRUCTURE.get(k)) for k in set(IMU_DATA_STRUCTURE)}
         self.__imuoffset = {k: np.zeros(len(IMU_DATA_STRUCTURE.get(k))) for k in set(IMU_DATA_STRUCTURE)}
+
     # class constructor
 
     def __del__(self):
@@ -93,6 +96,8 @@ class memsImuReader(Thread):
     # End of memsImuReader::setCallback
 
     def getImuData(self):
+        buffer = self.__Connector.readInputBuffer()
+        print("buf: ", buffer)
         head = getData.alignHeader_4B(self.__Connector, HEADER_KVH)
         dataPacket = getData.getdataPacket(self.__Connector, head, 25)
         NANO_W, NANO_A = cmn.readNANO33(dataPacket, EN=1, PRINT=0, POS_WX=POS_NANO33_WX, sf_xlm=SENS_NANO33_AXLM_4G,
@@ -123,28 +128,37 @@ class memsImuReader(Thread):
             if not self.isRun:
                 break
             # End of if-condition
-            dataPacket,  imudata = self.getImuData()
-            isCrcFail = crcLib.isCrc32Fail(dataPacket, len(dataPacket))
+            imudataArray = {k: [np.empty(0) for i in range(len(IMU_DATA_STRUCTURE.get(k)))]
+                               for k in set(IMU_DATA_STRUCTURE)}
+            for i in range(self.arrayNum):
 
-            # err correction
-            if not isCrcFail:
-                self.__old_imudata = imudata
-            else:
-                self.__crcFail += 1
-                print("crc fail occur: ", self.__crcFail)
-                imudata = self.__old_imudata
-            # end of err correction
+                while self.__Connector.readInputBuffer()<self.arrayNum*10:
+                    print(self.__Connector.readInputBuffer())
+                    pass
 
+                dataPacket,  imudata = self.getImuData()
+                isCrcFail = crcLib.isCrc32Fail(dataPacket, len(dataPacket))
+
+                # err correction
+                if not isCrcFail:
+                    self.__old_imudata = imudata
+                else:
+                    self.__crcFail += 1
+                    print("crc fail occur: ", self.__crcFail)
+                    imudata = self.__old_imudata
+                # end of err correction
+
+                cmn.dictOperation(imudataArray, imudata, "APPEND")
+            # end of for loop
+            # print(imudataArray)
             self.__imuoffset = self.do_cali(self.__imuoffset, 100)
-            self.__callBack(imudata, self.__imuoffset)
+            self.__callBack(imudataArray, self.__imuoffset)
     # End of memsImuReader::run
 
 
 def myCallBack(imudata, imuoffset):
     global old
     new = time.perf_counter_ns()
-    # print("\nimudata: ", imudata)
-    # print("imuoffset: ", imuoffset)
     imudata = cmn.dictOperation(imudata, imuoffset, "SUB")
     wx = imudata["NANO33_W"][0]
     wy = imudata["NANO33_W"][1]
@@ -156,13 +170,19 @@ def myCallBack(imudata, imuoffset):
     # print(old)
     # print(cnt)
     # print("%.1f  %.2f  %.2f  %.2f" % ( (new - old)*1e-3, wx, wy, wz))
-    print("%.5f  %.5f  %.5f  %.5f  %.5f  %.5f" % (wx, wy, wz, ax, ay, az))
+    # print("%.5f  %.5f  %.5f  %.5f  %.5f  %.5f" % (wx, wy, wz, ax, ay, az))
+    print(wx)
+    print(wy)
+    print(wz)
+    print(ax)
+    print(ay)
+    print(az)
     old = new
 
 if __name__ == "__main__":
     myImu = memsImuReader("COM6")
     myImu.setCallback(myCallBack)
-    myImu.isCali = False
+    myImu.isCali = True
     myImu.connectIMU()
     myImu.start()
     try:

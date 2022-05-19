@@ -96,17 +96,19 @@ class Connector:
 if __name__ == "__main__":
     print("running Connector.py")
     old_time = time.perf_counter_ns()
-    ser = Connector("COM5")
+    ser = Connector("COM6")
     ser.connect()
+    ser.flushInputBuffer()
     ser.write([5, 0, 0, 0, 1])
     try:
         while 1:
-            if ser.readInputBuffer() > 0:
-                new = time.perf_counter_ns()
-                print("buf: ", ser.readInputBuffer())
-                print(ser.readBinaryList(29))
-                print("%.1f\n" % ((new - old_time) * 1e-3))
-                old_time = new
+            # if ser.readInputBuffer() > 0:
+            new = time.perf_counter_ns()
+            print("buf: ", ser.readInputBuffer())
+            print(ser.readBinaryList(29))
+            print("%.1f\n" % ((new - old_time) * 1e-3))
+            old_time = new
+            time.sleep(1e-6)
 
     except KeyboardInterrupt:
         ser.write([5, 0, 0, 0, 4])

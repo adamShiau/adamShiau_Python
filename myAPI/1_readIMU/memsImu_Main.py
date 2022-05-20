@@ -22,7 +22,11 @@ class mainWindow(QWidget):
         self.act = ACTION()
         self.mainUI()
         self.linkfunciton()
+        self.wx = np.empty(0)
+        self.wy = np.empty(0)
         self.wz = np.empty(0)
+        self.ax = np.empty(0)
+        self.ay = np.empty(0)
         self.az = np.empty(0)
         self.t = np.empty(0)
         self.t0 = time.perf_counter()
@@ -75,20 +79,35 @@ class mainWindow(QWidget):
         ax = imudata["ADXL_A"][0]
         ay = imudata["ADXL_A"][1]
         az = imudata["ADXL_A"][2]
-        self.plotdata2(az, wz, t)
+        self.plotdata2(wx, wy, wz, ax, ay, az, t)
 
-    def plotdata2(self, az, wz, t):
+    def plotdata2(self, wx, wy, wz, ax, ay, az, t):
+        self.ax = np.append(self.ax, ax)
+        self.ay = np.append(self.ay, ay)
         self.az = np.append(self.az, az)
+        self.wx = np.append(self.wx, wx)
+        self.wy = np.append(self.wy, wy)
         self.wz = np.append(self.wz, wz)
+        # self.fog = np.append(self.fog, fog)
         self.t = np.append(self.t, t)
         if len(self.wz) > 1000:
+            self.ax = self.ax[self.act.arrayNum:-1]
+            self.ay = self.ay[self.act.arrayNum:-1]
             self.az = self.az[self.act.arrayNum:-1]
+            self.wx = self.wx[self.act.arrayNum:-1]
+            self.wy = self.wy[self.act.arrayNum:-1]
             self.wz = self.wz[self.act.arrayNum:-1]
+            # self.fog = self.fog[self.act.arrayNum:-1]
             self.t = self.t[self.act.arrayNum:-1]
-        self.top.plot1.ax1.setData(self.t, self.wz)
-        self.top.plot1.ax2.setData(self.t, self.az)
-        self.top.plot2.ax1_1.setData(self.wz)
-        self.top.plot2.ax2_1.setData(self.wz)
+        # self.top.plot1.ax1.setData(self.t, self.fog)
+        self.top.plot1.ax2.setData(self.t, self.wz)
+        self.top.plot2.ax.setData(self.ax)
+        self.top.plot3.ax.setData(self.ay)
+        self.top.plot4.ax.setData(self.az)
+        self.top.plot5.ax.setData(self.wx)
+        self.top.plot6.ax.setData(self.wy)
+        # self.top.plot2.ax2_1.setData(self.az)
+        # self.top.plot2.ax2_1.plot(self.az)
 
     def plotdata1(self, az, wz, t):
         self.top.plot1.ax.clear()

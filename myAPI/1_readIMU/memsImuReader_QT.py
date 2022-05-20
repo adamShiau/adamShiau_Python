@@ -32,7 +32,7 @@ print("__name__: ", __name__)
 class memsImuReader(QThread):
     imudata_qt = pyqtSignal(object, object, object)
 
-    def __init__(self, portName: str = "COM12", baudRate: int = 230400):
+    def __init__(self, portName: str = "COM6", baudRate: int = 230400):
         super(memsImuReader, self).__init__()
         self.__Connector = Connector(portName, baudRate)
         self.__isRun = True

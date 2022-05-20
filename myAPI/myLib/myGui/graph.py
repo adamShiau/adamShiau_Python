@@ -30,20 +30,28 @@ from pyqtgraph import PlotWidget
 #         # self.setLayout(layout)
 #         self.setCentralWidget(win)
 
-
-
 class pgGraph_1(QMainWindow):
-    def __init__(self):
+    def __init__(self, color="w", title="add title"):
         super(pgGraph_1, self).__init__()
 
         win = pg.GraphicsWindow()
-        win.setBackground('w')
-        # win.setWindowTitle('test')
-        pen = pg.mkPen(color=(255, 0, 0), width=5)
-        p = win.addPlot(title="fog vs mems")
-        self.ax1 = p.plot(pen=pen)
-        self.ax2 = p.plot(pen=pen)
+        win.setBackground('k')
+        pen = pg.mkPen(color=color, width=1)
+        p = win.addPlot(title=title)
+        self.ax = p.plot(pen=pen)
+        self.setCentralWidget(win)
 
+class pgGraph_1_2(QMainWindow):
+    def __init__(self, color1="w", color2="w", title="add title"):
+        super(pgGraph_1_2, self).__init__()
+
+        win = pg.GraphicsWindow()
+        win.setBackground('k')
+        pen1 = pg.mkPen(color=color1, width=1)
+        pen2 = pg.mkPen(color=color2, width=1)
+        p = win.addPlot(title=title)
+        self.ax1 = p.plot(pen=pen1)
+        self.ax2 = p.plot(pen=pen2)
         self.setCentralWidget(win)
 
 
@@ -52,13 +60,18 @@ class pgGraph_2(QMainWindow):
         super(pgGraph_2, self).__init__()
 
         win = pg.GraphicsWindow()
+        win.setBackground('k')
         p1 = win.addPlot()
+        p1.addLegend()
         self.ax1_1 = p1.plot()
         self.ax1_2 = p1.plot()
+        self.ax1_3 = p1.plot()
         win.nextRow()
         p2 = win.addPlot()
         self.ax2_1 = p2.plot()
         self.ax2_2 = p2.plot()
+        self.ax2_3 = p2.plot()
+
         self.setCentralWidget(win)
 
 class mplGraph_1(QWidget):

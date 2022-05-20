@@ -1,6 +1,7 @@
 # -*- coding:UTF-8 -*-
 
 import serial
+import serial.tools.list_ports
 import time
 import sys
 import numpy as np
@@ -91,6 +92,14 @@ class Connector:
         self.__ser.reset_output_buffer()
 
     # End of Connector::flushOutputBuffer
+
+    def selectCom(self):
+        self.comPort = np.empty(0)
+        portlist = serial.tools.list_ports.comports()
+        self.portNum = len(portlist)
+
+        for i in range(self.portNum):
+            self.comPort = np.append(self.comPort, portlist[i])
 
 
 if __name__ == "__main__":

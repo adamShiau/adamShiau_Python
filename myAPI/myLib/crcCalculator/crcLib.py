@@ -1,3 +1,9 @@
+
+# global variable defined for error correction
+err_correction_data = 0
+crcFailCnt = 0
+
+
 def crc_8(message, nBytes):
     """
     Description
@@ -51,6 +57,18 @@ def isCrc8Fail(message, nBytes):
 
 def isCrc32Fail(message, nBytes):
     return crc_32(message, nBytes) != [0, 0, 0, 0]
+
+
+def errCorrection(isCrcFail, imudata):
+    global err_correction_data, crcFailCnt
+
+    if not isCrcFail:
+        err_correction_data = imudata
+    else:
+        imudata = err_correction_data
+        crcFailCnt += 1
+        print("crc fail: ", crcFailCnt)
+    return imudata
 
 
 if __name__ == "__main__":

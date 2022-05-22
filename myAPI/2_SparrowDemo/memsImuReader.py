@@ -6,7 +6,7 @@ from myLib.mySerial import getData
 from myLib.crcCalculator import crcLib
 import time
 from threading import Thread
-import common as cmn
+from myLib import common as cmn
 import numpy as np
 
 IMU_DATA_STRUCTURE = {

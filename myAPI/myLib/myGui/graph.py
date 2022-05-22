@@ -41,17 +41,34 @@ class pgGraph_1(QMainWindow):
         self.ax = p.plot(pen=pen)
         self.setCentralWidget(win)
 
+# class pgGraph_1_2(QMainWindow):
+#     def __init__(self, color1="w", color2="w", title="add title"):
+#         super(pgGraph_1_2, self).__init__()
+#
+#         win = pg.GraphicsWindow()
+#         win.setBackground('k')
+#         pen1 = pg.mkPen(color=color1, width=1)
+#         pen2 = pg.mkPen(color=color2, width=1)
+#         self.p = win.addPlot(title=title)
+#         self.ax1 = self.p.plot(pen=pen1)
+#         self.ax2 = self.p.plot(pen=pen2)
+#         self.setCentralWidget(win)
+
+
 class pgGraph_1_2(QMainWindow):
     def __init__(self, color1="w", color2="w", title="add title"):
         super(pgGraph_1_2, self).__init__()
 
-        win = pg.GraphicsWindow()
+        win = pg.GraphicsLayoutWidget()
         win.setBackground('k')
         pen1 = pg.mkPen(color=color1, width=1)
         pen2 = pg.mkPen(color=color2, width=1)
-        p = win.addPlot(title=title)
-        self.ax1 = p.plot(pen=pen1)
-        self.ax2 = p.plot(pen=pen2)
+        self.p = win.addPlot(title=title)
+        print(type(win))
+        print(type(self.p))
+        self.ax1 = self.p.plot(pen=pen1)
+        self.ax2 = self.p.plot(pen=pen2)
+        print(type(self.ax1))
         self.setCentralWidget(win)
 
 
@@ -103,8 +120,6 @@ class mplGraph_2(QWidget):
 
 if __name__ == '__main__':
     app = QApplication([])
-    fig2 = mplGraph_2()
-    fig2.ax1.plot([1, 2, 3])
-    fig2.ax2.plot([1, 2, 5])
+    fig2 = pgGraph_1_2()
     fig2.show()
     app.exec_()

@@ -3,24 +3,40 @@ from PyQt5 import QtCore
 from pyqtgraph import PlotWidget, plot
 import pyqtgraph as pg
 import sys
+import time
+from PyQt5.QtCore import QThread
+from threading import Thread
 
 sys.path.append("../")
 
 
-class MainWindow(QMainWindow):
+class test(Thread):
     def __init__(self):
-        super(MainWindow, self).__init__()
+        super(test, self).__init__()
+        print("test")
+        self.__isRun = False
+        print("isRun: ", self.isRun)
 
-        self.pgplot = PlotWidget()
-        self.setCentralWidget(self.pgplot)
-        self.pgplot.setBackground("k")
-        pen = pg.mkPen(color=(255, 0, 0), width=6, style=QtCore.Qt.SolidLine)
+    @property
+    def isRun(self):
+        return self.__isRun
 
-        self.pgplot.plot([1, 2, 3, 4, 5], pen=pen, symbol="+", symbolSize=30, symbolBrush="w")
+    @isRun.setter
+    def isRun(self, flag):
+        self.__isRun = flag
+
+    def run(self):
+        print("Start Thread")
+        while 1:
+            if not self.isRun:
+                break
+            time.sleep(0.1)
+            print("I am in run", self.isRun)
+        print("Start Thread2")
 
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    w = MainWindow()
+    w = test()
     w.show()
     sys.exit(app.exec_())

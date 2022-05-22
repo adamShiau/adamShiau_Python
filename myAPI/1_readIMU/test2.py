@@ -1,77 +1,35 @@
+from test import test as ACT
+import time
+import numpy as np
+
+# act = ACT()
+# act.isRun = True
+# print(act.isRun)
+# act.start()
+# time.sleep(5)
+# act.isRun = False
+# time.sleep(2)
+# act.isRun = True
+# print("act.isRun: ", act.isRun)
+# act.start()
+# time.sleep(5)
+
 import sys
-import random
-import matplotlib
-matplotlib.use('Qt5Agg')
+
 sys.path.append("../")
-from myLib.myGui.graph import *
-from PyQt5 import QtCore, QtWidgets
+from memsImuReader import IMU_DATA_STRUCTURE
 
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg, NavigationToolbar2QT as NavigationToolbar
+from myLib import common as cmn
 
-from matplotlib.figure import Figure
+A = {k: [np.empty(0) for i in range(len(IMU_DATA_STRUCTURE.get(k)))]
+                for k in set(IMU_DATA_STRUCTURE)}
 
-class MplCanvas(FigureCanvas):
-
-    def __init__(self, parent=None, width=5, height=4, dpi=100):
-        fig = Figure(figsize=(width, height), dpi=dpi)
-        self.axes = fig.add_subplot(111)
-        super(MplCanvas, self).__init__(fig)
-
-class MainWindow(QtWidgets.QMainWindow):
-
-    def __init__(self):
-        super(MainWindow, self).__init__()
-
-        # self.canvas = MplCanvas(self, width=5, height=4, dpi=100)
-        self.canvas = mplCanvas()
-        # self.setCentralWidget(self.canvas)
-
-        toolbar = NavigationToolbar(self.canvas, self)
-        layout = QtWidgets.QVBoxLayout()
-        layout.addWidget(toolbar)
-        layout.addWidget(self.canvas)
-
-        widget = QtWidgets.QWidget()
-        widget.setLayout(layout)
-        self.setCentralWidget(widget)
-
-        n_data = 50
-        self.xdata = list(range(n_data))
-        self.ydata = [random.randint(0, 10) for i in range(n_data)]
-
-        # We need to store a reference to the plotted line
-        # somewhere, so we can apply the new data to it.
-        self._plot_ref = None
-        self.update_plot()
-
-        self.show()
-
-        # Setup a timer to trigger the redraw by calling update_plot.
-        self.timer = QtCore.QTimer()
-        self.timer.setInterval(100)
-        self.timer.timeout.connect(self.update_plot)
-        self.timer.start()
-
-    def update_plot(self):
-        # Drop off the first y element, append a new one.
-        self.ydata = self.ydata[1:] + [random.randint(0, 10)]
-
-        # Note: we no longer need to clear the axis.
-        if self._plot_ref is None:
-            # First time we have no plot reference, so do a normal plot.
-            # .plot returns a list of line <reference>s, as we're
-            # only getting one we can take the first element.
-            plot_refs = self.canvas.axes.plot(self.xdata, self.ydata, 'r')
-            self._plot_ref = plot_refs[0]
-        else:
-            # We have a reference, we can use it to update the data for that line.
-            self._plot_ref.set_ydata(self.ydata)
-        # Trigger the canvas to update and redraw.
-        self.canvas.draw()
+AA = {"A1": [[1, 2, 3],[1, 2, 3],[1, 2, 3],], "B1": [[4, 5, 6]]}
+BB = {"A1": [[1],[1],[1],], "B1": [2]}
+# print(cmn.dictOperation(AA, BB, "SUB"))
+print(AA["B1"][0])
+print(BB["B1"][0])
 
 
-if __name__ == "__main__":
-    app = QtWidgets.QApplication(sys.argv)
-    w = MainWindow()
-    app.exec_()
+
+

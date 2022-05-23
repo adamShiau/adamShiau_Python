@@ -52,7 +52,7 @@ class Connector:
     def write(self, data_w):
         try:
             data_w = bytearray(data_w)
-            print(self.__ser.write(data_w))
+            self.__ser.write(data_w)
         except serial.SerialTimeoutException:
             print("write timeOut")
         # End of try-catch
@@ -85,6 +85,8 @@ class Connector:
 
     def flushInputBuffer(self):
         self.__ser.reset_input_buffer()
+        # print("flushInputBuffer")
+        pass
 
     # End of Connector::flushInputBuffer
 
@@ -108,18 +110,20 @@ if __name__ == "__main__":
     ser = Connector("COM6")
     ser.connect()
     ser.flushInputBuffer()
-    ser.write([5, 0, 0, 0, 1])
+    ser.write([6, 0, 0, 0, 3])
+    time.sleep(1)
+    ser.write([6, 0, 0, 0, 1])
     try:
         while 1:
             # if ser.readInputBuffer() > 0:
             new = time.perf_counter_ns()
             print("buf: ", ser.readInputBuffer())
-            print(ser.readBinaryList(29))
+            print(ser.readBinaryList(35))
             print("%.1f\n" % ((new - old_time) * 1e-3))
             old_time = new
-            time.sleep(1e-6)
+            time.sleep(0.001)
 
     except KeyboardInterrupt:
-        ser.write([5, 0, 0, 0, 4])
+        ser.write([6, 0, 0, 0, 4])
         ser.disconnect()
     pass

@@ -14,10 +14,14 @@ IMU_DATA_STRUCTURE = {
     "NANO33_W": (0, 0, 0),
     "NANO33_A": (0, 0, 0),
     "ADXL_A": (0, 0, 0),
-    "TIME": (0,)
+    "TIME": (0,),
+    "SPARROW": (0,)
 }
+
 IMU_DATA_STRUCTURE_ARRAY = {k: [np.empty(0) for i in range(len(IMU_DATA_STRUCTURE[k]))]
                             for k in set(IMU_DATA_STRUCTURE)}
+
+# print([(k, len(IMU_DATA_STRUCTURE[k])) for k in IMU_DATA_STRUCTURE])
 
 HEADER_KVH = [0xFE, 0x81, 0xFF, 0x55]
 SENS_ADXL355_8G = 0.0000156
@@ -25,7 +29,8 @@ SENS_NANO33_GYRO_250 = 0.00875
 SENS_NANO33_AXLM_4G = 0.000122
 POS_ADXL355_AX = 5 - 1
 POS_NANO33_WX = 14 - 1
-POS_CRC = 26 - 1
+POS_SPARROW = 26 - 1
+POS_CRC = 32 - 1
 old = time.perf_counter_ns()
 
 
@@ -98,10 +103,15 @@ class memsImuReader(QThread):
     # End of memsImuReader::disconnectIMU
 
     def readIMU(self):
-        self.writeImuCmd(5, 1)
+        # self.writeImuCmd(5, 1)
+        self.__Connector.flushInputBuffer()
+        self.writeImuCmd(6, 3)
+        cmn.wait_ms(500)
+        self.writeImuCmd(6, 1)
 
     def stopIMU(self):
-        self.writeImuCmd(5, 4)
+        # self.writeImuCmd(5, 4)
+        self.writeImuCmd(6, 4)
 
     def setCallback(self, callback):
         self.__callBack = callback
@@ -110,13 +120,13 @@ class memsImuReader(QThread):
 
     def getImuData(self):
         head = getData.alignHeader_4B(self.__Connector, HEADER_KVH)
-        dataPacket = getData.getdataPacket(self.__Connector, head, 25)
+        dataPacket = getData.getdataPacket(self.__Connector, head, 31)
         NANO_W, NANO_A = cmn.readNANO33(dataPacket, EN=1, PRINT=0, POS_WX=POS_NANO33_WX, sf_xlm=SENS_NANO33_AXLM_4G,
                                         sf_gyro=SENS_NANO33_GYRO_250)
         ADXL_A = cmn.readADXL355(dataPacket, EN=1, PRINT=0, POS_AX=POS_ADXL355_AX, sf=SENS_ADXL355_8G)
+        SPARROW = cmn.readSparrow(dataPacket, EN=1, PRINT=0, POS_SPARROW=POS_SPARROW, sf_a=-0.0016939, sf_b=-0.0013805)
         t = time.perf_counter(),
-        imudata = {"NANO33_W": NANO_W, "NANO33_A": NANO_A, "ADXL_A": ADXL_A, "TIME": t}
-        # print(dataPacket + [255])
+        imudata = {"NANO33_W": NANO_W, "NANO33_A": NANO_A, "ADXL_A": ADXL_A, "TIME": t, "SPARROW": SPARROW}
         return dataPacket, imudata
 
     def readInputBuffer(self):
@@ -153,7 +163,7 @@ class memsImuReader(QThread):
                 print("ACT: ", end=", ")
                 print(self.__Connector.readInputBuffer(), end=", ")
                 t1 = time.perf_counter()
-                # while self.__Connector.readInputBuffer() < self.arrayNum * 10:
+                # while self.__Connector.readInputBuffer() < self.arrayNum * 100:
                 while not self.__Connector.readInputBuffer():
                     # print(self.__Connector.readInputBuffer())
                     pass
@@ -167,25 +177,32 @@ class memsImuReader(QThread):
                 # end of err correction
                 t4 = time.perf_counter()
                 imudataArray = cmn.dictOperation(imudataArray, imudata, "APPEND", IMU_DATA_STRUCTURE_ARRAY)
+                # imudataArray["TIME"] = np.append(imudataArray["TIME"], imudata["TIME"])
+                # imudataArray["SPARROW"] = np.append(imudataArray["SPARROW"], imudata["SPARROW"])
+                # imudataArray["NANO33_A"][0] = np.append(imudataArray["NANO33_A"][0], imudata["NANO33_A"][0])
+                # imudataArray["NANO33_A"][1] = np.append(imudataArray["NANO33_A"][1], imudata["NANO33_A"][1])
+                # imudataArray["NANO33_A"][2] = np.append(imudataArray["NANO33_A"][2], imudata["NANO33_A"][2])
+                # imudataArray["NANO33_W"][0] = np.append(imudataArray["NANO33_W"][0], imudata["NANO33_W"][0])
+                # imudataArray["NANO33_W"][1] = np.append(imudataArray["NANO33_W"][1], imudata["NANO33_W"][1])
+                # imudataArray["NANO33_W"][2] = np.append(imudataArray["NANO33_W"][2], imudata["NANO33_W"][2])
                 t5 = time.perf_counter()
-                print((t5 - t1) * 1000, end=", ")
-                print((t2 - t1) * 1000, end=", ")
-                print((t3 - t2) * 1000, end=", ")
-                print((t4 - t3) * 1000, end=", ")
-                print((t5 - t4) * 1000)
+                # print((t5 - t1) * 1000, end=", ")
+                # print((t2 - t1) * 1000, end=", ")
+                # print((t3 - t2) * 1000, end=", ")
+                # print((t4 - t3) * 1000, end=", ")
+                # print((t5 - t4) * 1000)
+
                 t1 = t5
             # end of for loop
 
-            # print(imudataArray["TIME"][0]-10)
-            imudataArray["TIME"] = imudataArray["TIME"] - t0
-            # print("reader: ", end=", ")
-            # print(imudataArray["TIME"])
+            imudataArray["TIME"] = imudataArray["TIME"] - t0  # do not remove this bracket
+            # imudataArray["SPARROW"] = [imudataArray["SPARROW"]]
+
             if self.__callBack is not None:
                 self.__callBack(imudataArray, self.__imuoffset)
 
             if not __name__ == "__main__":
                 self.imudata_qt.emit(imudataArray, self.__imuoffset)
-            # print(imudataArray)
 
         # end of while loop
     # End of memsImuReader::run
@@ -194,13 +211,6 @@ class memsImuReader(QThread):
 def myCallBack(imudata, imuoffset):
     global old
     new = time.perf_counter_ns()
-    # print(imudata)
-    # print(imuoffset)
-    # print()
-    # print(imudata["NANO33_A"][2])
-    # print(imuoffset["NANO33_A"][2])
-    # print(imudata["NANO33_A"][2]-imuoffset["NANO33_A"][2])
-    # imuoffset["TIME"] = [0]
     imuoffset["TIME"] = [0]
     imudata = cmn.dictOperation(imudata, imuoffset, "SUB", IMU_DATA_STRUCTURE_ARRAY)
     # print(imudata["NANO33_A"][2])
@@ -210,9 +220,10 @@ def myCallBack(imudata, imuoffset):
     ax = imudata["ADXL_A"][0]
     ay = imudata["ADXL_A"][1]
     az = imudata["ADXL_A"][2]
-    t = imudata["TIME"][0]
+    fog = imudata["SPARROW"]
+    t = imudata["TIME"]
     # print("%.5f %.5f  %.5f  %.5f  %.5f  %.5f  %.5f" % (t, wx, wy, wz, ax, ay, az))
-    # print(imudata["TIME"], imudata["NANO33_W"], imudata["ADXL_A"])
+    print(t, fog)
     old = new
 
 

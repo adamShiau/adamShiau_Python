@@ -3,6 +3,8 @@ import time
 import numpy as np
 import logging
 
+# logging.basicConfig(level=100)
+
 
 def readPIG(dataPacket, dataLen=4, POS_TIME=4, sf_a=1, sf_b=0, EN=True, PRINT=False):
     if EN:
@@ -181,96 +183,132 @@ def wait_ms(ms):
 # End of wait_ms
 
 
-def dictOperation(dictA: dict, dictB: dict, mode: str):
-    # rt = dictA
-    A = {k: np.array(dictA[k]) for k in dictA}
-    B = {k: np.array(dictB[k]) for k in dictB}
-
-    # print("A: ", A)
-    # print("B: ", B)
-
-    # if mode == "ADD":
-    #     # rt = {k: np.array(dictA.get(k)) for k in set(dictA)}
-    #     # rt = dictA
-    #     for k in set(dictB):
-    #         for j in range(len(dictB.get(k))):
-    #             rt.get(k)[j] = dictA.get(k)[j] + dictB.get(k)[j]
-    #     return rt
+def dictOperation(dictA: dict, dictB: dict, mode: str, dictStruct: dict):
+    # rt = dictStruct
+    rt = {k: [j for j in dictStruct[k]] for k in dictStruct}
+    # print("rt: ", rt)
 
     if mode == "ADD":
-        rt = A
         logging.debug("")
         logging.debug("MODE = " + str(mode))
         logging.debug("dictA= " + str(dictA))
         logging.debug("dictB= " + str(dictB))
         logging.debug("rt= " + str(rt))
         logging.debug("")
-        for k in set(B):
-            logging.debug("k= " + str(k) + "   len(dictB[k])= " + str(len(B[k])))
-            var_size = len(B[k])
+        for k in dictStruct:
+            logging.debug("k= " + str(k) + "   len(dictB[k])= " + str(len(dictB[k])))
+            var_size = len(dictStruct[k])
             if var_size == 1:
-                logging.debug("dictA[k]= " + str(A[k]))
-                logging.debug("dictB[k]= " + str(B[k]))
-                rt[k] = A[k] + B[k]
+                logging.debug("dictA[k]= " + str(dictA[k]))
+                logging.debug("dictB[k]= " + str(dictB[k]))
+                rt[k] = np.array(dictA[k] + dictB[k])
                 logging.debug("rt[k]= " + str(rt[k]) + "\n")
             else:
-                for j in range(len(B.get(k))):
+                for j in range(var_size):
+                    # print(j)
+                    # print(dictA[k][j])
+                    # print(dictB[k][j])
                     logging.debug("j= " + str(j))
-                    logging.debug("dictA[k][j]= " + str(A.get(k)[j]))
-                    logging.debug("dictB[k][j]= " + str(B.get(k)[j]))
-                    rt.get(k)[j] = A.get(k)[j] + B.get(k)[j]
-                    logging.debug("rt[k][j]= " + str(rt.get(k)[j]) + "\n")
+                    logging.debug("dictA[k][j]= " + str(dictA[k][j]))
+                    logging.debug("dictB[k][j]= " + str(dictB[k][j]))
+                    rt[k][j] = dictA[k][j] + dictB[k][j]
+                    logging.debug("rt[k][j]= " + str(rt[k][j]) + "\n")
+                # end of for-loop of j
+                rt[k] = np.array(rt[k])
+            # end of if-else condition
+        # end of for-loop of k
         return rt
 
-    elif mode == "SUB":
-        rt = A
-        rt = {k: [np.empty(0) for i in range(len(B[k]))] for k in dictA}
+    if mode == "SUB":
         logging.debug("")
         logging.debug("MODE = " + str(mode))
         logging.debug("dictA= " + str(dictA))
         logging.debug("dictB= " + str(dictB))
         logging.debug("rt= " + str(rt))
         logging.debug("")
-        for k in set(B):
-            logging.debug("k= " + str(k) + "   len(dictB[k])= " + str(len(B[k])))
-            var_size = len(B[k])
+        for k in dictStruct:
+            logging.debug("k= " + str(k) + "   len(dictB[k])= " + str(len(dictB[k])))
+            var_size = len(dictStruct[k])
             if var_size == 1:
-                logging.debug("dictA[k]= " + str(A[k]))
-                logging.debug("dictB[k]= " + str(B[k]))
-                rt[k] = A[k] - B[k]
+                logging.debug("dictA[k]= " + str(dictA[k]))
+                logging.debug("dictB[k]= " + str(dictB[k]))
+                rt[k] = np.array(dictA[k] - dictB[k])
                 logging.debug("rt[k]= " + str(rt[k]) + "\n")
             else:
-                for j in range(len(B.get(k))):
+                for j in range(var_size):
+                    # print(j)
+                    # print(dictA[k][j])
+                    # print(dictB[k][j])
                     logging.debug("j= " + str(j))
-                    logging.debug("dictA[k][j]= " + str(A.get(k)[j]))
-                    logging.debug("dictB[k][j]= " + str(B.get(k)[j]))
-                    rt.get(k)[j] = A.get(k)[j] - B.get(k)[j]
-                    logging.debug("rt[k][j]= " + str(rt.get(k)[j]) + "\n")
+                    logging.debug("dictA[k][j]= " + str(dictA[k][j]))
+                    logging.debug("dictB[k][j]= " + str(dictB[k][j]))
+                    rt[k][j] = dictA[k][j] - dictB[k][j]
+                    logging.debug("rt[k][j]= " + str(rt[k][j]) + "\n")
+                # end of for-loop of j
+                rt[k] = np.array(rt[k])
+            # end of if-else condition
+        # end of for-loop of k
         return rt
+
+    # elif mode == "SUB":
+    #     rt = A
+    #     rt = {k: [np.empty(0) for i in range(len(B[k]))] for k in dictA}
+    #     logging.debug("")
+    #     logging.debug("MODE = " + str(mode))
+    #     logging.debug("dictA= " + str(dictA))
+    #     logging.debug("dictB= " + str(dictB))
+    #     logging.debug("rt= " + str(rt))
+    #     logging.debug("")
+    #     for k in set(B):
+    #         logging.debug("k= " + str(k) + "   len(dictB[k])= " + str(len(B[k])))
+    #         var_size = len(B[k])
+    #         if var_size == 1:
+    #             logging.debug("dictA[k]= " + str(A[k]))
+    #             logging.debug("dictB[k]= " + str(B[k]))
+    #             rt[k] = A[k] - B[k]
+    #             logging.debug("rt[k]= " + str(rt[k]) + "\n")
+    #         else:
+    #             for j in range(len(B.get(k))):
+    #                 logging.debug("j= " + str(j))
+    #                 logging.debug("dictA[k][j]= " + str(A.get(k)[j]))
+    #                 logging.debug("dictB[k][j]= " + str(B.get(k)[j]))
+    #                 rt.get(k)[j] = A.get(k)[j] - B.get(k)[j]
+    #                 logging.debug("rt[k][j]= " + str(rt.get(k)[j]) + "\n")
+    #     return rt
 
     elif mode == "APPEND":
-        rt = {k: [np.empty(0) for i in range(len(B[k]))] for k in dictA}
+        # rt = {k: [np.empty(0) for i in range(len(dictStruct[k]))] for k in dictStruct}
         logging.debug("")
         logging.debug("MODE = " + str(mode))
+        logging.debug("dictStruct= " + str(dictStruct))
         logging.debug("dictA= " + str(dictA))
         logging.debug("dictB= " + str(dictB))
         logging.debug("rt= " + str(rt))
         logging.debug("")
-        for k in set(B):
-            logging.debug("k= " + str(k) + "   len(dictB[k])= " + str(len(B[k])))
-            var_size = len(B[k])
+        for k in dictStruct:
+            # print(k)
+            # print(dictA)
+            # print(dictB)
+            logging.debug("k= " + str(k) + "   len(dictStruct[k])= " + str(len(dictStruct[k])))
+            var_size = len(dictStruct[k])
             if var_size == 1:
-                logging.debug("dictA[k]= " + str(A[k]))
-                logging.debug("dictB[k]= " + str(B[k]))
-                rt[k] = np.append(A[k], B[k])
+                # print(dictA[k])
+                # print(dictB[k])
+                logging.debug("dictA[k]= " + str(dictA[k]))
+                logging.debug("dictB[k]= " + str(dictB[k]))
+                rt[k] = np.append(dictA[k], dictB[k])
+                # dictA[k] = np.append(dictA[k], dictB[k])
                 logging.debug("rt[k]= " + str(rt[k]) + "\n")
             else:
-                for j in range(len(B.get(k))):
+                for j in range(var_size):
+                    # print(j)
                     logging.debug("j= " + str(j))
-                    logging.debug("dictA[k][j]= " + str(A[k][j]))
-                    logging.debug("dictB[k][j]= " + str(B[k][j]))
-                    rt[k][j] = np.append(A[k][j], B[k][j])
+                    logging.debug("dictA[k][j]= " + str(dictA[k][j]))
+                    logging.debug("dictB[k][j]= " + str(dictB[k][j]))
+                    rt[k][j] = np.append(dictA[k][j], dictB[k][j])
+                    # dictA[k][j] = np.append(dictA[k][j], dictB[k][j])
                     logging.debug("rt[k][j]= " + str(rt[k][j]) + "\n")
+                # rt[k] = np.array(rt[k])
         return rt
 
     # elif mode == "APPEND":
@@ -337,6 +375,10 @@ if __name__ == "__main__":
         "ADXL_A": (0, 0, 0),
         "TIME": (0,)
     }
+    struct = {k: [np.empty(0) for i in range(len(IMU_DATA_STRUCTURE[k]))]
+              for k in set(IMU_DATA_STRUCTURE)}
+    # print(struct)
+
     # rt = {k: [np.zeros(len(IMU_DATA_STRUCTURE[k])) ] for k in IMU_DATA_STRUCTURE}
     # print("rt: ", rt)
     # imudataArray = {k: [np.empty(0) for i in range(len(IMU_DATA_STRUCTURE))]
@@ -354,7 +396,7 @@ if __name__ == "__main__":
         "TIME": (1.5,)
     }
     for i in range(10):
-        imuoffset = dictOperation(imuoffset, data, "ADD")
+        imuoffset = dictOperation(imuoffset, data, "ADD", struct)
     print(imuoffset)
     imuoffset = {k: imuoffset[k] / 10 for k in imuoffset}
     print(imuoffset)
@@ -371,12 +413,12 @@ if __name__ == "__main__":
     }
     print(imudata)
     offset = {
-        "NANO33_W": (1, 2, 3),
-        "NANO33_A": (-1, -2, -3),
-        "ADXL_A": (4, 5, 6),
-        "TIME": (1.5,)
+        "NANO33_W": np.array((1, 2, 3)),
+        "NANO33_A": np.array((-1, -2, -3)),
+        "ADXL_A": np.array((4, 5, 6)),
+        "TIME": np.array((1.5,))
     }
-    imudata_add_offset = dictOperation(imudata, offset, "ADD")
+    imudata_add_offset = dictOperation(imudata, offset, "ADD", struct)
     print(imudata_add_offset)
     # end of 測試一起加上offset功能
     '''
@@ -397,15 +439,15 @@ if __name__ == "__main__":
         "ADXL_A": (4, 5, 6),
         "TIME": (1.5,)
     }
-    imudata_add_offset = dictOperation(imudata, offset, "SUB")
+    imudata_add_offset = dictOperation(imudata, offset, "SUB", struct)
     print(imudata_add_offset)
     # end of 測試一起扣掉offset功能
     '''
 
     ''' TEST APPEND '''
     '''
-      # 測試在memsImuReader裡對每個imudata append
-    imudataArray = {k: [np.empty(0) for i in range(len(IMU_DATA_STRUCTURE))]
+    # 測試在memsImuReader裡對每個imudata append
+    imudataArray = {k: [np.empty(0) for i in range(len(IMU_DATA_STRUCTURE[k]))]
                     for k in set(IMU_DATA_STRUCTURE)}
     imudata = {
         "NANO33_W": np.array((1., 2., 3.)),
@@ -413,15 +455,18 @@ if __name__ == "__main__":
         "ADXL_A": np.array((4., 5., 6.)),
         "TIME": (1.5,)
     }
-    print(imudataArray)
+    print("imudataArray: ", imudataArray)
     for i in range(5):
-        imudataArray = dictOperation(imudataArray, imudata, "APPEND")
+        # print(i, end=", ")
+        imudataArray = dictOperation(imudataArray, imudata, "APPEND", struct)
+        # print(imudataArray)
+        # dictOperation(imudataArray, imudata, "APPEND", struct)
     print(imudataArray)
     # end of 測試在memsImuReader裡對每個imudata append
     '''
 
     # 測試在main裡 對memsImuReader發送來的imudata append
-    # '''
+    '''
     data1 = {k: [np.empty(0) for i in range(len(IMU_DATA_STRUCTURE))]
                     for k in set(IMU_DATA_STRUCTURE)}
     data2 = {k: [np.empty(0) for i in range(len(IMU_DATA_STRUCTURE))]
@@ -434,13 +479,13 @@ if __name__ == "__main__":
     }
 
     for i in range(5):
-        data1 = dictOperation(data1, imudata, "APPEND")
+        data1 = dictOperation(data1, imudata, "APPEND", struct)
 
     print(data1)
     print(data2)
     data1["TIME"] = [data1["TIME"]]
     for i in range(3):
-        data2 = dictOperation(data2, data1, "APPEND")
+        data2 = dictOperation(data2, data1, "APPEND", struct)
     print(data2)
-    # '''
+    '''
     # end of 測試在main裡 對memsImuReader發送來的imudata append

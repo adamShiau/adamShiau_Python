@@ -182,6 +182,9 @@ def wait_ms(ms):
 
 # End of wait_ms
 
+def print_debug(s, en=0):
+    if en:
+        print(s)
 
 def dictOperation(dictA: dict, dictB: dict, mode: str, dictStruct: dict):
     # rt = dictStruct

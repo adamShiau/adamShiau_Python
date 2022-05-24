@@ -12,15 +12,17 @@ import numpy as np
 
 
 class mainWindow(QWidget):
-    def __init__(self):
+    def __init__(self, debug_en: bool = 0):
         super(mainWindow, self).__init__()
         self.setWindowTitle("memsImuPlot")
         self.top = TOP()
-        self.act = ACTION()
-        self.mainUI()
+        self.act = ACTION("COM5")
         self.linkfunciton()
+        self.act.arrayNum = 10
+        self.mainUI()
         self.imudata = self.resetDataContainer()
-        self.act.arrayNum = 30
+
+        self.__debug = debug_en
 
     def mainUI(self):
         mainLayout = QGridLayout()
@@ -54,8 +56,7 @@ class mainWindow(QWidget):
         self.act.isCali = True
 
     def collectData(self, imudata, imuoffset):
-        print("MAIN: ", end=", ")
-        print(self.act.readInputBuffer(), end=", ")
+        input_buf = self.act.readInputBuffer()
         t0 = time.perf_counter()
         imuoffset["TIME"] = [0]
         imudata = cmn.dictOperation(imudata, imuoffset, "SUB", IMU_DATA_STRUCTURE_ARRAY)
@@ -78,9 +79,9 @@ class mainWindow(QWidget):
             self.imudata["NANO33_W"][1] = self.imudata["NANO33_W"][1][self.act.arrayNum:-1]
             self.imudata["NANO33_W"][2] = self.imudata["NANO33_W"][2][self.act.arrayNum:-1]
         t2 = time.perf_counter()
-        print((t2 - t0) * 1000, end=", ")
-        print((t1 - t0) * 1000, end=", ")
-        print((t2 - t1) * 1000)
+        debug_info = "MAIN: ," + str(input_buf) + ", " + str(round((t2 - t0) * 1000, 5)) + ", " \
+                     + str(round((t1 - t0) * 1000, 5)) + ", " + str(round((t2 - t1) * 1000, 5))
+        cmn.print_debug(debug_info, self.__debug)
         self.plotdata(self.imudata)
         # print(len(self.imudata["TIME"]))
 
@@ -95,6 +96,6 @@ class mainWindow(QWidget):
 
 if __name__ == "__main__":
     app = QApplication([])
-    main = mainWindow()
+    main = mainWindow(debug_en=True)
     main.show()
     app.exec_()

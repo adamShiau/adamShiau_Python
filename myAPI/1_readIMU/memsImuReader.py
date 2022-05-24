@@ -1,4 +1,5 @@
 import sys
+import logging
 
 sys.path.append("../")
 from myLib.mySerial.Connector import Connector
@@ -6,7 +7,6 @@ from myLib.mySerial import getData
 from myLib.crcCalculator import crcLib
 import time
 from PyQt5.QtCore import QThread, pyqtSignal
-from threading import Thread
 from myLib import common as cmn
 import numpy as np
 
@@ -34,14 +34,17 @@ class memsImuReader(QThread):
         imudata_qt = pyqtSignal(object, object)
         imuThreadStop_qt = pyqtSignal()
 
-    def __init__(self, portName: str = "COM6", baudRate: int = 230400):
+    def __init__(self, portName: str = "COM6", baudRate: int = 230400, debug_en: bool = 0):
         super(memsImuReader, self).__init__()
-        self.__Connector = Connector(portName, baudRate)
+        # self.__Connector = Connector(portName, baudRate)
+        self.__portName = portName
+        self.__baudRate = baudRate
         self.__isRun = True
         self.__isCali = False
         self.__callBack = None
         self.__crcFail = 0
         self.arrayNum = 10
+        self.__debug = debug_en
         self.__old_imudata = {k: (-1,) * len(IMU_DATA_STRUCTURE.get(k)) for k in set(IMU_DATA_STRUCTURE)}
         self.__imuoffset = {k: np.zeros(len(IMU_DATA_STRUCTURE.get(k))) for k in set(IMU_DATA_STRUCTURE)}
         print(not __name__ == "__main__")
@@ -87,7 +90,8 @@ class memsImuReader(QThread):
 
     # End of memsImuReader::writeImuCmd
 
-    def connect(self):
+    def connect(self, portName=None, baudRate=0):
+        self.__Connector = Connector(self.__portName, self.__baudRate)
         self.__Connector.connect()
 
     # End of memsImuReader::connectIMU
@@ -149,15 +153,15 @@ class memsImuReader(QThread):
 
             imudataArray = {k: [np.empty(0) for i in range(len(IMU_DATA_STRUCTURE.get(k)))]
                             for k in set(IMU_DATA_STRUCTURE)}
+
             for i in range(self.arrayNum):
-                print("ACT: ", end=", ")
-                print(self.__Connector.readInputBuffer(), end=", ")
-                t1 = time.perf_counter()
+                input_buf = self.readInputBuffer()
+
                 # while self.__Connector.readInputBuffer() < self.arrayNum * 10:
                 while not self.__Connector.readInputBuffer():
                     # print(self.__Connector.readInputBuffer())
                     pass
-
+                t1 = time.perf_counter()
                 dataPacket, imudata = self.getImuData()
                 t2 = time.perf_counter()
                 isCrcFail = crcLib.isCrc32Fail(dataPacket, len(dataPacket))
@@ -168,12 +172,12 @@ class memsImuReader(QThread):
                 t4 = time.perf_counter()
                 imudataArray = cmn.dictOperation(imudataArray, imudata, "APPEND", IMU_DATA_STRUCTURE_ARRAY)
                 t5 = time.perf_counter()
-                print((t5 - t1) * 1000, end=", ")
-                print((t2 - t1) * 1000, end=", ")
-                print((t3 - t2) * 1000, end=", ")
-                print((t4 - t3) * 1000, end=", ")
-                print((t5 - t4) * 1000)
-                t1 = t5
+
+                debug_info = "ACT: ," + str(input_buf) + ", " + str(round((t5 - t1) * 1000, 5)) + ", " \
+                             + str(round((t2 - t1) * 1000, 5)) + ", " + str(round((t3 - t2) * 1000, 5)) + ", " \
+                             + str(round((t4 - t3) * 1000, 5)) + ", " + str(round((t5 - t4) * 1000, 5))
+                cmn.print_debug(debug_info, self.__debug)
+
             # end of for loop
 
             # print(imudataArray["TIME"][0]-10)
@@ -217,7 +221,7 @@ def myCallBack(imudata, imuoffset):
 
 
 if __name__ == "__main__":
-    myImu = memsImuReader("COM6")
+    myImu = memsImuReader("COM5", debug_en=True)
     myImu.arrayNum = 5
     myImu.setCallback(myCallBack)
     myImu.isCali = True

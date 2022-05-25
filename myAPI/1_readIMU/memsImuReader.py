@@ -36,7 +36,8 @@ class memsImuReader(QThread):
 
     def __init__(self, portName: str = "COM6", baudRate: int = 230400, debug_en: bool = 0):
         super(memsImuReader, self).__init__()
-        # self.__Connector = Connector(portName, baudRate)
+        # self.__Connector = Connector()
+        self.__Connector = None
         self.__portName = portName
         self.__baudRate = baudRate
         self.__isRun = True
@@ -90,8 +91,8 @@ class memsImuReader(QThread):
 
     # End of memsImuReader::writeImuCmd
 
-    def connect(self, portName=None, baudRate=0):
-        self.__Connector = Connector(self.__portName, self.__baudRate)
+    def connect(self):
+        self.__Connector = Connector(portName=self.__portName, baudRate=self.__baudRate)
         self.__Connector.connect()
 
     # End of memsImuReader::connectIMU
@@ -221,7 +222,7 @@ def myCallBack(imudata, imuoffset):
 
 
 if __name__ == "__main__":
-    myImu = memsImuReader("COM5", debug_en=True)
+    myImu = memsImuReader("COM5", 230400, debug_en=True)
     myImu.arrayNum = 5
     myImu.setCallback(myCallBack)
     myImu.isCali = True

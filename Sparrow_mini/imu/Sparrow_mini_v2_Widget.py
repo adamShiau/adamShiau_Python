@@ -36,7 +36,7 @@ class mainWidget(QWidget):
 		self.HD_R = spinBlock(title='FPGA_R', minValue=0, maxValue=100000, double=False, step=1)
 		# self.dataRate = spinBlock(title='DATE RATE', minValue=1000, maxValue=3000, double=False, step=5)
 		'''slider'''
-		self.dataRate_sd = sliderBlock(title='DATE RATE', minValue=800, maxValue=2200, curValue=2135, interval=100)
+		self.dataRate_sd = sliderBlock(title='DATE RATE', minValue=400, maxValue=2200, curValue=2135, interval=100)
 		# self.dataRate_sd.setEnabled(False)
 		'''radio btn'''
 		self.Kal_rb = QRadioButton('Kalman filter')

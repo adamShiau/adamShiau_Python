@@ -3,7 +3,7 @@ import sys
 sys.path.append("../../") 
 import time 
 import datetime
-from scipy import signal
+# from scipy import signal
 # import logging
 from PyQt5.QtGui import * 
 from PyQt5.QtCore import * 

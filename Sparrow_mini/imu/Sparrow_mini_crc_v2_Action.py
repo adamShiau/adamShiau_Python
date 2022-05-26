@@ -3,8 +3,8 @@ import sys
 sys.path.append("../../")
 import time
 import numpy as np 
-import scipy as sp
-from scipy import signal
+# import scipy as sp
+# from scipy import signal
 from py3lib.COMPort import UART
 import py3lib.FileToArray as fil2a
 from PyQt5.QtGui import *

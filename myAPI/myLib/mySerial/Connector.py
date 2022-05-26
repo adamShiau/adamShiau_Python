@@ -8,7 +8,8 @@ import numpy as np
 
 
 class Connector:
-    def __init__(self, portName: str = "COM5", baudRate: int = 230400) -> None:
+    def __init__(self, portName: str = "COM7", baudRate: int = 230400) -> None:
+        # self.portlist = None
         self.__portName = portName
         self.__baudRate = baudRate
         self.__is_open = False
@@ -21,6 +22,32 @@ class Connector:
         print("class connector's destructor called!")
 
     # End of destructor
+
+    @property
+    def portName(self):
+        return self.__portName
+
+    @portName.setter
+    def portName(self, name):
+        self.__portName = name
+
+    @property
+    def baudRate(self):
+        return self.__baudRate
+
+    @baudRate.setter
+    def baudRate(self, br):
+        self.__baudRate = br
+
+    def portList(self):
+        portlist = np.empty(0)
+        portlistInfo = serial.tools.list_ports.comports()
+        portNum = len(portlistInfo)
+
+        for i in range(portNum):
+            portlist = np.append(portlist, portlistInfo[i])
+
+        return portNum, portlist
 
     def connect(self):
         self.__ser.baudrate = self.__baudRate
@@ -37,15 +64,17 @@ class Connector:
             print("IOError, the device: " + self.__ser.port + " can not be found or can not be configured!")
             sys.exit(0)
         # End of try-catch
-        print(self.__ser.name + " is connected")
+        print(self.__ser.port + " is connected")
         self.__is_open = self.__ser.is_open
+        return self.__is_open
 
     # End of Connector::connect
 
     def disconnect(self):
         self.__ser.close()
         self.__is_open = self.__ser.is_open
-        print(self.__ser.name + " is disconnected")
+        print(self.__ser.port + " is disconnected")
+        return self.__is_open
 
     # End of Connector::close
 

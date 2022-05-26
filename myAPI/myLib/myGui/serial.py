@@ -1,38 +1,74 @@
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
+from PyQt5.QtCore import *
 import sys
 
 
 class usbConnect():
-    def __init__(self, btn_name="COM update", group_name='Connect COM port'):
-        self.groupBox = QGroupBox(group_name)
-        self.bt_update = QPushButton(btn_name)
+    def __init__(self, group_name='Connect COM port'):
+        self.__portList = None
+        self.__groupBox = QGroupBox(group_name)
+        # self.__groupBox.setCheckable(True)
+        self.bt_update = QPushButton("update")
         self.bt_connect = QPushButton('connect')
+        self.bt_disconnect = QPushButton('disconnect')
+        self.bt_disconnect.setEnabled(False )
         self.cb = QComboBox()
-        self.lb = QLabel(" ")
-        self.lb_com = QLabel(" ")
+        self.lb_status = QLabel(" ")
+        self.lb_comDisp = QLabel(" ")
 
-    def layoutG(self):
+    def layout(self):
         layout = QGridLayout()
         layout.addWidget(self.bt_update, 0, 0, 1, 1)
         layout.addWidget(self.cb, 0, 1, 1, 1)
         layout.addWidget(self.bt_connect, 0, 2, 1, 1)
-        layout.addWidget(self.lb, 1, 0, 1, 2)
-        layout.addWidget(self.lb_com, 1, 2, 1, 1)
-        self.groupBox.setLayout(layout)
-        self.groupBox.show()
-        return self.groupBox
+        layout.addWidget(self.bt_disconnect, 0, 3, 1, 1)
+        layout.addWidget(self.lb_comDisp, 1, 0, 1, 2)
+        layout.addWidget(self.lb_status, 1, 2, 1, 1)
+        self.__groupBox.setLayout(layout)
+        return self.__groupBox
+
+    def addPortItems(self, num, ports):
+        self.__portList = ports
+        if num > 0:
+            for i in range(num):
+                self.cb.addItem(ports[i].name)
+
+    def selectPort(self):
+        idx = self.cb.currentIndex()
+        self.lb_comDisp.setText(self.__portList[idx].description)
+        return self.__portList[idx].name
+
+    def updateStatusLabel(self, is_open):
+        self.bt_connect.setEnabled(not is_open)
+        self.bt_disconnect.setEnabled(is_open)
+
+        if is_open:
+            self.SetConnectText(Qt.blue, "is connected")
+            # self.lb_status.setText("is connected")
+        else:
+            self.SetConnectText(Qt.red, "is disconnected")
+            # self.lb_status.setText("is disconnected")
+
+    def show(self):
+        QB = self.layout()
+        QB.show()
 
     def SetConnectText(self, color, text):
         pe = QPalette()
         pe.setColor(QPalette.WindowText, color)
-        self.lb_com.setPalette(pe)
-        self.lb_com.setText(text)
-        self.lb_com.show()
+        self.lb_status.setPalette(pe)
+        self.lb_status.setFont(QFont("Arial", 12))
+        self.lb_status.setText(text)
+        # self.lb_status.setAlignment(Qt.AlignCenter)
+        # self.lb_comDisp.show()
+
+
+
 
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     main = usbConnect()
-    main.layoutG()
+    main.show()
     app.exec_()

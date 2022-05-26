@@ -2,6 +2,7 @@ from PyQt5.QtWidgets import *
 import sys
 sys.path.append("../")
 from myLib.myGui.graph import *
+from myLib.myGui.serial import *
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 
 class memsImuWidget(QMainWindow):
@@ -11,7 +12,9 @@ class memsImuWidget(QMainWindow):
         self.initUI()
 
     def initUI(self):
-        self.connect_bt = QPushButton("connect")
+        # self.connect_bt = QPushButton("connect")
+        self.usb = usbConnect()
+        # self.disconnect_bt = QPushButton("disconnect")
         self.start_bt = QPushButton("read")
         self.stop_bt = QPushButton("stop")
         self.plot1 = pgGraph_1_2(color1="w", color2="r", title="FOG VS MEMS [DPS]")
@@ -22,9 +25,10 @@ class memsImuWidget(QMainWindow):
         self.plot6 = pgGraph_1(color=(255, 0, 0), title="MEMS_WY [DPS]")
 
         layout = QGridLayout()
-        layout.addWidget(self.connect_bt, 0, 0, 1, 1)
-        layout.addWidget(self.start_bt, 0, 5, 1, 1)
-        layout.addWidget(self.stop_bt, 0, 7, 1, 1)
+        layout.addWidget(self.usb.layout(), 0, 0, 1, 4)
+        # layout.addWidget(self.disconnect_bt, 0, 4, 1, 1)
+        layout.addWidget(self.start_bt, 0, 6, 1, 1)
+        layout.addWidget(self.stop_bt, 0, 8, 1, 1)
         layout.addWidget(self.plot1, 1, 0, 5, 5)
         layout.addWidget(self.plot2, 1, 5, 1, 5)
         layout.addWidget(self.plot3, 2, 5, 1, 5)

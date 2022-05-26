@@ -9,15 +9,19 @@ import time
 from PyQt5.QtCore import QThread, pyqtSignal
 from myLib import common as cmn
 import numpy as np
+import logging
+
 
 IMU_DATA_STRUCTURE = {
-    "NANO33_W": (0, 0, 0),
-    "NANO33_A": (0, 0, 0),
-    "ADXL_A": (0, 0, 0),
-    "TIME": (0,)
+    "NANO33_WX": np.zeros(1),
+    "NANO33_WY": np.zeros(1),
+    "NANO33_WZ": np.zeros(1),
+    "ADXL_AX": np.zeros(1),
+    "ADXL_AY": np.zeros(1),
+    "ADXL_AZ": np.zeros(1),
+    "TIME": np.zeros(1)
 }
-IMU_DATA_STRUCTURE_ARRAY = {k: [np.empty(0) for i in range(len(IMU_DATA_STRUCTURE[k]))]
-                            for k in set(IMU_DATA_STRUCTURE)}
+
 
 HEADER_KVH = [0xFE, 0x81, 0xFF, 0x55]
 SENS_ADXL355_8G = 0.0000156
@@ -34,9 +38,8 @@ class memsImuReader(QThread):
         imudata_qt = pyqtSignal(object, object)
         imuThreadStop_qt = pyqtSignal()
 
-    def __init__(self, portName: str = "COM6", baudRate: int = 230400, debug_en: bool = 0):
+    def __init__(self, portName: str = "None", baudRate: int = 230400, debug_en: bool = 0):
         super(memsImuReader, self).__init__()
-        # self.__Connector = Connector()
         self.__Connector = None
         self.__portName = portName
         self.__baudRate = baudRate
@@ -47,7 +50,7 @@ class memsImuReader(QThread):
         self.arrayNum = 10
         self.__debug = debug_en
         self.__old_imudata = {k: (-1,) * len(IMU_DATA_STRUCTURE.get(k)) for k in set(IMU_DATA_STRUCTURE)}
-        self.__imuoffset = {k: np.zeros(len(IMU_DATA_STRUCTURE.get(k))) for k in set(IMU_DATA_STRUCTURE)}
+        self.__imuoffset = {k: np.zeros(1) for k in set(IMU_DATA_STRUCTURE)}
         print(not __name__ == "__main__")
 
     # class constructor
@@ -91,14 +94,19 @@ class memsImuReader(QThread):
 
     # End of memsImuReader::writeImuCmd
 
-    def connect(self):
-        self.__Connector = Connector(portName=self.__portName, baudRate=self.__baudRate)
-        self.__Connector.connect()
+    def connect(self, port, portName, baudRate):
+        # self.__Connector = Connector(portName=self.__portName, baudRate=self.__baudRate)
+        self.__Connector = port
+        port.portName = portName
+        port.baudRate = baudRate
+        is_open = self.__Connector.connect()
+        return is_open
 
     # End of memsImuReader::connectIMU
 
     def disconnect(self):
-        self.__Connector.disconnect()
+        is_open = self.__Connector.disconnect()
+        return is_open
 
     # End of memsImuReader::disconnectIMU
 
@@ -116,12 +124,15 @@ class memsImuReader(QThread):
     def getImuData(self):
         head = getData.alignHeader_4B(self.__Connector, HEADER_KVH)
         dataPacket = getData.getdataPacket(self.__Connector, head, 25)
-        NANO_W, NANO_A = cmn.readNANO33(dataPacket, EN=1, PRINT=0, POS_WX=POS_NANO33_WX, sf_xlm=SENS_NANO33_AXLM_4G,
-                                        sf_gyro=SENS_NANO33_GYRO_250)
-        ADXL_A = cmn.readADXL355(dataPacket, EN=1, PRINT=0, POS_AX=POS_ADXL355_AX, sf=SENS_ADXL355_8G)
-        t = time.perf_counter(),
-        imudata = {"NANO33_W": NANO_W, "NANO33_A": NANO_A, "ADXL_A": ADXL_A, "TIME": t}
-        # print(dataPacket + [255])
+        NANO_WX, NANO_WY, NANO_WZ, \
+        NANO_AX, NANO_AY, NANO_AZ = cmn.readNANO33(dataPacket, EN=1, PRINT=0, POS_WX=POS_NANO33_WX,
+                                                   sf_xlm=SENS_NANO33_AXLM_4G,
+                                                   sf_gyro=SENS_NANO33_GYRO_250)
+
+        ADXL_AX, ADXL_AY, ADXL_AZ = cmn.readADXL355(dataPacket, EN=1, PRINT=0, POS_AX=POS_ADXL355_AX, sf=SENS_ADXL355_8G)
+        t = time.perf_counter()
+        imudata = {"NANO33_WX": NANO_WX, "NANO33_WY": NANO_WY, "NANO33_WZ": NANO_WZ,
+                   "ADXL_AX": NANO_AX, "ADXL_AY": ADXL_AY, "ADXL_AZ": ADXL_AZ, "TIME": t}
         return dataPacket, imudata
 
     def readInputBuffer(self):
@@ -134,7 +145,7 @@ class memsImuReader(QThread):
             print("---calibrating offset start-----")
             for i in range(cali_times):
                 dataPacket, imudata = self.getImuData()
-                temp = cmn.dictOperation(temp, imudata, "ADD", IMU_DATA_STRUCTURE_ARRAY)
+                temp = cmn.dictOperation(temp, imudata, "ADD", IMU_DATA_STRUCTURE)
             temp = {k: temp.get(k) / cali_times for k in set(self.__imuoffset)}
             print("---calibrating offset stop-----")
             return temp
@@ -142,6 +153,7 @@ class memsImuReader(QThread):
             return dictContainer
 
     def run(self):
+        logging.basicConfig(level=100)
         t0 = time.perf_counter()
         while True:
             if not self.isRun:
@@ -152,8 +164,11 @@ class memsImuReader(QThread):
 
             self.__imuoffset = self.do_cali(self.__imuoffset, 100)
 
-            imudataArray = {k: [np.empty(0) for i in range(len(IMU_DATA_STRUCTURE.get(k)))]
-                            for k in set(IMU_DATA_STRUCTURE)}
+            # imudataArray = {k: [np.empty(0) for i in range(len(IMU_DATA_STRUCTURE.get(k)))]
+            #                 for k in set(IMU_DATA_STRUCTURE)}
+
+            imudataArray = {k: np.empty(0) for k in set(IMU_DATA_STRUCTURE)}
+
 
             for i in range(self.arrayNum):
                 input_buf = self.readInputBuffer()
@@ -171,7 +186,14 @@ class memsImuReader(QThread):
                 imudata = crcLib.errCorrection(isCrcFail, imudata)
                 # end of err correction
                 t4 = time.perf_counter()
-                imudataArray = cmn.dictOperation(imudataArray, imudata, "APPEND", IMU_DATA_STRUCTURE_ARRAY)
+                # imudataArray = cmn.dictOperation(imudataArray, imudata, "APPEND", IMU_DATA_STRUCTURE)
+                imudataArray["TIME"] = np.append(imudataArray["TIME"], imudata["TIME"])
+                imudataArray["ADXL_AX"] = np.append(imudataArray["ADXL_AX"], imudata["ADXL_AX"])
+                imudataArray["ADXL_AY"] = np.append(imudataArray["ADXL_AY"], imudata["ADXL_AY"])
+                imudataArray["ADXL_AZ"] = np.append(imudataArray["ADXL_AZ"], imudata["ADXL_AZ"])
+                imudataArray["NANO33_WX"] = np.append(imudataArray["NANO33_WX"], imudata["NANO33_WX"])
+                imudataArray["NANO33_WY"] = np.append(imudataArray["NANO33_WY"], imudata["NANO33_WY"])
+                imudataArray["NANO33_WZ"] = np.append(imudataArray["NANO33_WZ"], imudata["NANO33_WZ"])
                 t5 = time.perf_counter()
 
                 debug_info = "ACT: ," + str(input_buf) + ", " + str(round((t5 - t1) * 1000, 5)) + ", " \
@@ -180,11 +202,7 @@ class memsImuReader(QThread):
                 cmn.print_debug(debug_info, self.__debug)
 
             # end of for loop
-
-            # print(imudataArray["TIME"][0]-10)
             imudataArray["TIME"] = imudataArray["TIME"] - t0
-            # print("reader: ", end=", ")
-            # print(imudataArray["TIME"])
             if self.__callBack is not None:
                 self.__callBack(imudataArray, self.__imuoffset)
 
@@ -199,34 +217,28 @@ class memsImuReader(QThread):
 def myCallBack(imudata, imuoffset):
     global old
     new = time.perf_counter_ns()
-    # print(imudata)
-    # print(imuoffset)
-    # print()
-    # print(imudata["NANO33_A"][2])
-    # print(imuoffset["NANO33_A"][2])
-    # print(imudata["NANO33_A"][2]-imuoffset["NANO33_A"][2])
-    # imuoffset["TIME"] = [0]
     imuoffset["TIME"] = [0]
-    imudata = cmn.dictOperation(imudata, imuoffset, "SUB", IMU_DATA_STRUCTURE_ARRAY)
-    # print(imudata["NANO33_A"][2])
-    wx = imudata["NANO33_W"][0]
-    wy = imudata["NANO33_W"][1]
-    wz = imudata["NANO33_W"][2]
-    ax = imudata["ADXL_A"][0]
-    ay = imudata["ADXL_A"][1]
-    az = imudata["ADXL_A"][2]
-    t = imudata["TIME"][0]
+    imudata = cmn.dictOperation(imudata, imuoffset, "SUB", IMU_DATA_STRUCTURE)
+    print(imudata)
+    # wx = imudata["NANO33_W"][0]
+    # wy = imudata["NANO33_W"][1]
+    # wz = imudata["NANO33_W"][2]
+    # ax = imudata["ADXL_A"][0]
+    # ay = imudata["ADXL_A"][1]
+    # az = imudata["ADXL_A"][2]
+    # t = imudata["TIME"][0]
     # print("%.5f %.5f  %.5f  %.5f  %.5f  %.5f  %.5f" % (t, wx, wy, wz, ax, ay, az))
     # print(imudata["TIME"], imudata["NANO33_W"], imudata["ADXL_A"])
     old = new
 
 
 if __name__ == "__main__":
-    myImu = memsImuReader("COM5", 230400, debug_en=True)
-    myImu.arrayNum = 5
+    ser = Connector()
+    myImu = memsImuReader(debug_en=True)
+    myImu.arrayNum = 2
     myImu.setCallback(myCallBack)
     myImu.isCali = True
-    myImu.connect()
+    myImu.connect(ser, "COM6", 230400)
     myImu.readIMU()
     myImu.start()
     try:

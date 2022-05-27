@@ -139,20 +139,26 @@ if __name__ == "__main__":
     ser = Connector("COM6")
     ser.connect()
     ser.flushInputBuffer()
+    ser.write([2, 0, 0, 0, 1])
+    '''for sparrow test
     ser.write([6, 0, 0, 0, 3])
     time.sleep(1)
     ser.write([6, 0, 0, 0, 1])
+    '''
+
     try:
         while 1:
             # if ser.readInputBuffer() > 0:
             new = time.perf_counter_ns()
             print("buf: ", ser.readInputBuffer())
-            print(ser.readBinaryList(35))
+            print(ser.readBinaryList(39))
+            # print(ser.readBinaryList(16))
             print("%.1f\n" % ((new - old_time) * 1e-3))
             old_time = new
             time.sleep(0.001)
 
     except KeyboardInterrupt:
-        ser.write([6, 0, 0, 0, 4])
+        ser.write([2, 0, 0, 0, 4])
+        # ser.write([6, 0, 0, 0, 4])
         ser.disconnect()
     pass

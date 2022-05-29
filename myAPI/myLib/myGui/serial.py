@@ -64,11 +64,24 @@ class usbConnect():
         # self.lb_comDisp.show()
 
 
+class dataSaveBlock(QGroupBox):
+    def __init__(self, name=""):
+        super(dataSaveBlock, self).__init__()
+        self.setTitle(name)
+        self.rb = QRadioButton("save")
+        self.le_filename = QLineEdit("enter_file_name")
+        self.le_ext = QLineEdit(".txt")
+        self.rb.setChecked(False)
 
+        layout = QGridLayout()
+        layout.addWidget(self.rb, 0, 0, 1, 1)
+        layout.addWidget(self.le_filename, 0, 1, 1, 3)
+        layout.addWidget(self.le_ext, 0, 4, 1, 1)
+        self.setLayout(layout)
 
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    main = usbConnect()
+    main = dataSaveBlock("SAVE")
     main.show()
     app.exec_()

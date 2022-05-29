@@ -51,7 +51,7 @@ class memsImuReader(QThread):
         self.__debug = debug_en
         self.__old_imudata = {k: (-1,) * len(IMU_DATA_STRUCTURE.get(k)) for k in set(IMU_DATA_STRUCTURE)}
         self.__imuoffset = {k: np.zeros(1) for k in set(IMU_DATA_STRUCTURE)}
-        print(not __name__ == "__main__")
+        # print(not __name__ == "__main__")
 
     # class constructor
 

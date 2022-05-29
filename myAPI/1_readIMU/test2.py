@@ -2,34 +2,44 @@ from test import test as ACT
 import time
 import numpy as np
 
-# act = ACT()
-# act.isRun = True
-# print(act.isRun)
-# act.start()
-# time.sleep(5)
-# act.isRun = False
-# time.sleep(2)
-# act.isRun = True
-# print("act.isRun: ", act.isRun)
-# act.start()
-# time.sleep(5)
-
 import sys
 
 sys.path.append("../")
-from memsImuReader import IMU_DATA_STRUCTURE
-
 from myLib import common as cmn
+A = [1, 2, 3, 4, 500]
 
-A = {k: [np.empty(0) for i in range(len(IMU_DATA_STRUCTURE.get(k)))]
-                for k in set(IMU_DATA_STRUCTURE)}
+B = (np.vstack(A)).T
 
-AA = {"A1": [[1, 2, 3],[1, 2, 3],[1, 2, 3],], "B1": [[4, 5, 6]]}
-BB = {"A1": [[1],[1],[1],], "B1": [2]}
-# print(cmn.dictOperation(AA, BB, "SUB"))
-print(AA["B1"][0])
-print(BB["B1"][0])
+C = (np.vstack([4, 5, 6, 7, 8])).T
+# print(A)
+# print(type(A))
+# print(B)
+# print(type(B))
 
+
+isopen, fd = cmn.file_manager(True, "tt2.txt")
+print("isopen: ", isopen)
+print("fd: ", fd)
+
+isopen2, fd2 = cmn.file_manager(True, "tt3.txt", 0)
+
+print("isopen2: ", isopen2)
+print("fd2: ", fd2)
+
+np.savetxt(fd2, C, fmt="%d, %d, %d, %d, %.2f")
+
+for i in range(5):
+    if isopen:
+        np.savetxt(fd, B, fmt="%d, %d, %d, %d, %.2f")
+
+print("isopen2: ", isopen2)
+print("fd2: ", fd2)
+
+
+isopen2, fd2 = cmn.file_manager(False, "tt3.txt", 0)
+isopen, fd = cmn.file_manager(False, "tt2.txt")
+print("isopen: ", isopen)
+print("fd: ", fd)
 
 
 

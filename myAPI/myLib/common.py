@@ -99,6 +99,7 @@ def readNANO33(dataPacket, EN, dataLen=2, POS_WX=13, sf_xlm=1.0, sf_gyro=1.0, PR
 
     return nano33_wx, nano33_wy, nano33_wz, nano33_ax, nano33_ay, nano33_az
 
+
 # End of readNANO33
 
 def readADXL355(dataPacket, dataLen=3, POS_AX=4, EN=1, sf=1.0, PRINT=0):
@@ -123,6 +124,7 @@ def readADXL355(dataPacket, dataLen=3, POS_AX=4, EN=1, sf=1.0, PRINT=0):
     # End of if-condition
 
     return adxl355_x, adxl355_y, adxl355_z
+
 
 # End of ImuConnector::readADXL355
 
@@ -161,6 +163,39 @@ def readCRC(dataPacket, dataLen=4, POS_CRC=25, EN=1, PRINT=0):
 # End of ImuConnector::readADXL355
 
 
+# file controller global variable definition
+fd = [None, None]
+
+
+# End of file controller global variable definition
+
+def file_manager(isopen=False, name="notitle", fnum=0):
+    global fd
+    if isopen:
+        fd[fnum] = open(name, "w")
+        print("file " + name + " is open")
+        return True, fd[fnum]
+    else:
+        try:
+            fd[fnum].close()
+            print("file " + name + " is close")
+        except NameError:
+            print("NameError")
+            pass
+        except AttributeError:
+            print("AttributeError")
+            pass
+        return False, fd[fnum]
+
+
+# End of file_controller
+
+def saveData2File(isopen: bool = False, data: list = None, fmt: str = " ", file: object = None):
+    if isopen:
+        data = np.vstack(data).T
+        np.savetxt(file, data, fmt=fmt)
+
+
 def convert2Sign_nano33(datain):
     shift_data = (datain[1] << 8 | datain[0])
     if (datain[1] >> 7) == 1:
@@ -184,7 +219,7 @@ def convert2Sign_adxl355(datain):
 
 
 def convert2Temperature(datain):
-    temp = datain[0] + (datain[1]>>7)*0.5
+    temp = datain[0] + (datain[1] >> 7) * 0.5
     return temp
 
 

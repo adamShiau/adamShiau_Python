@@ -149,14 +149,14 @@ def selectComPort(self):
 
 
 # 將在__init__裡宣告的Connector物件 self.__connector 與 self.__portName 丟
-# 入定義在act的connect方法，此方法會對這修被丟入的物件來打開serial port，若打開
+# 入定義在act的connect方法，此方法會對這被丟入的物件與portName來打開serial port，若打開
 # 成功會回傳True，把回傳丟入定義在usbConnect()裡的updateStatusLabel()方法，此
 # 方法會針對port 是否開成功來enable or disable對應的開關。
 def connect(self):
     is_open = self.act.connect(self.__connector, self.__portName, 230400)
     self.top.usb.updateStatusLabel(is_open)
 
-# 斷開port連接，使用定義在act的disconnect()方法
+# 斷開port連接，使用定義在act的disconnect()方法，一樣使用updateStatusLabel()，把is_open丟進去來控制button
 def disconnect(self):
     is_open = self.act.disconnect()
     self.top.usb.updateStatusLabel(is_open)

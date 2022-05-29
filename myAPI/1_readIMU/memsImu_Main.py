@@ -12,11 +12,12 @@ import numpy as np
 
 
 class mainWindow(QWidget):
-    def __init__(self, debug_en: bool = 1):
+    def __init__(self, debug_en: bool = False):
         super(mainWindow, self).__init__()
         self.__portName = None
         self.setWindowTitle("memsImuPlot")
         self.__connector = Connector()
+        self.__isFileOpen = False
         self.top = TOP()
         self.act = ACTION()
         self.act.isCali = True
@@ -24,6 +25,7 @@ class mainWindow(QWidget):
         self.act.arrayNum = 10
         self.mainUI()
         self.imudata = self.resetDataContainer()
+        # self.file_data = None
 
         self.__debug = debug_en
 
@@ -44,6 +46,8 @@ class mainWindow(QWidget):
         # bt pyqtSignal connection
         self.act.imudata_qt.connect(self.collectData)
         self.act.imuThreadStop_qt.connect(self.imuThreadStopDetect)
+        # rb connection
+        # self.top.save_rb.toggled.connect(self.save_data_ctrl)
 
     def updateComPort(self):
         portNum, portList = self.__connector.portList()
@@ -72,9 +76,15 @@ class mainWindow(QWidget):
         self.act.readIMU()
         self.act.isRun = True
         self.act.start()
+        self.__isFileImuOpen, self.__FileImu_fd = cmn.file_manager(self.top.save_block.rb.isChecked(),
+                                    self.top.save_block.le_filename.text()+self.top.save_block.le_ext.text())
+
 
     def stop(self):
         self.act.isRun = False
+        self.top.save_block.rb.setChecked(False)
+        self.__isFileImuOpen, self.__FileImu_fd = cmn.file_manager(self.top.save_block.rb.isChecked(),
+                                   self.top.save_block.le_filename.text()+self.top.save_block.le_ext.text())
 
     def collectData(self, imudata, imuoffset):
         input_buf = self.act.readInputBuffer()
@@ -103,6 +113,11 @@ class mainWindow(QWidget):
         debug_info = "MAIN: ," + str(input_buf) + ", " + str(round((t2 - t0) * 1000, 5)) + ", " \
                      + str(round((t1 - t0) * 1000, 5)) + ", " + str(round((t2 - t1) * 1000, 5))
         cmn.print_debug(debug_info, self.__debug)
+
+        data = [imudata["TIME"], imudata["NANO33_WX"], imudata["NANO33_WY"], imudata["NANO33_WZ"]
+            , imudata["ADXL_AX"], imudata["ADXL_AY"], imudata["ADXL_AZ"]]
+        data_fmt = "%.5f, %.5f, %.5f, %.5f, %.5f, %.5f, %.5f"
+        cmn.saveData2File(self.__isFileImuOpen, data, data_fmt, self.__FileImu_fd)
         self.plotdata(self.imudata)
         # print(len(self.imudata["TIME"]))
 
@@ -117,6 +132,6 @@ class mainWindow(QWidget):
 
 if __name__ == "__main__":
     app = QApplication([])
-    main = mainWindow(debug_en=True)
+    main = mainWindow(debug_en=False)
     main.show()
     app.exec_()

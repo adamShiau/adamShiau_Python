@@ -101,11 +101,12 @@ https://www.pythonguis.com/tutorials/plotting-pyqtgraph/
 create: 2022/05/26
 
 1. widget:
-```python
-from myLib.myGui.serial import *
 
-#宣告類別
- self.usb = usbConnect()
+```python
+from myLib.myGui.mygui_serial import *
+
+# 宣告類別
+self.usb = usbConnect()
 ```
 
 

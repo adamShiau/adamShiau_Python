@@ -1,4 +1,4 @@
-# common function 
+# common function
 
 此 module 定義常用到的 methods
 
@@ -206,6 +206,9 @@ print(data2)
 此method用來管理要新增與關上的檔案，定義:
 ```python
 def file_manager(isopen=False, name="notitle", fnum=0):
+
+isopen = True: 開啟檔案
+isopen = False: 關上已開啟的檔案 or 不做任何事
 
 return bool, fd
 

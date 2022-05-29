@@ -2,7 +2,7 @@ from PyQt5.QtWidgets import *
 import sys
 sys.path.append("../")
 from myLib.myGui.graph import *
-from myLib.myGui.serial import *
+from myLib.myGui.mygui_serial import *
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 
 class memsImuWidget(QMainWindow):

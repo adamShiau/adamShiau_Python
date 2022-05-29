@@ -12,7 +12,7 @@ class usbConnect():
         self.bt_update = QPushButton("update")
         self.bt_connect = QPushButton('connect')
         self.bt_disconnect = QPushButton('disconnect')
-        self.bt_disconnect.setEnabled(False )
+        self.bt_disconnect.setEnabled(False)
         self.cb = QComboBox()
         self.lb_status = QLabel(" ")
         self.lb_comDisp = QLabel(" ")
@@ -80,8 +80,50 @@ class dataSaveBlock(QGroupBox):
         self.setLayout(layout)
 
 
+class spinBlock(QGroupBox):
+    def __init__(self, title, minValue, maxValue, step=1, double=False, Decimals=2):
+        super(spinBlock, self).__init__()
+        if double:
+            self.spin = QDoubleSpinBox()
+            self.spin.setDecimals(Decimals)
+        else:
+            self.spin = QSpinBox()
+
+        self.spin.setRange(minValue, maxValue)
+        self.spin.setSingleStep(step)
+        self.setTitle(title)
+
+        layout = QHBoxLayout()
+        layout.addWidget(self.spin)
+        self.setLayout(layout)
+
+
+class spinBlockOneLabel(QGroupBox):
+    def __init__(self, title, minValue, maxValue, double=False, step=1, Decimals=2):
+        super(spinBlockOneLabel, self).__init__()
+        if double:
+            self.spin = QDoubleSpinBox()
+            self.spin.setDecimals(Decimals)
+        else:
+            self.spin = QSpinBox()
+
+        self.spin.setRange(minValue, maxValue)
+        self.spin.setSingleStep(step)
+        self.lb = QLabel('freq')
+        self.setTitle(title)
+
+        layout = QHBoxLayout()
+        layout.addWidget(self.spin)
+        layout.addWidget(self.lb)
+        self.setLayout(layout)
+
+
+
+
+
+
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    main = dataSaveBlock("SAVE")
+    main = pigParameters()
     main.show()
     app.exec_()

@@ -2,8 +2,10 @@ import sys
 
 sys.path.append("../")
 from myLib import common as cmn
+from myLib.myGui.mygui_serial import *
 import time
 from myLib.mySerial.Connector import Connector
+from myLib.myGui.pig_parameters_widget import pigParameters
 from PyQt5.QtWidgets import *
 from memsImu_Widget import memsImuWidget as TOP
 from memsImuReader import memsImuReader as ACTION
@@ -20,6 +22,7 @@ class mainWindow(QWidget):
         self.__isFileOpen = False
         self.top = TOP()
         self.act = ACTION()
+        self.pig_parameter = pigParameters()
         self.act.isCali = True
         self.linkfunciton()
         self.act.arrayNum = 10
@@ -43,11 +46,15 @@ class mainWindow(QWidget):
         # bt connection
         self.top.start_bt.clicked.connect(self.start)
         self.top.stop_bt.clicked.connect(self.stop)
+        self.top.pig_parameter_bt.clicked.connect(self.show_parameters)
         # bt pyqtSignal connection
         self.act.imudata_qt.connect(self.collectData)
         self.act.imuThreadStop_qt.connect(self.imuThreadStopDetect)
         # rb connection
         # self.top.save_rb.toggled.connect(self.save_data_ctrl)
+
+    def show_parameters(self):
+        self.pig_parameter.show()
 
     def updateComPort(self):
         portNum, portList = self.__connector.portList()
@@ -131,7 +138,7 @@ class mainWindow(QWidget):
 
 
 if __name__ == "__main__":
-    app = QApplication([])
+    app = QApplication(sys.argv)
     main = mainWindow(debug_en=False)
     main.show()
     app.exec_()

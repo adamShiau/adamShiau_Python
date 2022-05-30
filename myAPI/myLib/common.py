@@ -175,7 +175,7 @@ def file_manager(isopen=False, name="notitle", mode="w", fnum=0):
     if isopen:
         try:
             fd[fnum] = open(name, mode)
-            # print("file " + name + " is open")
+            print("file " + name + " is open")
 
         except FileNotFoundError:
             print("file " + name + " does not exist, auto create new!")
@@ -208,37 +208,37 @@ def saveData2File(isopen: bool = False, data: list = None, fmt: str = " ", file:
 
 class parameters_manager:
     def __init__(self, name, parameter_init, fnum=1):
-        self.par = parameter_init
-        self.fd = None
+        self.__par = parameter_init
         self.__name = name
         self.__fnum = fnum
-        # self.check_file_exist(parameter_init)
 
-    def check_file_exist(self):
+    def check_file_exist(self) -> dict:
         isopen, fd = file_manager(isopen=True, name=self.__name, mode="r", fnum=self.__fnum)
 
         if isopen:
             # parameter file doesn't exist， create new with write mode and dump initial parameters into the file.
             if fd.mode == "w":
-                self.dump_init_parameters(fd, self.par)
+                self.__dump_init_parameters(fd, self.__par)
 
             # parameter file exists, close the file.
             elif fd.mode == "r":
-                self.par = json.load(fd)
-                # print(self.par)
+                self.__par = json.load(fd)
+                # print(self.__par)
                 file_manager(isopen=False, name=self.__name, fnum=self.__fnum)
 
-        return self.par
+        return self.__par
 
-    def dump_init_parameters(self, fd, data):
+    def __dump_init_parameters(self, fd, data):
         json.dump(data, fd)
         file_manager(isopen=False, name=self.__name, fnum=self.__fnum)
 
     def update_parameters(self, key, value):
         isopen, fd = file_manager(isopen=True, name=self.__name, fnum=self.__fnum)
-        self.par[key] = value
-        json.dump(self.par, fd)
+        self.__par[key] = value
+        json.dump(self.__par, fd)
         file_manager(isopen=False, name=self.__name, fnum=self.__fnum)
+
+# End of parameters_manager
 
 
 def convert2Sign_nano33(datain):

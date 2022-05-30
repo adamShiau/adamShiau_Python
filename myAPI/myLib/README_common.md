@@ -11,6 +11,8 @@
     - [使用](#使用)
   - [saveData2File](#savedata2file)
     - [使用](#使用-1)
+  - [parameters_manager](#parameters_manager)
+    - [使用](#使用-2)
 
 ## dictOperation
 
@@ -205,7 +207,7 @@ print(data2)
 
 此method用來管理要新增與關上的檔案，定義:
 ```python
-def file_manager(isopen=False, name="notitle", fmt="w", fnum=0):
+def file_manager(isopen=False, name="notitle", mode="w", fnum=0):
 
 isopen = True: 開啟檔案
 isopen = False: 關上已開啟的檔案 or 不做任何事
@@ -278,3 +280,89 @@ data_fmt = "%.5f, %.5f, %.5f, %.5f, %.5f, %.5f, %.5f"
 
 cmn.saveData2File(self.__isFileImuOpen, data, data_fmt, self.__FileImu_fd)
 ```
+
+## parameters_manager
+
+此 class 用來管理fog參數，其定義為:
+
+```python
+def __init__(self, name, parameter_init, fnum=1):
+    self.__par = parameter_init
+    self.__name = name
+    self.__fnum = fnum
+
+name: 參數檔案名稱
+parameter_init: 參數初始值dictionary
+funm : file_manager 之 fnum 引數
+```
+
+類別提供之公用 method:
+
+```python
+def check_file_exist(self) -> dict:
+
+若要先確認使否存在既有參數檔案，需在開始處將此方法放置在 update_parameters 前，
+藉由 file_manager 回傳之 fd.mode 判斷是否有既有參數檔案，若無則依照 name 生成
+新檔案並將 parameter_init 內容寫入，同時回傳內容為 parameter_init 的 dict; 
+若已有參數檔案，則將其讀入並回傳。
+```
+
+
+```python
+def update_parameters(self, key, value):
+
+將參數新的值寫入參數檔案裡，key 需與參數檔案裡定義的相同。
+
+```
+
+### 使用
+
+```python
+
+INIT_PARAMETERS = {"MOD_H": 3250,
+                   "MOD_L": -3250,
+                   "FREQ": 139,
+                   "DAC_GAIN": 290,
+                   "ERR_OFFSET": 0,
+                   "POLARITY": 1,
+                   "WAIT_CNT": 65,
+                   "ERR_TH": 0,
+                   "ERR_AVG": 6,
+                   "GAIN1": 6,
+                   "GAIN2": 5,
+                   "FB_ON": 1,
+                   "CONST_STEP": 0,
+                   "KF_Q": 1,
+                   "KF_R": 6,
+                   "SF_A": 0.00295210451588764 * 1.02 / 2,
+                   "SF_B": -0.00137052112589694,
+                   "DATA_RATE": 1863
+                   }
+
+class pig_parameters_widget(QGroupBox):
+    def __init__(self, act):
+        super(pig_parameters_widget, self).__init__()
+        print("import pigParameters")
+        self.__act = act
+        # 產生 parameters_manager 物件，給定檔案名稱與初始參數 dict
+        self.__par_manager = cmn.parameters_manager("parameters_SP9.json", INIT_PARAMETERS, 1)
+        .
+        .
+        .
+        self.initUI()
+        # 檢查檔案是否存在
+        initPara = self.__par_manager.check_file_exist()
+        self.set_init_value(initPara)
+        self.linkfunction()
+
+
+    def send_FREQ_CMD(self):
+        value = self.freq.spin.value()
+        print('set freq: ', value)
+        self.freq.lb.setText(str(round(1 / (2 * (value + 1) * 10e-6), 2)) + ' KHz')
+        self.__act.writeImuCmd(CMD_FOG_MOD_FREQ, value)
+        # 參數更新後加入此行來更新檔案裡對應的參數
+        self.__par_manager.update_parameters("FREQ", value)
+
+```
+

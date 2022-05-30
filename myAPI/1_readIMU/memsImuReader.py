@@ -85,12 +85,14 @@ class memsImuReader(QThread):
     # End of ImuReader::isCali(setter)
 
     def writeImuCmd(self, cmd, value):
+
         if value < 0:
             value = (1 << 32) + value
         # End of if-condition
         data = bytearray([cmd, (value >> 24 & 0xFF), (value >> 16 & 0xFF), (value >> 8 & 0xFF), (value & 0xFF)])
         self.__Connector.write(data)
         cmn.wait_ms(150)
+
 
     # End of memsImuReader::writeImuCmd
 

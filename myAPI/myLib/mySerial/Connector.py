@@ -84,6 +84,8 @@ class Connector:
             self.__ser.write(data_w)
         except serial.SerialTimeoutException:
             print("write timeOut")
+        except serial.PortNotOpenError:
+            print("Port not open, please check!")
         # End of try-catch
 
     # End of Connector::write

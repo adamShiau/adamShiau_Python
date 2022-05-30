@@ -5,7 +5,7 @@ from myLib import common as cmn
 from myLib.myGui.mygui_serial import *
 import time
 from myLib.mySerial.Connector import Connector
-from myLib.myGui.pig_parameters_widget import pigParameters
+from myLib.myGui.pig_parameters_widget import pig_parameters_widget
 from PyQt5.QtWidgets import *
 from memsImu_Widget import memsImuWidget as TOP
 from memsImuReader import memsImuReader as ACTION
@@ -16,15 +16,18 @@ import numpy as np
 class mainWindow(QWidget):
     def __init__(self, debug_en: bool = False):
         super(mainWindow, self).__init__()
+        self.__FileImu_fd = None
+        self.__isFileImuOpen = None
+        self.pig_parameter = None
         self.__portName = None
         self.setWindowTitle("memsImuPlot")
         self.__connector = Connector()
         self.__isFileOpen = False
         self.top = TOP()
         self.act = ACTION()
-        self.pig_parameter = pigParameters()
+
         self.act.isCali = True
-        self.linkfunciton()
+        self.linkfunction()
         self.act.arrayNum = 10
         self.mainUI()
         self.imudata = self.resetDataContainer()
@@ -37,7 +40,7 @@ class mainWindow(QWidget):
         mainLayout.addWidget(self.top, 0, 0, 1, 1)
         self.setLayout(mainLayout)
 
-    def linkfunciton(self):
+    def linkfunction(self):
         # usb connection
         self.top.usb.bt_update.clicked.connect(self.updateComPort)
         self.top.usb.cb.currentIndexChanged.connect(self.selectComPort)
@@ -66,6 +69,7 @@ class mainWindow(QWidget):
     def connect(self):
         is_open = self.act.connect(self.__connector, self.__portName, 230400)
         self.top.usb.updateStatusLabel(is_open)
+        self.pig_parameter = pig_parameters_widget(self.act)
 
     def disconnect(self):
         is_open = self.act.disconnect()
@@ -84,14 +88,13 @@ class mainWindow(QWidget):
         self.act.isRun = True
         self.act.start()
         self.__isFileImuOpen, self.__FileImu_fd = cmn.file_manager(self.top.save_block.rb.isChecked(),
-                                    self.top.save_block.le_filename.text()+self.top.save_block.le_ext.text())
-
+                       self.top.save_block.le_filename.text() + self.top.save_block.le_ext.text(), "w", 0)
 
     def stop(self):
         self.act.isRun = False
         self.top.save_block.rb.setChecked(False)
-        self.__isFileImuOpen, self.__FileImu_fd = cmn.file_manager(self.top.save_block.rb.isChecked(),
-                                   self.top.save_block.le_filename.text()+self.top.save_block.le_ext.text())
+        cmn.file_manager(self.top.save_block.rb.isChecked(), self.top.save_block.le_filename.text() +
+                         self.top.save_block.le_ext.text(), "w", 0)
 
     def collectData(self, imudata, imuoffset):
         input_buf = self.act.readInputBuffer()

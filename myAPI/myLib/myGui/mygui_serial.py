@@ -118,8 +118,31 @@ class spinBlockOneLabel(QGroupBox):
         self.setLayout(layout)
 
 
+class sliderBlock(QGroupBox):
+    def __init__(self, title, minValue, maxValue, curValue, step=1, interval=100, parent=None):
+        super(sliderBlock, self).__init__(parent)
+        self.setTitle(title)
+        self.sd = QSlider(Qt.Horizontal)
+        self.sd.setMinimum(minValue)
+        self.sd.setMaximum(maxValue)
+        self.sd.setValue(curValue)
+        self.sd.setSingleStep(step)
+        self.sd.setTickInterval(interval)
+        self.sd.setTickPosition(QSlider.TicksBelow)
+        layout = QVBoxLayout()
+        layout.addWidget(self.sd)
+        self.setLayout(layout)
 
 
+class editBlock(QGroupBox):
+    def __init__(self, title, parent=None):
+        super(editBlock, self).__init__(parent)
+        self.le = QLineEdit()
+        self.setTitle(title)
+
+        layout = QHBoxLayout()
+        layout.addWidget(self.le)
+        self.setLayout(layout)
 
 
 if __name__ == "__main__":

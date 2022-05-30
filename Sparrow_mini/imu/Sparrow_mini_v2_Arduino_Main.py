@@ -488,7 +488,6 @@ class mainWindow(QMainWindow):
 		self.DATA_RATE_INIT = value
 		self.writeParameters()
 
-
 	'''------------------------------------------------- '''
 	
 	def versionBox(self):

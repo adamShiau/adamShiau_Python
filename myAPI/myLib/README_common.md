@@ -11,6 +11,7 @@
     - [使用](#使用)
   - [saveData2File](#savedata2file)
     - [使用](#使用-1)
+  - [data_manager](#data_manager)
   - [parameters_manager](#parameters_manager)
     - [使用](#使用-2)
 
@@ -279,6 +280,48 @@ data = [imudata["TIME"], imudata["NANO33_WX"], imudata["NANO33_WY"], imudata["NA
 data_fmt = "%.5f, %.5f, %.5f, %.5f, %.5f, %.5f, %.5f"
 
 cmn.saveData2File(self.__isFileImuOpen, data, data_fmt, self.__FileImu_fd)
+```
+
+## data_manager
+
+此 class 用來管理儲存數據檔案，定義:
+
+```python
+def __init__(self, name="untitled.txt", fnum=0):
+    self.__fd = None
+    self.__isopen = False
+    self.__name__ = name
+    self.__fnum__ = fnum
+
+name: 參數檔案名稱
+funm : file_manager 之 fnum 引數
+```
+
+類別提供之公用 method:
+
+```python
+@name.setter
+def name(self, name)
+
+可讓使用者在宣告類別物件以後再決定名稱
+```
+
+```python
+def open(self, status)
+
+若 status = True 時則依照 name 來產生檔案，並且在首行寫入日期
+```
+
+```python
+def close(self)
+
+關掉名稱為 name 的檔案，並且在末行寫入日期
+```
+
+```python
+def saveData(self, datalist, fmt)
+
+同等於 saveData2File()
 ```
 
 ## parameters_manager

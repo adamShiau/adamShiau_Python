@@ -232,13 +232,13 @@ class pig_parameters_widget(QGroupBox):
         value = self.mod_H.spin.value()
         print('set mod_H: ', value)
         self.__act.writeImuCmd(CMD_FOG_MOD_AMP_H, value)
-        self.__par_manager.update_parameters("FREQ", value)
+        self.__par_manager.update_parameters("MOD_H", value)
 
     def send_MOD_L_CMD(self):
         value = self.mod_L.spin.value()
         print('set mod_L: ', value)
         self.__act.writeImuCmd(CMD_FOG_MOD_AMP_L, value)
-        self.__par_manager.update_parameters("FREQ", value)
+        self.__par_manager.update_parameters("MOD_L", value)
 
     def send_ERR_OFFSET_CMD(self):
         value = self.err_offset.spin.value()
@@ -256,7 +256,7 @@ class pig_parameters_widget(QGroupBox):
         value = self.wait_cnt.spin.value()
         print('set wait cnt: ', value)
         self.__act.writeImuCmd(CMD_FOG_WAIT_CNT, value)
-        self.__par_manager.update_parameters("CMD_FOG_WAIT_CNT", value)
+        self.__par_manager.update_parameters("WAIT_CNT", value)
 
     def send_ERR_TH_CMD(self):
         value = self.err_th.spin.value()

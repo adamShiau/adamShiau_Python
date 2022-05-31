@@ -16,8 +16,6 @@ import numpy as np
 class mainWindow(QWidget):
     def __init__(self, debug_en: bool = False):
         super(mainWindow, self).__init__()
-        self.__FileImu_fd = None
-        self.__isFileImuOpen = None
         self.pig_parameter = None
         self.__portName = None
         self.setWindowTitle("memsImuPlot")
@@ -25,6 +23,7 @@ class mainWindow(QWidget):
         self.__isFileOpen = False
         self.top = TOP()
         self.act = ACTION()
+        self.imudata_file = cmn.data_manager(fnum=0)
 
         self.act.isCali = True
         self.linkfunction()
@@ -67,13 +66,16 @@ class mainWindow(QWidget):
         self.__portName = self.top.usb.selectPort()
 
     def connect(self):
-        is_open = self.act.connect(self.__connector, self.__portName, 230400)
-        self.top.usb.updateStatusLabel(is_open)
+        is_port_open = self.act.connect(self.__connector, self.__portName, 230400)
+        if is_port_open:
+            self.top.pig_parameter_bt.setEnabled(True)
+        self.top.usb.updateStatusLabel(is_port_open)
         self.pig_parameter = pig_parameters_widget(self.act)
 
     def disconnect(self):
-        is_open = self.act.disconnect()
-        self.top.usb.updateStatusLabel(is_open)
+        is_port_open = self.act.disconnect()
+        self.top.pig_parameter_bt.setEnabled(False)
+        self.top.usb.updateStatusLabel(is_port_open)
 
     def imuThreadStopDetect(self):
         self.imudata = self.resetDataContainer()
@@ -87,14 +89,14 @@ class mainWindow(QWidget):
         self.act.readIMU()
         self.act.isRun = True
         self.act.start()
-        self.__isFileImuOpen, self.__FileImu_fd = cmn.file_manager(self.top.save_block.rb.isChecked(),
-                       self.top.save_block.le_filename.text() + self.top.save_block.le_ext.text(), "w", 0)
+        file_name = self.top.save_block.le_filename.text() + self.top.save_block.le_ext.text()
+        self.imudata_file.name = file_name
+        self.imudata_file.open(self.top.save_block.rb.isChecked())
 
     def stop(self):
         self.act.isRun = False
         self.top.save_block.rb.setChecked(False)
-        cmn.file_manager(self.top.save_block.rb.isChecked(), self.top.save_block.le_filename.text() +
-                         self.top.save_block.le_ext.text(), "w", 0)
+        self.imudata_file.close()
 
     def collectData(self, imudata, imuoffset):
         input_buf = self.act.readInputBuffer()
@@ -124,10 +126,11 @@ class mainWindow(QWidget):
                      + str(round((t1 - t0) * 1000, 5)) + ", " + str(round((t2 - t1) * 1000, 5))
         cmn.print_debug(debug_info, self.__debug)
 
-        data = [imudata["TIME"], imudata["NANO33_WX"], imudata["NANO33_WY"], imudata["NANO33_WZ"]
+        datalist = [imudata["TIME"], imudata["NANO33_WX"], imudata["NANO33_WY"], imudata["NANO33_WZ"]
             , imudata["ADXL_AX"], imudata["ADXL_AY"], imudata["ADXL_AZ"]]
         data_fmt = "%.5f, %.5f, %.5f, %.5f, %.5f, %.5f, %.5f"
-        cmn.saveData2File(self.__isFileImuOpen, data, data_fmt, self.__FileImu_fd)
+        self.imudata_file.saveData(datalist, data_fmt)
+        # cmn.saveData2File(self.__isFileImuOpen, data, data_fmt, self.__FileImu_fd)
         self.plotdata(self.imudata)
         # print(len(self.imudata["TIME"]))
 

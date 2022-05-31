@@ -23,6 +23,7 @@ class memsImuWidget(QMainWindow):
         self.plot5 = pgGraph_1(color=(255, 0, 0), title="MEMS_WX [DPS]")
         self.plot6 = pgGraph_1(color=(255, 0, 0), title="MEMS_WY [DPS]")
         self.pig_parameter_bt = QPushButton("parameter")
+        self.pig_parameter_bt.setEnabled(False)
 
         layout = QGridLayout()
         layout.addWidget(self.usb.layout(), 0, 0, 1, 4)

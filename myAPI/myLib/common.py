@@ -1,6 +1,7 @@
 # -*- coding:UTF-8 -*-
 import time
 import numpy as np
+from datetime import datetime
 import logging
 import json
 
@@ -175,7 +176,7 @@ def file_manager(isopen=False, name="notitle", mode="w", fnum=0):
     if isopen:
         try:
             fd[fnum] = open(name, mode)
-            print("file " + name + " is open")
+            # print("file " + name + " is open")
 
         except FileNotFoundError:
             print("file " + name + " does not exist, auto create new!")
@@ -205,6 +206,39 @@ def saveData2File(isopen: bool = False, data: list = None, fmt: str = " ", file:
 
 
 # End of saveData2File
+
+class data_manager:
+    def __init__(self, name="untitled.txt", fnum=0):
+        self.__fd = None
+        self.__isopen = False
+        self.__name__ = name
+        self.__fnum__ = fnum
+
+    @property
+    def name(self):
+        return self.__name__
+
+    @name.setter
+    def name(self, name):
+        self.__name__ = name
+
+    def open(self, status):
+        self.__isopen, self.__fd = file_manager(name=self.__name__, isopen=status, mode="w", fnum=self.__fnum__)
+        # print("in open:", self.__fd)
+        if self.__isopen:
+            date_now = datetime.now().strftime("%Y/%m/%d %H:%M:%S")
+            self.__fd.writelines('#' + date_now + '\n')
+
+    def close(self):
+        if self.__isopen:
+            date_now = datetime.now().strftime("%Y/%m/%d %H:%M:%S")
+            self.__fd.writelines('#' + date_now + '\n')
+        self.__isopen, fd = file_manager(name=self.__name__, isopen=False, mode="w", fnum=self.__fnum__)
+
+    def saveData(self, datalist, fmt):
+        saveData2File(isopen=self.__isopen, data=datalist, fmt=fmt, file=self.__fd)
+        # print("in saveData:", self.__isopen)
+
 
 class parameters_manager:
     def __init__(self, name, parameter_init, fnum=1):
@@ -237,6 +271,7 @@ class parameters_manager:
         self.__par[key] = value
         json.dump(self.__par, fd)
         file_manager(isopen=False, name=self.__name, fnum=self.__fnum)
+
 
 # End of parameters_manager
 

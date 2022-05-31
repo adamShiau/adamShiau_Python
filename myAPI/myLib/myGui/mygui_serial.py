@@ -30,6 +30,7 @@ class usbConnect():
 
     def addPortItems(self, num, ports):
         self.__portList = ports
+        self.cb.clear()
         if num > 0:
             for i in range(num):
                 self.cb.addItem(ports[i].name)

@@ -10,7 +10,7 @@ from PyQt5.QtCore import QThread, pyqtSignal
 from myLib import common as cmn
 import numpy as np
 import logging
-from pig_parameters import *
+# from pig_parameters import *
 
 IMU_DATA_STRUCTURE = {
     "NANO33_WX": np.zeros(1),
@@ -36,13 +36,14 @@ POS_CRC = 35
 old = time.perf_counter_ns()
 
 
-class memsImuReader(QThread):
+class pigImuReader(QThread):
     if not __name__ == "__main__":
         imudata_qt = pyqtSignal(object, object)
         imuThreadStop_qt = pyqtSignal()
+        buffer_qt = pyqtSignal(int)
 
     def __init__(self, portName: str = "None", baudRate: int = 230400, debug_en: bool = 0):
-        super(memsImuReader, self).__init__()
+        super(pigImuReader, self).__init__()
         self.__Connector = None
         self.__portName = portName
         self.__baudRate = baudRate
@@ -87,22 +88,21 @@ class memsImuReader(QThread):
 
     # End of ImuReader::isCali(setter)
 
-    def updatePigInitParameters(self):
-        self.writeImuCmd(CMD_FOG_MOD_FREQ, FREQ_INIT)
-        self.writeImuCmd(CMD_FOG_MOD_AMP_H, MOD_H_INIT)
-        self.writeImuCmd(CMD_FOG_MOD_AMP_L, MOD_L_INIT)
-        self.writeImuCmd(CMD_FOG_DAC_GAIN, DAC_GAIN_INIT)
-        self.writeImuCmd(CMD_FOG_ERR_OFFSET, ERR_OFFSET_INIT)
-        self.writeImuCmd(CMD_FOG_POLARITY, POLARITY_INIT)
-        self.writeImuCmd(CMD_FOG_WAIT_CNT, WAIT_CNT_INIT)
-        self.writeImuCmd(CMD_FOG_ERR_AVG, ERR_AVG_INIT)
-        self.writeImuCmd(CMD_FOG_GAIN1, GAIN1_SEL_INIT)
-        self.writeImuCmd(CMD_FOG_GAIN2, GAIN2_SEL_INIT)
-        self.writeImuCmd(CMD_FOG_FB_ON, FB_ON_INIT)
-        self.writeImuCmd(CMD_FOG_CONST_STEP, CONST_STEP_INIT)
-        self.writeImuCmd(CMD_FOG_ERR_TH, ERR_TH_INIT)
-        self.writeImuCmd(CMD_FOG_INT_DELAY, DATA_RATE_INIT)
-
+    # def updatePigInitParameters(self):
+    #     self.writeImuCmd(CMD_FOG_MOD_FREQ, FREQ_INIT)
+    #     self.writeImuCmd(CMD_FOG_MOD_AMP_H, MOD_H_INIT)
+    #     self.writeImuCmd(CMD_FOG_MOD_AMP_L, MOD_L_INIT)
+    #     self.writeImuCmd(CMD_FOG_DAC_GAIN, DAC_GAIN_INIT)
+    #     self.writeImuCmd(CMD_FOG_ERR_OFFSET, ERR_OFFSET_INIT)
+    #     self.writeImuCmd(CMD_FOG_POLARITY, POLARITY_INIT)
+    #     self.writeImuCmd(CMD_FOG_WAIT_CNT, WAIT_CNT_INIT)
+    #     self.writeImuCmd(CMD_FOG_ERR_AVG, ERR_AVG_INIT)
+    #     self.writeImuCmd(CMD_FOG_GAIN1, GAIN1_SEL_INIT)
+    #     self.writeImuCmd(CMD_FOG_GAIN2, GAIN2_SEL_INIT)
+    #     self.writeImuCmd(CMD_FOG_FB_ON, FB_ON_INIT)
+    #     self.writeImuCmd(CMD_FOG_CONST_STEP, CONST_STEP_INIT)
+    #     self.writeImuCmd(CMD_FOG_ERR_TH, ERR_TH_INIT)
+    #     self.writeImuCmd(CMD_FOG_INT_DELAY, DATA_RATE_INIT)
 
     def writeImuCmd(self, cmd, value):
         if value < 0:
@@ -115,7 +115,6 @@ class memsImuReader(QThread):
     # End of memsImuReader::writeImuCmd
 
     def connect(self, port, portName, baudRate):
-        # self.__Connector = Connector(portName=self.__portName, baudRate=self.__baudRate)
         self.__Connector = port
         port.portName = portName
         port.baudRate = baudRate
@@ -150,11 +149,11 @@ class memsImuReader(QThread):
                                                    sf_gyro=SENS_NANO33_GYRO_250)
         ADXL_AX, ADXL_AY, ADXL_AZ = cmn.readADXL355(dataPacket, EN=1, PRINT=0, POS_AX=POS_ADXL355_AX,
                                                     sf=SENS_ADXL355_8G)
-        ERR, STEP, PD_TEMP = cmn.readPIG(dataPacket, EN=1, PRINT=0, sf_a=0.0015/2, sf_b=0, POS_ERR=POS_PIG)
+        ERR, STEP, PD_TEMP = cmn.readPIG(dataPacket, EN=1, PRINT=0, sf_a=1, sf_b=0, POS_ERR=POS_PIG)
         t = time.perf_counter()
         imudata = {"NANO33_WX": NANO_WX, "NANO33_WY": NANO_WY, "NANO33_WZ": NANO_WZ,
                    "ADXL_AX": NANO_AX, "ADXL_AY": ADXL_AY, "ADXL_AZ": ADXL_AZ, "TIME": t,
-                   "PIG_ERR": ERR,  "PIG_WZ": STEP,  "PD_TEMP": PD_TEMP
+                   "PIG_ERR": ERR, "PIG_WZ": STEP, "PD_TEMP": PD_TEMP
                    }
         return dataPacket, imudata
 
@@ -194,10 +193,12 @@ class memsImuReader(QThread):
 
             for i in range(self.arrayNum):
                 input_buf = self.readInputBuffer()
-
+                self.buffer_qt.emit(input_buf)
                 # while self.__Connector.readInputBuffer() < self.arrayNum * 10:
                 while not self.__Connector.readInputBuffer():
                     # print(self.__Connector.readInputBuffer())
+                    # print("No input data!")
+                    # cmn.wait_ms(500)
                     pass
                 t1 = time.perf_counter()
                 dataPacket, imudata = self.getImuData()
@@ -259,7 +260,7 @@ def myCallBack(imudata, imuoffset):
 
 if __name__ == "__main__":
     ser = Connector()
-    myImu = memsImuReader(debug_en=False)
+    myImu = pigImuReader(debug_en=False)
     myImu.arrayNum = 2
     myImu.setCallback(myCallBack)
     myImu.isCali = True

@@ -5,7 +5,7 @@ from myLib import common as cmn
 import time
 from myLib.mySerial.Connector import Connector
 from PyQt5.QtWidgets import *
-from pigImu_Widget import memsImuWidget as TOP
+from pigImu_Widget_2 import memsImuWidget as TOP
 from pigImuReader import memsImuReader as ACTION
 from pigImuReader import IMU_DATA_STRUCTURE
 import numpy as np
@@ -55,7 +55,7 @@ class mainWindow(QWidget):
     def connect(self):
         is_open = self.act.connect(self.__connector, self.__portName, 230400)
         self.top.usb.updateStatusLabel(is_open)
-        self.act.updatePigInitParameters()
+        # self.act.updatePigInitParameters()
 
     def disconnect(self):
         is_open = self.act.disconnect()

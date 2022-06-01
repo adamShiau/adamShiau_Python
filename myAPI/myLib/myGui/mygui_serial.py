@@ -146,6 +146,25 @@ class editBlock(QGroupBox):
         self.setLayout(layout)
 
 
+class displayOneBlock(QGroupBox):
+    def __init__(self, name='name'):
+        super(displayOneBlock, self).__init__()
+        self.setTitle(name)
+        self.setFont(QFont('', 10))
+        pe = QPalette()
+        pe.setColor(QPalette.WindowText, Qt.yellow)
+        pe.setColor(QPalette.Window, Qt.black)
+        self.lb = QLabel()
+        self.lb.setPalette(pe)
+        self.lb.setFont(QFont('Arial', 20))
+        self.lb.setAutoFillBackground(True)
+        self.lb.setText('buffer')
+
+        layout = QVBoxLayout()
+        layout.addWidget(self.lb)
+        self.setLayout(layout)
+
+
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     main = pigParameters()

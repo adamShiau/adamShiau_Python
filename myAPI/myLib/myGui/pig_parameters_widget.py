@@ -34,10 +34,10 @@ CMD_FOG_INT_DELAY = 24
 CMD_FOG_OUT_START = 25
 
 ''' FOG PARAMETERS'''
-INIT_PARAMETERS = {"MOD_H": 3250,
-                   "MOD_L": -3250,
-                   "FREQ": 139,
-                   "DAC_GAIN": 290,
+INIT_PARAMETERS = {"MOD_H": 6850,
+                   "MOD_L": -6850,
+                   "FREQ": 135,
+                   "DAC_GAIN": 20,
                    "ERR_OFFSET": 0,
                    "POLARITY": 1,
                    "WAIT_CNT": 65,
@@ -51,28 +51,28 @@ INIT_PARAMETERS = {"MOD_H": 3250,
                    "KF_R": 6,
                    "SF_A": 0.00295210451588764 * 1.02 / 2,
                    "SF_B": -0.00137052112589694,
-                   "DATA_RATE": 1863
+                   "DATA_RATE": 2200
                    }
-MOD_H_INIT = 3250
-MOD_L_INIT = -3250
-FREQ_INIT = 139
-DAC_GAIN_INIT = 290
-ERR_OFFSET_INIT = 0
-POLARITY_INIT = 1
-WAIT_CNT_INIT = 65
-ERR_TH_INIT = 0
-ERR_AVG_INIT = 6
-GAIN1_SEL_INIT = 6
-GAIN2_SEL_INIT = 5
-FB_ON_INIT = 1
-CONST_STEP_INIT = 0
-FPGA_Q_INIT = 1
-FPGA_R_INIT = 6
-SW_Q_INIT = 1
-SW_R_INIT = 6
-SF_A_INIT = 0.00295210451588764 * 1.02 / 2
+MOD_H_INIT 			= 6850
+MOD_L_INIT 			= -6850
+FREQ_INIT 			= 135
+DAC_GAIN_INIT 		= 20
+ERR_OFFSET_INIT 	= 0
+POLARITY_INIT 		= 1
+WAIT_CNT_INIT 		= 65
+ERR_TH_INIT 		= 0
+ERR_AVG_INIT 		= 6
+GAIN1_SEL_INIT 		= 6
+GAIN2_SEL_INIT 		= 5
+FB_ON_INIT			= 1
+CONST_STEP_INIT		= 0
+FPGA_Q_INIT			= 1
+FPGA_R_INIT			= 6
+SW_Q_INIT			= 1
+SW_R_INIT			= 6
+SF_A_INIT = 0.00295210451588764*1.02/2
 SF_B_INIT = -0.00137052112589694
-DATA_RATE_INIT = 1863
+DATA_RATE_INIT		= 2200
 
 ''' FOG paras position'''
 POS_MOD_H_INIT = 0

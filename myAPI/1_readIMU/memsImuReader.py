@@ -37,6 +37,7 @@ class memsImuReader(QThread):
     if not __name__ == "__main__":
         imudata_qt = pyqtSignal(object, object)
         imuThreadStop_qt = pyqtSignal()
+        buffer_qt = pyqtSignal(int)
 
     def __init__(self, portName: str = "None", baudRate: int = 230400, debug_en: bool = 0):
         super(memsImuReader, self).__init__()
@@ -174,7 +175,7 @@ class memsImuReader(QThread):
 
             for i in range(self.arrayNum):
                 input_buf = self.readInputBuffer()
-
+                self.buffer_qt.emit(input_buf)
                 # while self.__Connector.readInputBuffer() < self.arrayNum * 10:
                 while not self.__Connector.readInputBuffer():
                     # print(self.__Connector.readInputBuffer())

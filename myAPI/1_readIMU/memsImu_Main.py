@@ -48,15 +48,26 @@ class mainWindow(QWidget):
         # bt connection
         self.top.start_bt.clicked.connect(self.start)
         self.top.stop_bt.clicked.connect(self.stop)
-        self.top.pig_parameter_bt.clicked.connect(self.show_parameters)
+        # self.top.pig_parameter_bt.clicked.connect(self.show_parameters)
         # bt pyqtSignal connection
         self.act.imudata_qt.connect(self.collectData)
         self.act.imuThreadStop_qt.connect(self.imuThreadStopDetect)
+        self.act.buffer_qt.connect(self.printBuffer)
         # rb connection
         # self.top.save_rb.toggled.connect(self.save_data_ctrl)
 
     def show_parameters(self):
         self.pig_parameter.show()
+
+    def printBuffer(self, val):
+        self.top.buffer_lb.lb.setText(str(val))
+
+    def printUpdateRate(self, t_list):
+        update_rate = round(((t_list[-1] - t_list[0]) / (len(t_list) - 1)) ** -1, 1)
+        print(len(t_list), end=", ")
+        print(round(t_list[0], 3), end=", ")
+        print(round(t_list[-1], 3))
+        self.top.data_rate_lb.lb.setText(str(update_rate))
 
     def updateComPort(self):
         portNum, portList = self.__connector.portList()
@@ -70,7 +81,7 @@ class mainWindow(QWidget):
         if is_port_open:
             self.top.pig_parameter_bt.setEnabled(True)
         self.top.usb.updateStatusLabel(is_port_open)
-        self.pig_parameter = pig_parameters_widget(self.act)
+        # self.pig_parameter = pig_parameters_widget(self.act)
 
     def disconnect(self):
         is_port_open = self.act.disconnect()
@@ -114,13 +125,13 @@ class mainWindow(QWidget):
         self.imudata["NANO33_WZ"] = np.append(self.imudata["NANO33_WZ"], imudata["NANO33_WZ"])
         # print( self.imudata["TIME"])
         if len(self.imudata["TIME"]) > 1000:
-            self.imudata["TIME"] = self.imudata["TIME"][self.act.arrayNum:-1]
-            self.imudata["ADXL_AX"] = self.imudata["ADXL_AX"][self.act.arrayNum:-1]
-            self.imudata["ADXL_AY"] = self.imudata["ADXL_AY"][self.act.arrayNum:-1]
-            self.imudata["ADXL_AZ"] = self.imudata["ADXL_AZ"][self.act.arrayNum:-1]
-            self.imudata["NANO33_WX"] = self.imudata["NANO33_WX"][self.act.arrayNum:-1]
-            self.imudata["NANO33_WY"] = self.imudata["NANO33_WY"][self.act.arrayNum:-1]
-            self.imudata["NANO33_WZ"] = self.imudata["NANO33_WZ"][self.act.arrayNum:-1]
+            self.imudata["TIME"] = self.imudata["TIME"][self.act.arrayNum-1:-1]
+            self.imudata["ADXL_AX"] = self.imudata["ADXL_AX"][self.act.arrayNum-1:-1]
+            self.imudata["ADXL_AY"] = self.imudata["ADXL_AY"][self.act.arrayNum-1:-1]
+            self.imudata["ADXL_AZ"] = self.imudata["ADXL_AZ"][self.act.arrayNum-1:-1]
+            self.imudata["NANO33_WX"] = self.imudata["NANO33_WX"][self.act.arrayNum-1:-1]
+            self.imudata["NANO33_WY"] = self.imudata["NANO33_WY"][self.act.arrayNum-1:-1]
+            self.imudata["NANO33_WZ"] = self.imudata["NANO33_WZ"][self.act.arrayNum-1:-1]
         t2 = time.perf_counter()
         debug_info = "MAIN: ," + str(input_buf) + ", " + str(round((t2 - t0) * 1000, 5)) + ", " \
                      + str(round((t1 - t0) * 1000, 5)) + ", " + str(round((t2 - t1) * 1000, 5))
@@ -132,6 +143,7 @@ class mainWindow(QWidget):
         self.imudata_file.saveData(datalist, data_fmt)
         # cmn.saveData2File(self.__isFileImuOpen, data, data_fmt, self.__FileImu_fd)
         self.plotdata(self.imudata)
+        self.printUpdateRate(self.imudata["TIME"])
         # print(len(self.imudata["TIME"]))
 
     def plotdata(self, imudata):

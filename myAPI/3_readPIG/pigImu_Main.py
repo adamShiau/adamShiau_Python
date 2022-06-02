@@ -31,11 +31,13 @@ class mainWindow(QMainWindow):
         self.imudata_file = cmn.data_manager(fnum=0)
 
         self.act.isCali = True
+        self.menu = self.menuBar()
+        self.pig_menu = pig_menu_manager(self.menu, self)
         self.linkfunction()
         self.act.arrayNum = 10
         self.mainUI()
         self.imudata = self.resetDataContainer()
-        self.menu = self.menuBar()
+
         # self.menuBar_manager(menu=menu)
         # self.file_data = None
 
@@ -57,26 +59,18 @@ class mainWindow(QMainWindow):
         # bt connection
         self.top.start_bt.clicked.connect(self.start)
         self.top.stop_bt.clicked.connect(self.stop)
-        self.top.pig_parameter_bt.clicked.connect(self.show_parameters)
+        # self.top.pig_parameter_bt.clicked.connect(self.show_parameters)
         # bt pyqtSignal connection
         self.act.imudata_qt.connect(self.collectData)
         self.act.imuThreadStop_qt.connect(self.imuThreadStopDetect)
         self.act.buffer_qt.connect(self.printBuffer)
-        self.is_port_open_qt.connect(self.menuBar_manager)
+        self.is_port_open_qt.connect(self.is_port_open_status_manager)
         # rb connection
+        self.pig_menu.action_trigger_connect(self.show_parameters)
         # self.top.save_rb.toggled.connect(self.save_data_ctrl)
 
     def show_parameters(self):
         self.pig_parameter_widget.show()
-
-    def menuBar_manager(self, is_port_open):
-        print("HI")
-        setting_menu = self.menu.addMenu("Setting")
-        self.show_action = QAction("pig parameters", self)
-        self.show_action.setShortcut("Ctrl+P")
-        self.show_action.triggered.connect(self.show_parameters)
-        self.show_action.setEnabled(is_port_open)
-        setting_menu.addAction(self.show_action)
 
     def printBuffer(self, val):
         self.top.buffer_lb.lb.setText(str(val))
@@ -97,28 +91,25 @@ class mainWindow(QMainWindow):
     def selectComPort(self):
         self.__portName = self.top.usb.selectPort()
 
+    def is_port_open_status_manager(self, open):
+        # print("port open: ", open)
+        self.top.usb.updateStatusLabel(open)
+        self.pig_menu.setEnable(open)
+
+
     def connect(self):
         is_port_open = self.act.connect(self.__connector, self.__portName, 230400)
-        if is_port_open:
-            self.top.pig_parameter_bt.setEnabled(True)
-            # self.show_action.setEnabled(True)
         self.is_port_open_qt.emit(is_port_open)
-        self.top.usb.updateStatusLabel(is_port_open)
         self.pig_parameter_widget = pig_parameters_widget(self.act)
 
     def disconnect(self):
         is_port_open = self.act.disconnect()
         self.is_port_open_qt.emit(is_port_open)
-        self.top.pig_parameter_bt.setEnabled(False)
-        # self.show_action.setEnabled(False)
-        self.top.usb.updateStatusLabel(is_port_open)
 
     def imuThreadStopDetect(self):
         self.imudata = self.resetDataContainer()
 
     def resetDataContainer(self):
-        # return {k: [np.empty(0) for i in range(len(IMU_DATA_STRUCTURE.get(k)))]
-        #         for k in set(IMU_DATA_STRUCTURE)}
         return {k: np.empty(0) for k in set(IMU_DATA_STRUCTURE)}
 
     def start(self):
@@ -189,8 +180,35 @@ class mainWindow(QMainWindow):
         self.top.plot6.ax.setData(imudata["NANO33_WY"])
 
 
+class pig_menu_manager:
+    def __init__(self, menu, obj):
+        self.myMenu = menu.addMenu("Setting")
+        self.action_list(obj)
+
+    def action_list(self, obj):
+        self.pig_para_action = QAction("pig parameters", obj)
+        self.pig_para_action.setShortcut("Ctrl+P")
+        self.pig_para_action.setEnabled(False)
+        self.myMenu.addAction(self.pig_para_action)
+
+    def action_trigger_connect(self, fn):
+        self.pig_para_action.triggered.connect(fn)
+
+    def setEnable(self, open):
+        self.pig_para_action.setEnabled(open)
+
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     main = mainWindow(debug_en=False)
     main.show()
     app.exec_()
+
+    # def menuBar_manager(self, is_port_open):
+    #     # print("HI")
+    #     print("is_port_open: ", is_port_open)
+    #     setting_menu = self.menu.addMenu("Setting")
+    #     self.show_action = QAction("pig parameters", self)
+    #     self.show_action.setShortcut("Ctrl+P")
+    #     self.show_action.triggered.connect(self.show_parameters)
+    #     self.show_action.setEnabled(is_port_open)
+    #     setting_menu.addAction(self.show_action)

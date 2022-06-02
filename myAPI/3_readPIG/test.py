@@ -1,42 +1,33 @@
-from PyQt5.QtWidgets import *
-from PyQt5 import QtCore
-from pyqtgraph import PlotWidget, plot
-import pyqtgraph as pg
 import sys
-import time
-from PyQt5.QtCore import QThread
-from threading import Thread
 
-sys.path.append("../")
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QApplication, QLabel, QMainWindow
+from PyQt5.QtWidgets import QMenu
+# Snip...
 
+class Window(QMainWindow):
 
-class test(Thread):
-    def __init__(self):
-        super(test, self).__init__()
-        print("test")
-        self.__isRun = False
-        print("isRun: ", self.isRun)
+    def __init__(self, parent=None):
+        """Initializer."""
+        super().__init__(parent)
+        self.setWindowTitle("Python Menus & Toolbars")
+        self.resize(400, 200)
+        self.centralWidget = QLabel("Hello, World")
+        self.centralWidget.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+        self.setCentralWidget(self.centralWidget)
+        self._createMenuBar()
 
-    @property
-    def isRun(self):
-        return self.__isRun
-
-    @isRun.setter
-    def isRun(self, flag):
-        self.__isRun = flag
-
-    def run(self):
-        print("Start Thread")
-        while 1:
-            if not self.isRun:
-                break
-            time.sleep(0.1)
-            print("I am in run", self.isRun)
-        print("Start Thread2")
-
+    def _createMenuBar(self):
+        menuBar = self.menuBar()
+        # Creating menus using a QMenu object
+        fileMenu = QMenu("&File", self)
+        menuBar.addMenu(fileMenu)
+        # Creating menus using a title
+        editMenu = menuBar.addMenu("&Edit")
+        helpMenu = menuBar.addMenu("&Help")
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    w = test()
-    w.show()
+    win = Window()
+    win.show()
     sys.exit(app.exec_())

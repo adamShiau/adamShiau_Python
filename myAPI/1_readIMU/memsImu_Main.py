@@ -14,6 +14,8 @@ import numpy as np
 
 
 class mainWindow(QWidget):
+    is_port_open_qt = pyqtSignal(bool)
+
     def __init__(self, debug_en: bool = False):
         super(mainWindow, self).__init__()
         self.pig_parameter = None
@@ -49,10 +51,11 @@ class mainWindow(QWidget):
         self.top.start_bt.clicked.connect(self.start)
         self.top.stop_bt.clicked.connect(self.stop)
         # self.top.pig_parameter_bt.clicked.connect(self.show_parameters)
-        # bt pyqtSignal connection
+        # pyqtSignal connection
         self.act.imudata_qt.connect(self.collectData)
         self.act.imuThreadStop_qt.connect(self.imuThreadStopDetect)
         self.act.buffer_qt.connect(self.printBuffer)
+        self.is_port_open_qt.connect(self.is_port_open_status_manager)
         # rb connection
         # self.top.save_rb.toggled.connect(self.save_data_ctrl)
 
@@ -64,9 +67,9 @@ class mainWindow(QWidget):
 
     def printUpdateRate(self, t_list):
         update_rate = round(((t_list[-1] - t_list[0]) / (len(t_list) - 1)) ** -1, 1)
-        print(len(t_list), end=", ")
-        print(round(t_list[0], 3), end=", ")
-        print(round(t_list[-1], 3))
+        # print(len(t_list), end=", ")
+        # print(round(t_list[0], 3), end=", ")
+        # print(round(t_list[-1], 3))
         self.top.data_rate_lb.lb.setText(str(update_rate))
 
     def updateComPort(self):
@@ -76,17 +79,19 @@ class mainWindow(QWidget):
     def selectComPort(self):
         self.__portName = self.top.usb.selectPort()
 
+    def is_port_open_status_manager(self, open):
+        self.top.usb.updateStatusLabel(open)
+
     def connect(self):
         is_port_open = self.act.connect(self.__connector, self.__portName, 230400)
-        if is_port_open:
-            self.top.pig_parameter_bt.setEnabled(True)
-        self.top.usb.updateStatusLabel(is_port_open)
+        self.is_port_open_qt.emit(is_port_open)
         # self.pig_parameter = pig_parameters_widget(self.act)
 
     def disconnect(self):
         is_port_open = self.act.disconnect()
-        self.top.pig_parameter_bt.setEnabled(False)
-        self.top.usb.updateStatusLabel(is_port_open)
+        self.is_port_open_qt.emit(is_port_open)
+        # self.top.pig_parameter_bt.setEnabled(False)
+        # self.top.usb.updateStatusLabel(is_port_open)
 
     def imuThreadStopDetect(self):
         self.imudata = self.resetDataContainer()
@@ -125,13 +130,13 @@ class mainWindow(QWidget):
         self.imudata["NANO33_WZ"] = np.append(self.imudata["NANO33_WZ"], imudata["NANO33_WZ"])
         # print( self.imudata["TIME"])
         if len(self.imudata["TIME"]) > 1000:
-            self.imudata["TIME"] = self.imudata["TIME"][self.act.arrayNum-1:-1]
-            self.imudata["ADXL_AX"] = self.imudata["ADXL_AX"][self.act.arrayNum-1:-1]
-            self.imudata["ADXL_AY"] = self.imudata["ADXL_AY"][self.act.arrayNum-1:-1]
-            self.imudata["ADXL_AZ"] = self.imudata["ADXL_AZ"][self.act.arrayNum-1:-1]
-            self.imudata["NANO33_WX"] = self.imudata["NANO33_WX"][self.act.arrayNum-1:-1]
-            self.imudata["NANO33_WY"] = self.imudata["NANO33_WY"][self.act.arrayNum-1:-1]
-            self.imudata["NANO33_WZ"] = self.imudata["NANO33_WZ"][self.act.arrayNum-1:-1]
+            self.imudata["TIME"] = self.imudata["TIME"][self.act.arrayNum - 1:-1]
+            self.imudata["ADXL_AX"] = self.imudata["ADXL_AX"][self.act.arrayNum - 1:-1]
+            self.imudata["ADXL_AY"] = self.imudata["ADXL_AY"][self.act.arrayNum - 1:-1]
+            self.imudata["ADXL_AZ"] = self.imudata["ADXL_AZ"][self.act.arrayNum - 1:-1]
+            self.imudata["NANO33_WX"] = self.imudata["NANO33_WX"][self.act.arrayNum - 1:-1]
+            self.imudata["NANO33_WY"] = self.imudata["NANO33_WY"][self.act.arrayNum - 1:-1]
+            self.imudata["NANO33_WZ"] = self.imudata["NANO33_WZ"][self.act.arrayNum - 1:-1]
         t2 = time.perf_counter()
         debug_info = "MAIN: ," + str(input_buf) + ", " + str(round((t2 - t0) * 1000, 5)) + ", " \
                      + str(round((t1 - t0) * 1000, 5)) + ", " + str(round((t2 - t1) * 1000, 5))

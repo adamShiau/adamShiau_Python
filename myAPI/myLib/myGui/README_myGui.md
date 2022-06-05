@@ -11,6 +11,7 @@
     - [動態繪圖](#動態繪圖)
   - [pytgraph](#pytgraph)
   - [USB 下拉式選單使用方法](#usb-下拉式選單使用方法)
+  - [pig_menu_widget](#pig_menu_widget)
 
 ## Tutorial
 https://build-system.fman.io/pyqt5-tutorial
@@ -163,6 +164,39 @@ def disconnect(self):
     self.top.usb.updateStatusLabel(is_open)
 ```
 
+
+## pig_menu_widget
+
+此 class 用來產生 readPig 所要用到的 meanu, 定義:
+
+```python
+def __init__(self, menu, obj)
+
+#使用前需在 main 先宣告 menuBar() 物件後丟入，obj 為 QMainWindow 之物件:
+
+self.menu = self.menuBar()
+self.pig_menu = pig_menu_widget(self.menu, self)
+
+```
+
+```python
+def action_list(self, obj)
+
+# 產生menu裡的action，之後若有新增的action增加在此method裡
+
+```
+
+```python
+def action_trigger_connect(self, fn)
+
+# menu裡action按下後要trig的connect method
+```
+
+```python
+def setEnable(self, open)
+
+# 此 method 可讓 action 初始為不可選取
+```
 
 
 

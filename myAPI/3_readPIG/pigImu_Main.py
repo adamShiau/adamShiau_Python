@@ -6,6 +6,7 @@ from myLib.myGui.mygui_serial import *
 import time
 from myLib.mySerial.Connector import Connector
 from myLib.myGui.pig_parameters_widget import pig_parameters_widget
+from myLib.myGui.pig_menu_widget import pig_menu_widget
 from PyQt5.QtWidgets import *
 from pigImu_Widget import pigImuWidget as TOP
 from pigImuReader import pigImuReader as ACTION
@@ -13,15 +14,12 @@ from pigImuReader import IMU_DATA_STRUCTURE
 import numpy as np
 
 
-# class mainWindow(QWidget):
 class mainWindow(QMainWindow):
     is_port_open_qt = pyqtSignal(bool)
 
     def __init__(self, debug_en: bool = False):
         super(mainWindow, self).__init__()
         self.pig_parameter_widget = None
-        # self.is_port_open = False
-        # self.pig_parameter = None
         self.__portName = None
         self.setWindowTitle("memsImuPlot")
         self.__connector = Connector()
@@ -32,23 +30,17 @@ class mainWindow(QMainWindow):
 
         self.act.isCali = True
         self.menu = self.menuBar()
-        self.pig_menu = pig_menu_manager(self.menu, self)
+        self.pig_menu = pig_menu_widget(self.menu, self)
         self.linkfunction()
         self.act.arrayNum = 10
         self.mainUI()
         self.imudata = self.resetDataContainer()
-
-        # self.menuBar_manager(menu=menu)
-        # self.file_data = None
 
         self.__debug = debug_en
         self.t_start = time.perf_counter()
 
     def mainUI(self):
         self.setCentralWidget(self.top)
-        # mainLayout = QGridLayout()
-        # mainLayout.addWidget(self.top, 0, 0, 1, 1)
-        # self.setLayout(mainLayout)
 
     def linkfunction(self):
         # usb connection
@@ -59,15 +51,13 @@ class mainWindow(QMainWindow):
         # bt connection
         self.top.start_bt.clicked.connect(self.start)
         self.top.stop_bt.clicked.connect(self.stop)
-        # self.top.pig_parameter_bt.clicked.connect(self.show_parameters)
-        # bt pyqtSignal connection
+        # pyqtSignal connection
         self.act.imudata_qt.connect(self.collectData)
         self.act.imuThreadStop_qt.connect(self.imuThreadStopDetect)
         self.act.buffer_qt.connect(self.printBuffer)
         self.is_port_open_qt.connect(self.is_port_open_status_manager)
-        # rb connection
+        # menu trigger connection
         self.pig_menu.action_trigger_connect(self.show_parameters)
-        # self.top.save_rb.toggled.connect(self.save_data_ctrl)
 
     def show_parameters(self):
         self.pig_parameter_widget.show()
@@ -95,7 +85,6 @@ class mainWindow(QMainWindow):
         # print("port open: ", open)
         self.top.usb.updateStatusLabel(open)
         self.pig_menu.setEnable(open)
-
 
     def connect(self):
         is_port_open = self.act.connect(self.__connector, self.__portName, 230400)
@@ -180,35 +169,9 @@ class mainWindow(QMainWindow):
         self.top.plot6.ax.setData(imudata["NANO33_WY"])
 
 
-class pig_menu_manager:
-    def __init__(self, menu, obj):
-        self.myMenu = menu.addMenu("Setting")
-        self.action_list(obj)
-
-    def action_list(self, obj):
-        self.pig_para_action = QAction("pig parameters", obj)
-        self.pig_para_action.setShortcut("Ctrl+P")
-        self.pig_para_action.setEnabled(False)
-        self.myMenu.addAction(self.pig_para_action)
-
-    def action_trigger_connect(self, fn):
-        self.pig_para_action.triggered.connect(fn)
-
-    def setEnable(self, open):
-        self.pig_para_action.setEnabled(open)
-
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     main = mainWindow(debug_en=False)
     main.show()
     app.exec_()
 
-    # def menuBar_manager(self, is_port_open):
-    #     # print("HI")
-    #     print("is_port_open: ", is_port_open)
-    #     setting_menu = self.menu.addMenu("Setting")
-    #     self.show_action = QAction("pig parameters", self)
-    #     self.show_action.setShortcut("Ctrl+P")
-    #     self.show_action.triggered.connect(self.show_parameters)
-    #     self.show_action.setEnabled(is_port_open)
-    #     setting_menu.addAction(self.show_action)

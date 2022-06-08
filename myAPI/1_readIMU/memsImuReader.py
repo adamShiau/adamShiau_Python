@@ -5,7 +5,7 @@ sys.path.append("../")
 from myLib.mySerial.Connector import Connector
 from myLib.mySerial import getData
 from myLib.crcCalculator import crcLib
-from myLib.myFilter import kalman
+from myLib.myFilter import filter
 import time
 from PyQt5.QtCore import QThread, pyqtSignal
 from myLib import common as cmn
@@ -40,7 +40,8 @@ class memsImuReader(QThread):
 
     def __init__(self, portName: str = "None", baudRate: int = 230400, debug_en: bool = 0):
         super(memsImuReader, self).__init__()
-        self.nano33_wz_kal = kalman.kalman_1D(Q=1, R=100)
+        self.nano33_wz_kal = filter.kalman_1D()
+        # self.nano33_wz_kal = filter.moving_average(30)
         self.__Connector = None
         self.__portName = portName
         self.__baudRate = baudRate
@@ -130,7 +131,7 @@ class memsImuReader(QThread):
         NANO_AX, NANO_AY, NANO_AZ = cmn.readNANO33(dataPacket, EN=1, PRINT=0, POS_WX=POS_NANO33_WX,
                                                    sf_xlm=SENS_NANO33_AXLM_4G,
                                                    sf_gyro=SENS_NANO33_GYRO_250)
-        NANO_WZ, p_nano_wz = self.nano33_wz_kal.update(NANO_WZ)
+        NANO_WZ = self.nano33_wz_kal.update(NANO_WZ)
 
         ADXL_AX, ADXL_AY, ADXL_AZ = cmn.readADXL355(dataPacket, EN=1, PRINT=0, POS_AX=POS_ADXL355_AX,
                                                     sf=SENS_ADXL355_8G)
@@ -239,8 +240,6 @@ def myCallBack(imudata, imuoffset):
 if __name__ == "__main__":
     ser = Connector()
     myImu = memsImuReader(debug_en=True)
-    myImu.nano33_wz_kal.kal_Q = 1
-    myImu.nano33_wz_kal.kal_R = 10
     myImu.arrayNum = 2
     myImu.setCallback(myCallBack)
     myImu.isCali = True

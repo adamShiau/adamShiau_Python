@@ -25,6 +25,8 @@ class mainWindow(QWidget):
         self.__isFileOpen = False
         self.top = TOP()
         self.act = ACTION()
+        self.act.nano33_wz_kal.kal_Q = 1
+        self.act.nano33_wz_kal.kal_R = 10
         self.imudata_file = cmn.data_manager(fnum=0)
 
         self.act.isCali = True

@@ -5,12 +5,12 @@ sys.path.append("../")
 from myLib.mySerial.Connector import Connector
 from myLib.mySerial import getData
 from myLib.crcCalculator import crcLib
+from myLib.myFilter import kalman
 import time
 from PyQt5.QtCore import QThread, pyqtSignal
 from myLib import common as cmn
 import numpy as np
 import logging
-
 
 IMU_DATA_STRUCTURE = {
     "NANO33_WX": np.zeros(1),
@@ -21,7 +21,6 @@ IMU_DATA_STRUCTURE = {
     "ADXL_AZ": np.zeros(1),
     "TIME": np.zeros(1)
 }
-
 
 HEADER_KVH = [0xFE, 0x81, 0xFF, 0x55]
 SENS_ADXL355_8G = 0.0000156
@@ -41,6 +40,7 @@ class memsImuReader(QThread):
 
     def __init__(self, portName: str = "None", baudRate: int = 230400, debug_en: bool = 0):
         super(memsImuReader, self).__init__()
+        self.nano33_wz_kal = kalman.kalman_1D(Q=1, R=100)
         self.__Connector = None
         self.__portName = portName
         self.__baudRate = baudRate
@@ -94,7 +94,6 @@ class memsImuReader(QThread):
         self.__Connector.write(data)
         cmn.wait_ms(150)
 
-
     # End of memsImuReader::writeImuCmd
 
     def connect(self, port, portName, baudRate):
@@ -131,8 +130,10 @@ class memsImuReader(QThread):
         NANO_AX, NANO_AY, NANO_AZ = cmn.readNANO33(dataPacket, EN=1, PRINT=0, POS_WX=POS_NANO33_WX,
                                                    sf_xlm=SENS_NANO33_AXLM_4G,
                                                    sf_gyro=SENS_NANO33_GYRO_250)
+        NANO_WZ, p_nano_wz = self.nano33_wz_kal.update(NANO_WZ)
 
-        ADXL_AX, ADXL_AY, ADXL_AZ = cmn.readADXL355(dataPacket, EN=1, PRINT=0, POS_AX=POS_ADXL355_AX, sf=SENS_ADXL355_8G)
+        ADXL_AX, ADXL_AY, ADXL_AZ = cmn.readADXL355(dataPacket, EN=1, PRINT=0, POS_AX=POS_ADXL355_AX,
+                                                    sf=SENS_ADXL355_8G)
         t = time.perf_counter()
         imudata = {"NANO33_WX": NANO_WX, "NANO33_WY": NANO_WY, "NANO33_WZ": NANO_WZ,
                    "ADXL_AX": NANO_AX, "ADXL_AY": ADXL_AY, "ADXL_AZ": ADXL_AZ, "TIME": t}
@@ -172,7 +173,6 @@ class memsImuReader(QThread):
 
             imudataArray = {k: np.empty(0) for k in set(IMU_DATA_STRUCTURE)}
 
-
             for i in range(self.arrayNum):
                 input_buf = self.readInputBuffer()
                 self.buffer_qt.emit(input_buf)
@@ -187,6 +187,7 @@ class memsImuReader(QThread):
                 t3 = time.perf_counter()
                 # err correction
                 imudata = crcLib.errCorrection(isCrcFail, imudata)
+                # imudata["NANO33_WZ"], p_nano33_wz = self.nano33_wz_kal.update(imudata["NANO33_WZ"])
                 # end of err correction
                 t4 = time.perf_counter()
                 # imudataArray = cmn.dictOperation(imudataArray, imudata, "APPEND", IMU_DATA_STRUCTURE)
@@ -238,6 +239,8 @@ def myCallBack(imudata, imuoffset):
 if __name__ == "__main__":
     ser = Connector()
     myImu = memsImuReader(debug_en=True)
+    myImu.nano33_wz_kal.kal_Q = 1
+    myImu.nano33_wz_kal.kal_R = 10
     myImu.arrayNum = 2
     myImu.setCallback(myCallBack)
     myImu.isCali = True

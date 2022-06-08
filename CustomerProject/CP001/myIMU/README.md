@@ -2,6 +2,8 @@
 
 本專案為使用PC USB透過serial port與IMU主機做溝通，將IMU數據封包接收完後以ros sensor_msgs/Imu 格式publish出去。
 
+** 此API只適用於租借勤崴版本IMU **
+
 linux 版本: ubuntu 18.04
 
 ros 版本: melodic

@@ -54,14 +54,18 @@ class moving_average:
         if self.__ptr == len(self.__data_arr):
             self.__ptr = 0
         mv = self.__sum / len(self.__data_arr)
-        print(self.__ptr, end=", ")
-        print(self.__data_arr, end=", ")
-        print(self.__sum)
+        # print(self.__ptr-1, end=", ")
+        # print(self.__data_arr, end=", ")
+        # print(self.__sum)
         return mv
 
 
 if __name__ == "__main__":
-    mv = moving_average(5)
-    for i in range(10):
-        avg = mv.update(1)
-        print(avg)
+    mv = moving_average(15)
+    while 1:
+        for i in range(10):
+            avg = mv.update(1)
+            print(avg)
+        for i in range(10):
+            avg = mv.update(2)
+            print(avg)

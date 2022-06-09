@@ -60,6 +60,7 @@ class pgGraph_1_2(QMainWindow):
         super(pgGraph_1_2, self).__init__()
 
         win = pg.GraphicsLayoutWidget()
+        # win.setBackground((100, 10, 34))
         win.setBackground('k')
         pen1 = pg.mkPen(color=color1, width=1)
         pen2 = pg.mkPen(color=color2, width=1)

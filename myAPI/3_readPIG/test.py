@@ -27,7 +27,8 @@ class Window(QMainWindow):
         helpMenu = menuBar.addMenu("&Help")
 
 if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    win = Window()
-    win.show()
-    sys.exit(app.exec_())
+    # app = QApplication(sys.argv)
+    # win = Window()
+    # win.show()
+    # sys.exit(app.exec_())
+    print(bool(int("1")))

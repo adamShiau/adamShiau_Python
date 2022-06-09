@@ -5,10 +5,12 @@ import time
 import sys
 import rosParameters as rosVar
 import numpy as np
-from imuLib.pigImuReader import pigImuReader
+from pigImuReader import pigImuReader, IMU_DATA_STRUCTURE
+from imuLib.Connector import Connector
+from imuLib import common as cmn
+from imuLib.fogParameters import pig_parameters_ros
 import rospy
 from sensor_msgs.msg import Imu
-from std_msgs.msg import String
 
 t_array = np.empty(0)
 tt_array = np.empty(0)
@@ -110,12 +112,27 @@ def checkImudata(t, w1, w2):
 if __name__ == "__main__":
     try:
         print("running myImu.py")
-        myImu = ImuReader("/dev/" + sys.argv[1], int(sys.argv[2]), int(sys.argv[3]))
+        ser = Connector()
+
+        # par_manager = cmn.parameters_manager("parameters_SP9.json", INIT_PARAMETERS, 1)
+        # initPara = par_manager.check_file_exist()
+        myImu = pigImuReader(boolCalia=sys.argv[2], boolCaliw=sys.argv[3])
+        pig_par = pig_parameters_ros(myImu)
+        myImu.arrayNum = 1
         myImu.setCallback(myCallBack)
-        myImu.connectIMU()
+        myImu.connect(ser, "/dev/" + sys.argv[1], 230400)
+
         rospy.init_node('FOG_ROS', disable_signals=True)
         pub = rospy.Publisher('/imu_raw', Imu, queue_size=1)
+        myImu.readIMU()
         myImu.start()
+
+        # myImu = pigImuReader("/dev/" + sys.argv[1], int(sys.argv[2]), int(sys.argv[3]))
+        # myImu.setCallback(myCallBack)
+        # myImu.connectIMU()
+        # rospy.init_node('FOG_ROS', disable_signals=True)
+        # pub = rospy.Publisher('/imu_raw', Imu, queue_size=1)
+        # myImu.start()
     except:
         print("Check if the arguments number are correct!")
         sys.exit()
@@ -127,6 +144,9 @@ if __name__ == "__main__":
 
     except KeyboardInterrupt:
         myImu.isRun = False
-        myImu.disconnectIMU()
-        myImu.join()
+        myImu.stopIMU()
+        myImu.disconnect()
+        myImu.wait()
+        # myImu.disconnectIMU()
+        # myImu.join()
         print('KeyboardInterrupt success')

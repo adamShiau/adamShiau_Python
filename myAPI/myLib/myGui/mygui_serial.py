@@ -165,6 +165,59 @@ class displayOneBlock(QGroupBox):
         self.setLayout(layout)
 
 
+class checkBoxBlock_2(QGroupBox):
+    def __init__(self, title='', name1='', name2=''):
+        super(checkBoxBlock_2, self).__init__()
+        self.setTitle(title)
+        self.cb_1 = QCheckBox(name1)
+        self.cb_2 = QCheckBox(name2)
+        pe = QPalette()
+        pe.setColor(QPalette.Window, Qt.white)
+        self.setPalette(pe)
+        self.setAutoFillBackground(True)
+
+        layout = QHBoxLayout()
+        layout.addWidget(self.cb_1)
+        layout.addWidget(self.cb_2)
+        self.setLayout(layout)
+
+
+class radioButtonBlock_2(QGroupBox):
+    def __init__(self, title='', name1='', name2=''):
+        super(radioButtonBlock_2, self).__init__()
+        self.__btn_status = 1
+        self.name1 = name1
+        self.name2 = name2
+        self.setTitle(title)
+        self.rb1 = QRadioButton(name1)
+        self.rb2 = QRadioButton(name2)
+        self.rb1.toggled.connect(lambda: self.btnstate_connect(self.rb1))
+        self.rb2.toggled.connect(lambda: self.btnstate_connect(self.rb2))
+        pe = QPalette()
+        pe.setColor(QPalette.Window, Qt.white)
+        self.setPalette(pe)
+        self.setAutoFillBackground(True)
+        layout = QHBoxLayout()
+        layout.addWidget(self.rb1)
+        layout.addWidget(self.rb2)
+        self.setLayout(layout)
+
+    def btnstate_connect(self, btn):
+        if btn.isChecked():
+            if btn.text() == self.name1:
+                self.btn_status = 1
+            else:
+                self.btn_status = 2
+
+    @property
+    def btn_status(self):
+        return self.__btn_status
+
+    @btn_status.setter
+    def btn_status(self, state):
+        self.__btn_status = state
+
+
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     main = pigParameters()

@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding:UTF-8 -*-
+from __future__ import print_function
 import sys
 import logging
 
@@ -43,10 +46,12 @@ class pigImuReader(QThread):
     # imuThreadStop_qt = pyqtSignal()
     # buffer_qt = pyqtSignal(int)
 
-    def __init__(self, portName: str = "None", boolCaliw=0, boolCalia=0, baudRate: int = 230400, debug_en: bool = 0):
+    def __init__(self, portName: str = "None", boolCaliw=False, boolCalia=False, baudRate: int = 230400, debug_en: bool = 0):
         super(pigImuReader, self).__init__()
-        self.__isCali_w = boolCaliw
-        self.__isCali_a = boolCalia
+        # self.__isCali_w = boolCaliw
+        # self.__isCali_a = boolCalia
+        self.isCali_w = boolCaliw
+        self.isCali_a = boolCalia
         self.__Connector = None
         self.__portName = portName
         self.__baudRate = baudRate
@@ -102,7 +107,7 @@ class pigImuReader(QThread):
 
     @isCali_w.setter
     def isCali_w(self, isFlag):
-        self.__isCali_w = isFlag
+        self.__isCali_w = bool(int(isFlag))
 
     # End of ImuReader::isCali_w(setter)
 
@@ -114,7 +119,7 @@ class pigImuReader(QThread):
 
     @isCali_a.setter
     def isCali_a(self, isFlag):
-        self.__isCali_a = isFlag
+        self.__isCali_a = bool(int(isFlag))
 
     # End of ImuReader::isCali_a(setter)
 
@@ -175,6 +180,7 @@ class pigImuReader(QThread):
         return self.__Connector.readInputBuffer()
 
     def do_cali(self, dictContainer, cali_times):
+        # print("do_cali: ", self.isCali)
         if self.isCali:
             self.isCali = False
             temp = dictContainer
@@ -259,26 +265,18 @@ def myCallBack(imudata, imuoffset):
     new = time.perf_counter_ns()
     imuoffset["TIME"] = [0]
     imuoffset["PD_TEMP"] = [0]
-    if int(myImu.isCali_w) == 0:
+    if not myImu.isCali_w:
         imuoffset["NANO33_WX"] = [0]
         imuoffset["NANO33_WY"] = [0]
         imuoffset["NANO33_WZ"] = [0]
         imuoffset["PIG_ERR"] = [0]
-    if int(myImu.isCali_a) == 0:
+    if not myImu.isCali_a:
         imuoffset["ADXL_AX"] = [0]
         imuoffset["ADXL_AY"] = [0]
         imuoffset["ADXL_AZ"] = [0]
     imudata = cmn.dictOperation(imudata, imuoffset, "SUB", IMU_DATA_STRUCTURE)
-    # print(imudata)
-    # wx = imudata["NANO33_W"][0]
-    # wy = imudata["NANO33_W"][1]
-    # wz = imudata["NANO33_W"][2]
-    # ax = imudata["ADXL_A"][0]
-    # ay = imudata["ADXL_A"][1]
-    # az = imudata["ADXL_A"][2]
-    # t = imudata["TIME"][0]
     # print("%.5f %.5f  %.5f  %.5f  %.5f  %.5f  %.5f" % (t, wx, wy, wz, ax, ay, az))
-    print(imudata["TIME"], imudata["PIG_WZ"], imudata["ADXL_AZ"], imudata["PD_TEMP"])
+    print(imudata["TIME"], imudata["NANO33_WZ"], imudata["ADXL_AZ"], imudata["PD_TEMP"])
     old = new
 
 

@@ -1,4 +1,6 @@
+#!/usr/bin/env python
 # -*- coding:UTF-8 -*-
+from __future__ import print_function
 
 import serial
 import serial.tools.list_ports
@@ -99,7 +101,7 @@ class Connector:
     def readBinaryList(self, mum):
         try:
             data_r = self.__ser.read(mum)
-            data_r = [i for i in data_r]
+            data_r = [ord(i) for i in data_r]
         except:
             print("ERROR")
         # data = [hex(i) for i in data]

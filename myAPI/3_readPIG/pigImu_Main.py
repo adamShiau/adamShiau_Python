@@ -157,11 +157,16 @@ class mainWindow(QMainWindow):
         # print(len(self.imudata["TIME"]))
 
     def plotdata(self, imudata):
+        # print(self.top.plot1_rb.btn_status)
         sf_a = float(self.pig_parameter_widget.sf_a.le.text())
         sf_b = float(self.pig_parameter_widget.sf_b.le.text())
-        # self.top.plot1.ax1.setData(imudata["TIME"], imudata["PIG_WZ"] * sf_a + sf_b)
-        self.top.plot1.ax1.setData(imudata["TIME"], (imudata["PIG_WZ"] * sf_a + sf_b) * 3600)
-        # self.top.plot1.ax2.setData(imudata["TIME"], imudata["NANO33_WZ"])
+        if self.top.plot1_rb.btn_status == 2:
+            self.top.plot1.ax1.setData(imudata["TIME"], imudata["PIG_WZ"] * sf_a + sf_b)
+            self.top.plot1.ax2.setData(imudata["TIME"], imudata["NANO33_WZ"])
+        else:
+            self.top.plot1.ax1.setData(imudata["TIME"], (imudata["PIG_WZ"] * sf_a + sf_b) * 3600)
+            self.top.plot1.ax2.setData(imudata["TIME"], imudata["NANO33_WZ"]*3600)
+
         self.top.plot2.ax.setData(imudata["ADXL_AX"])
         self.top.plot3.ax.setData(imudata["ADXL_AY"])
         self.top.plot4.ax.setData(imudata["ADXL_AZ"])

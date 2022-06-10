@@ -179,7 +179,7 @@ def file_manager(isopen=False, name="notitle", mode="w", fnum=0):
             # print("file " + name + " is open")
 
         except FileNotFoundError:
-            print("file " + name + " does not exist, auto create new!")
+            print("file_manager: file " + name + " does not exist, auto create new!")
             fd[fnum] = open(name, "w")
 
         return True, fd[fnum]
@@ -189,10 +189,10 @@ def file_manager(isopen=False, name="notitle", mode="w", fnum=0):
             fd[fnum].close()
             # print("file " + name + " is close")
         except NameError:
-            print("NameError")
+            print("file_manager: NameError")
             pass
         except AttributeError:
-            print("AttributeError")
+            print("file_manager: AttributeError")
             pass
         return False, fd[fnum]
 

@@ -1,4 +1,6 @@
+#!/usr/bin/env python
 # -*- coding:UTF-8 -*-
+from __future__ import print_function
 import time
 import numpy as np
 from datetime import datetime
@@ -178,7 +180,7 @@ def file_manager(isopen=False, name="notitle", mode="w", fnum=0):
             fd[fnum] = open(name, mode)
             # print("file " + name + " is open")
 
-        except FileNotFoundError:
+        except:
             print("file " + name + " does not exist, auto create new!")
             fd[fnum] = open(name, "w")
 
@@ -199,7 +201,7 @@ def file_manager(isopen=False, name="notitle", mode="w", fnum=0):
 
 # End of file_controller
 
-def saveData2File(isopen: bool = False, data: list = None, fmt: str = " ", file: object = None):
+def saveData2File(isopen=False, data=None, fmt=" ", file=None):
     if isopen:
         data = np.vstack(data).T
         np.savetxt(file, data, fmt=fmt)
@@ -246,7 +248,7 @@ class parameters_manager:
         self.__name = name
         self.__fnum = fnum
 
-    def check_file_exist(self) -> dict:
+    def check_file_exist(self):
         isopen, fd = file_manager(isopen=True, name=self.__name, mode="r", fnum=self.__fnum)
 
         if isopen:
@@ -325,8 +327,8 @@ def convert2Sign_4B(datain):
 
 
 def wait_ms(ms):
-    t_old = time.perf_counter()
-    while (time.perf_counter() - t_old) * 1000 < ms:
+    t_old = time.clock()
+    while (time.clock() - t_old) * 1000 < ms:
         pass
 
 
@@ -337,7 +339,7 @@ def print_debug(s, en=0):
         print(s)
 
 
-def dictOperation(dictA: dict, dictB: dict, mode: str, dictStruct: dict):
+def dictOperation(dictA, dictB, mode, dictStruct):
     # rt = dictStruct
     rt = {k: [j for j in dictStruct[k]] for k in dictStruct}
     # print("rt: ", rt)

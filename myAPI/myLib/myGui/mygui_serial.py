@@ -24,7 +24,7 @@ class usbConnect():
         layout.addWidget(self.bt_connect, 0, 2, 1, 1)
         layout.addWidget(self.bt_disconnect, 0, 3, 1, 1)
         layout.addWidget(self.lb_comDisp, 1, 0, 1, 2)
-        layout.addWidget(self.lb_status, 1, 2, 1, 1)
+        layout.addWidget(self.lb_status, 1, 2, 1, 2)
         self.__groupBox.setLayout(layout)
         return self.__groupBox
 
@@ -171,6 +171,7 @@ class checkBoxBlock_2(QGroupBox):
         self.setTitle(title)
         self.cb_1 = QCheckBox(name1)
         self.cb_2 = QCheckBox(name2)
+        self.cb_1.setChecked(True)
         pe = QPalette()
         pe.setColor(QPalette.Window, Qt.white)
         self.setPalette(pe)
@@ -182,15 +183,66 @@ class checkBoxBlock_2(QGroupBox):
         self.setLayout(layout)
 
 
+class calibrationBlock(QGroupBox):
+    def __init__(self):
+        super(calibrationBlock, self).__init__()
+        self.__isCali_a = False
+        self.__isCali_w = True
+        self.setWindowTitle('PIG calibration')
+        self.setTitle('enable')
+        self.setCheckable(True)
+        self.cb_cali_w = QCheckBox('cali. gyro')
+        self.cb_cali_a = QCheckBox('cali. accelerometer')
+        self.cb_cali_w.setChecked(True)
+        self.cb_cali_a.stateChanged.connect(lambda: self.cbstate_connect(self.cb_cali_a))
+        self.cb_cali_w.stateChanged.connect(lambda: self.cbstate_connect(self.cb_cali_w))
+
+        layout = QVBoxLayout()
+        layout.addWidget(self.cb_cali_w)
+        layout.addWidget(self.cb_cali_a)
+        self.setLayout(layout)
+
+    def cbstate_connect(self, cb):
+        if cb.text() == 'cali. gyro':
+            self.isCali_w = cb.isChecked()
+        elif cb.text() == 'cali. accelerometer':
+            self.isCali_a = cb.isChecked()
+        self.cali_status()
+
+    def cali_status(self):
+        if not self.isChecked():
+            return False, False
+        else:
+            return self.isCali_w, self.isCali_a
+
+    @property
+    def isCali_w(self):
+        return self.__isCali_w
+
+    @isCali_w.setter
+    def isCali_w(self, isFlag):
+        self.__isCali_w = isFlag
+        # print("isCali_w: ", self.isCali_w)
+
+    @property
+    def isCali_a(self):
+        return self.__isCali_a
+
+    @isCali_a.setter
+    def isCali_a(self, isFlag):
+        self.__isCali_a = isFlag
+        # print("isCali_a: ", self.isCali_a)
+
+
 class radioButtonBlock_2(QGroupBox):
     def __init__(self, title='', name1='', name2=''):
         super(radioButtonBlock_2, self).__init__()
-        self.__btn_status = 1
-        self.name1 = name1
-        self.name2 = name2
         self.setTitle(title)
+        self.__btn_status = None
         self.rb1 = QRadioButton(name1)
         self.rb2 = QRadioButton(name2)
+        self.rb1.setChecked(True)
+        self.btn_status = name1
         self.rb1.toggled.connect(lambda: self.btnstate_connect(self.rb1))
         self.rb2.toggled.connect(lambda: self.btnstate_connect(self.rb2))
         pe = QPalette()
@@ -204,10 +256,7 @@ class radioButtonBlock_2(QGroupBox):
 
     def btnstate_connect(self, btn):
         if btn.isChecked():
-            if btn.text() == self.name1:
-                self.btn_status = 1
-            else:
-                self.btn_status = 2
+            self.btn_status = btn.text()
 
     @property
     def btn_status(self):
@@ -220,6 +269,6 @@ class radioButtonBlock_2(QGroupBox):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    main = pigParameters()
+    main = calibrationBlock()
     main.show()
     app.exec_()

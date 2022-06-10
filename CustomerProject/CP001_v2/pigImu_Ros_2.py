@@ -5,10 +5,10 @@ import time
 import sys
 import rosParameters as rosVar
 import numpy as np
-from pigImuReader import pigImuReader
+from pigImuReader import pigImuReader, IMU_DATA_STRUCTURE
 from imuLib.Connector import Connector
 from imuLib import common as cmn
-from imuLib.fogParameters import pig_parameters_ros, INIT_PARAMETERS
+from imuLib.fogParameters import pig_parameters_ros
 import rospy
 from sensor_msgs.msg import Imu
 
@@ -21,10 +21,22 @@ ww2_array = np.empty(0)
 w_array = [np.empty(0), np.empty(0)]
 
 
-def myCallBack(imudata):
+def myCallBack(imudata, imuoffset):
+    imuoffset["TIME"] = [0]
+    imuoffset["PD_TEMP"] = [0]
+    if not myImu.isCali_w:
+        imuoffset["NANO33_WX"] = [0]
+        imuoffset["NANO33_WY"] = [0]
+        imuoffset["NANO33_WZ"] = [0]
+        imuoffset["PIG_WZ"] = [0]
+    if not myImu.isCali_a:
+        imuoffset["ADXL_AX"] = [0]
+        imuoffset["ADXL_AY"] = [0]
+        imuoffset["ADXL_AZ"] = [0]
+    imudata = cmn.dictOperation(imudata, imuoffset, "SUB", IMU_DATA_STRUCTURE)
     wx = imudata["NANO33_WX"]
     wy = imudata["NANO33_WY"]
-    fog_wz = imudata["PIG_WZ"]*INIT_PARAMETERS['SF_A']+ INIT_PARAMETERS['SF_B']
+    fog_wz = imudata["PIG_WZ"]
     ax = imudata["ADXL_AX"]
     ay = imudata["ADXL_AY"]
     az = imudata["ADXL_AZ"]
@@ -45,8 +57,7 @@ def ros_Imu_publish(wx, wy, wz, ax, ay, az):
                                   rosVar.COV_ORI_ZX, rosVar.COV_ORI_ZY, rosVar.COV_ORI_ZZ]
     msg.angular_velocity.x = wx * np.pi / 180
     msg.angular_velocity.y = wy * np.pi / 180
-    # msg.angular_velocity.z = wz * np.pi / 180
-    msg.angular_velocity.z = wz*3600
+    msg.angular_velocity.z = wz * np.pi / 180
     msg.angular_velocity_covariance = [rosVar.COV_W_XX, rosVar.COV_W_XY, rosVar.COV_W_XZ,
                                        rosVar.COV_W_YX, rosVar.COV_W_YY, rosVar.COV_W_YZ,
                                        rosVar.COV_W_ZX, rosVar.COV_W_ZY, rosVar.COV_W_ZZ]
@@ -91,9 +102,8 @@ if __name__ == "__main__":
 
         # par_manager = cmn.parameters_manager("parameters_SP9.json", INIT_PARAMETERS, 1)
         # initPara = par_manager.check_file_exist()
-        myImu = pigImuReader()
-        myImu.isCali_w = sys.argv[2]
-        myImu.isCali_a = sys.argv[3]
+        myImu = pigImuReader(boolCalia=sys.argv[2], boolCaliw=sys.argv[3])
+
         myImu.arrayNum = 1
         myImu.setCallback(myCallBack)
         myImu.connect(ser, "/dev/" + sys.argv[1], 230400)

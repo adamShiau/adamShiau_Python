@@ -53,48 +53,6 @@ INIT_PARAMETERS = {"MOD_H": 6850,
                    "SF_B": -0.00137052112589694,
                    "DATA_RATE": 2200
                    }
-# MOD_H_INIT 			= 6850
-# MOD_L_INIT 			= -6850
-# FREQ_INIT 			= 135
-# DAC_GAIN_INIT 		= 20
-# ERR_OFFSET_INIT 	= 0
-# POLARITY_INIT 		= 1
-# WAIT_CNT_INIT 		= 65
-# ERR_TH_INIT 		= 0
-# ERR_AVG_INIT 		= 6
-# GAIN1_SEL_INIT 		= 6
-# GAIN2_SEL_INIT 		= 5
-# FB_ON_INIT			= 1
-# CONST_STEP_INIT		= 0
-# FPGA_Q_INIT			= 1
-# FPGA_R_INIT			= 6
-# SW_Q_INIT			= 1
-# SW_R_INIT			= 6
-# SF_A_INIT = 0.00295210451588764*1.02/2
-# SF_B_INIT = -0.00137052112589694
-# DATA_RATE_INIT		= 2200
-
-''' FOG paras position'''
-# POS_MOD_H_INIT = 0
-# POS_MOD_L_INIT = 1
-# POS_FREQ_INIT = 2
-# POS_DAC_GAIN_INIT = 3
-# POS_ERR_OFFSET_INIT = 4
-# POS_POLARITY_INIT = 5
-# POS_WAIT_CNT_INIT = 6
-# POS_ERR_TH_INIT = 7
-# POS_ERR_AVG_INIT = 8
-# POS_GAIN1_SEL_INIT = 9
-# POS_GAIN2_SEL_INIT = 10
-# POS_FB_ON_INIT = 11
-# POS_CONST_STEP_INIT = 12
-# POS_FPGA_Q_INIT = 13
-# POS_FPGA_R_INIT = 14
-# POS_SW_Q_INIT = 15
-# POS_SW_R_INIT = 16
-# POS_SF_A_INIT = 17
-# POS_SF_B_INIT = 18
-# POS_DATA_RATE_INIT = 19
 
 
 class pig_parameters_widget(QGroupBox):
@@ -121,7 +79,9 @@ class pig_parameters_widget(QGroupBox):
         self.KF_Q = spinBlock(title='SW_Q', minValue=1, maxValue=100000, double=False, step=1)
         self.KF_R = spinBlock(title='SW_R', minValue=0, maxValue=100000, double=False, step=1)
         self.HD_Q = spinBlock(title='FPGA_Q', minValue=1, maxValue=100000, double=False, step=1)
+        self.HD_Q.setEnabled(False)
         self.HD_R = spinBlock(title='FPGA_R', minValue=0, maxValue=100000, double=False, step=1)
+        self.HD_R.setEnabled(False)
         '''slider'''
         self.dataRate_sd = sliderBlock(title='DATE RATE', minValue=400, maxValue=2500, curValue=2135, interval=100)
         ''' edit line '''
@@ -305,11 +265,13 @@ class pig_parameters_widget(QGroupBox):
     def update_KF_Q(self):
         value = self.KF_Q.spin.value()
         print('KF_Q: ', value)
+        self.__act.kal_Q = value
         self.__par_manager.update_parameters("KF_Q", value)
 
     def update_KF_R(self):
         value = self.KF_R.spin.value()
         print('KF_R: ', value)
+        self.__act.kal_R = value
         self.__par_manager.update_parameters("KF_R", value)
 
     def send_DATA_RATE_CMD(self):
@@ -321,11 +283,13 @@ class pig_parameters_widget(QGroupBox):
     def SF_A_EDIT(self):
         value = float(self.sf_a.le.text())
         print('sf_a: ', value)
+        self.__act.sf_a = value
         self.__par_manager.update_parameters("SF_A", value)
 
     def SF_B_EDIT(self):
         value = float(self.sf_b.le.text())
         print('sf_b: ', value)
+        self.__act.sf_b = value
         self.__par_manager.update_parameters("SF_B", value)
 
 

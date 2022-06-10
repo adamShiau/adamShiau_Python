@@ -27,7 +27,7 @@ class mainWindow(QMainWindow):
         self.top = TOP()
         self.act = ACTION()
         self.imudata_file = cmn.data_manager(fnum=0)
-
+        self.pig_cali_menu = calibrationBlock()
         self.act.isCali = True
         self.menu = self.menuBar()
         self.pig_menu = pig_menu_widget(self.menu, self)
@@ -51,16 +51,25 @@ class mainWindow(QMainWindow):
         # bt connection
         self.top.start_bt.clicked.connect(self.start)
         self.top.stop_bt.clicked.connect(self.stop)
+        # rb connection
+        self.top.kal_filter_rb.toggled.connect(lambda:self.update_kalFilter_en(self.top.kal_filter_rb))
         # pyqtSignal connection
         self.act.imudata_qt.connect(self.collectData)
         self.act.imuThreadStop_qt.connect(self.imuThreadStopDetect)
         self.act.buffer_qt.connect(self.printBuffer)
         self.is_port_open_qt.connect(self.is_port_open_status_manager)
         # menu trigger connection
-        self.pig_menu.action_trigger_connect(self.show_parameters)
+        self.pig_menu.action_trigger_connect([self.show_parameters, self.show_calibration_menu])
 
     def show_parameters(self):
         self.pig_parameter_widget.show()
+
+    def show_calibration_menu(self):
+        self.pig_cali_menu.show()
+
+    def update_kalFilter_en(self, rb):
+        self.act.isKal = rb.isChecked()
+
 
     def printBuffer(self, val):
         self.top.buffer_lb.lb.setText(str(val))
@@ -90,6 +99,7 @@ class mainWindow(QMainWindow):
         is_port_open = self.act.connect(self.__connector, self.__portName, 230400)
         self.is_port_open_qt.emit(is_port_open)
         self.pig_parameter_widget = pig_parameters_widget(self.act)
+        self.act.isCali_w, self.act.isCali_a = self.pig_cali_menu.cali_status()  # update calibration flag to act
 
     def disconnect(self):
         is_port_open = self.act.disconnect()
@@ -114,12 +124,10 @@ class mainWindow(QMainWindow):
         self.top.save_block.rb.setChecked(False)
         self.imudata_file.close()
 
-    def collectData(self, imudata, imuoffset):
+    def collectData(self, imudata):
         input_buf = self.act.readInputBuffer()
         t0 = time.perf_counter()
-        imuoffset["TIME"] = [0]
-        imuoffset["PD_TEMP"] = [0]
-        imudata = cmn.dictOperation(imudata, imuoffset, "SUB", IMU_DATA_STRUCTURE)
+        # imudata = cmn.dictOperation(imudata, imuoffset, "SUB", IMU_DATA_STRUCTURE)
         self.printPdTemperature(imudata["PD_TEMP"][0])
         t1 = time.perf_counter()
         # self.imudata = cmn.dictOperation(self.imudata, imudata, "APPEND", IMU_DATA_STRUCTURE)
@@ -157,15 +165,20 @@ class mainWindow(QMainWindow):
         # print(len(self.imudata["TIME"]))
 
     def plotdata(self, imudata):
-        # print(self.top.plot1_rb.btn_status)
-        sf_a = float(self.pig_parameter_widget.sf_a.le.text())
-        sf_b = float(self.pig_parameter_widget.sf_b.le.text())
-        if self.top.plot1_rb.btn_status == 2:
-            self.top.plot1.ax1.setData(imudata["TIME"], imudata["PIG_WZ"] * sf_a + sf_b)
-            self.top.plot1.ax2.setData(imudata["TIME"], imudata["NANO33_WZ"])
+
+        if self.top.plot1_unit_rb.btn_status == 'dph':
+            factor = 3600
         else:
-            self.top.plot1.ax1.setData(imudata["TIME"], (imudata["PIG_WZ"] * sf_a + sf_b) * 3600)
-            self.top.plot1.ax2.setData(imudata["TIME"], imudata["NANO33_WZ"]*3600)
+            factor = 1
+
+        if self.top.plot1_showWz_cb.cb_1.isChecked():
+            self.top.plot1.ax1.setData(imudata["TIME"], imudata["PIG_WZ"] * factor)
+        else:
+            self.top.plot1.ax1.clear()
+        if self.top.plot1_showWz_cb.cb_2.isChecked():
+            self.top.plot1.ax2.setData(imudata["TIME"], imudata["NANO33_WZ"] * factor)
+        else:
+            self.top.plot1.ax2.clear()
 
         self.top.plot2.ax.setData(imudata["ADXL_AX"])
         self.top.plot3.ax.setData(imudata["ADXL_AY"])
@@ -179,4 +192,3 @@ if __name__ == "__main__":
     main = mainWindow(debug_en=False)
     main.show()
     app.exec_()
-

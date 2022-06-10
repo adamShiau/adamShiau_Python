@@ -31,4 +31,4 @@ if __name__ == "__main__":
     # win = Window()
     # win.show()
     # sys.exit(app.exec_())
-    print(bool(int("1")))
+    print(bool(int('0')))

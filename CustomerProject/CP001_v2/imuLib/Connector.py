@@ -10,7 +10,7 @@ import numpy as np
 
 
 class Connector:
-    def __init__(self, portName: str = "COM7", baudRate: int = 230400) -> None:
+    def __init__(self, portName="COM7", baudRate=230400):
         # self.portlist = None
         self.__portName = portName
         self.__baudRate = baudRate
@@ -53,13 +53,13 @@ class Connector:
 
     def connect(self):
         self.__ser.baudrate = self.__baudRate
-        self.__ser.port = self.__portName
+        self.__ser.port = self.portName
         # self.__ser.timeout = 1
         # self.__ser.writeTimeout = 1
         self.__ser.parity = serial.PARITY_NONE
         self.__ser.stopbits = serial.STOPBITS_ONE
         self.__ser.bytesize = serial.EIGHTBITS
-
+        print("connect: ", self.portName)
         try:
             self.__ser.open()
         except IOError:

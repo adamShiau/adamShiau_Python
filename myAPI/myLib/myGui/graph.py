@@ -65,11 +65,11 @@ class pgGraph_1_2(QMainWindow):
         pen1 = pg.mkPen(color=color1, width=1)
         pen2 = pg.mkPen(color=color2, width=1)
         self.p = win.addPlot(title=title)
-        print(type(win))
-        print(type(self.p))
+        # print(type(win))
+        # print(type(self.p))
         self.ax1 = self.p.plot(pen=pen1)
         self.ax2 = self.p.plot(pen=pen2)
-        print(type(self.ax1))
+        # print(type(self.ax1))
         self.setCentralWidget(win)
 
 

@@ -1,12 +1,34 @@
-import time
-from datetime import datetime
+import sys
 
-import numpy as np
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QApplication, QLabel, QMainWindow
+from PyQt5.QtWidgets import QMenu
+# Snip...
 
-t = np.array([1, 2, 3, 4, 5, 6, 7.123])
-print(np.sum(t))
-print(t[5])
-print(t[-1])
-print(len(t))
+class Window(QMainWindow):
 
-# print(datetime.now())
+    def __init__(self, parent=None):
+        """Initializer."""
+        super().__init__(parent)
+        self.setWindowTitle("Python Menus & Toolbars")
+        self.resize(400, 200)
+        self.centralWidget = QLabel("Hello, World")
+        self.centralWidget.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+        self.setCentralWidget(self.centralWidget)
+        self._createMenuBar()
+
+    def _createMenuBar(self):
+        menuBar = self.menuBar()
+        # Creating menus using a QMenu object
+        fileMenu = QMenu("&File", self)
+        menuBar.addMenu(fileMenu)
+        # Creating menus using a title
+        editMenu = menuBar.addMenu("&Edit")
+        helpMenu = menuBar.addMenu("&Help")
+
+if __name__ == "__main__":
+    # app = QApplication(sys.argv)
+    # win = Window()
+    # win.show()
+    # sys.exit(app.exec_())
+    print(bool(int('0')))

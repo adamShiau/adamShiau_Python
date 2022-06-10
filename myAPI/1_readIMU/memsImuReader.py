@@ -12,6 +12,8 @@ from myLib import common as cmn
 import numpy as np
 import logging
 
+# from pig_parameters import *
+
 IMU_DATA_STRUCTURE = {
     "NANO33_WX": np.zeros(1),
     "NANO33_WY": np.zeros(1),
@@ -26,27 +28,37 @@ HEADER_KVH = [0xFE, 0x81, 0xFF, 0x55]
 SENS_ADXL355_8G = 0.0000156
 SENS_NANO33_GYRO_250 = 0.00875
 SENS_NANO33_AXLM_4G = 0.000122
-POS_ADXL355_AX = 5 - 1
-POS_NANO33_WX = 14 - 1
-POS_CRC = 26 - 1
+POS_ADXL355_AX = 4
+POS_NANO33_WX = 13
+POS_PIG = 25
+POS_CRC = 35
 old = time.perf_counter_ns()
 
 
 class memsImuReader(QThread):
     if not __name__ == "__main__":
-        imudata_qt = pyqtSignal(object, object)
+        imudata_qt = pyqtSignal(object)
         imuThreadStop_qt = pyqtSignal()
         buffer_qt = pyqtSignal(int)
 
-    def __init__(self, portName: str = "None", baudRate: int = 230400, debug_en: bool = 0):
+    def __init__(self, portName: str = "None", boolCaliw=False, boolCalia=False, baudRate: int = 230400,
+                 debug_en: bool = 0):
         super(memsImuReader, self).__init__()
         self.nano33_wz_kal = filter.kalman_1D()
-        # self.nano33_wz_kal = filter.moving_average(30)
+        # self.pig_wz_kal = filter.kalman_1D()
+        self.__isCali_a = boolCalia
+        self.__isCali_w = boolCaliw
+        self.sf_a = 1
+        self.sf_b = 0
+        self.isKal = False
+        self.kal_Q = 1
+        self.kal_R = 1
+        self.isCali = (self.isCali_w or self.isCali_a)
         self.__Connector = None
         self.__portName = portName
         self.__baudRate = baudRate
         self.__isRun = True
-        self.__isCali = False
+        # self.__isCali = False
         self.__callBack = None
         self.__crcFail = 0
         self.arrayNum = 10
@@ -61,6 +73,53 @@ class memsImuReader(QThread):
         print("class memsImuReader's destructor called!")
 
     # End of destructor
+
+    @property
+    def sf_a(self):
+        return self.__sf_a
+
+    @sf_a.setter
+    def sf_a(self, value):
+        self.__sf_a = value
+        # print("act.sf_a: ", self.__sf_a)
+
+    @property
+    def sf_b(self):
+        return self.__sf_b
+
+    @sf_b.setter
+    def sf_b(self, value):
+        self.__sf_b = value
+        # print("act.sf_b: ", self.__sf_b)
+
+    @property
+    def isKal(self):
+        return self.__isKal
+
+    @isKal.setter
+    def isKal(self, en):
+        self.__isKal = en
+        print("act.isKal: ", self.isKal)
+
+    @property
+    def kal_Q(self):
+        return self.__kal_Q
+
+    @kal_Q.setter
+    def kal_Q(self, Q):
+        self.__kal_Q = Q
+        self.nano33_wz_kal.kal_Q = self.kal_Q
+        # self.pig_wz_kal.kal_Q = self.kal_Q
+
+    @property
+    def kal_R(self):
+        return self.__kal_R
+
+    @kal_R.setter
+    def kal_R(self, R):
+        self.__kal_R = R
+        self.nano33_wz_kal.kal_R = self.kal_R
+        # self.pig_wz_kal.kal_R = self.kal_R
 
     @property
     def isRun(self):
@@ -83,11 +142,37 @@ class memsImuReader(QThread):
     @isCali.setter
     def isCali(self, isFlag):
         self.__isCali = isFlag
+        # print("self.__isCali: ", self.__isCali)
 
     # End of ImuReader::isCali(setter)
 
-    def writeImuCmd(self, cmd, value):
+    @property
+    def isCali_w(self):
+        return self.__isCali_w
 
+    # End of memsImuReader::isCali_w(getter)
+
+    @isCali_w.setter
+    def isCali_w(self, isFlag):
+        self.__isCali_w = bool(int(isFlag))
+        self.isCali = (self.isCali_w or self.isCali_a)
+
+    # End of ImuReader::isCali_w(setter)
+
+    @property
+    def isCali_a(self):
+        return self.__isCali_a
+
+    # End of memsImuReader::isCali_a(getter)
+
+    @isCali_a.setter
+    def isCali_a(self, isFlag):
+        self.__isCali_a = bool(int(isFlag))
+        self.isCali = (self.isCali_w or self.isCali_a)
+
+    # End of ImuReader::isCali_a(setter)
+
+    def writeImuCmd(self, cmd, value):
         if value < 0:
             value = (1 << 32) + value
         # End of if-condition
@@ -98,7 +183,6 @@ class memsImuReader(QThread):
     # End of memsImuReader::writeImuCmd
 
     def connect(self, port, portName, baudRate):
-        # self.__Connector = Connector(portName=self.__portName, baudRate=self.__baudRate)
         self.__Connector = port
         port.portName = portName
         port.baudRate = baudRate
@@ -131,13 +215,15 @@ class memsImuReader(QThread):
         NANO_AX, NANO_AY, NANO_AZ = cmn.readNANO33(dataPacket, EN=1, PRINT=0, POS_WX=POS_NANO33_WX,
                                                    sf_xlm=SENS_NANO33_AXLM_4G,
                                                    sf_gyro=SENS_NANO33_GYRO_250)
-        NANO_WZ = self.nano33_wz_kal.update(NANO_WZ)
-
         ADXL_AX, ADXL_AY, ADXL_AZ = cmn.readADXL355(dataPacket, EN=1, PRINT=0, POS_AX=POS_ADXL355_AX,
                                                     sf=SENS_ADXL355_8G)
+        if not self.isCali:
+            if self.isKal:
+                NANO_WZ = self.nano33_wz_kal.update(NANO_WZ)
         t = time.perf_counter()
         imudata = {"NANO33_WX": NANO_WX, "NANO33_WY": NANO_WY, "NANO33_WZ": NANO_WZ,
-                   "ADXL_AX": NANO_AX, "ADXL_AY": ADXL_AY, "ADXL_AZ": ADXL_AZ, "TIME": t}
+                   "ADXL_AX": NANO_AX, "ADXL_AY": ADXL_AY, "ADXL_AZ": ADXL_AZ, "TIME": t
+                   }
         return dataPacket, imudata
 
     def readInputBuffer(self):
@@ -145,14 +231,14 @@ class memsImuReader(QThread):
 
     def do_cali(self, dictContainer, cali_times):
         if self.isCali:
-            self.isCali = False
-            temp = dictContainer
+            temp = {k: np.zeros(1) for k in set(IMU_DATA_STRUCTURE)}
             print("---calibrating offset start-----")
             for i in range(cali_times):
                 dataPacket, imudata = self.getImuData()
                 temp = cmn.dictOperation(temp, imudata, "ADD", IMU_DATA_STRUCTURE)
             temp = {k: temp.get(k) / cali_times for k in set(self.__imuoffset)}
             print("---calibrating offset stop-----")
+            self.isCali = False
             return temp
         else:
             return dictContainer
@@ -169,9 +255,6 @@ class memsImuReader(QThread):
 
             self.__imuoffset = self.do_cali(self.__imuoffset, 100)
 
-            # imudataArray = {k: [np.empty(0) for i in range(len(IMU_DATA_STRUCTURE.get(k)))]
-            #                 for k in set(IMU_DATA_STRUCTURE)}
-
             imudataArray = {k: np.empty(0) for k in set(IMU_DATA_STRUCTURE)}
 
             for i in range(self.arrayNum):
@@ -180,15 +263,17 @@ class memsImuReader(QThread):
                 # while self.__Connector.readInputBuffer() < self.arrayNum * 10:
                 while not self.__Connector.readInputBuffer():
                     # print(self.__Connector.readInputBuffer())
+                    # print("No input data!")
+                    # cmn.wait_ms(500)
                     pass
                 t1 = time.perf_counter()
+
                 dataPacket, imudata = self.getImuData()
                 t2 = time.perf_counter()
                 isCrcFail = crcLib.isCrc32Fail(dataPacket, len(dataPacket))
                 t3 = time.perf_counter()
                 # err correction
                 imudata = crcLib.errCorrection(isCrcFail, imudata)
-                # imudata["NANO33_WZ"], p_nano33_wz = self.nano33_wz_kal.update(imudata["NANO33_WZ"])
                 # end of err correction
                 t4 = time.perf_counter()
                 # imudataArray = cmn.dictOperation(imudataArray, imudata, "APPEND", IMU_DATA_STRUCTURE)
@@ -207,24 +292,39 @@ class memsImuReader(QThread):
                 cmn.print_debug(debug_info, self.__debug)
 
             # end of for loop
+
             imudataArray["TIME"] = imudataArray["TIME"] - t0
+
+            self.offset_setting(self.__imuoffset)
+            imudataArray = cmn.dictOperation(imudataArray, self.__imuoffset, "SUB", IMU_DATA_STRUCTURE)
+
             if self.__callBack is not None:
-                self.__callBack(imudataArray, self.__imuoffset)
+                self.__callBack(imudataArray)
 
             if not __name__ == "__main__":
-                self.imudata_qt.emit(imudataArray, self.__imuoffset)
+                self.imudata_qt.emit(imudataArray)
             # print(imudataArray)
 
         # end of while loop
+
     # End of memsImuReader::run
 
+    def offset_setting(self, imuoffset):
+        imuoffset["TIME"] = [0]
+        if not self.isCali_w:
+            imuoffset["NANO33_WX"] = [0]
+            imuoffset["NANO33_WY"] = [0]
+            imuoffset["NANO33_WZ"] = [0]
+        if not self.isCali_a:
+            imuoffset["ADXL_AX"] = [0]
+            imuoffset["ADXL_AY"] = [0]
+            imuoffset["ADXL_AZ"] = [0]
 
-def myCallBack(imudata, imuoffset):
+
+def myCallBack(imudata):
     global old
     new = time.perf_counter_ns()
-    imuoffset["TIME"] = [0]
-    imudata = cmn.dictOperation(imudata, imuoffset, "SUB", IMU_DATA_STRUCTURE)
-    print(imudata)
+    # print(imudata)
     # wx = imudata["NANO33_W"][0]
     # wy = imudata["NANO33_W"][1]
     # wz = imudata["NANO33_W"][2]
@@ -239,12 +339,13 @@ def myCallBack(imudata, imuoffset):
 
 if __name__ == "__main__":
     ser = Connector()
-    myImu = memsImuReader(debug_en=True)
+    myImu = memsImuReader(debug_en=False)
     myImu.arrayNum = 2
     myImu.setCallback(myCallBack)
     myImu.isCali = True
     myImu.connect(ser, "COM6", 230400)
     myImu.readIMU()
+    myImu.isRun = True
     myImu.start()
     try:
         while True:

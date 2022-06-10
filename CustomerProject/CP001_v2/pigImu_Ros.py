@@ -7,24 +7,28 @@ import rosParameters as rosVar
 import numpy as np
 from pigImuReader import pigImuReader
 from imuLib.Connector import Connector
-from imuLib import common as cmn
-from imuLib.fogParameters import pig_parameters_ros, INIT_PARAMETERS
+from imuLib.fogParameters import pig_parameters_ros
 import rospy
 from sensor_msgs.msg import Imu
 
-t_array = np.empty(0)
-tt_array = np.empty(0)
-w1_array = np.empty(0)
-w2_array = np.empty(0)
-ww1_array = np.empty(0)
-ww2_array = np.empty(0)
-w_array = [np.empty(0), np.empty(0)]
+# gyro output unit selection
+DPS = 1
+DPH = 2
+RPS = 3
+unit = None
+# t_array = np.empty(0)
+# tt_array = np.empty(0)
+# w1_array = np.empty(0)
+# w2_array = np.empty(0)
+# ww1_array = np.empty(0)
+# ww2_array = np.empty(0)
+# w_array = [np.empty(0), np.empty(0)]
 
 
 def myCallBack(imudata):
     wx = imudata["NANO33_WX"]
     wy = imudata["NANO33_WY"]
-    fog_wz = imudata["PIG_WZ"]*INIT_PARAMETERS['SF_A']+ INIT_PARAMETERS['SF_B']
+    fog_wz = imudata["PIG_WZ"]
     ax = imudata["ADXL_AX"]
     ay = imudata["ADXL_AY"]
     az = imudata["ADXL_AZ"]
@@ -33,6 +37,15 @@ def myCallBack(imudata):
 
 
 def ros_Imu_publish(wx, wy, wz, ax, ay, az):
+    global unit
+
+    if unit == DPS:
+        factor = 1
+    elif unit == DPH:
+        factor = 3600
+    elif unit == RPS:
+        factor = np.pi/180
+
     msg = Imu()
     msg.header.stamp = rospy.Time.now()
     msg.header.frame_id = 'base_link'
@@ -43,10 +56,9 @@ def ros_Imu_publish(wx, wy, wz, ax, ay, az):
     msg.orientation_covariance = [rosVar.COV_ORI_XX, rosVar.COV_ORI_XY, rosVar.COV_ORI_XZ,
                                   rosVar.COV_ORI_YX, rosVar.COV_ORI_YY, rosVar.COV_ORI_YZ,
                                   rosVar.COV_ORI_ZX, rosVar.COV_ORI_ZY, rosVar.COV_ORI_ZZ]
-    msg.angular_velocity.x = wx * np.pi / 180
-    msg.angular_velocity.y = wy * np.pi / 180
-    # msg.angular_velocity.z = wz * np.pi / 180
-    msg.angular_velocity.z = wz*3600
+    msg.angular_velocity.x = wx * factor
+    msg.angular_velocity.y = wy * factor
+    msg.angular_velocity.z = wz * factor
     msg.angular_velocity_covariance = [rosVar.COV_W_XX, rosVar.COV_W_XY, rosVar.COV_W_XZ,
                                        rosVar.COV_W_YX, rosVar.COV_W_YY, rosVar.COV_W_YZ,
                                        rosVar.COV_W_ZX, rosVar.COV_W_ZY, rosVar.COV_W_ZZ]
@@ -85,12 +97,11 @@ def checkImudata(t, w1, w2):
 
 
 if __name__ == "__main__":
+    global unit
     try:
         print("running myImu.py")
         ser = Connector()
-
-        # par_manager = cmn.parameters_manager("parameters_SP9.json", INIT_PARAMETERS, 1)
-        # initPara = par_manager.check_file_exist()
+        unit = DPH
         myImu = pigImuReader()
         myImu.isCali_w = sys.argv[2]
         myImu.isCali_a = sys.argv[3]

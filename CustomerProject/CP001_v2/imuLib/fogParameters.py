@@ -53,26 +53,6 @@ INIT_PARAMETERS = {"MOD_H": 6850,
                    "DATA_RATE": 2296
                    }
 
-# MOD_H_INIT = 3250
-# MOD_L_INIT = -3250
-# FREQ_INIT = 139
-# DAC_GAIN_INIT = 290
-# ERR_OFFSET_INIT = 0
-# POLARITY_INIT = 1
-# WAIT_CNT_INIT = 65
-# ERR_TH_INIT = 0
-# ERR_AVG_INIT = 6
-# GAIN1_SEL_INIT = 6
-# GAIN2_SEL_INIT = 5
-# FB_ON_INIT = 1
-# CONST_STEP_INIT = 0
-# FPGA_Q_INIT = 1
-# FPGA_R_INIT = 6
-# SW_Q_INIT = 1
-# SW_R_INIT = 6
-# SF_A_INIT = 0.00147520924033685
-# SF_B_INIT = 0.00177684802171464
-# DATA_RATE_INIT = 1885
 
 '''FPGA OUTPUT COEFFICIENT'''
 ADC_COEFFI = 4000 / 8192
@@ -85,7 +65,6 @@ HEADER_PIG = [0xFE, 0x81, 0xFF, 0x55]  # 254, 129, 255, 85
 SENS_NANO33_GYRO_250 = 0.00875
 SENS_NANO33_AXLM_4G = 0.000122
 SENS_ADXL355_8G = 0.0000156
-
 
 class pig_parameters_ros:
     def __init__(self, act):
@@ -111,90 +90,91 @@ class pig_parameters_ros:
         self.send_FB_ON_CMD(para["FB_ON"])
         self.send_DAC_GAIN_CMD(para["DAC_GAIN"])
         self.send_DATA_RATE_CMD(para["DATA_RATE"])
-        # self.SF_A_EDIT()
-        # self.SF_B_EDIT()
+        self.SF_A_EDIT(para["SF_A"])
+        self.SF_B_EDIT(para["SF_B"])
 
     def writeImuCmd(self, cmd, value):
         self.__act.writeImuCmd(cmd, value)
 
     def send_FREQ_CMD(self, value):
-        # value = self.freq.spin.value()
         print('set freq: ', value)
-        # self.freq.lb.setText(str(round(1 / (2 * (value + 1) * 10e-6), 2)) + ' KHz')
         self.__act.writeImuCmd(CMD_FOG_MOD_FREQ, value)
         # self.__par_manager.update_parameters("FREQ", value)
 
     def send_MOD_H_CMD(self, value):
-        # value = self.mod_H.spin.value()
         print('set mod_H: ', value)
         self.__act.writeImuCmd(CMD_FOG_MOD_AMP_H, value)
         # self.__par_manager.update_parameters("MOD_H", value)
 
     def send_MOD_L_CMD(self, value):
-        # value = self.mod_L.spin.value()
         print('set mod_L: ', value)
         self.__act.writeImuCmd(CMD_FOG_MOD_AMP_L, value)
         # self.__par_manager.update_parameters("MOD_L", value)
 
     def send_ERR_OFFSET_CMD(self, value):
-        # value = self.err_offset.spin.value()
         print('set err offset: ', value)
         self.__act.writeImuCmd(CMD_FOG_ERR_OFFSET, value)
         # self.__par_manager.update_parameters("ERR_OFFSET", value)
 
     def send_POLARITY_CMD(self, value):
-        # value = self.polarity.spin.value()
         print('set polarity: ', value)
         self.__act.writeImuCmd(CMD_FOG_POLARITY, value)
         # self.__par_manager.update_parameters("POLARITY", value)
 
     def send_WAIT_CNT_CMD(self, value):
-        # value = self.wait_cnt.spin.value()
         print('set wait cnt: ', value)
         self.__act.writeImuCmd(CMD_FOG_WAIT_CNT, value)
         # self.__par_manager.update_parameters("WAIT_CNT", value)
 
     def send_ERR_TH_CMD(self, value):
-        # value = self.err_th.spin.value()
         print('set err_th: ', value)
         self.__act.writeImuCmd(CMD_FOG_ERR_TH, value)
         # self.__par_manager.update_parameters("ERR_TH", value)
 
     def send_AVG_CMD(self, value):
-        # value = self.avg.spin.value()
         print('set err_avg: ', value)
         self.__act.writeImuCmd(CMD_FOG_ERR_AVG, value)
         # self.__par_manager.update_parameters("ERR_AVG", value)
 
     def send_GAIN1_CMD(self, value):
-        # value = self.gain1.spin.value()
         print('set gain1: ', value)
         self.__act.writeImuCmd(CMD_FOG_GAIN1, value)
         # self.__par_manager.update_parameters("GAIN1", value)
 
     def send_GAIN2_CMD(self, value):
-        # value = self.gain2.spin.value()
         print('set gain2: ', value)
         self.__act.writeImuCmd(CMD_FOG_GAIN2, value)
         # self.__par_manager.update_parameters("GAIN2", value)
 
     def send_FB_ON_CMD(self, value):
-        # value = self.fb_on.spin.value()
         print('set FB on: ', value)
         self.__act.writeImuCmd(CMD_FOG_FB_ON, value)
         # self.__par_manager.update_parameters("FB_ON", value)
 
     def send_DAC_GAIN_CMD(self, value):
-        # value = self.dac_gain.spin.value()
         print('set DAC gain: ', value)
         self.__act.writeImuCmd(CMD_FOG_DAC_GAIN, value)
         # self.__par_manager.update_parameters("DAC_GAIN", value)
 
     def send_CONST_STEP_CMD(self, value):
-        # value = self.const_step.spin.value()
         print('set constant step: ', value)
         self.__act.writeImuCmd(CMD_FOG_CONST_STEP, value)
         # self.__par_manager.update_parameters("CONST_STEP", value)
+
+    def send_DATA_RATE_CMD(self, value):
+        print('set dataRate: ', value)
+        self.__act.writeImuCmd(CMD_FOG_INT_DELAY, value)
+        # self.__par_manager.update_parameters("DATA_RATE", value)
+
+    def SF_A_EDIT(self, value):
+        print('sf_a: ', value)
+        self.__act.sf_a = value
+        # self.__par_manager.update_parameters("SF_A", value)
+
+    def SF_B_EDIT(self, value):
+        print('sf_b: ', value)
+        self.__act.sf_b = value
+        # self.__par_manager.update_parameters("SF_B", value)
 
     # def update_KF_Q(self, value):
     #     value = self.KF_Q.spin.value()
@@ -206,18 +186,4 @@ class pig_parameters_ros:
     #     print('KF_R: ', value)
     #     self.__par_manager.update_parameters("KF_R", value)
 
-    def send_DATA_RATE_CMD(self, value):
-        # value = self.dataRate_sd.sd.value()
-        print('set dataRate: ', value)
-        self.__act.writeImuCmd(CMD_FOG_INT_DELAY, value)
-        # self.__par_manager.update_parameters("DATA_RATE", value)
 
-    # def SF_A_EDIT(self, value):
-    #     value = float(self.sf_a.le.text())
-    #     print('sf_a: ', value)
-    #     self.__par_manager.update_parameters("SF_A", value)
-
-    # def SF_B_EDIT(self, value):
-    #     value = float(self.sf_b.le.text())
-    #     print('sf_b: ', value)
-    #     self.__par_manager.update_parameters("SF_B", value)

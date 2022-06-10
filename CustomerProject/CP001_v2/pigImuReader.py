@@ -51,6 +51,8 @@ class pigImuReader(QThread):
         self.__isCali_w = boolCaliw
         self.__isCali_a = boolCalia
         self.isCali = (self.isCali_w or self.isCali_a)
+        self.sf_a = 1
+        self.sf_b = 0
         self.__Connector = None
         self.__portName = portName
         self.__baudRate = baudRate
@@ -73,6 +75,24 @@ class pigImuReader(QThread):
         print("class memsImuReader's destructor called!")
 
     # End of destructor
+
+    @property
+    def sf_a(self):
+        return self.__sf_a
+
+    @sf_a.setter
+    def sf_a(self, value):
+        self.__sf_a = value
+        # print("act.sf_a: ", self.__sf_a)
+
+    @property
+    def sf_b(self):
+        return self.__sf_b
+
+    @sf_b.setter
+    def sf_b(self, value):
+        self.__sf_b = value
+        # print("act.sf_b: ", self.__sf_b)
 
     @property
     def isRun(self):
@@ -171,7 +191,7 @@ class pigImuReader(QThread):
                                                    sf_gyro=SENS_NANO33_GYRO_250)
         ADXL_AX, ADXL_AY, ADXL_AZ = cmn.readADXL355(dataPacket, EN=1, PRINT=0, POS_AX=POS_ADXL355_AX,
                                                     sf=SENS_ADXL355_8G)
-        ERR, STEP, PD_TEMP = cmn.readPIG(dataPacket, EN=1, PRINT=0, sf_a=1, sf_b=0, POS_ERR=POS_PIG)
+        ERR, STEP, PD_TEMP = cmn.readPIG(dataPacket, EN=1, PRINT=0, sf_a=self.sf_a, sf_b=self.sf_b, POS_ERR=POS_PIG)
         t = time.clock()
         imudata = {"NANO33_WX": NANO_WX, "NANO33_WY": NANO_WY, "NANO33_WZ": NANO_WZ,
                    "ADXL_AX": NANO_AX, "ADXL_AY": ADXL_AY, "ADXL_AZ": ADXL_AZ, "TIME": t,

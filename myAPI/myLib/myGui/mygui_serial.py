@@ -212,11 +212,12 @@ class calibrationBlock(QGroupBox):
         super(calibrationBlock, self).__init__()
         self.__isCali_a = False
         self.__isCali_w = True
-        self.setWindowTitle('PIG calibration')
+        self.resize(320, 100)
+        self.setWindowTitle('IMU calibration')
         self.setTitle('enable')
         self.setCheckable(True)
-        self.cb_cali_w = QCheckBox('cali. gyro')
-        self.cb_cali_a = QCheckBox('cali. accelerometer')
+        self.cb_cali_w = QCheckBox('calibrate gyro')
+        self.cb_cali_a = QCheckBox('calibrate accelerometer')
         self.cb_cali_w.setChecked(True)
         self.cb_cali_a.stateChanged.connect(lambda: self.cbstate_connect(self.cb_cali_a))
         self.cb_cali_w.stateChanged.connect(lambda: self.cbstate_connect(self.cb_cali_w))
@@ -293,6 +294,6 @@ class radioButtonBlock_2(QGroupBox):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    main = radioButtonBlock_2('test', 'rb1', 'rb2')
+    main = calibrationBlock()
     main.show()
     app.exec_()

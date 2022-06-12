@@ -17,7 +17,8 @@ class pig_menu_widget:
     def __init__(self, menuBar, obj):
         self.pig_cali_action = None
         self.pig_para_action = None
-        self.myMenu = menuBar.addMenu("Setting")
+        self.setting_menu = menuBar.addMenu("Setting")
+        self.analysis_menu = menuBar.addMenu("Analysis")
         self.action_list(obj)
 
     def action_list(self, obj):
@@ -27,8 +28,8 @@ class pig_menu_widget:
         self.pig_cali_action = QAction("pig calibration", obj)
         self.pig_cali_action.setShortcut("Ctrl+k")
         self.pig_cali_action.setEnabled(True)
-        self.myMenu.addAction(self.pig_para_action)
-        self.myMenu.addAction(self.pig_cali_action)
+        self.setting_menu.addAction(self.pig_para_action)
+        self.setting_menu.addAction(self.pig_cali_action)
 
     def action_trigger_connect(self, fn):
         self.pig_para_action.triggered.connect(fn[0])

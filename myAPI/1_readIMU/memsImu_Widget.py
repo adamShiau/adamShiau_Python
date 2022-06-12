@@ -1,3 +1,14 @@
+""" ####### log stuff creation, always on the top ########  """
+import builtins
+import logging
+if hasattr(builtins, 'LOGGER_NAME'):
+    logger_name = builtins.LOGGER_NAME
+else:
+    logger_name = __name__
+logger = logging.getLogger(logger_name + '.' + __name__)
+logger.info(__name__ + ' logger start')
+""" ####### end of log stuff creation ########  """
+
 from PyQt5.QtWidgets import *
 import sys
 from myLib.myGui.graph import *
@@ -16,6 +27,7 @@ class memsImuWidget(QMainWindow):
         self.start_bt = QPushButton("read")
         self.stop_bt = QPushButton("stop")
         self.save_block = dataSaveBlock("save data")
+        self.para_block = lineEditBlock('parameter configuration file')
         self.buffer_lb = displayOneBlock('Buffer size')
         self.pd_temp_lb = displayOneBlock('PD temp.')
         self.data_rate_lb = displayOneBlock('data rate')
@@ -37,7 +49,8 @@ class memsImuWidget(QMainWindow):
         # layout.addWidget(self.pig_parameter_bt, 0, 4, 1, 1)
         layout.addWidget(self.start_bt, 0, 5, 1, 1)
         layout.addWidget(self.stop_bt, 0, 6, 1, 1)
-        layout.addWidget(self.save_block, 0, 7, 1, 3)
+        layout.addWidget(self.save_block, 0, 10, 1, 3)
+        layout.addWidget(self.para_block, 1, 10, 1, 3)
         layout.addWidget(self.buffer_lb, 1, 4, 1, 1)
         layout.addWidget(self.pd_temp_lb, 1, 5, 1, 1)
         layout.addWidget(self.data_rate_lb, 1, 6, 1, 2)
@@ -61,6 +74,6 @@ class memsImuWidget(QMainWindow):
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     w = memsImuWidget()
-
+    print(w.para_block.le_filename.text())
     w.show()
     app.exec_()

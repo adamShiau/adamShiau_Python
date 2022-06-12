@@ -1,3 +1,14 @@
+# -*- coding:UTF-8 -*-
+""" ####### log stuff creation, always on the top ########  """
+import builtins
+import logging
+if hasattr(builtins, 'LOGGER_NAME'):
+    logger_name = builtins.LOGGER_NAME
+else:
+    logger_name = __name__
+logger = logging.getLogger(logger_name + '.' + __name__)
+logger.info(__name__ + ' logger start')
+""" ####### end of log stuff creation ########  """
 import numpy as np
 
 
@@ -8,8 +19,8 @@ class kalman_1D:
         self.__p = p0
         self.__kal_Q = Q
         self.__kal_R = R
-        print("init Q = ", self.kal_Q)
-        print("init R = ", self.kal_R)
+        logger.debug("init Q = %d", self.kal_Q)
+        logger.debug("init R = %d", self.kal_R)
 
     @property
     def kal_Q(self):
@@ -18,7 +29,7 @@ class kalman_1D:
     @kal_Q.setter
     def kal_Q(self, Q):
         self.__kal_Q = Q
-        print("set kal_Q = ", Q)
+        # print("set kal_Q = ", Q)
 
     @property
     def kal_R(self):
@@ -27,7 +38,7 @@ class kalman_1D:
     @kal_R.setter
     def kal_R(self, R):
         self.__kal_R = R
-        print("set kal_R = ", R)
+        # print("set kal_R = ", R)
 
     def update(self, z):
         k = self.__p / (self.__p + self.__kal_R)

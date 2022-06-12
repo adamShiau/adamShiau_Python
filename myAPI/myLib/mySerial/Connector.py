@@ -1,4 +1,14 @@
 # -*- coding:UTF-8 -*-
+""" ####### log stuff creation, always on the top ########  """
+import builtins
+import logging
+if hasattr(builtins, 'LOGGER_NAME'):
+    logger_name = builtins.LOGGER_NAME
+else:
+    logger_name = __name__
+logger = logging.getLogger(logger_name + '.' + __name__)
+logger.info(__name__ + ' logger start')
+""" ####### end of log stuff creation ########  """
 
 import serial
 import serial.tools.list_ports
@@ -61,10 +71,10 @@ class Connector:
         try:
             self.__ser.open()
         except IOError:
-            print("IOError, the device: " + self.__ser.port + " can not be found or can not be configured!")
+            logger.error("IOError, the device: " + self.__ser.port + " can not be found or can not be configured!")
             sys.exit(0)
         # End of try-catch
-        print(self.__ser.port + " is connected")
+        logger.info(self.__ser.port + " is connected")
         self.__is_open = self.__ser.is_open
         return self.__is_open
 
@@ -73,7 +83,7 @@ class Connector:
     def disconnect(self):
         self.__ser.close()
         self.__is_open = self.__ser.is_open
-        print(self.__ser.port + " is disconnected")
+        logger.info(self.__ser.port + " is disconnected")
         return self.__is_open
 
     # End of Connector::close
@@ -83,9 +93,9 @@ class Connector:
             data_w = bytearray(data_w)
             self.__ser.write(data_w)
         except serial.SerialTimeoutException:
-            print("write timeOut")
+            logger.error("write timeOut")
         except serial.PortNotOpenError:
-            print("Port not open, please check!")
+            logger.error("Port not open, please check!")
         # End of try-catch
 
     # End of Connector::write
@@ -101,7 +111,7 @@ class Connector:
             data_r = self.__ser.read(mum)
             data_r = [i for i in data_r]
         except:
-            print("ERROR")
+            logger.error("ERROR")
         # data = [hex(i) for i in data]
         else:
             return data_r

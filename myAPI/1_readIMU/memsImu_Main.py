@@ -1,5 +1,24 @@
-import sys
+""" ####### log stuff creation, always on the top ########  """
+import os
+import builtins
+import yaml
+import logging.config
 
+LOG_PATH = './logs/'
+LOGGER_NAME = 'main'
+builtins.LOGGER_NAME = LOGGER_NAME
+if not os.path.exists(LOG_PATH):
+    os.mkdir(LOG_PATH)
+f_log = open('log_config.yaml', 'r', encoding='utf-8')
+config = yaml.safe_load(f_log)
+logging.config.dictConfig(config)
+logger = logging.getLogger(LOGGER_NAME)
+f_log.close()
+logger.info('create log stuff done, ')
+logger.info('process start')
+""" ####### end of log stuff creation ########  """
+
+import sys
 sys.path.append("../")
 from myLib import common as cmn
 from myLib.myGui.mygui_serial import *
@@ -12,6 +31,7 @@ from memsImu_Widget import memsImuWidget as TOP
 from memsImuReader import memsImuReader as ACTION
 from memsImuReader import IMU_DATA_STRUCTURE
 import numpy as np
+
 
 
 class mainWindow(QMainWindow):
@@ -97,7 +117,7 @@ class mainWindow(QMainWindow):
     def connect(self):
         is_port_open = self.act.connect(self.__connector, self.__portName, 230400)
         self.is_port_open_qt.emit(is_port_open)
-        self.pig_parameter_widget = pig_parameters_widget(self.act)
+        self.pig_parameter_widget = pig_parameters_widget(self.act, self.top.para_block.le_filename.text()+'.json')
         self.act.isCali_w, self.act.isCali_a = self.pig_cali_menu.cali_status()  # update calibration flag to act
 
     def disconnect(self):
@@ -135,6 +155,9 @@ class mainWindow(QMainWindow):
         self.imudata["NANO33_WX"] = np.append(self.imudata["NANO33_WX"], imudata["NANO33_WX"])
         self.imudata["NANO33_WY"] = np.append(self.imudata["NANO33_WY"], imudata["NANO33_WY"])
         self.imudata["NANO33_WZ"] = np.append(self.imudata["NANO33_WZ"], imudata["NANO33_WZ"])
+        self.imudata["NANO33_AX"] = np.append(self.imudata["NANO33_AX"], imudata["NANO33_AX"])
+        self.imudata["NANO33_AY"] = np.append(self.imudata["NANO33_AY"], imudata["NANO33_AY"])
+        self.imudata["NANO33_AZ"] = np.append(self.imudata["NANO33_AZ"], imudata["NANO33_AZ"])
         if len(self.imudata["TIME"]) > 1000:
             self.imudata["TIME"] = self.imudata["TIME"][self.act.arrayNum:self.act.arrayNum + 1000]
             self.imudata["ADXL_AX"] = self.imudata["ADXL_AX"][self.act.arrayNum:self.act.arrayNum + 1000]
@@ -143,6 +166,9 @@ class mainWindow(QMainWindow):
             self.imudata["NANO33_WX"] = self.imudata["NANO33_WX"][self.act.arrayNum:self.act.arrayNum + 1000]
             self.imudata["NANO33_WY"] = self.imudata["NANO33_WY"][self.act.arrayNum:self.act.arrayNum + 1000]
             self.imudata["NANO33_WZ"] = self.imudata["NANO33_WZ"][self.act.arrayNum:self.act.arrayNum + 1000]
+            self.imudata["NANO33_AX"] = self.imudata["NANO33_AX"][self.act.arrayNum:self.act.arrayNum + 1000]
+            self.imudata["NANO33_AY"] = self.imudata["NANO33_AY"][self.act.arrayNum:self.act.arrayNum + 1000]
+            self.imudata["NANO33_AZ"] = self.imudata["NANO33_AZ"][self.act.arrayNum:self.act.arrayNum + 1000]
         t2 = time.perf_counter()
         debug_info = "MAIN: ," + str(input_buf) + ", " + str(round((t2 - t0) * 1000, 5)) + ", " \
                      + str(round((t1 - t0) * 1000, 5)) + ", " + str(round((t2 - t1) * 1000, 5))
@@ -172,9 +198,10 @@ class mainWindow(QMainWindow):
         else:
             self.top.plot1.ax2.clear()
 
-        self.top.plot2.ax.setData(imudata["ADXL_AX"])
-        self.top.plot3.ax.setData(imudata["ADXL_AY"])
-        self.top.plot4.ax.setData(imudata["ADXL_AZ"])
+        self.top.plot2.ax.setData(imudata["NANO33_AX"])
+        self.top.plot2.title = 'NANO33_AX'
+        self.top.plot3.ax.setData(imudata["NANO33_AY"])
+        self.top.plot4.ax.setData(imudata["NANO33_AZ"])
         self.top.plot5.ax.setData(imudata["NANO33_WX"])
         self.top.plot6.ax.setData(imudata["NANO33_WY"])
 

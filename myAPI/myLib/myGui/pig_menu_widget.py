@@ -1,3 +1,15 @@
+# -*- coding:UTF-8 -*-
+""" ####### log stuff creation, always on the top ########  """
+import builtins
+import logging
+if hasattr(builtins, 'LOGGER_NAME'):
+    logger_name = builtins.LOGGER_NAME
+else:
+    logger_name = __name__
+logger = logging.getLogger(logger_name + '.' + __name__)
+logger.info(__name__ + ' logger start')
+""" ####### end of log stuff creation ########  """
+
 from PyQt5.QtWidgets import *
 
 

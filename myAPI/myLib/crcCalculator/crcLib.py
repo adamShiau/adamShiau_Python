@@ -1,4 +1,14 @@
-
+# -*- coding:UTF-8 -*-
+""" ####### log stuff creation, always on the top ########  """
+import builtins
+import logging
+if hasattr(builtins, 'LOGGER_NAME'):
+    logger_name = builtins.LOGGER_NAME
+else:
+    logger_name = __name__
+logger = logging.getLogger(logger_name + '.' + __name__)
+logger.info(__name__ + ' logger start')
+""" ####### end of log stuff creation ########  """
 # global variable defined for error correction
 err_correction_data = 0
 crcFailCnt = 0
@@ -67,7 +77,7 @@ def errCorrection(isCrcFail, imudata):
     else:
         imudata = err_correction_data
         crcFailCnt += 1
-        print("crc fail: ", crcFailCnt)
+        logger.warning("crc fail: ", crcFailCnt)
     return imudata
 
 

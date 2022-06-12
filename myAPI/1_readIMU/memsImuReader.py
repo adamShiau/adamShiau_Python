@@ -1,5 +1,15 @@
-import sys
+""" ####### log stuff creation, always on the top ########  """
+import builtins
 import logging
+if hasattr(builtins, 'LOGGER_NAME'):
+    logger_name = builtins.LOGGER_NAME
+else:
+    logger_name = __name__
+logger = logging.getLogger(logger_name + '.' + __name__)
+logger.info(__name__ + ' logger start')
+""" ####### end of log stuff creation ########  """
+
+import sys
 
 sys.path.append("../")
 from myLib.mySerial.Connector import Connector
@@ -14,10 +24,15 @@ import logging
 
 # from pig_parameters import *
 
+PRINT_DEBUG = 0
+
 IMU_DATA_STRUCTURE = {
     "NANO33_WX": np.zeros(1),
     "NANO33_WY": np.zeros(1),
     "NANO33_WZ": np.zeros(1),
+    "NANO33_AX": np.zeros(1),
+    "NANO33_AY": np.zeros(1),
+    "NANO33_AZ": np.zeros(1),
     "ADXL_AX": np.zeros(1),
     "ADXL_AY": np.zeros(1),
     "ADXL_AZ": np.zeros(1),
@@ -99,7 +114,7 @@ class memsImuReader(QThread):
     @isKal.setter
     def isKal(self, en):
         self.__isKal = en
-        print("act.isKal: ", self.isKal)
+        logger.info("act.isKal: %s", self.isKal)
 
     @property
     def kal_Q(self):
@@ -222,7 +237,8 @@ class memsImuReader(QThread):
                 NANO_WZ = self.nano33_wz_kal.update(NANO_WZ)
         t = time.perf_counter()
         imudata = {"NANO33_WX": NANO_WX, "NANO33_WY": NANO_WY, "NANO33_WZ": NANO_WZ,
-                   "ADXL_AX": NANO_AX, "ADXL_AY": ADXL_AY, "ADXL_AZ": ADXL_AZ, "TIME": t
+                   "ADXL_AX": NANO_AX, "ADXL_AY": ADXL_AY, "ADXL_AZ": ADXL_AZ, "TIME": t,
+                   "NANO33_AX": NANO_AX, "NANO33_AY": NANO_AY, "NANO33_AZ": NANO_AZ
                    }
         return dataPacket, imudata
 
@@ -232,12 +248,15 @@ class memsImuReader(QThread):
     def do_cali(self, dictContainer, cali_times):
         if self.isCali:
             temp = {k: np.zeros(1) for k in set(IMU_DATA_STRUCTURE)}
-            print("---calibrating offset start-----")
+            cmn.print_debug('temp before: %s' % temp, PRINT_DEBUG)
+            logger.info("---calibrating offset start-----")
             for i in range(cali_times):
                 dataPacket, imudata = self.getImuData()
+                cmn.print_debug('imudata: %s' % imudata, PRINT_DEBUG)
                 temp = cmn.dictOperation(temp, imudata, "ADD", IMU_DATA_STRUCTURE)
+            cmn.print_debug('temp after: %s' % temp, PRINT_DEBUG)
             temp = {k: temp.get(k) / cali_times for k in set(self.__imuoffset)}
-            print("---calibrating offset stop-----")
+            logger.info("---calibrating offset stop-----")
             self.isCali = False
             return temp
         else:
@@ -252,8 +271,9 @@ class memsImuReader(QThread):
                 self.imuThreadStop_qt.emit()
                 break
             # End of if-condition
-
+            cmn.print_debug('self.__imuoffset before: %s' % self.__imuoffset, PRINT_DEBUG)
             self.__imuoffset = self.do_cali(self.__imuoffset, 100)
+            cmn.print_debug('self.__imuoffset after: %s' % self.__imuoffset, PRINT_DEBUG)
 
             imudataArray = {k: np.empty(0) for k in set(IMU_DATA_STRUCTURE)}
 
@@ -284,6 +304,9 @@ class memsImuReader(QThread):
                 imudataArray["NANO33_WX"] = np.append(imudataArray["NANO33_WX"], imudata["NANO33_WX"])
                 imudataArray["NANO33_WY"] = np.append(imudataArray["NANO33_WY"], imudata["NANO33_WY"])
                 imudataArray["NANO33_WZ"] = np.append(imudataArray["NANO33_WZ"], imudata["NANO33_WZ"])
+                imudataArray["NANO33_AX"] = np.append(imudataArray["NANO33_AX"], imudata["NANO33_AX"])
+                imudataArray["NANO33_AY"] = np.append(imudataArray["NANO33_AY"], imudata["NANO33_AY"])
+                imudataArray["NANO33_AZ"] = np.append(imudataArray["NANO33_AZ"], imudata["NANO33_AZ"])
                 t5 = time.perf_counter()
 
                 debug_info = "ACT: ," + str(input_buf) + ", " + str(round((t5 - t1) * 1000, 5)) + ", " \
@@ -319,6 +342,9 @@ class memsImuReader(QThread):
             imuoffset["ADXL_AX"] = [0]
             imuoffset["ADXL_AY"] = [0]
             imuoffset["ADXL_AZ"] = [0]
+            imuoffset["NANO33_AX"] = [0]
+            imuoffset["NANO33_AY"] = [0]
+            imuoffset["NANO33_AZ"] = [0]
 
 
 def myCallBack(imudata):
@@ -343,7 +369,7 @@ if __name__ == "__main__":
     myImu.arrayNum = 2
     myImu.setCallback(myCallBack)
     myImu.isCali = True
-    myImu.connect(ser, "COM6", 230400)
+    myImu.connect(ser, "COM5", 230400)
     myImu.readIMU()
     myImu.isRun = True
     myImu.start()

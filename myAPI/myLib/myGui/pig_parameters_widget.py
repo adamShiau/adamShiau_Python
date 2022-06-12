@@ -1,3 +1,15 @@
+# -*- coding:UTF-8 -*-
+""" ####### log stuff creation, always on the top ########  """
+import builtins
+import logging
+if hasattr(builtins, 'LOGGER_NAME'):
+    logger_name = builtins.LOGGER_NAME
+else:
+    logger_name = __name__
+logger = logging.getLogger(logger_name + '.' + __name__)
+logger.info(__name__ + ' logger start')
+""" ####### end of log stuff creation ########  """
+
 import sys
 
 sys.path.append("../../")
@@ -51,16 +63,16 @@ INIT_PARAMETERS = {"MOD_H": 6850,
                    "KF_R": 6,
                    "SF_A": 0.00295210451588764 * 1.02 / 2,
                    "SF_B": -0.00137052112589694,
-                   "DATA_RATE": 2200
+                   "DATA_RATE": 2000
                    }
 
 
 class pig_parameters_widget(QGroupBox):
-    def __init__(self, act):
+    def __init__(self, act, fileName="default_fog_parameters.json"):
         super(pig_parameters_widget, self).__init__()
         print("import pigParameters")
         self.__act = act
-        self.__par_manager = cmn.parameters_manager("parameters_SP9.json", INIT_PARAMETERS, 1)
+        self.__par_manager = cmn.parameters_manager(fileName, INIT_PARAMETERS, fnum=1)
         self.setWindowTitle("PIG parameters")
         # self.setTitle("PIG parameters")
         self.wait_cnt = spinBlock(title='Wait cnt', minValue=0, maxValue=100, double=False, step=1)
@@ -185,110 +197,110 @@ class pig_parameters_widget(QGroupBox):
 
     def send_FREQ_CMD(self):
         value = self.freq.spin.value()
-        print('set freq: ', value)
+        logger.info('set freq: %d', value)
         self.freq.lb.setText(str(round(1 / (2 * (value + 1) * 10e-6), 2)) + ' KHz')
         self.__act.writeImuCmd(CMD_FOG_MOD_FREQ, value)
         self.__par_manager.update_parameters("FREQ", value)
 
     def send_MOD_H_CMD(self):
         value = self.mod_H.spin.value()
-        print('set mod_H: ', value)
+        logger.info('set mod_H: %d', value)
         self.__act.writeImuCmd(CMD_FOG_MOD_AMP_H, value)
         self.__par_manager.update_parameters("MOD_H", value)
 
     def send_MOD_L_CMD(self):
         value = self.mod_L.spin.value()
-        print('set mod_L: ', value)
+        logger.info('set mod_L: %d', value)
         self.__act.writeImuCmd(CMD_FOG_MOD_AMP_L, value)
         self.__par_manager.update_parameters("MOD_L", value)
 
     def send_ERR_OFFSET_CMD(self):
         value = self.err_offset.spin.value()
-        print('set err offset: ', value)
+        logger.info('set err offset: %d', value)
         self.__act.writeImuCmd(CMD_FOG_ERR_OFFSET, value)
         self.__par_manager.update_parameters("ERR_OFFSET", value)
 
     def send_POLARITY_CMD(self):
         value = self.polarity.spin.value()
-        print('set polarity: ', value)
+        logger.info('set polarity: %d', value)
         self.__act.writeImuCmd(CMD_FOG_POLARITY, value)
         self.__par_manager.update_parameters("POLARITY", value)
 
     def send_WAIT_CNT_CMD(self):
         value = self.wait_cnt.spin.value()
-        print('set wait cnt: ', value)
+        logger.info('set wait cnt: %d', value)
         self.__act.writeImuCmd(CMD_FOG_WAIT_CNT, value)
         self.__par_manager.update_parameters("WAIT_CNT", value)
 
     def send_ERR_TH_CMD(self):
         value = self.err_th.spin.value()
-        print('set err_th: ', value)
+        logger.info('set err_th: %d', value)
         self.__act.writeImuCmd(CMD_FOG_ERR_TH, value)
         self.__par_manager.update_parameters("ERR_TH", value)
 
     def send_AVG_CMD(self):
         value = self.avg.spin.value()
-        print('set err_avg: ', value)
+        logger.info('set err_avg: %d', value)
         self.__act.writeImuCmd(CMD_FOG_ERR_AVG, value)
         self.__par_manager.update_parameters("ERR_AVG", value)
 
     def send_GAIN1_CMD(self):
         value = self.gain1.spin.value()
-        print('set gain1: ', value)
+        logger.info('set gain1: %d', value)
         self.__act.writeImuCmd(CMD_FOG_GAIN1, value)
         self.__par_manager.update_parameters("GAIN1", value)
 
     def send_GAIN2_CMD(self):
         value = self.gain2.spin.value()
-        print('set gain2: ', value)
+        logger.info('set gain2: %d', value)
         self.__act.writeImuCmd(CMD_FOG_GAIN2, value)
         self.__par_manager.update_parameters("GAIN2", value)
 
     def send_FB_ON_CMD(self):
         value = self.fb_on.spin.value()
-        print('set FB on: ', value)
+        logger.info('set FB on: %d', value)
         self.__act.writeImuCmd(CMD_FOG_FB_ON, value)
         self.__par_manager.update_parameters("FB_ON", value)
 
     def send_DAC_GAIN_CMD(self):
         value = self.dac_gain.spin.value()
-        print('set DAC gain: ', value)
+        logger.info('set DAC gain: %d', value)
         self.__act.writeImuCmd(CMD_FOG_DAC_GAIN, value)
         self.__par_manager.update_parameters("DAC_GAIN", value)
 
     def send_CONST_STEP_CMD(self):
         value = self.const_step.spin.value()
-        print('set constant step: ', value)
+        logger.info('set constant step: %d', value)
         self.__act.writeImuCmd(CMD_FOG_CONST_STEP, value)
         self.__par_manager.update_parameters("CONST_STEP", value)
 
     def update_KF_Q(self):
         value = self.KF_Q.spin.value()
-        print('KF_Q: ', value)
+        logger.info('set KF_Q: %d', value)
         self.__act.kal_Q = value
         self.__par_manager.update_parameters("KF_Q", value)
 
     def update_KF_R(self):
         value = self.KF_R.spin.value()
-        print('KF_R: ', value)
+        logger.info('set KF_R: %d', value)
         self.__act.kal_R = value
         self.__par_manager.update_parameters("KF_R", value)
 
     def send_DATA_RATE_CMD(self):
         value = self.dataRate_sd.sd.value()
-        print('set dataRate: ', value)
+        logger.info('set dataRate: %d', value)
         self.__act.writeImuCmd(CMD_FOG_INT_DELAY, value)
         self.__par_manager.update_parameters("DATA_RATE", value)
 
     def SF_A_EDIT(self):
         value = float(self.sf_a.le.text())
-        print('sf_a: ', value)
+        logger.info('set sf_a: %f', value)
         self.__act.sf_a = value
         self.__par_manager.update_parameters("SF_A", value)
 
     def SF_B_EDIT(self):
         value = float(self.sf_b.le.text())
-        print('sf_b: ', value)
+        logger.info('set sf_b: %f', value)
         self.__act.sf_b = value
         self.__par_manager.update_parameters("SF_B", value)
 

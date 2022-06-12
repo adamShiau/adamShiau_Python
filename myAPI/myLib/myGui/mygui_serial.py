@@ -1,3 +1,16 @@
+# -*- coding:UTF-8 -*-
+""" ####### log stuff creation, always on the top ########  """
+import builtins
+import logging
+
+if hasattr(builtins, 'LOGGER_NAME'):
+    logger_name = builtins.LOGGER_NAME
+else:
+    logger_name = __name__
+logger = logging.getLogger(logger_name + '.' + __name__)
+logger.info(__name__ + ' logger start')
+""" ####### end of log stuff creation ########  """
+
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
@@ -78,6 +91,17 @@ class dataSaveBlock(QGroupBox):
         layout.addWidget(self.rb, 0, 0, 1, 1)
         layout.addWidget(self.le_filename, 0, 1, 1, 3)
         layout.addWidget(self.le_ext, 0, 4, 1, 1)
+        self.setLayout(layout)
+
+
+class lineEditBlock(QGroupBox):
+    def __init__(self, name=""):
+        super(lineEditBlock, self).__init__()
+        self.setTitle(name)
+        self.le_filename = QLineEdit("parameters_SP9")
+
+        layout = QGridLayout()
+        layout.addWidget(self.le_filename, 0, 1, 1, 1)
         self.setLayout(layout)
 
 
@@ -269,6 +293,6 @@ class radioButtonBlock_2(QGroupBox):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    main = calibrationBlock()
+    main = radioButtonBlock_2('test', 'rb1', 'rb2')
     main.show()
     app.exec_()

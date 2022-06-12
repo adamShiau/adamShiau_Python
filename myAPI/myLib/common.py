@@ -1,12 +1,23 @@
 # -*- coding:UTF-8 -*-
+""" ####### log stuff creation, always on the top ########  """
+import builtins
+import logging
+
+if hasattr(builtins, 'LOGGER_NAME'):
+    logger_name = builtins.LOGGER_NAME
+else:
+    logger_name = __name__
+logger = logging.getLogger(logger_name + '.' + __name__)
+logger.info(__name__ + ' logger start')
+""" ####### end of log stuff creation ########  """
+
 import time
 import numpy as np
 from datetime import datetime
 import logging
 import json
 
-
-# logging.basicConfig(level=100)
+PRINT_DEBUG = 0
 
 
 def readPIG(dataPacket, EN=1, POS_ERR=25, sf_a=1, sf_b=0, PRINT=0):
@@ -166,7 +177,7 @@ def readCRC(dataPacket, dataLen=4, POS_CRC=25, EN=1, PRINT=0):
 
 
 # file controller global variable definition
-fd = [None, None]
+fd = [None, None, None]
 
 
 # End of file controller global variable definition
@@ -175,12 +186,12 @@ def file_manager(isopen=False, name="notitle", mode="w", fnum=0):
     global fd
     if isopen:
         try:
-            fd[fnum] = open(name, mode)
+            fd[fnum] = open(name, mode, encoding='utf-8')
             # print("file " + name + " is open")
 
         except FileNotFoundError:
             print("file_manager: file " + name + " does not exist, auto create new!")
-            fd[fnum] = open(name, "w")
+            fd[fnum] = open(name, "w", encoding='utf-8')
 
         return True, fd[fnum]
 
@@ -189,10 +200,14 @@ def file_manager(isopen=False, name="notitle", mode="w", fnum=0):
             fd[fnum].close()
             # print("file " + name + " is close")
         except NameError:
-            print("file_manager: NameError")
+            # print("file_manager: NameError")
+            logger.error("NameError")
             pass
         except AttributeError:
-            print("file_manager: AttributeError")
+            # print("file_manager: AttributeError")
+            logger.info('AttributeError: the file attempt to close does not exist!')
+            logger.error("file_manager: AttributeError")
+            # logger.exception("file_manager: AttributeError")
             pass
         return False, fd[fnum]
 
@@ -343,52 +358,53 @@ def dictOperation(dictA: dict, dictB: dict, mode: str, dictStruct: dict):
     # print("rt: ", rt)
 
     if mode == "ADD":
-        logging.debug("")
-        logging.debug("MODE = " + str(mode))
-        logging.debug("dictA= " + str(dictA))
-        logging.debug("dictB= " + str(dictB))
-        logging.debug("rt= " + str(rt))
-        logging.debug("")
+        print_debug("", PRINT_DEBUG)
+        print_debug("MODE = " + mode, PRINT_DEBUG)
+        print_debug("dictA= " + str(dictA), PRINT_DEBUG)
+        print_debug("dictB= " + str(dictB), PRINT_DEBUG)
+        print_debug("rt= " + str(rt), PRINT_DEBUG)
+        print_debug("", PRINT_DEBUG)
         for k in dictStruct:
-            logging.debug("k= " + str(k))
-            logging.debug("dictA[k]= " + str(dictA[k]))
-            logging.debug("dictB[k]= " + str(dictB[k]))
+            print_debug("k= " + str(k), PRINT_DEBUG)
+            print_debug("dictA[k]= " + str(dictA[k]), PRINT_DEBUG)
+            print_debug("dictB[k]= " + str(dictB[k]), PRINT_DEBUG)
             rt[k] = np.array(dictA[k] + dictB[k])
-            logging.debug("rt[k]= " + str(rt[k]) + "\n")
+            print_debug("rt[k]= " + str(rt[k]) + "\n", PRINT_DEBUG)
+
         # end of for-loop of k
         return rt
 
     if mode == "SUB":
-        logging.debug("")
-        logging.debug("MODE = " + str(mode))
-        logging.debug("dictA= " + str(dictA))
-        logging.debug("dictB= " + str(dictB))
-        logging.debug("rt= " + str(rt))
-        logging.debug("")
+        print_debug("", PRINT_DEBUG)
+        print_debug("MODE = " + mode, PRINT_DEBUG)
+        print_debug("dictA= " + str(dictA), PRINT_DEBUG)
+        print_debug("dictB= " + str(dictB), PRINT_DEBUG)
+        print_debug("rt= " + str(rt), PRINT_DEBUG)
+        print_debug("", PRINT_DEBUG)
         for k in dictStruct:
-            logging.debug("k= " + str(k))
-            logging.debug("dictA[k]= " + str(dictA[k]))
-            logging.debug("dictB[k]= " + str(dictB[k]))
+            print_debug("k= " + str(k), PRINT_DEBUG)
+            print_debug("dictA[k]= " + str(dictA[k]), PRINT_DEBUG)
+            print_debug("dictB[k]= " + str(dictB[k]), PRINT_DEBUG)
             rt[k] = np.array(dictA[k] - dictB[k])
-            logging.debug("rt[k]= " + str(rt[k]) + "\n")
+            print_debug("rt[k]= " + str(rt[k]) + "\n", PRINT_DEBUG)
         # end of for-loop of k
         return rt
 
     elif mode == "APPEND":
         # rt = {k: [np.empty(0) for i in range(len(dictStruct[k]))] for k in dictStruct}
-        logging.debug("")
-        logging.debug("MODE = " + str(mode))
-        logging.debug("dictStruct= " + str(dictStruct))
-        logging.debug("dictA= " + str(dictA))
-        logging.debug("dictB= " + str(dictB))
-        logging.debug("rt= " + str(rt))
-        logging.debug("")
+        print_debug("", PRINT_DEBUG)
+        print_debug("MODE = " + mode, PRINT_DEBUG)
+        print_debug("dictStruct= " + str(dictStruct), PRINT_DEBUG)
+        print_debug("dictA= " + str(dictA), PRINT_DEBUG)
+        print_debug("dictB= " + str(dictB), PRINT_DEBUG)
+        print_debug("rt= " + str(rt), PRINT_DEBUG)
+        print_debug("", PRINT_DEBUG)
         for k in dictStruct:
-            logging.debug("k= " + str(k))
-            logging.debug("dictA[k]= " + str(dictA[k]))
-            logging.debug("dictB[k]= " + str(dictB[k]))
+            print_debug("k= " + str(k), PRINT_DEBUG)
+            print_debug("dictA[k]= " + str(dictA[k]), PRINT_DEBUG)
+            print_debug("dictB[k]= " + str(dictB[k]), PRINT_DEBUG)
             rt[k] = np.append(dictA[k], dictB[k])
-            logging.debug("rt[k]= " + str(rt[k]) + "\n")
+            print_debug("rt[k]= " + str(rt[k]) + "\n", PRINT_DEBUG)
 
         # end of for-loop of k
         return rt

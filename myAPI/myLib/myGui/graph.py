@@ -1,3 +1,14 @@
+# -*- coding:UTF-8 -*-
+""" ####### log stuff creation, always on the top ########  """
+import builtins
+import logging
+if hasattr(builtins, 'LOGGER_NAME'):
+    logger_name = builtins.LOGGER_NAME
+else:
+    logger_name = __name__
+logger = logging.getLogger(logger_name + '.' + __name__)
+logger.info(__name__ + ' logger start')
+""" ####### end of log stuff creation ########  """
 import matplotlib
 
 matplotlib.use("Qt5Agg")
@@ -7,7 +18,10 @@ from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 import pyqtgraph as pg
+from myLib import common as cmn
 from pyqtgraph import PlotWidget
+
+PRINT_DEBUG = 1
 
 
 # class pgGraph_1(QMainWindow):
@@ -33,7 +47,7 @@ from pyqtgraph import PlotWidget
 class pgGraph_1(QMainWindow):
     def __init__(self, color="w", title="add title"):
         super(pgGraph_1, self).__init__()
-
+        self.ax = None
         win = pg.GraphicsWindow()
         win.setBackground('k')
         pen = pg.mkPen(color=color, width=1)

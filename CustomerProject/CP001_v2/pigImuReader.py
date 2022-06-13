@@ -1,6 +1,18 @@
+""" ####### log stuff creation, always on the top ########  """
 #!/usr/bin/env python
 # -*- coding:UTF-8 -*-
 from __future__ import print_function
+import __builtin__
+import logging
+
+if hasattr(__builtin__, 'LOGGER_NAME'):
+    logger_name = __builtin__.LOGGER_NAME
+else:
+    logger_name = __name__
+logger = logging.getLogger(logger_name + '.' + __name__)
+logger.info(__name__ + ' logger start')
+""" ####### end of log stuff creation ########  """
+
 import sys
 import logging
 
@@ -206,12 +218,12 @@ class pigImuReader(QThread):
         # print("do_cali: ", self.isCali)
         if self.isCali:
             temp = dictContainer
-            print("---calibrating offset start-----")
+            logger.info("---calibrating offset start-----")
             for i in range(cali_times):
                 dataPacket, imudata = self.getImuData()
                 temp = cmn.dictOperation(temp, imudata, "ADD", IMU_DATA_STRUCTURE)
             temp = {k: temp.get(k) / cali_times for k in set(self.__imuoffset)}
-            print("---calibrating offset stop-----")
+            logger.info("---calibrating offset stop-----")
             self.isCali = False
             return temp
         else:

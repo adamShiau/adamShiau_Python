@@ -15,7 +15,9 @@ import serial.tools.list_ports
 import time
 import sys
 import numpy as np
+import myLib.common as cmn
 
+PRINT_DEBUG = 0
 
 class Connector:
     def __init__(self, portName: str = "COM7", baudRate: int = 230400) -> None:
@@ -29,7 +31,7 @@ class Connector:
 
     def __del__(self):
         # self.disconnect()
-        print("class connector's destructor called!")
+        logger.info("class connector's destructor called!")
 
     # End of destructor
 
@@ -62,8 +64,8 @@ class Connector:
     def connect(self):
         self.__ser.baudrate = self.__baudRate
         self.__ser.port = self.__portName
-        # self.__ser.timeout = 1
-        # self.__ser.writeTimeout = 1
+        self.__ser.timeout = 3
+        # self.__ser.writeTimeout = 5
         self.__ser.parity = serial.PARITY_NONE
         self.__ser.stopbits = serial.STOPBITS_ONE
         self.__ser.bytesize = serial.EIGHTBITS
@@ -114,6 +116,10 @@ class Connector:
             logger.error("ERROR")
         # data = [hex(i) for i in data]
         else:
+            if not data_r:
+                cmn.print_debug('empty list', PRINT_DEBUG)
+                logger.error('serial read timeout: check if the input power is ON, close the GUI and re-excute.')
+                sys.exit()
             return data_r
 
     # End of Connector::readBinaryList

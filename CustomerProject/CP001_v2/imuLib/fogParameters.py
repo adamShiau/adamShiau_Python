@@ -1,3 +1,18 @@
+""" ####### log stuff creation, always on the top ########  """
+#!/usr/bin/env python
+# -*- coding:UTF-8 -*-
+from __future__ import print_function
+import __builtin__
+import logging
+
+if hasattr(__builtin__, 'LOGGER_NAME'):
+    logger_name = __builtin__.LOGGER_NAME
+else:
+    logger_name = __name__
+logger = logging.getLogger(logger_name + '.' + __name__)
+logger.info(__name__ + ' logger start')
+""" ####### end of log stuff creation ########  """
+
 import common as cmn
 
 '''-------define CMD address map-------'''
@@ -69,7 +84,7 @@ SENS_ADXL355_8G = 0.0000156
 class pig_parameters_ros:
     def __init__(self, act):
         self.__act = act
-        self.__par_manager = cmn.parameters_manager("parameters_SP9.json", INIT_PARAMETERS, 1)
+        self.__par_manager = cmn.parameters_manager("fog_parameters.json", INIT_PARAMETERS, 1)
         initPara = self.__par_manager.check_file_exist()
         self.set_init_value(initPara)
 

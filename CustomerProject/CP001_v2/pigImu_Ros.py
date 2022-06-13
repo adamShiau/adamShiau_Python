@@ -1,6 +1,26 @@
+""" ####### log stuff creation, always on the top ########  """
 #!/usr/bin/env python
 # -*- coding:UTF-8 -*-
 from __future__ import print_function
+import os
+import __builtin__
+import yaml
+import logging.config
+
+LOG_PATH = './logs/'
+LOGGER_NAME = 'main'
+__builtin__.LOGGER_NAME = LOGGER_NAME
+if not os.path.exists(LOG_PATH):
+    os.mkdir(LOG_PATH)
+f_log = open('log_config.yaml', 'r')
+config = yaml.safe_load(f_log)
+logging.config.dictConfig(config)
+logger = logging.getLogger(LOGGER_NAME)
+f_log.close()
+logger.info('create log stuff done, ')
+logger.info('process start')
+""" ####### end of log stuff creation ########  """
+
 import time
 import sys
 import rosParameters as rosVar
@@ -26,13 +46,14 @@ unit = None
 
 
 def myCallBack(imudata):
-    wx = imudata["NANO33_WX"]
-    wy = imudata["NANO33_WY"]
+    mems_wx = imudata["NANO33_WX"]
+    mems_wy = imudata["NANO33_WY"]
+    mems_wz = imudata["NANO33_WZ"]
     fog_wz = imudata["PIG_WZ"]
     ax = imudata["ADXL_AX"]
     ay = imudata["ADXL_AY"]
     az = imudata["ADXL_AZ"]
-    ros_Imu_publish(wx, wy, fog_wz, ax, ay, az)
+    ros_Imu_publish(mems_wx, mems_wz, fog_wz, ax, ay, az)
     # print(imudata["TIME"], imudata["NANO33_WZ"], imudata["ADXL_AZ"], imudata["PD_TEMP"])
 
 
@@ -99,7 +120,7 @@ def checkImudata(t, w1, w2):
 if __name__ == "__main__":
     global unit
     try:
-        print("running myImu.py")
+        logger.info("running myImu.py")
         ser = Connector()
         unit = DPH
         myImu = pigImuReader()

@@ -1,0 +1,41 @@
+2022-06-13 10:48:43 - main.myLib.common - ERROR - file_manager: AttributeError
+2022-06-13 10:48:46 - main.myLib.mySerial.Connector - ERROR - serial read timeout, check if the input power is ON !
+2022-06-13 10:50:22 - main.myLib.common - ERROR - file_manager: AttributeError
+2022-06-13 10:50:25 - main.myLib.mySerial.Connector - ERROR - serial read timeout, check if the input power is ON, close the GUI and re-excute.
+2022-06-13 10:51:24 - main.myLib.common - ERROR - file_manager: AttributeError
+2022-06-13 10:58:48 - main.myLib.common - ERROR - file_manager: AttributeError
+2022-06-13 10:59:00 - main.myLib.common - ERROR - file_manager: AttributeError
+2022-06-13 10:59:15 - main.myLib.common - ERROR - file_manager: AttributeError
+2022-06-13 10:59:33 - main.myLib.common - ERROR - file_manager: AttributeError
+2022-06-13 10:59:39 - main.myLib.common - ERROR - file_manager: AttributeError
+2022-06-13 10:59:57 - main.myLib.common - ERROR - file_manager: AttributeError
+2022-06-13 11:00:01 - main.myLib.common - ERROR - file_manager: AttributeError
+2022-06-13 11:00:10 - main.myLib.common - ERROR - file_manager: AttributeError
+2022-06-13 11:00:13 - main.myLib.common - ERROR - file_manager: AttributeError
+2022-06-13 11:00:41 - main.myLib.common - ERROR - file_manager: AttributeError
+2022-06-13 11:00:51 - main.myLib.common - ERROR - file_manager: AttributeError
+2022-06-13 11:01:06 - main.myLib.common - ERROR - file_manager: AttributeError
+2022-06-13 11:01:22 - main.myLib.common - ERROR - file_manager: AttributeError
+2022-06-13 11:04:50 - main.myLib.common - ERROR - file_manager: AttributeError
+2022-06-13 11:04:54 - main.myLib.common - ERROR - file_manager: AttributeError
+2022-06-13 11:05:07 - main.myLib.common - ERROR - file_manager: AttributeError
+2022-06-13 11:05:14 - main.myLib.common - ERROR - file_manager: AttributeError
+2022-06-13 11:05:27 - main.myLib.common - ERROR - file_manager: AttributeError
+2022-06-13 11:05:33 - main.myLib.common - ERROR - file_manager: AttributeError
+2022-06-13 11:06:25 - main.myLib.common - ERROR - file_manager: AttributeError
+2022-06-13 11:06:27 - main.myLib.common - ERROR - file_manager: AttributeError
+2022-06-13 11:06:41 - main.myLib.common - ERROR - file_manager: AttributeError
+2022-06-13 11:06:45 - main.myLib.common - ERROR - file_manager: AttributeError
+2022-06-13 11:07:15 - main.myLib.common - ERROR - file_manager: AttributeError
+2022-06-13 11:07:20 - main.myLib.common - ERROR - file_manager: AttributeError
+2022-06-13 11:13:17 - main.myLib.common - ERROR - file_manager: AttributeError
+2022-06-13 11:13:22 - main.myLib.common - ERROR - file_manager: AttributeError
+2022-06-13 11:14:17 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2022-06-13 11:14:17 - main.myLib.common - ERROR - file_manager: AttributeError
+2022-06-13 11:14:17 - main.myLib.mySerial.Connector - ERROR - ERROR
+2022-06-13 11:26:59 - main.myLib.common - ERROR - file_manager: AttributeError
+2022-06-13 11:27:23 - main.myLib.common - ERROR - file_manager: AttributeError
+2022-06-13 11:27:37 - main.myLib.common - ERROR - file_manager: AttributeError
+2022-06-13 11:28:06 - main.myLib.common - ERROR - file_manager: AttributeError
+2022-06-13 11:43:18 - main.myLib.mySerial.Connector - ERROR - serial read timeout: check if the input power is ON, close the GUI and re-excute.
+2022-06-13 17:28:11 - main.myLib.mySerial.Connector - ERROR - serial read timeout: check if the input power is ON, close the GUI and re-excute.

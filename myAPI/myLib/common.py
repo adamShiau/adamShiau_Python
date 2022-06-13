@@ -206,7 +206,7 @@ def file_manager(isopen=False, name="notitle", mode="w", fnum=0):
         except AttributeError:
             # print("file_manager: AttributeError")
             logger.info('AttributeError: the file attempt to close does not exist!')
-            logger.error("file_manager: AttributeError")
+            # logger.error("file_manager: AttributeError")
             # logger.exception("file_manager: AttributeError")
             pass
         return False, fd[fnum]

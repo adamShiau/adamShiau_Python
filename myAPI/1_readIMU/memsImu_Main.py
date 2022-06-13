@@ -69,7 +69,7 @@ class mainWindow(QMainWindow):
         self.top.usb.bt_connect.clicked.connect(self.connect)
         self.top.usb.bt_disconnect.clicked.connect(self.disconnect)
         # bt connection
-        self.top.start_bt.clicked.connect(self.start)
+        self.top.read_bt.clicked.connect(self.start)
         self.top.stop_bt.clicked.connect(self.stop)
         # rb connection
         self.top.kal_filter_rb.toggled.connect(lambda: self.update_kalFilter_en(self.top.kal_filter_rb))
@@ -113,6 +113,7 @@ class mainWindow(QMainWindow):
         # print("port open: ", open)
         self.top.usb.updateStatusLabel(open)
         self.pig_menu.setEnable(open)
+        self.top.setBtnEnable(open)
 
     def connect(self):
         is_port_open = self.act.connect(self.__connector, self.__portName, 230400)

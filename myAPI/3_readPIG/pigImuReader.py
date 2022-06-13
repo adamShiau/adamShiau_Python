@@ -1,3 +1,14 @@
+""" ####### log stuff creation, always on the top ########  """
+import builtins
+import logging
+if hasattr(builtins, 'LOGGER_NAME'):
+    logger_name = builtins.LOGGER_NAME
+else:
+    logger_name = __name__
+logger = logging.getLogger(logger_name + '.' + __name__)
+logger.info(__name__ + ' logger start')
+""" ####### end of log stuff creation ########  """
+
 import sys
 import logging
 
@@ -73,7 +84,7 @@ class pigImuReader(QThread):
     # class constructor
 
     def __del__(self):
-        print("class memsImuReader's destructor called!")
+        logger.info("class memsImuReader's destructor called!")
 
     # End of destructor
 
@@ -102,7 +113,7 @@ class pigImuReader(QThread):
     @isKal.setter
     def isKal(self, en):
         self.__isKal = en
-        print("act.isKal: ", self.isKal)
+        # logger.info("act.isKal: ", self.isKal)
 
     @property
     def kal_Q(self):

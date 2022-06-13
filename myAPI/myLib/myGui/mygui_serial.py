@@ -15,12 +15,16 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 import sys
+from myLib import common as cmn
 
+PRINT_DEBUG = 0
 
 class usbConnect():
     def __init__(self, group_name='Connect COM port'):
+
         self.__portList = None
         self.__groupBox = QGroupBox(group_name)
+        self.__groupBox.setFont(QFont('Arial', 10))
         # self.__groupBox.setCheckable(True)
         self.bt_update = QPushButton("update")
         self.bt_connect = QPushButton('connect')
@@ -78,31 +82,31 @@ class usbConnect():
         # self.lb_comDisp.show()
 
 
-class dataSaveBlock(QGroupBox):
-    def __init__(self, name=""):
-        super(dataSaveBlock, self).__init__()
-        self.setTitle(name)
-        self.rb = QRadioButton("save")
-        self.le_filename = QLineEdit("enter_file_name")
-        self.le_ext = QLineEdit(".txt")
-        self.rb.setChecked(False)
-
-        layout = QGridLayout()
-        layout.addWidget(self.rb, 0, 0, 1, 1)
-        layout.addWidget(self.le_filename, 0, 1, 1, 3)
-        layout.addWidget(self.le_ext, 0, 4, 1, 1)
-        self.setLayout(layout)
-
-
-class lineEditBlock(QGroupBox):
-    def __init__(self, name=""):
-        super(lineEditBlock, self).__init__()
-        self.setTitle(name)
-        self.le_filename = QLineEdit("parameters_SP9")
-
-        layout = QGridLayout()
-        layout.addWidget(self.le_filename, 0, 1, 1, 1)
-        self.setLayout(layout)
+# class dataSaveBlock(QGroupBox):
+#     def __init__(self, name=""):
+#         super(dataSaveBlock, self).__init__()
+#         self.setTitle(name)
+#         self.rb = QRadioButton("save")
+#         self.le_filename = QLineEdit("enter_file_name")
+#         self.le_ext = QLineEdit(".txt")
+#         self.rb.setChecked(False)
+#
+#         layout = QGridLayout()
+#         layout.addWidget(self.rb, 0, 0, 1, 1)
+#         layout.addWidget(self.le_filename, 0, 1, 1, 3)
+#         layout.addWidget(self.le_ext, 0, 4, 1, 1)
+#         self.setLayout(layout)
+#
+#
+# class lineEditBlock(QGroupBox):
+#     def __init__(self, name=""):
+#         super(lineEditBlock, self).__init__()
+#         self.setTitle(name)
+#         self.le_filename = QLineEdit("parameters_SP9")
+#
+#         layout = QGridLayout()
+#         layout.addWidget(self.le_filename, 0, 1, 1, 1)
+#         self.setLayout(layout)
 
 
 class spinBlock(QGroupBox):
@@ -170,41 +174,41 @@ class editBlock(QGroupBox):
         self.setLayout(layout)
 
 
-class displayOneBlock(QGroupBox):
-    def __init__(self, name='name'):
-        super(displayOneBlock, self).__init__()
-        self.setTitle(name)
-        self.setFont(QFont('', 10))
-        pe = QPalette()
-        pe.setColor(QPalette.WindowText, Qt.yellow)
-        pe.setColor(QPalette.Window, Qt.black)
-        self.lb = QLabel()
-        self.lb.setPalette(pe)
-        self.lb.setFont(QFont('Arial', 20))
-        self.lb.setAutoFillBackground(True)
-        self.lb.setText('buffer')
+# class displayOneBlock(QGroupBox):
+#     def __init__(self, name='name'):
+#         super(displayOneBlock, self).__init__()
+#         self.setTitle(name)
+#         self.setFont(QFont('', 10))
+#         pe = QPalette()
+#         pe.setColor(QPalette.WindowText, Qt.yellow)
+#         pe.setColor(QPalette.Window, Qt.black)
+#         self.lb = QLabel()
+#         self.lb.setPalette(pe)
+#         self.lb.setFont(QFont('Arial', 20))
+#         self.lb.setAutoFillBackground(True)
+#         self.lb.setText('buffer')
+#
+#         layout = QVBoxLayout()
+#         layout.addWidget(self.lb)
+#         self.setLayout(layout)
 
-        layout = QVBoxLayout()
-        layout.addWidget(self.lb)
-        self.setLayout(layout)
 
-
-class checkBoxBlock_2(QGroupBox):
-    def __init__(self, title='', name1='', name2=''):
-        super(checkBoxBlock_2, self).__init__()
-        self.setTitle(title)
-        self.cb_1 = QCheckBox(name1)
-        self.cb_2 = QCheckBox(name2)
-        self.cb_1.setChecked(True)
-        pe = QPalette()
-        pe.setColor(QPalette.Window, Qt.white)
-        self.setPalette(pe)
-        self.setAutoFillBackground(True)
-
-        layout = QHBoxLayout()
-        layout.addWidget(self.cb_1)
-        layout.addWidget(self.cb_2)
-        self.setLayout(layout)
+# class checkBoxBlock_2(QGroupBox):
+#     def __init__(self, title='', name1='', name2=''):
+#         super(checkBoxBlock_2, self).__init__()
+#         self.setTitle(title)
+#         self.cb_1 = QCheckBox(name1)
+#         self.cb_2 = QCheckBox(name2)
+#         self.cb_1.setChecked(True)
+#         pe = QPalette()
+#         pe.setColor(QPalette.Window, Qt.white)
+#         self.setPalette(pe)
+#         self.setAutoFillBackground(True)
+#
+#         layout = QHBoxLayout()
+#         layout.addWidget(self.cb_1)
+#         layout.addWidget(self.cb_2)
+#         self.setLayout(layout)
 
 
 class calibrationBlock(QGroupBox):
@@ -214,8 +218,8 @@ class calibrationBlock(QGroupBox):
         self.__isCali_w = True
         self.resize(320, 100)
         self.setWindowTitle('IMU calibration')
-        self.setTitle('enable')
-        self.setCheckable(True)
+        # self.setTitle('enable')
+        # self.setCheckable(True)
         self.cb_cali_w = QCheckBox('calibrate gyro')
         self.cb_cali_a = QCheckBox('calibrate accelerometer')
         self.cb_cali_w.setChecked(True)
@@ -228,17 +232,21 @@ class calibrationBlock(QGroupBox):
         self.setLayout(layout)
 
     def cbstate_connect(self, cb):
-        if cb.text() == 'cali. gyro':
+        if cb.text() == 'calibrate gyro':
             self.isCali_w = cb.isChecked()
-        elif cb.text() == 'cali. accelerometer':
+        elif cb.text() == 'calibrate accelerometer':
             self.isCali_a = cb.isChecked()
         self.cali_status()
 
     def cali_status(self):
-        if not self.isChecked():
-            return False, False
-        else:
-            return self.isCali_w, self.isCali_a
+        cmn.print_debug(' \nmygui_serial: self.isChecked = %s' % self.isChecked(), PRINT_DEBUG)
+        cmn.print_debug(' mygui_serial: self.isCali_w = %s' % self.isCali_w, PRINT_DEBUG)
+        cmn.print_debug(' mygui_serial: self.isCali_a = %s' % self.isCali_a, PRINT_DEBUG)
+        # if not self.isChecked():
+        #     return False, False
+        # else:
+        #     return self.isCali_w, self.isCali_a
+        return self.isCali_w, self.isCali_a
 
     @property
     def isCali_w(self):
@@ -259,37 +267,37 @@ class calibrationBlock(QGroupBox):
         # print("isCali_a: ", self.isCali_a)
 
 
-class radioButtonBlock_2(QGroupBox):
-    def __init__(self, title='', name1='', name2=''):
-        super(radioButtonBlock_2, self).__init__()
-        self.setTitle(title)
-        self.__btn_status = None
-        self.rb1 = QRadioButton(name1)
-        self.rb2 = QRadioButton(name2)
-        self.rb1.setChecked(True)
-        self.btn_status = name1
-        self.rb1.toggled.connect(lambda: self.btnstate_connect(self.rb1))
-        self.rb2.toggled.connect(lambda: self.btnstate_connect(self.rb2))
-        pe = QPalette()
-        pe.setColor(QPalette.Window, Qt.white)
-        self.setPalette(pe)
-        self.setAutoFillBackground(True)
-        layout = QHBoxLayout()
-        layout.addWidget(self.rb1)
-        layout.addWidget(self.rb2)
-        self.setLayout(layout)
-
-    def btnstate_connect(self, btn):
-        if btn.isChecked():
-            self.btn_status = btn.text()
-
-    @property
-    def btn_status(self):
-        return self.__btn_status
-
-    @btn_status.setter
-    def btn_status(self, state):
-        self.__btn_status = state
+# class radioButtonBlock_2(QGroupBox):
+#     def __init__(self, title='', name1='', name2=''):
+#         super(radioButtonBlock_2, self).__init__()
+#         self.setTitle(title)
+#         self.__btn_status = None
+#         self.rb1 = QRadioButton(name1)
+#         self.rb2 = QRadioButton(name2)
+#         self.rb1.setChecked(True)
+#         self.btn_status = name1
+#         self.rb1.toggled.connect(lambda: self.btnstate_connect(self.rb1))
+#         self.rb2.toggled.connect(lambda: self.btnstate_connect(self.rb2))
+#         pe = QPalette()
+#         pe.setColor(QPalette.Window, Qt.white)
+#         self.setPalette(pe)
+#         self.setAutoFillBackground(True)
+#         layout = QHBoxLayout()
+#         layout.addWidget(self.rb1)
+#         layout.addWidget(self.rb2)
+#         self.setLayout(layout)
+#
+#     def btnstate_connect(self, btn):
+#         if btn.isChecked():
+#             self.btn_status = btn.text()
+#
+#     @property
+#     def btn_status(self):
+#         return self.__btn_status
+#
+#     @btn_status.setter
+#     def btn_status(self, state):
+#         self.__btn_status = state
 
 
 if __name__ == "__main__":

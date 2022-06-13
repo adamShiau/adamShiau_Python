@@ -1,6 +1,18 @@
+""" ####### log stuff creation, always on the top ########  """
 #!/usr/bin/env python
 # -*- coding:UTF-8 -*-
 from __future__ import print_function
+import __builtin__
+import logging
+
+if hasattr(__builtin__, 'LOGGER_NAME'):
+    logger_name = __builtin__.LOGGER_NAME
+else:
+    logger_name = __name__
+logger = logging.getLogger(logger_name + '.' + __name__)
+logger.info(__name__ + ' logger start')
+""" ####### end of log stuff creation ########  """
+
 import time
 import numpy as np
 from datetime import datetime
@@ -181,7 +193,7 @@ def file_manager(isopen=False, name="notitle", mode="w", fnum=0):
             # print("file " + name + " is open")
 
         except:
-            print("file " + name + " does not exist, auto create new!")
+            logger.info("file " + name + " does not exist, auto create new!")
             fd[fnum] = open(name, "w")
 
         return True, fd[fnum]
@@ -191,10 +203,10 @@ def file_manager(isopen=False, name="notitle", mode="w", fnum=0):
             fd[fnum].close()
             # print("file " + name + " is close")
         except NameError:
-            print("NameError")
+            logger.info("NameError")
             pass
         except AttributeError:
-            print("AttributeError")
+            logger.info("AttributeError: the file attempt to close does not exist !")
             pass
         return False, fd[fnum]
 
@@ -252,7 +264,7 @@ class parameters_manager:
         isopen, fd = file_manager(isopen=True, name=self.__name, mode="r", fnum=self.__fnum)
 
         if isopen:
-            # parameter file doesn't exist， create new with write mode and dump initial parameters into the file.
+            # parameter file does not exist, create new with write mode and dump initial parameters into the file.
             if fd.mode == "w":
                 self.__dump_init_parameters(fd, self.__par)
 
@@ -403,148 +415,3 @@ def dictOperation(dictA, dictB, mode, dictStruct):
 # End of dicOperation
 
 
-if __name__ == "__main__":
-    import sys
-
-    sys.path.append("../")
-    from myLib.mySerial.Connector import Connector
-    from myLib.mySerial import getData
-    import time
-    import numpy as np
-
-    logging.basicConfig(level=100)
-
-    # A = np.empty(0)
-    # B = 2
-    # print(A)
-    # print(B)
-    # C = np.append(A, B)
-    # print(C)
-
-    # imudata = {
-    #     "NANO33_W": np.array((1., 2., 3.)),
-    #     "NANO33_A": np.array((-1., -2., -3.)),
-    #     "ADXL_A": np.array((4., 5., 6.)),
-    #     "TIME": (1.5,)
-    # }
-
-    IMU_DATA_STRUCTURE = {
-        "NANO33_W": (0, 0, 0),
-        "NANO33_A": (0, 0, 0),
-        "ADXL_A": (0, 0, 0),
-        "TIME": (0,)
-    }
-    struct = {k: [np.empty(0) for i in range(len(IMU_DATA_STRUCTURE[k]))]
-              for k in set(IMU_DATA_STRUCTURE)}
-    # print(struct)
-
-    # rt = {k: [np.zeros(len(IMU_DATA_STRUCTURE[k])) ] for k in IMU_DATA_STRUCTURE}
-    # print("rt: ", rt)
-    # imudataArray = {k: [np.empty(0) for i in range(len(IMU_DATA_STRUCTURE))]
-    #                 for k in set(IMU_DATA_STRUCTURE)}
-    # print("imudataArray: ", imudataArray)
-    ''' TEST ADD '''
-    '''
-    # 測試累加功能
-    imuoffset = {k: np.zeros(len(IMU_DATA_STRUCTURE[k])) for k in set(IMU_DATA_STRUCTURE)}
-    print(imuoffset)
-    data = {
-        "NANO33_W": (1, 2, 3),
-        "NANO33_A": (-1, -2, -3),
-        "ADXL_A": (4, 5, 6),
-        "TIME": (1.5,)
-    }
-    for i in range(10):
-        imuoffset = dictOperation(imuoffset, data, "ADD", struct)
-    print(imuoffset)
-    imuoffset = {k: imuoffset[k] / 10 for k in imuoffset}
-    print(imuoffset)
-    # end of 測試累加功能
-    '''
-
-    '''
-    # 測試一起加上offset功能
-    imudata = {
-        "NANO33_W": (np.array([1, 2, 3]), np.array([4, 5, 6]), np.array([7, 8, 9])),
-        "NANO33_A": (np.array([1, 2, 3]), np.array([4, 5, 6]), np.array([7, 8, 9])),
-        "ADXL_A": (np.array([1, 2, 3]), np.array([4, 5, 6]), np.array([7, 8, 9])),
-        "TIME": (np.array([1.5, 1.6, 1.7]))
-    }
-    print(imudata)
-    offset = {
-        "NANO33_W": np.array((1, 2, 3)),
-        "NANO33_A": np.array((-1, -2, -3)),
-        "ADXL_A": np.array((4, 5, 6)),
-        "TIME": np.array((1.5,))
-    }
-    imudata_add_offset = dictOperation(imudata, offset, "ADD", struct)
-    print(imudata_add_offset)
-    # end of 測試一起加上offset功能
-    '''
-
-    ''' TEST SUB '''
-    '''
-     # 測試一起扣掉offset功能
-    imudata = {
-        "NANO33_W": (np.array([1, 2, 3]), np.array([4, 5, 6]), np.array([7, 8, 9])),
-        "NANO33_A": (np.array([1, 2, 3]), np.array([4, 5, 6]), np.array([7, 8, 9])),
-        "ADXL_A": (np.array([1, 2, 3]), np.array([4, 5, 6]), np.array([7, 8, 9])),
-        "TIME": (np.array([1.5, 1.6, 1.7]))
-    }
-    print(imudata)
-    offset = {
-        "NANO33_W": (1, 2, 3),
-        "NANO33_A": (-1, -2, -3),
-        "ADXL_A": (4, 5, 6),
-        "TIME": (1.5,)
-    }
-    imudata_add_offset = dictOperation(imudata, offset, "SUB", struct)
-    print(imudata_add_offset)
-    # end of 測試一起扣掉offset功能
-    '''
-
-    ''' TEST APPEND '''
-    '''
-    # 測試在memsImuReader裡對每個imudata append
-    imudataArray = {k: [np.empty(0) for i in range(len(IMU_DATA_STRUCTURE[k]))]
-                    for k in set(IMU_DATA_STRUCTURE)}
-    imudata = {
-        "NANO33_W": np.array((1., 2., 3.)),
-        "NANO33_A": np.array((-1., -2., -3.)),
-        "ADXL_A": np.array((4., 5., 6.)),
-        "TIME": (1.5,)
-    }
-    print("imudataArray: ", imudataArray)
-    for i in range(5):
-        # print(i, end=", ")
-        imudataArray = dictOperation(imudataArray, imudata, "APPEND", struct)
-        # print(imudataArray)
-        # dictOperation(imudataArray, imudata, "APPEND", struct)
-    print(imudataArray)
-    # end of 測試在memsImuReader裡對每個imudata append
-    '''
-
-    # 測試在main裡 對memsImuReader發送來的imudata append
-    '''
-    data1 = {k: [np.empty(0) for i in range(len(IMU_DATA_STRUCTURE))]
-                    for k in set(IMU_DATA_STRUCTURE)}
-    data2 = {k: [np.empty(0) for i in range(len(IMU_DATA_STRUCTURE))]
-             for k in set(IMU_DATA_STRUCTURE)}
-    imudata = {
-        "NANO33_W": np.array((1., 2., 3.)),
-        "NANO33_A": np.array((-1., -2., -3.)),
-        "ADXL_A": np.array((4., 5., 6.)),
-        "TIME": (1.5,)
-    }
-
-    for i in range(5):
-        data1 = dictOperation(data1, imudata, "APPEND", struct)
-
-    print(data1)
-    print(data2)
-    data1["TIME"] = [data1["TIME"]]
-    for i in range(3):
-        data2 = dictOperation(data2, data1, "APPEND", struct)
-    print(data2)
-    '''
-    # end of 測試在main裡 對memsImuReader發送來的imudata append

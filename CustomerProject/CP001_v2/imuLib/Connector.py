@@ -1,13 +1,26 @@
+""" ####### log stuff creation, always on the top ########  """
 #!/usr/bin/env python
 # -*- coding:UTF-8 -*-
 from __future__ import print_function
+import __builtin__
+import logging
+
+if hasattr(__builtin__, 'LOGGER_NAME'):
+    logger_name = __builtin__.LOGGER_NAME
+else:
+    logger_name = __name__
+logger = logging.getLogger(logger_name + '.' + __name__)
+logger.info(__name__ + ' logger start')
+""" ####### end of log stuff creation ########  """
 
 import serial
 import serial.tools.list_ports
 import time
 import sys
 import numpy as np
+import imuLib.common as cmn
 
+PRINT_DEBUG = 0
 
 class Connector:
     def __init__(self, portName="COM7", baudRate=230400):
@@ -54,7 +67,7 @@ class Connector:
     def connect(self):
         self.__ser.baudrate = self.__baudRate
         self.__ser.port = self.portName
-        # self.__ser.timeout = 1
+        self.__ser.timeout = 3
         # self.__ser.writeTimeout = 1
         self.__ser.parity = serial.PARITY_NONE
         self.__ser.stopbits = serial.STOPBITS_ONE
@@ -106,6 +119,10 @@ class Connector:
             print("ERROR")
         # data = [hex(i) for i in data]
         else:
+            if not data_r:
+                cmn.print_debug('empty list', PRINT_DEBUG)
+                logger.error('serial read timeout: check if the input power is ON, close the GUI and re-excute.')
+                sys.exit()
             return data_r
 
     # End of Connector::readBinaryList

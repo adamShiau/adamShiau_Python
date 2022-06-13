@@ -9,6 +9,9 @@ else:
 logger = logging.getLogger(logger_name + '.' + __name__)
 logger.info(__name__ + ' logger start')
 """ ####### end of log stuff creation ########  """
+import myLib.common as cmn
+import sys
+PRINT_DEBUG = 0
 
 def alignHeader_4B(comportObj, header):
     datain = comportObj.readBinaryList(4)
@@ -16,10 +19,16 @@ def alignHeader_4B(comportObj, header):
         if datain == header:
             return datain
         else:
-            datain[0] = datain[1]
-            datain[1] = datain[2]
-            datain[2] = datain[3]
-            datain[3] = comportObj.readBinaryList(1)[0]
+            try:
+                datain[0] = datain[1]
+                datain[1] = datain[2]
+                datain[2] = datain[3]
+                datain[3] = comportObj.readBinaryList(1)[0]
+            except IndexError:
+                logger.error('IndexError: alignHeader_4B')
+                sys.exit()
+                break
+
             # print(datain)
 # End of alignHeader_4B
 

@@ -24,15 +24,16 @@ class memsImuWidget(QMainWindow):
 
     def initUI(self):
         self.usb = usbConnect()
-        self.start_bt = QPushButton("read")
+        self.read_bt = QPushButton("read")
+        self.read_bt.setEnabled(False)
         self.stop_bt = QPushButton("stop")
+        self.stop_bt.setEnabled(False)
         self.save_block = dataSaveBlock("save data")
         self.para_block = lineEditBlock('parameter configuration file')
         self.buffer_lb = displayOneBlock('Buffer size')
         self.pd_temp_lb = displayOneBlock('PD temp.')
         self.data_rate_lb = displayOneBlock('data rate')
         self.kal_filter_rb = QRadioButton('Kalman filter')
-        # self.kal_filter_rb.setEnabled(False)
         self.plot1_showWz_cb = checkBoxBlock_2('Wz', 'pig', 'mems')
         self.plot1_showWz_cb.cb_1.setChecked(False)
         self.plot1_showWz_cb.cb_2.setChecked(True)
@@ -46,7 +47,6 @@ class memsImuWidget(QMainWindow):
 
         layout = QGridLayout()
         layout.addWidget(self.usb.layout(), 0, 0, 1, 4)
-        # layout.addWidget(self.pig_parameter_bt, 0, 4, 1, 1)
         layout.addWidget(self.start_bt, 0, 5, 1, 1)
         layout.addWidget(self.stop_bt, 0, 6, 1, 1)
         layout.addWidget(self.save_block, 0, 10, 1, 3)
@@ -68,6 +68,10 @@ class memsImuWidget(QMainWindow):
         widget.setLayout(layout)
         self.setCentralWidget(widget)
         self.setLayout(layout)
+
+    def setBtnEnable(self, en):
+        self.read_bt.setEnabled(en)
+        self.stop_bt.setEnabled(en)
 
 
 

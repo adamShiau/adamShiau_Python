@@ -1,4 +1,17 @@
+""" ####### log stuff creation, always on the top ########  """
+#!/usr/bin/env python
 # -*- coding:UTF-8 -*-
+from __future__ import print_function
+import __builtin__
+import logging
+
+if hasattr(__builtin__, 'LOGGER_NAME'):
+    logger_name = __builtin__.LOGGER_NAME
+else:
+    logger_name = __name__
+logger = logging.getLogger(logger_name + '.' + __name__)
+logger.info(__name__ + ' logger start')
+""" ####### end of log stuff creation ########  """
 
 def alignHeader_4B(comportObj, header):
     datain = comportObj.readBinaryList(4)

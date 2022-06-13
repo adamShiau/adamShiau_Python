@@ -1,3 +1,23 @@
+""" ####### log stuff creation, always on the top ########  """
+import os
+import builtins
+import yaml
+import logging.config
+
+LOG_PATH = './logs/'
+LOGGER_NAME = 'main'
+builtins.LOGGER_NAME = LOGGER_NAME
+if not os.path.exists(LOG_PATH):
+    os.mkdir(LOG_PATH)
+f_log = open('log_config.yaml', 'r', encoding='utf-8')
+config = yaml.safe_load(f_log)
+logging.config.dictConfig(config)
+logger = logging.getLogger(LOGGER_NAME)
+f_log.close()
+logger.info('create log stuff done, ')
+logger.info('process start')
+""" ####### end of log stuff creation ########  """
+
 import sys
 
 sys.path.append("../")
@@ -21,7 +41,7 @@ class mainWindow(QMainWindow):
         super(mainWindow, self).__init__()
         self.pig_parameter_widget = None
         self.__portName = None
-        self.setWindowTitle("memsImuPlot")
+        self.setWindowTitle("Aegiverse IMU GUI")
         self.__connector = Connector()
         self.__isFileOpen = False
         self.top = TOP()
@@ -49,10 +69,10 @@ class mainWindow(QMainWindow):
         self.top.usb.bt_connect.clicked.connect(self.connect)
         self.top.usb.bt_disconnect.clicked.connect(self.disconnect)
         # bt connection
-        self.top.start_bt.clicked.connect(self.start)
+        self.top.read_bt.clicked.connect(self.start)
         self.top.stop_bt.clicked.connect(self.stop)
         # rb connection
-        self.top.kal_filter_rb.toggled.connect(lambda:self.update_kalFilter_en(self.top.kal_filter_rb))
+        self.top.kal_filter_rb.toggled.connect(lambda: self.update_kalFilter_en(self.top.kal_filter_rb))
         # pyqtSignal connection
         self.act.imudata_qt.connect(self.collectData)
         self.act.imuThreadStop_qt.connect(self.imuThreadStopDetect)
@@ -69,7 +89,6 @@ class mainWindow(QMainWindow):
 
     def update_kalFilter_en(self, rb):
         self.act.isKal = rb.isChecked()
-
 
     def printBuffer(self, val):
         self.top.buffer_lb.lb.setText(str(val))
@@ -94,11 +113,12 @@ class mainWindow(QMainWindow):
         # print("port open: ", open)
         self.top.usb.updateStatusLabel(open)
         self.pig_menu.setEnable(open)
+        self.top.setBtnEnable(open)
 
     def connect(self):
         is_port_open = self.act.connect(self.__connector, self.__portName, 230400)
         self.is_port_open_qt.emit(is_port_open)
-        self.pig_parameter_widget = pig_parameters_widget(self.act)
+        self.pig_parameter_widget = pig_parameters_widget(self.act, self.top.para_block.le_filename.text() + '.json')
         self.act.isCali_w, self.act.isCali_a = self.pig_cali_menu.cali_status()  # update calibration flag to act
 
     def disconnect(self):

@@ -15,7 +15,7 @@ def cal_oadev(data, rate, tauArray):
         if n == 0:
             n = 1  # Use minimal n if tau is less than the sampling period.
         currentSum = 0  # Initialize the sum
-        print('n: ', n)
+        # print('n: ', n)
         tlp_s = time.perf_counter()
         for j in range(0, dataLength - 2 * n):
             currentSum = (data[j + 2 * n] - 2 * data[j + n] + data[j]) ** 2 + currentSum  # Cumulate the sum squared
@@ -29,26 +29,26 @@ def cal_oadev(data, rate, tauArray):
     return actualTau, dev  # Return the actual tau and overlapped Allan deviation
 
 
-
-NAME = '0613_2' + '.txt'
+NAME = '0402_noKAL' + '.txt'
 SF_A = 0.00295210451588764 * 1.02 / 2
 SF_B = -0.00137052112589694
 dataRate = 100
 
 t1 = time.perf_counter()
 
-# Var = np.loadtxt(NAME, comments='#', delimiter=',', skiprows=0)
-# wz = Var[:,1]
+Var = np.loadtxt(NAME, comments='#', delimiter=',', skiprows=0)
+wz = Var[:, 1]
 
-Var = pd.read_csv(NAME, comment='#')
-Var.columns = ['time', 'wz', 'wx', 'wy', 'ax', 'ay', 'az']
-wz = np.array(Var.wz)
+# Var = pd.read_csv(NAME, comment='#')
+# Var.columns = ['time', 'wz', 'wx', 'wy', 'ax', 'ay', 'az']
+# Var.columns = ['time', 'wz', 'wx', 'wy']
+# wz = np.array(Var.wz)
 # print(type(wz))
 # print(wz)
 t2 = time.perf_counter()
 
-# thetaz = (wz.cumsum() / dataRate)  # degree
-thetaz = tuple(wz.cumsum() / dataRate)  # degree
+thetaz = (wz.cumsum() / dataRate)  # degree
+# thetaz = tuple(wz.cumsum() / dataRate)  # degree
 # print(type(thetaz))
 # print(thetaz)
 t3 = time.perf_counter()
@@ -72,9 +72,9 @@ tauArray = np.array([tau0, 3 * tau0, 5 * tau0, 10 * tau0, 30 * tau0, 50 * tau0,
 x, y = cal_oadev(thetaz, dataRate, tauArray)
 t4 = time.perf_counter()
 
-print('read: ', (t2-t1)*1e3)
-print('cumsum: ', (t3-t2)*1e3)
-print('allen: ', (t4-t3)*1e3)
+print('read: ', (t2 - t1) * 1e3)
+print('cumsum: ', (t3 - t2) * 1e3)
+print('allen: ', (t4 - t3) * 1e3)
 
 y = y * 3600
 

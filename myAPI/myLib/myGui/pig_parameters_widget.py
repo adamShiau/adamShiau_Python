@@ -11,7 +11,6 @@ logger.info(__name__ + ' logger start')
 """ ####### end of log stuff creation ########  """
 
 import sys
-
 sys.path.append("../../")
 print(__name__)
 print(sys.path)

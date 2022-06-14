@@ -26,7 +26,7 @@ from myLib.myGui.mygui_serial import *
 import time
 from myLib.mySerial.Connector import Connector
 from myLib.myGui.pig_parameters_widget import pig_parameters_widget
-from myLib.myGui.pig_menu_widget import pig_menu_widget
+from myLib.myGui.pig_menu_widget import pig_menu_manager
 from PyQt5.QtWidgets import *
 from pigImu_Widget import pigImuWidget as TOP
 from pigImuReader import pigImuReader as ACTION
@@ -50,7 +50,7 @@ class mainWindow(QMainWindow):
         self.pig_cali_menu = calibrationBlock()
         self.act.isCali = True
         self.menu = self.menuBar()
-        self.pig_menu = pig_menu_widget(self.menu, self)
+        self.pig_menu = pig_menu_manager(self.menu, self)
         self.linkfunction()
         self.act.arrayNum = 10
         self.mainUI()

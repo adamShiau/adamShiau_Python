@@ -13,7 +13,7 @@ logger.info(__name__ + ' logger start')
 from PyQt5.QtWidgets import *
 
 
-class pig_menu_widget:
+class pig_menu_manager:
     def __init__(self, menuBar, obj):
         self.pig_cali_action = None
         self.pig_para_action = None

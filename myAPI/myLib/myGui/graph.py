@@ -2,6 +2,7 @@
 """ ####### log stuff creation, always on the top ########  """
 import builtins
 import logging
+
 if hasattr(builtins, 'LOGGER_NAME'):
     logger_name = builtins.LOGGER_NAME
 else:
@@ -55,6 +56,7 @@ class pgGraph_1(QMainWindow):
         self.ax = p.plot(pen=pen)
         self.setCentralWidget(win)
 
+
 # class pgGraph_1_2(QMainWindow):
 #     def __init__(self, color1="w", color2="w", title="add title"):
 #         super(pgGraph_1_2, self).__init__()
@@ -106,6 +108,7 @@ class pgGraph_2(QMainWindow):
 
         self.setCentralWidget(win)
 
+
 class mplGraph_1(QWidget):
     def __init__(self, parent=None, width=10, height=10, dpi=100):
         super(mplGraph_1, self).__init__(parent)
@@ -135,6 +138,8 @@ class mplGraph_2(QWidget):
 
 if __name__ == '__main__':
     app = QApplication([])
-    fig2 = pgGraph_1_2()
-    fig2.show()
+    fig = mplGraph_1()
+    fig.ax.plot([1,2,3,4,5], [5,5,5,5,10])
+    fig.ax.clear()
+    fig.show()
     app.exec_()

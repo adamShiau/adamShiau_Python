@@ -84,18 +84,32 @@ class analysis_allan_widget(QWidget):
         self.allan.start()
 
     def fit_data(self, tau, dev):
-        print(tau)
-        print(dev)
+        # print(tau)
+        # print(dev)
+        bias = 10**self.findBias(tau, dev)
         idx_arw = np.where(tau == 1)[0][0]
         x = np.log10(tau[0:idx_arw+1])
         y = np.log10(dev[0:idx_arw+1])
-        print(x)
-        print(y)
+        # print(x)
+        # print(y)
         a, b = np.polyfit(x, y, 1)
-        self.allan_plot.ax.loglog(tau, 10 ** (a * np.log10(tau) + b), color='steelblue', linestyle='--', linewidth=2)
+        self.allan_plot.ax.loglog(tau[0:idx_arw+3], 10 ** (a * np.log10(tau[0:idx_arw+3]) + b), color='blue', linestyle='--', linewidth=2)
+        self.allan_plot.ax.loglog(tau, [bias]*len(tau), color='green',linestyle='--', linewidth=2)
         self.allan_plot.fig.canvas.draw()
         arw = 10 ** b
         print(a, b, arw)
+        print(bias)
+
+
+    def findBias(self, tau, dev):
+        size = len(tau)
+        tau2 = tau[1:size]
+        dev2 = dev[1:size]
+        dx = tau2 - tau[0:size-1]
+        dy = dev2 - dev[0:size-1]
+        slope = dy/dx
+        idx = np.where(slope > 0)[0][0]
+        return np.log10(dev[idx])
 
     def plot(self, tau, dev):
         # print(tau, dev)
@@ -224,7 +238,7 @@ class allan_dev(QThread):
             dev = np.append(dev, np.sqrt(devAtThisTau))
             actualTau = np.append(actualTau, n * self.tau0)
             progress_bar_current += 1
-            print('progress_bar_current:',progress_bar_current)
+            # print('progress_bar_current:',progress_bar_current)
             self.progress_qt.emit(progress_bar_current, progress_bar_total)
             self.allan_qt.emit(actualTau, dev)
         # end of for loop

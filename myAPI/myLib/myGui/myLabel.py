@@ -2,6 +2,7 @@
 """ ####### log stuff creation, always on the top ########  """
 import builtins
 import logging
+import sys
 
 if hasattr(builtins, 'LOGGER_NAME'):
     logger_name = builtins.LOGGER_NAME
@@ -41,3 +42,33 @@ class displayOneBlock(QGroupBox):
         layout = QVBoxLayout()
         layout.addWidget(self.lb)
         self.setLayout(layout)
+
+
+class twoLabelBlock(QGroupBox):
+    def __init__(self, title='', name1='', name2=''):
+        super(twoLabelBlock, self).__init__()
+        self.setTitle(title)
+        self.setFont(QFont('', 10))
+        pe = QPalette()
+        pe.setColor(QPalette.WindowText, Qt.blue)
+        # pe.setColor(QPalette.Window, Qt.black)
+        self.lb1 = QLabel(name1)
+        self.lb2 = QLabel(name2)
+        self.lb1.setPalette(pe)
+        self.lb1.setFont(QFont('Arial', 20))
+        self.lb2.setFont(QFont('Arial', 15))
+        self.layout()
+
+    def layout(self):
+        layout = QVBoxLayout()
+        layout.addWidget(self.lb1)
+        layout.addWidget(self.lb2)
+        self.setLayout(layout)
+        return self
+
+
+if __name__ == '__main__':
+    app = QApplication(sys.argv)
+    w = twoLabelBlock(title='Progrss', name1='Status')
+    w.show()
+    app.exec_()

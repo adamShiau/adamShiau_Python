@@ -30,19 +30,26 @@ def cal_oadev(data, rate, tauArray):
 
 
 NAME = '0402_noKAL' + '.txt'
+# NAME = '0613' + '.txt'
 SF_A = 0.00295210451588764 * 1.02 / 2
 SF_B = -0.00137052112589694
 dataRate = 100
 
 t1 = time.perf_counter()
 
-Var = np.loadtxt(NAME, comments='#', delimiter=',', skiprows=0)
-wz = Var[:, 1]
+# Var = np.loadtxt(NAME, comments='#', delimiter=',', skiprows=0)
+# wz = Var[:, 1]
 
-# Var = pd.read_csv(NAME, comment='#')
+Var = pd.read_csv(NAME, comment='#')
 # Var.columns = ['time', 'wz', 'wx', 'wy', 'ax', 'ay', 'az']
-# Var.columns = ['time', 'wz', 'wx', 'wy']
-# wz = np.array(Var.wz)
+Var.columns = ['time', 'wz', 'wx', 'wy']
+t = Var.time
+wz = Var.wz
+# wz = pd.Series(Var.wz, index=t)
+# plt.plot(t, wz)
+# print(wz)
+# wz.plot()
+wz = np.array(wz)
 # print(type(wz))
 # print(wz)
 t2 = time.perf_counter()
@@ -76,7 +83,7 @@ print('read: ', (t2 - t1) * 1e3)
 print('cumsum: ', (t3 - t2) * 1e3)
 print('allen: ', (t4 - t3) * 1e3)
 
-y = y * 3600
+# y = y * 3600
 
 plt.loglog(x, y, linestyle='-', marker='*')
 plt.xlabel('s')

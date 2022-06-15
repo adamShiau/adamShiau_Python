@@ -78,7 +78,7 @@ class memsImuWidget(QWidget):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    w = pigImuWidget()
+    w = memsImuWidget()
 
     w.show()
     app.exec_()

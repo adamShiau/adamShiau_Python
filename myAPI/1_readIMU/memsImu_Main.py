@@ -25,7 +25,7 @@ from myLib.myGui.mygui_serial import *
 import time
 from myLib.mySerial.Connector import Connector
 from myLib.myGui.pig_parameters_widget import pig_parameters_widget
-from myLib.myGui.pig_menu_widget import pig_menu_manager
+from myLib.myGui.pig_menu_manager import pig_menu_manager
 from PyQt5.QtWidgets import *
 from memsImu_Widget import memsImuWidget as TOP
 from memsImuReader import memsImuReader as ACTION

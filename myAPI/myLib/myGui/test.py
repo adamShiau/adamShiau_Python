@@ -1,20 +1,10 @@
-import sys
-from PyQt5.QtWidgets import *
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
+import numpy as np
 
+a = np.array([1, 2, 3, 4, 4, 5, 6])
+b=np.array([8,9])
 
-class WindowDemo(QMainWindow):
-    def __init__(self):
-        super(WindowDemo, self).__init__()
-        self.resize(200, 200)
-        self.logo = QLabel()
-        self.logo.setAlignment(Qt.AlignCenter)
-        self.logo.setPixmap(QPixmap('./aegiverse_logo.jpg'))
-        self.setCentralWidget(self.logo)
-
-if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    win = WindowDemo()
-    win.show()
-    sys.exit(app.exec_())
+# print(np.unique(a))
+a = np.append(a, b)
+a =np.delete(a, [-1])
+print(a[0:3])
+# print(np.array(b).astype(int))

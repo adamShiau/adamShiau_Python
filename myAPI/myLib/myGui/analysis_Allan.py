@@ -20,7 +20,8 @@ import time
 from myLib.myGui import graph
 from myLib.myGui import myLabel
 from PyQt5.QtWidgets import *
-from PyQt5.QtCore import QThread, pyqtSignal
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
 import matplotlib.pyplot as plt
 
 
@@ -62,61 +63,60 @@ class analysis_allan_widget(QWidget):
         self.allan.progress_qt.connect(self.update_progress_bar)
 
     def update_progress_bar(self, idx, total):
-        # print('idx: ', idx)
-        # print('total: ', total)
-
-        progress = int(idx/total*100)
+        progress = int(idx / total * 100)
         if progress == 100:
             self.progress.lb1.setText('Finish')
         else:
             self.progress.lb1.setText('Running')
-        self.progress.lb2.setText(str(progress)+'%')
-        # print(progress)
+        self.progress.lb2.setText(str(progress) + '%')
 
     def readData(self):
         self.allan.readData(self.adj_tau.file_le.text())
 
     def setTauArray(self, tauarray):
+        tauarray = [round(i * self.allan.tau0, 2) for i in tauarray]
         self.adj_tau.tauarray_le.setText(str(tauarray))
 
     def cal_allan_dev(self):
-        print('start cal allan')
+        # print('start cal allan')
         self.allan.start()
 
     def fit_data(self, tau, dev):
-        # print(tau)
-        # print(dev)
-        bias = 10**self.findBias(tau, dev)
         idx_arw = np.where(tau == 1)[0][0]
-        x = np.log10(tau[0:idx_arw+1])
-        y = np.log10(dev[0:idx_arw+1])
+        x = np.log10(tau[0:idx_arw + 1])
+        y = np.log10(dev[0:idx_arw + 1])
         # print(x)
         # print(y)
         a, b = np.polyfit(x, y, 1)
-        self.allan_plot.ax.loglog(tau[0:idx_arw+3], 10 ** (a * np.log10(tau[0:idx_arw+3]) + b), color='blue', linestyle='--', linewidth=2)
-        self.allan_plot.ax.loglog(tau, [bias]*len(tau), color='green',linestyle='--', linewidth=2)
+        self.allan_plot.ax.loglog(tau[0:idx_arw + 3], 10 ** (a * np.log10(tau[0:idx_arw + 3]) + b) * 3600, color='blue',
+                                  linestyle='--', linewidth=2)
+        bias = self.findBias(tau, dev)
+        if bias is not None:
+            bias = (10 ** bias) * 3600
+            self.allan_plot.ax.loglog(tau, [bias] * len(tau), color='green', linestyle='--', linewidth=2)
         self.allan_plot.fig.canvas.draw()
-        arw = 10 ** b
+        arw = (10 ** b * 3600) / 60
         print(a, b, arw)
         print(bias)
-
 
     def findBias(self, tau, dev):
         size = len(tau)
         tau2 = tau[1:size]
         dev2 = dev[1:size]
-        dx = tau2 - tau[0:size-1]
-        dy = dev2 - dev[0:size-1]
-        slope = dy/dx
-        idx = np.where(slope > 0)[0][0]
-        return np.log10(dev[idx])
+        dx = tau2 - tau[0:size - 1]
+        dy = dev2 - dev[0:size - 1]
+        slope = dy / dx
+        # print(slope)
+        try:
+            idx = np.where(slope > 0)[0][0]
+            return np.log10(dev[idx])
+        except IndexError:
+            logger.info('no bias instability value.')
+            return None
 
     def plot(self, tau, dev):
-        # print(tau, dev)
-        # self.allan_plot.ax.setData(tau, dev)
-        # self.allan_plot.ax.clear()
         self.allan_plot.ax.clear()
-        self.allan_plot.ax.loglog(tau, dev, 'k-*')
+        self.allan_plot.ax.loglog(tau, dev * 3600, 'k-*')  # convert unit to dph
         self.allan_plot.fig.canvas.draw()
 
     # def show(self):
@@ -147,22 +147,20 @@ class allan_dev(QThread):
         self.__is_tauArray_done = flag
 
     def readData(self, file):
-        # if not self.is_tauArray_done:
         print('do readData ')
         t1 = time.perf_counter()
-        Var = pd.read_csv(file, comment='#')
+        Var = pd.read_csv(file, sep=r'\s*,\s*', engine='python', comment='#')
+        # print(Var)
         t2 = time.perf_counter()
         print('read: ', round((t2 - t1), 2))
-        # Var.columns = ['time', 'wx', 'wy', 'wz', 'ax', 'ay', 'az']
-        Var.columns = ['time', 'wz', 'wy', 'wx']
         t = np.array(Var.time)
         self.datalength = len(t)
         tau0 = round((t[-1] - t[0]) / (self.datalength - 1), 3)
         self.tau0 = tau0
-        print(tau0)
+        # print(tau0)
         # Var.columns = ['time', 'wz', 'err', 'temp']
         self.cal_tau_array(self.datalength, tau0)
-        theta_wz = tuple(np.cumsum(np.array(Var.wz)) * tau0)
+        theta_wz = tuple(np.cumsum(np.array(Var.fog)) * tau0)
         self.data = theta_wz
 
     def cal_tau_array(self, size, tau0):
@@ -182,12 +180,9 @@ class allan_dev(QThread):
         # print(value.property('name'))
         le_name = value.property('name')
         if le_name == 'tau':
-            # print('tau')
             temp = value.text().strip('[]').split(',')
-            # temp = [int(i) for i in temp]
+            temp = [np.floor(float(i) / self.tau0) for i in temp]
             temp = np.array(temp, dtype=int)
-            # print(temp)
-            # self.tauArray = np.unique(np.append(self.tauArray, temp))
             self.tauArray = np.unique(temp)
             self.tauArray = [int(i) for i in self.tauArray]
             print(self.tauArray, type(self.tauArray[0]))
@@ -195,24 +190,20 @@ class allan_dev(QThread):
         elif le_name == 'tp':
             if bool(value.text()):
                 try:
-                    # print('tp')
                     temp = value.text().strip('[]').split(',')
+                    temp = [np.floor(float(i) / self.tau0) for i in temp]
                     temp = np.array(temp, dtype=int)
                     tp1 = temp[0]
                     tp2 = temp[1]
-                    n = np.logspace(np.log10(tp1), np.log10(tp2), 7, dtype=int)
-                    print('n: ', n)
-                    n = n[1:-1]
-                    print(n)
+                    n = np.logspace(np.log10(tp1), np.log10(tp2), 5, dtype=int)
+                    # n = n[1:-1]
                     self.tauArray = np.unique(np.append(self.tauArray, n))
-                    # self.tauArray = np.setdiff1d(self.tauArray, [n[0], n[-1]])
                     self.tauArray = [int(i) for i in self.tauArray]
                     self.tauarray_qt.emit(self.tauArray)
                     print(self.tauArray, type(self.tauArray[0]))
 
                 except ValueError:
                     print('ValueError')
-
 
     def run(self):
         dev = np.array([])  # Create empty array to store the output.
@@ -238,16 +229,9 @@ class allan_dev(QThread):
             dev = np.append(dev, np.sqrt(devAtThisTau))
             actualTau = np.append(actualTau, n * self.tau0)
             progress_bar_current += 1
-            # print('progress_bar_current:',progress_bar_current)
             self.progress_qt.emit(progress_bar_current, progress_bar_total)
             self.allan_qt.emit(actualTau, dev)
         # end of for loop
-        # print('actualTau:', actualTau)
-        # print(np.where(actualTau == 1))
-        # idx_arw = np.where(actualTau == 1)[0][0]
-        # print('idx_arw: ', idx_arw)
-        # print(actualTau[0:idx_arw+1])
-        # self.finish_qt.emit(actualTau[0:idx_arw+1], dev[0:idx_arw+1])
         self.finish_qt.emit(actualTau, dev)
     # end of run()
 
@@ -255,13 +239,28 @@ class allan_dev(QThread):
 class adj_tau_widget(QGroupBox):
     def __init__(self):
         super(adj_tau_widget, self).__init__()
+        self.setFont(QFont('Arial', 10))
         self.setTitle('Adjust Tau Array')
-        self.read_bt = QPushButton('read')
-        self.file_le = QLineEdit('0613_2.txt')
+        pe = QPalette()
+        pe.setColor(QPalette.WindowText, Qt.blue)
+        # pe.setColor(QPalette.Window, Qt.black)
+        self.read_bt = QPushButton('Read File')
+        self.read_bt.setProperty('name', 'read_bt')
+        qssStyle = '''QPushButton[name='read_bt']{background-color:#F9F900}'''
+        self.setStyleSheet(qssStyle)
+        self.file_le = QLineEdit('0616.txt')
         self.tp_le = QLineEdit()
-        self.tp_lb = QLabel('tp desc.')
+        # self.tp_le.setAutoFillBackground(True)
+        # self.tp_le.setPalette(pe)
+        self.tp_le.setFixedWidth(100)
+        self.tp_lb = QLabel(' set: t1, t2, ex: 5.1, 10.2 insert 5 points between 5.1 and 10.2 seconds')
+        # self.tp_lb.setAutoFillBackground(True)
+        self.tp_lb.setPalette(pe)
+        self.tp_lb.setFixedWidth(100)
+        self.tp_lb.setFont(QFont('Arial', 12))
+
         self.tauarray_le = QLineEdit('')
-        self.tp_lb.setFixedWidth(480)
+        self.tp_lb.setFixedWidth(500)
         self.tp_le.setProperty('name', 'tp')
         self.tauarray_le.setProperty('name', 'tau')
         self.layout()

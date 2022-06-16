@@ -1,10 +1,9 @@
 import numpy as np
+import pandas as pd
 
-a = np.array([1, 2, 3, 4, 4, 5, 6])
-b=np.array([8,9])
-
-# print(np.unique(a))
-a = np.append(a, b)
-a =np.delete(a, [-1])
-print(a[0:3])
-# print(np.array(b).astype(int))
+v = pd.read_csv('0616.txt', sep=r'\s*,\s*', engine='python', comment='#')
+print(v.info())
+print(v.shape)
+print(v['fog'])
+# print(v)
+# print(v.wz)

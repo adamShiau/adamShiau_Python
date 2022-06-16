@@ -20,15 +20,18 @@ import json
 PRINT_DEBUG = 0
 
 
-def readPIG(dataPacket, EN=1, POS_ERR=25, sf_a=1, sf_b=0, PRINT=0):
+def readPIG(dataPacket, EN=1, POS_TIME=25, sf_a=1, sf_b=0, PRINT=0):
     if EN:
-        temp_err = dataPacket[POS_ERR:POS_ERR + 4]
-        temp_fog = dataPacket[POS_ERR + 4:POS_ERR + 4 + 4]
-        temp_PD_temperature = dataPacket[POS_ERR + 8:POS_ERR + 8 + 2]
+        temp_time = dataPacket[POS_TIME:POS_TIME + 4]
+        temp_err = dataPacket[POS_TIME:POS_TIME + 8]
+        temp_fog = dataPacket[POS_TIME + 8:POS_TIME + 12]
+        temp_PD_temperature = dataPacket[POS_TIME + 12:POS_TIME + 14]
+        fpga_time = convert2Unsign_4B(temp_time) * 1e-4
         err_mv = convert2Sign_4B(temp_err) * (4000 / 8192)
         step_dps = convert2Sign_4B(temp_fog) * sf_a + sf_b
         PD_temperature = convert2Temperature(temp_PD_temperature)
     else:
+        fpga_time = 0
         err_mv = 0
         step_dps = 0
         PD_temperature = 0
@@ -36,16 +39,13 @@ def readPIG(dataPacket, EN=1, POS_ERR=25, sf_a=1, sf_b=0, PRINT=0):
 
     if PRINT:
         print()
-        print(dataPacket)
-        print(temp_err)
-        print(temp_fog)
-        print(temp_PD_temperature)
+        print(round(fpga_time, 4), end='\t\t')
         print(round(err_mv, 3), end='\t\t')
         print(round(step_dps, 3), end='\t\t')
         print(round(PD_temperature, 1))
     # End of if-condition
 
-    return err_mv, step_dps, PD_temperature
+    return fpga_time, err_mv, step_dps, PD_temperature
 
 
 # End of ImuConnector::readPIG
@@ -249,6 +249,10 @@ class data_manager:
             date_now = datetime.now().strftime("%Y/%m/%d %H:%M:%S")
             self.__fd.writelines('#' + date_now + '\n')
         self.__isopen, fd = file_manager(name=self.__name__, isopen=False, mode="w", fnum=self.__fnum__)
+
+    def write_line(self, comment):
+        if self.__isopen:
+            self.__fd.writelines(comment + '\n')
 
     def saveData(self, datalist, fmt):
         saveData2File(isopen=self.__isopen, data=datalist, fmt=fmt, file=self.__fd)

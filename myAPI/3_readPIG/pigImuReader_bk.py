@@ -212,7 +212,7 @@ class pigImuReader(QThread):
     # End of memsImuReader::disconnectIMU
 
     def readIMU(self):
-        self.writeImuCmd(2, 1)
+        self.writeImuCmd(2, 2)
 
     def stopIMU(self):
         self.writeImuCmd(2, 4)
@@ -224,16 +224,14 @@ class pigImuReader(QThread):
 
     def getImuData(self):
         head = getData.alignHeader_4B(self.__Connector, HEADER_KVH)
-        dataPacket = getData.getdataPacket(self.__Connector, head, 39)
-
-        ADXL_AX, ADXL_AY, ADXL_AZ = cmn.readADXL355(dataPacket, EN=1, PRINT=0, POS_AX=POS_ADXL355_AX,
-                                                    sf=SENS_ADXL355_8G)
+        dataPacket = getData.getdataPacket(self.__Connector, head, 35)
         NANO_WX, NANO_WY, NANO_WZ, \
         NANO_AX, NANO_AY, NANO_AZ = cmn.readNANO33(dataPacket, EN=1, PRINT=0, POS_WX=POS_NANO33_WX,
                                                    sf_xlm=SENS_NANO33_AXLM_4G,
                                                    sf_gyro=SENS_NANO33_GYRO_250)
-
-        FPGA_TIME, ERR, STEP, PD_TEMP = cmn.readPIG(dataPacket, EN=1, PRINT=0, sf_a=self.sf_a, sf_b=self.sf_b, POS_TIME=POS_PIG)
+        ADXL_AX, ADXL_AY, ADXL_AZ = cmn.readADXL355(dataPacket, EN=1, PRINT=0, POS_AX=POS_ADXL355_AX,
+                                                    sf=SENS_ADXL355_8G)
+        ERR, STEP, PD_TEMP = cmn.readPIG(dataPacket, EN=1, PRINT=0, sf_a=self.sf_a, sf_b=self.sf_b, POS_ERR=POS_PIG)
         if not self.isCali:
             if self.isKal:
                 NANO_WZ = self.nano33_wz_kal.update(NANO_WZ)

@@ -22,13 +22,14 @@ def cal_oadev(data,rate,tauArray):
 		actualTau = np.append(actualTau,n*tau0)
 	return actualTau, dev #Return the actual tau and overlapped Allan deviation
 
-NAME = '0610-3'
+NAME = '0616'
 SF_A = 0.00295210451588764*1.02/2
 SF_B = -0.00137052112589694
 dataRate = 100
 
 # Var = np.loadtxt(NAME, comments='#', delimiter=None, skiprows=6)
-Var = np.loadtxt(NAME+'.txt', comments='#', delimiter=',', skiprows=0)
+Var = np.loadtxt(NAME+'.txt', comments='#', delimiter=',', skiprows=2)
+print(Var)
 t = Var[:,0]
 wz = Var[:,1]
 # wz = Var[:,2] 

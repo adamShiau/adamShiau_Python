@@ -147,21 +147,22 @@ class allan_dev(QThread):
         self.__is_tauArray_done = flag
 
     def readData(self, file):
-        print('do readData ')
-        t1 = time.perf_counter()
-        Var = pd.read_csv(file, sep=r'\s*,\s*', engine='python', comment='#')
-        # print(Var)
-        t2 = time.perf_counter()
-        print('read: ', round((t2 - t1), 2))
-        t = np.array(Var.time)
-        self.datalength = len(t)
-        tau0 = round((t[-1] - t[0]) / (self.datalength - 1), 3)
-        self.tau0 = tau0
-        # print(tau0)
-        # Var.columns = ['time', 'wz', 'err', 'temp']
-        self.cal_tau_array(self.datalength, tau0)
-        theta_wz = tuple(np.cumsum(np.array(Var.fog)) * tau0)
-        self.data = theta_wz
+        try:
+            t1 = time.perf_counter()
+            Var = pd.read_csv(file, sep=r'\s*,\s*', engine='python', comment='#')
+            t2 = time.perf_counter()
+            print('read: ', round((t2 - t1), 2))
+            t = np.array(Var.time)
+            self.datalength = len(t)
+            tau0 = round((t[-1] - t[0]) / (self.datalength - 1), 3)
+            self.tau0 = tau0
+            self.cal_tau_array(self.datalength, tau0)
+            theta_wz = tuple(np.cumsum(np.array(Var.wz)) * tau0)
+            self.data = theta_wz
+
+        except FileNotFoundError:
+            logger.error('Allan cal. file not found.')
+
 
     def cal_tau_array(self, size, tau0):
         rate = int(1 / tau0)
@@ -248,7 +249,7 @@ class adj_tau_widget(QGroupBox):
         self.read_bt.setProperty('name', 'read_bt')
         qssStyle = '''QPushButton[name='read_bt']{background-color:#F9F900}'''
         self.setStyleSheet(qssStyle)
-        self.file_le = QLineEdit('0616.txt')
+        self.file_le = QLineEdit('0616_mems.txt')
         self.tp_le = QLineEdit()
         # self.tp_le.setAutoFillBackground(True)
         # self.tp_le.setPalette(pe)

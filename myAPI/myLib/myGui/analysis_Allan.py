@@ -180,25 +180,6 @@ class allan_dev(QThread):
     def getdata(self):
         theta_wz = tuple(np.cumsum(np.array(self.datahub.switch_df_data())) * self.tau0)
         return theta_wz
-        # self.data = theta_wz
-
-        try:
-            t1 = time.perf_counter()
-            Var = pd.read_csv(file, sep=r'\s*,\s*', engine='python', comment='#')
-            t2 = time.perf_counter()
-            print('read: ', round((t2 - t1), 2))
-            t = np.array(Var.time)
-            self.datalength = len(t)
-            tau0 = round((t[-1] - t[0]) / (self.datalength - 1), 3)
-            self.tau0 = tau0
-            self.cal_tau_array(self.datalength, tau0)
-            theta_wz = tuple(np.cumsum(np.array(Var.wz)) * tau0)
-            self.data = theta_wz
-
-        except FileNotFoundError:
-            logger.error('Allan cal. file not found.')
-
-
 
     def cal_tau_array(self, size, tau0):
         rate = int(1 / tau0)

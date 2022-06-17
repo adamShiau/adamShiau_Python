@@ -138,6 +138,7 @@ class mainWindow(QMainWindow):
         file_name = self.top.save_block.le_filename.text() + self.top.save_block.le_ext.text()
         self.imudata_file.name = file_name
         self.imudata_file.open(self.top.save_block.rb.isChecked())
+        self.imudata_file.write_line('time, wx, wy, wz, ax, ay, az')
 
     def stop(self):
         self.act.isRun = False

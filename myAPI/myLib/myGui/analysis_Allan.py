@@ -19,9 +19,12 @@ import pandas as pd
 import time
 from myLib.myGui import graph
 from myLib.myGui import myLabel
+from myLib.myGui import myComboBox
+import myLib.common as cmn
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
+
 import matplotlib.pyplot as plt
 
 
@@ -34,6 +37,8 @@ class analysis_allan_widget(QWidget):
         self.actualTau = np.empty(0)
         self.allan = allan_dev()
         # add widget
+        self.cb = myComboBox.comboGroup_1('select data', 'select')
+        self.cb.addItem(['fog', 'wz'])
         self.allan_plot = graph.mplGraph_1()
         self.cal_bt = QPushButton('cal')
         self.adj_tau = adj_tau_widget()
@@ -47,10 +52,13 @@ class analysis_allan_widget(QWidget):
         layout.addWidget(self.cal_bt, 0, 0, 1, 1)
         layout.addWidget(self.adj_tau, 0, 1, 1, 5)
         layout.addWidget(self.progress, 0, 6, 1, 1)
-        layout.addWidget(self.allan_plot, 2, 0, 10, 10)
+        layout.addWidget(self.cb, 2, 0, 1, 1)
+        layout.addWidget(self.allan_plot, 2, 1, 10, 10)
         self.setLayout(layout)
 
     def linkfunction(self):
+        self.cb.getText_connect(self.allan.datahub.connect_combobox)
+        # self.cb.getText_connect(testfn)
         self.cal_bt.clicked.connect(self.cal_allan_dev)
         # self.adj_tau.read_bt.clicked.connect(lambda: self.allan.readData(self.adj_tau.file_le.text()))
         self.adj_tau.read_bt.clicked.connect(self.readData)
@@ -123,6 +131,11 @@ class analysis_allan_widget(QWidget):
     #     self.show()
 
 
+def testfn(i):
+    cmn.print_debug('name: %s' % i.property('name'), 1)
+    cmn.print_debug('key: %s' % i.currentText(), 1)
+
+
 class allan_dev(QThread):
     allan_qt = pyqtSignal(object, object)
     finish_qt = pyqtSignal(object, object)
@@ -131,6 +144,8 @@ class allan_dev(QThread):
 
     def __init__(self):
         super(allan_dev, self).__init__()
+        self.datahub = cmn.data_hub_manager()
+        self.datahub.key = 'fog'  # set default key
         self.tauArray = []
         self.datalength = None
         self.data = None
@@ -149,19 +164,22 @@ class allan_dev(QThread):
     def readData(self, file):
         print('do readData ')
         t1 = time.perf_counter()
-        Var = pd.read_csv(file, sep=r'\s*,\s*', engine='python', comment='#')
-        # print(Var)
+        data = pd.read_csv(file, sep=r'\s*,\s*', engine='python', comment='#')
+        self.datahub.store_df_data(data)
         t2 = time.perf_counter()
         print('read: ', round((t2 - t1), 2))
-        t = np.array(Var.time)
+        t = np.array(data.time)
         self.datalength = len(t)
         tau0 = round((t[-1] - t[0]) / (self.datalength - 1), 3)
         self.tau0 = tau0
-        # print(tau0)
-        # Var.columns = ['time', 'wz', 'err', 'temp']
         self.cal_tau_array(self.datalength, tau0)
-        theta_wz = tuple(np.cumsum(np.array(Var.fog)) * tau0)
-        self.data = theta_wz
+        # theta_wz = tuple(np.cumsum(np.array(self.datahub.df_data)) * tau0)
+        # self.data = theta_wz
+
+    def getdata(self):
+        theta_wz = tuple(np.cumsum(np.array(self.datahub.switch_df_data())) * self.tau0)
+        return theta_wz
+        # self.data = theta_wz
 
     def cal_tau_array(self, size, tau0):
         rate = int(1 / tau0)
@@ -216,9 +234,9 @@ class allan_dev(QThread):
             currentSum = 0  # Initialize the sum
 
             tlp_s = time.perf_counter()
-
+            data = self.getdata()
             for j in range(0, self.datalength - 2 * n):
-                currentSum = (self.data[j + 2 * n] - 2 * self.data[j + n] + self.data[j]) ** 2 + currentSum
+                currentSum = (data[j + 2 * n] - 2 * data[j + n] + data[j]) ** 2 + currentSum
 
             tlp_e = time.perf_counter()
             print('n= ', n, end=', ')

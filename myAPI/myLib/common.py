@@ -294,6 +294,30 @@ class parameters_manager:
 
 # End of parameters_manager
 
+class data_hub_manager:
+    def __init__(self):
+        self.df_data = None
+        self.key = None
+
+    def connect_combobox(self, obj):
+        self.key = obj.currentText()
+        print('connect_combobox:', self.key)
+
+    def store_df_data(self, df_data):
+        self.df_data = df_data
+
+    def switch_df_data(self):
+        return self.df_data[self.key]
+
+    @property
+    def key(self):
+        return self.__key
+
+    @key.setter
+    def key(self, val):
+        self.__key = val
+        print_debug('data_hub_manager.key= %s' % self.key, PRINT_DEBUG)
+
 
 def convert2Sign_nano33(datain):
     shift_data = (datain[1] << 8 | datain[0])
@@ -430,7 +454,9 @@ if __name__ == "__main__":
     import time
     import numpy as np
 
-    logging.basicConfig(level=100)
+    t = data_hub_manager()
+    t.setkey = 'tt'
+    # print(t.setkey)
 
     # A = np.empty(0)
     # B = 2

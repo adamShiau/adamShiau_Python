@@ -12,7 +12,7 @@ logger.info(__name__ + ' logger start')
 """ ####### end of log stuff creation ########  """
 
 import sys
-
+import os
 sys.path.append("../../")
 import numpy as np
 import pandas as pd
@@ -28,9 +28,9 @@ from PyQt5.QtGui import *
 import matplotlib.pyplot as plt
 
 
-class analysis_timingPlot_widget(QWidget):
+class analysis_timing_plot_widget(QWidget):
     def __init__(self):
-        super(analysis_timingPlot_widget, self).__init__()
+        super(analysis_timing_plot_widget, self).__init__()
         self.data = None
         self.setWindowTitle('Plot Timing Data')
         self.cb = myComboBox.comboGroup_1('select data', 'select')
@@ -38,6 +38,7 @@ class analysis_timingPlot_widget(QWidget):
         self.timing_plot = graph.mplGraph_1()
         self.read_bt = QPushButton('read')
         self.cal_bt = QPushButton('cal')
+        self.pbar = QProgressBar(self)
         self.load_data = load_data()
         self.progress = myLabel.twoLabelBlock(title='Plotting Progress')
         # end of add widget
@@ -49,6 +50,7 @@ class analysis_timingPlot_widget(QWidget):
         layout.addWidget(self.cal_bt, 0, 0, 1, 1)
         layout.addWidget(self.read_bt, 0, 1, 1, 1)
         layout.addWidget(self.progress, 0, 2, 1, 1)
+        layout.addWidget(self.pbar, 0, 3, 1, 3)
         layout.addWidget(self.cb, 2, 0, 1, 1)
         layout.addWidget(self.timing_plot, 2, 1, 10, 10)
         self.setLayout(layout)
@@ -57,7 +59,6 @@ class analysis_timingPlot_widget(QWidget):
         self.cb.getText_connect(self.load_data.datahub.connect_combobox)
         self.read_bt.clicked.connect(self.readData)
         self.cal_bt.clicked.connect(self.plot)
-        # self.adj_tau.read_bt.clicked.connect(lambda: self.allan.readData(self.adj_tau.file_le.text()))
         self.load_data.progress_qt.connect(self.update_progress_bar)
 
     def update_progress_bar(self, idx, total):
@@ -86,7 +87,7 @@ class load_data(QThread):
     allan_qt = pyqtSignal(object, object)
     finish_qt = pyqtSignal(object, object)
     tauarray_qt = pyqtSignal(object)
-    progress_qt = pyqtSignal(int, int)
+    progress_qt = pyqtSignal(object)
 
     def __init__(self):
         super(load_data, self).__init__()
@@ -110,6 +111,19 @@ class load_data(QThread):
         self.t = np.array(data.time)
         self.datalength = len(self.t)
 
+        temp = pd.read_csv(file, nrows=20)
+        N = len(temp.to_csv(index=False))
+        df = [temp[:0]]
+        t = int(os.path.getsize(file) / N * 20 / 10 ** 4) + 1
+        for i, chunk in enumerate(pd.read_csv(file, chunksize=10 ** 4, low_memory=False)):
+            df.append(chunk)
+            self.progress_qt.emit()
+            pbar.set_description('Importing: %d' % (1 + i))
+            pbar.update(1)
+
+        data = temp[:0].append(df)
+        del df
+
     def getdata(self):
         # theta_wz = tuple(np.cumsum() * self.tau0)
         data = np.array(self.datahub.switch_df_data())
@@ -118,20 +132,20 @@ class load_data(QThread):
 
     def run(self):
         print('run')
-        progress_bar_total = 100
-        progress_bar_current = 0
-        self.progress_qt.emit(progress_bar_current, progress_bar_total)
-        self.readData('0616_long.txt')
+        # progress_bar_total = 100
+        # progress_bar_current = 0
+        # self.progress_qt.emit(progress_bar_current, progress_bar_total)
+        self.readData('0402.txt')
 
-        progress_bar_current += 1
-        self.progress_qt.emit(progress_bar_current, progress_bar_total)
+        # progress_bar_current += 1
+        # self.progress_qt.emit(progress_bar_current, progress_bar_total)
         print('run done')
     # end of run()
 
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    w = analysis_timingPlot_widget()
+    w = analysis_timing_plot_widget()
     # w = adj_tau_widget()
     w.show()
     app.exec_()

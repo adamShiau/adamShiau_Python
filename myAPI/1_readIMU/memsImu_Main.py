@@ -177,8 +177,8 @@ class mainWindow(QMainWindow):
         cmn.print_debug(debug_info, self.__debug)
 
         datalist = [imudata["TIME"], imudata["NANO33_WX"], imudata["NANO33_WY"], imudata["NANO33_WZ"]
-            , imudata["ADXL_AX"], imudata["ADXL_AY"], imudata["ADXL_AZ"]]
-        data_fmt = "%.5f, %.5f, %.5f, %.5f, %.5f, %.5f, %.5f"
+            , imudata["NANO33_AX"], imudata["NANO33_AY"], imudata["NANO33_AZ"]]
+        data_fmt = "%.4f,%.5f,%.5f,%.5f,%.5f,%.5f,%.5f"
         self.imudata_file.saveData(datalist, data_fmt)
         self.plotdata(self.imudata)
         self.printUpdateRate(self.imudata["TIME"])

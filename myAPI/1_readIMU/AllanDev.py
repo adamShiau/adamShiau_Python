@@ -36,15 +36,12 @@ SF_B = -0.00137052112589694
 dataRate = 100
 
 t1 = time.perf_counter()
-
-# Var = np.loadtxt(NAME, comments='#', delimiter=',', skiprows=0)
-# wz = Var[:, 1]
-
 Var = pd.read_csv(NAME, comment='#')
 # Var.columns = ['time', 'wz', 'wx', 'wy', 'ax', 'ay', 'az']
 Var.columns = ['time', 'wz', 'wx', 'wy']
 t = Var.time
-wz = Var.wz
+wz = Var['wz']
+wz.plot()
 # wz = pd.Series(Var.wz, index=t)
 # plt.plot(t, wz)
 # print(wz)
@@ -76,7 +73,7 @@ tauArray = np.array([tau0, 3 * tau0, 5 * tau0, 10 * tau0, 30 * tau0, 50 * tau0,
                      5000 * tau0, 10000 * tau0, 3e4 * tau0, 50000 * tau0, 100000 * tau0,
                      5e5 * tau0, 1e6 * tau0, 2e6 * tau0, 8e6 * tau0])
 
-x, y = cal_oadev(thetaz, dataRate, tauArray)
+# x, y = cal_oadev(thetaz, dataRate, tauArray)
 t4 = time.perf_counter()
 
 print('read: ', (t2 - t1) * 1e3)
@@ -85,8 +82,8 @@ print('allen: ', (t4 - t3) * 1e3)
 
 # y = y * 3600
 
-plt.loglog(x, y, linestyle='-', marker='*')
-plt.xlabel('s')
-plt.ylabel('Degree/hour')
-plt.grid()
+# plt.loglog(x, y, linestyle='-', marker='*')
+# plt.xlabel('s')
+# plt.ylabel('Degree/hour')
+# plt.grid()
 plt.show()

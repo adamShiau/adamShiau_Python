@@ -40,7 +40,7 @@ class comboGroup_1(QGroupBox):
             self.cb.addItem(i)
         self.cb.setCurrentText(item[0])
         self.default_Item_qt.emit(self.cb.currentText())
-        print('com: ', self.cb.currentText())
+        # print('com: ', self.cb.currentText())
 
     def getText_connect(self, fn):
         self.cb.currentIndexChanged.connect(lambda: fn(self.cb))

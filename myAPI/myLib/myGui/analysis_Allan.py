@@ -19,6 +19,7 @@ import pandas as pd
 import time
 from myLib.myGui import graph
 from myLib.myGui import myLabel
+from myLib.myGui import myProgressBar
 from myLib.myGui import myComboBox
 import myLib.common as cmn
 from PyQt5.QtWidgets import *
@@ -31,6 +32,9 @@ import matplotlib.pyplot as plt
 class analysis_allan_widget(QWidget):
     def __init__(self):
         super(analysis_allan_widget, self).__init__()
+        self.tau0 = 1
+        self.tauArray = None
+        self.__time = None
         self.data = None
         self.setWindowTitle('Allen Variance Analysis')
         self.dev = np.empty(0)  # Create empty array to store the output.
@@ -38,55 +42,134 @@ class analysis_allan_widget(QWidget):
         self.allan = allan_dev()
         # add widget
         self.cb = myComboBox.comboGroup_1('select data', 'select')
-        self.cb.addItem(['fog', 'wz'])
+        self.pbar = myProgressBar.progress_bar_with_read_allan('test')
+        self.datahub = cmn.data_hub_manager()
         self.allan_plot = graph.mplGraph_1()
         self.cal_bt = QPushButton('cal')
-        self.adj_tau = adj_tau_widget()
-        self.progress = myLabel.twoLabelBlock(title='Allan dev. Progress')
+        self.cal_bt.setEnabled(False)
         # end of add widget
         self.linkfunction()
+        self.cb.addItem(['fog', 'wz', 'pd_T'])
         self.layout()
 
     def layout(self):
         layout = QGridLayout()
         layout.addWidget(self.cal_bt, 0, 0, 1, 1)
-        layout.addWidget(self.adj_tau, 0, 1, 1, 5)
-        layout.addWidget(self.progress, 0, 6, 1, 1)
-        layout.addWidget(self.cb, 2, 0, 1, 1)
-        layout.addWidget(self.allan_plot, 2, 1, 10, 10)
+        layout.addWidget(self.cb, 1, 0, 1, 1)
+        layout.addWidget(self.pbar.inst(), 0, 1, 2, 5)
+        layout.addWidget(self.allan_plot, 2, 0, 10, 10)
         self.setLayout(layout)
 
     def linkfunction(self):
-        self.cb.getText_connect(self.allan.datahub.connect_combobox)
-        # self.cb.getText_connect(testfn)
+        self.cb.getText_connect(self.datahub.connect_combobox)
         self.cal_bt.clicked.connect(self.cal_allan_dev)
+        self.pbar.data_qt.connect(self.store_data)
+        self.pbar.is_load_done_qt.connect(self.set_is_load_done_connect)
+        self.allan.is_allan_done_qt.connect(self.set_is_allan_done_connect)
+        self.cb.default_Item_qt.connect(self.set_default_key)
         # self.adj_tau.read_bt.clicked.connect(lambda: self.allan.readData(self.adj_tau.file_le.text()))
-        self.adj_tau.read_bt.clicked.connect(self.readData)
-        self.adj_tau.tauarray_le.editingFinished.connect(
-            lambda: self.allan.set_tau_array(self.adj_tau.tauarray_le))
-        self.adj_tau.tp_le.editingFinished.connect(lambda: self.allan.set_tau_array(self.adj_tau.tp_le))
+        # self.pbar.read_bt.clicked.connect(self.readData)
+        self.pbar.tauarray_le.editingFinished.connect(
+            lambda: self.set_tau_array(self.pbar.tauarray_le))
+        self.pbar.tp_le.editingFinished.connect(lambda: self.set_tau_array(self.pbar.tp_le))
+        self.allan.progress_qt.connect(self.update_progress_bar)
         self.allan.allan_qt.connect(self.plot)
         self.allan.finish_qt.connect(self.fit_data)
-        self.allan.tauarray_qt.connect(self.setTauArray)
-        self.allan.progress_qt.connect(self.update_progress_bar)
+        # self.allan.tauarray_qt.connect(self.setTauArray)
+        # self.allan.progress_qt.connect(self.update_progress_bar)
+
+    def cal_tau_array(self):
+        t = np.array(self.__time)
+        datalength = len(t)
+        self.allan.datalength = datalength
+        tau0 = round((t[-1] - t[0]) / (datalength - 1), 3)
+        self.tau0 = tau0
+        self.allan.tau0 = tau0
+        print('cal_tau_array.self.tau0: ', self.tau0)
+        rate = int(1 / tau0)
+        m_max = int(np.floor((datalength - 1) / 2))
+        print('cal_tau_array.m_max: ', m_max, end=', ')
+        print(np.log10(m_max))
+        n = np.logspace(0, np.log10(m_max), 10, dtype=int)
+        print('cal_tau_array.n: ', n)
+        n = np.append(n, rate)
+        tauArray = np.sort(n)
+        self.tauArray = [int(i) for i in tauArray]  # this line modify the data type of tauarray, do not omit.
+        self.allan.tauArray = self.tauArray
+        print('cal_tau_array.self.tauArray: ', self.tauArray)
+        self.update_tauarray_le_text(self.tauArray)
+        # self.pbar.tauarray_le.setText(str(self.tauArray*tau0))
+        # self.tauarray_qt.emit(self.tauArray)
+
+    @property
+    def tau0(self):
+        return self.__tau0
+
+    @tau0.setter
+    def tau0(self, tau0):
+        self.__tau0 = tau0
+
+    def set_tau_array(self, value):
+        # print(value.property('name'))
+        le_name = value.property('name')
+        if le_name == 'tau':
+            temp = value.text().strip('[]').split(',')
+            temp = [np.floor(float(i) / self.tau0) for i in temp]
+            temp = np.array(temp, dtype=int)
+            self.tauArray = np.unique(temp)
+            self.tauArray = [int(i) for i in self.tauArray]
+            self.allan.tauArray = self.tauArray
+            print('set_tau_array.tau_le: ', self.tauArray, type(self.tauArray[0]))
+
+        elif le_name == 'tp':
+            if bool(value.text()):
+                try:
+                    temp = value.text().strip('[]').split(',')
+                    temp = [np.floor(float(i) / self.tau0) for i in temp]
+                    temp = np.array(temp, dtype=int)
+                    tp1 = temp[0]
+                    tp2 = temp[1]
+                    n = np.logspace(np.log10(tp1), np.log10(tp2), 5, dtype=int)
+                    self.tauArray = np.unique(np.append(self.tauArray, n))
+                    self.tauArray = [int(i) for i in self.tauArray]
+                    self.allan.tauArray = self.tauArray
+                    self.update_tauarray_le_text(self.tauArray)
+                    print('set_tau_array.tp_le: ', self.tauArray, type(self.tauArray[0]))
+
+                except ValueError:
+                    print('ValueError')
+
+    def update_tauarray_le_text(self, tauarray):
+        tauarray = [round(i * self.tau0, 2) for i in tauarray]
+        self.pbar.tauarray_le.setText(str(tauarray))
+
+    def set_default_key(self, key):
+        self.datahub.key = key
+
+    def store_data(self, data=None):
+        self.__time = data['t']
+        self.datahub.store_df_data(data)
+        self.cal_tau_array()
+
+    def set_is_load_done_connect(self, done):
+        self.cal_bt.setEnabled(done)
+        if done:
+            self.pbar.pbar_text = 'loading data: finish'
+        else:
+            self.pbar.pbar_text = 'loading data'
+
+    def set_is_allan_done_connect(self, done):
+        if done:
+            self.pbar.pbar_text = 'calculating Allan: finish'
+        else:
+            self.pbar.pbar_text = 'calculating Allan'
 
     def update_progress_bar(self, idx, total):
-        progress = int(idx / total * 100)
-        if progress == 100:
-            self.progress.lb1.setText('Finish')
-        else:
-            self.progress.lb1.setText('Running')
-        self.progress.lb2.setText(str(progress) + '%')
-
-    def readData(self):
-        self.allan.readData(self.adj_tau.file_le.text())
-
-    def setTauArray(self, tauarray):
-        tauarray = [round(i * self.allan.tau0, 2) for i in tauarray]
-        self.adj_tau.tauarray_le.setText(str(tauarray))
+        self.pbar.updatePbar(idx, total)
 
     def cal_allan_dev(self):
-        # print('start cal allan')
+        # print(self.datahub.switch_df_data())
+        self.allan.data = self.datahub.switch_df_data()
         self.allan.start()
 
     def fit_data(self, tau, dev):
@@ -127,117 +210,76 @@ class analysis_allan_widget(QWidget):
         self.allan_plot.ax.loglog(tau, dev * 3600, 'k-*')  # convert unit to dph
         self.allan_plot.fig.canvas.draw()
 
-    # def show(self):
-    #     self.show()
-
-
-def testfn(i):
-    cmn.print_debug('name: %s' % i.property('name'), 1)
-    cmn.print_debug('key: %s' % i.currentText(), 1)
-
 
 class allan_dev(QThread):
     allan_qt = pyqtSignal(object, object)
     finish_qt = pyqtSignal(object, object)
-    tauarray_qt = pyqtSignal(object)
+    # tauarray_qt = pyqtSignal(object)
     progress_qt = pyqtSignal(int, int)
+    is_allan_done_qt = pyqtSignal(bool)
 
     def __init__(self):
         super(allan_dev, self).__init__()
-        self.datahub = cmn.data_hub_manager()
-        self.datahub.key = 'fog'  # set default key
-        self.tauArray = []
-        self.datalength = None
-        self.data = None
-        self.is_tauArray_done = False
-        # tau0 = 1 / rate
-        self.tau0 = None
+        self.__tau0 = None
+        self.__datalength = None
+        self.__tauArray = None
+        self.__data = None
 
     @property
-    def is_tauArray_done(self):
-        return self.__is_tauArray_done
+    def datalength(self):
+        return self.__datalength
 
-    @is_tauArray_done.setter
-    def is_tauArray_done(self, flag):
-        self.__is_tauArray_done = flag
+    @datalength.setter
+    def datalength(self, len):
+        self.__datalength = len
+        print('Allan.datalength setter: ', self.datalength)
 
-    def readData(self, file):
+    @property
+    def tauArray(self):
+        return self.__tauArray
 
-        print('do readData ')
-        t1 = time.perf_counter()
-        data = pd.read_csv(file, sep=r'\s*,\s*', engine='python', comment='#')
-        self.datahub.store_df_data(data)
-        t2 = time.perf_counter()
-        print('read: ', round((t2 - t1), 2))
-        t = np.array(data.time)
-        self.datalength = len(t)
-        tau0 = round((t[-1] - t[0]) / (self.datalength - 1), 3)
-        self.tau0 = tau0
-        self.cal_tau_array(self.datalength, tau0)
-        # theta_wz = tuple(np.cumsum(np.array(self.datahub.df_data)) * tau0)
-        # self.data = theta_wz
+    @tauArray.setter
+    def tauArray(self, tau):
+        self.__tauArray = tau
+        print('Allan.tauArray setter: ', self.tauArray)
 
-    def getdata(self):
-        theta_wz = tuple(np.cumsum(np.array(self.datahub.switch_df_data())) * self.tau0)
-        return theta_wz
+    @property
+    def data(self):
+        return self.__data
 
-    def cal_tau_array(self, size, tau0):
-        rate = int(1 / tau0)
-        m_max = int(np.floor((size - 1) / 2))
-        print(m_max)
-        print(np.log10(m_max))
-        n = np.logspace(0, np.log10(m_max), 10, dtype=int)
-        print(n)
-        n = np.append(n, rate)
-        tauArray = np.sort(n)
-        self.tauArray = [int(i) for i in tauArray]
-        print(self.tauArray)
-        self.tauarray_qt.emit(self.tauArray)
+    @data.setter
+    def data(self, data):
+        self.__data = data
+        print('Allan.data setter: ', self.data)
 
-    def set_tau_array(self, value):
-        # print(value.property('name'))
-        le_name = value.property('name')
-        if le_name == 'tau':
-            temp = value.text().strip('[]').split(',')
-            temp = [np.floor(float(i) / self.tau0) for i in temp]
-            temp = np.array(temp, dtype=int)
-            self.tauArray = np.unique(temp)
-            self.tauArray = [int(i) for i in self.tauArray]
-            print(self.tauArray, type(self.tauArray[0]))
+    @property
+    def tau0(self):
+        return self.__tau0
 
-        elif le_name == 'tp':
-            if bool(value.text()):
-                try:
-                    temp = value.text().strip('[]').split(',')
-                    temp = [np.floor(float(i) / self.tau0) for i in temp]
-                    temp = np.array(temp, dtype=int)
-                    tp1 = temp[0]
-                    tp2 = temp[1]
-                    n = np.logspace(np.log10(tp1), np.log10(tp2), 5, dtype=int)
-                    # n = n[1:-1]
-                    self.tauArray = np.unique(np.append(self.tauArray, n))
-                    self.tauArray = [int(i) for i in self.tauArray]
-                    self.tauarray_qt.emit(self.tauArray)
-                    print(self.tauArray, type(self.tauArray[0]))
-
-                except ValueError:
-                    print('ValueError')
+    @tau0.setter
+    def tau0(self, tau0):
+        self.__tau0 = tau0
+        print('Allan.tau0 setter: ', self.tau0)
 
     def run(self):
+        self.is_allan_done_qt.emit(False)
+        theta = tuple(np.cumsum(np.array(self.data)) * self.tau0)
         dev = np.array([])  # Create empty array to store the output.
         actualTau = np.array([])
         print('run')
-        progress_bar_total = len(self.tauArray)
-        progress_bar_current = 0
-        self.progress_qt.emit(progress_bar_current, progress_bar_total)
+        # progress_bar_total = len(self.tauArray)
+        # progress_bar_current = 0
+        # self.progress_qt.emit(progress_bar_current, progress_bar_total)
+        pbar_total = len(self.tauArray)
+        pbar_now = 0
+        print(pbar_total)
         for n in self.tauArray:
+            self.progress_qt.emit(pbar_now, pbar_total)
             currentSum = 0  # Initialize the sum
-
             tlp_s = time.perf_counter()
-            data = self.getdata()
+            # data = self.getdata()
             for j in range(0, self.datalength - 2 * n):
-                currentSum = (data[j + 2 * n] - 2 * data[j + n] + data[j]) ** 2 + currentSum
-
+                currentSum = (theta[j + 2 * n] - 2 * theta[j + n] + theta[j]) ** 2 + currentSum
             tlp_e = time.perf_counter()
             print('n= ', n, end=', ')
             print(self.datalength - 2 * n, end=', ')
@@ -246,11 +288,14 @@ class allan_dev(QThread):
                     2 * n ** 2 * self.tau0 ** 2 * (self.datalength - 2 * n))  # Divide by the coefficient
             dev = np.append(dev, np.sqrt(devAtThisTau))
             actualTau = np.append(actualTau, n * self.tau0)
-            progress_bar_current += 1
-            self.progress_qt.emit(progress_bar_current, progress_bar_total)
+            # progress_bar_current += 1
+            # self.progress_qt.emit(progress_bar_current, progress_bar_total)
             self.allan_qt.emit(actualTau, dev)
+            pbar_now += 1
         # end of for loop
         self.finish_qt.emit(actualTau, dev)
+        self.is_allan_done_qt.emit(True)
+        self.progress_qt.emit(pbar_total, pbar_total)
     # end of run()
 
 

@@ -37,8 +37,8 @@ class analysis_timing_plot_widget(QWidget):
         self.setWindowTitle('Plot Timing Data')
         self.cb = myComboBox.comboGroup_1('select data', 'select')
         self.timing_plot = graph.mplGraph_1()
-        self.read_bt = QPushButton('read')
-        self.cal_bt = QPushButton('cal')
+        # self.read_bt = QPushButton('read')
+        self.cal_bt = QPushButton('plot')
         self.cal_bt.setEnabled(False)
         # self.file_le = QLineEdit('0619.txt')
         self.pbar = myProgressBar.progress_bar_with_read()
@@ -55,7 +55,7 @@ class analysis_timing_plot_widget(QWidget):
     def layout(self):
         layout = QGridLayout()
         layout.addWidget(self.cal_bt, 0, 0, 1, 1)
-        layout.addWidget(self.read_bt, 0, 1, 1, 1)
+        # layout.addWidget(self.read_bt, 0, 1, 1, 1)
         # layout.addWidget(self.file_le, 0, 2, 1, 3)
         layout.addWidget(self.pbar.inst(), 0, 5, 1, 5)
         layout.addWidget(self.cb, 2, 0, 1, 1)
@@ -64,7 +64,7 @@ class analysis_timing_plot_widget(QWidget):
 
     def linkfunction(self):
         self.cb.getText_connect(self.datahub.connect_combobox)
-        self.read_bt.clicked.connect(self.readData)
+        # self.read_bt.clicked.connect(self.readData)
         self.cal_bt.clicked.connect(self.plot)
         self.pbar.data_qt.connect(self.store_data)
         self.pbar.is_load_done_qt.connect(self.set_is_load_done_connect)

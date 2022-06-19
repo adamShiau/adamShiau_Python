@@ -26,6 +26,7 @@ import time
 from myLib.mySerial.Connector import Connector
 from myLib.myGui.pig_parameters_widget import pig_parameters_widget
 from myLib.myGui.pig_menu_manager import pig_menu_manager
+from myLib.myGui import analysis_Allan, analysis_TimingPlot
 from PyQt5.QtWidgets import *
 from memsImu_Widget import memsImuWidget as TOP
 from memsImuReader import memsImuReader as ACTION
@@ -48,6 +49,8 @@ class mainWindow(QMainWindow):
         self.act = ACTION()
         self.imudata_file = cmn.data_manager(fnum=0)
         self.pig_cali_menu = calibrationBlock()
+        self.analysis_allan = analysis_Allan.analysis_allan_widget()
+        self.analysis_timing_plot = analysis_TimingPlot.analysis_timing_plot_widget()
         self.act.isCali = True
         self.menu = self.menuBar()
         self.pig_menu = pig_menu_manager(self.menu, self)
@@ -79,13 +82,23 @@ class mainWindow(QMainWindow):
         self.act.buffer_qt.connect(self.printBuffer)
         self.is_port_open_qt.connect(self.is_port_open_status_manager)
         # menu trigger connection
-        self.pig_menu.action_trigger_connect([self.show_parameters, self.show_calibration_menu])
+        self.pig_menu.action_trigger_connect([self.show_parameters,
+                                              self.show_calibration_menu,
+                                              self.show_plot_data_menu,
+                                              self.show_cal_allan_menu
+                                              ])
 
     def show_parameters(self):
         self.pig_parameter_widget.show()
 
     def show_calibration_menu(self):
         self.pig_cali_menu.show()
+
+    def show_plot_data_menu(self):
+        self.analysis_timing_plot.show()
+
+    def show_cal_allan_menu(self):
+        self.analysis_allan.show()
 
     def update_kalFilter_en(self, rb):
         self.act.isKal = rb.isChecked()

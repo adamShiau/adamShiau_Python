@@ -29,7 +29,7 @@ class progress_bar_with_read_allan(QGroupBox):
         pe = QPalette()
         pe.setColor(QPalette.WindowText, Qt.blue)
         # line editor
-        self.file_le = QLineEdit('0402.txt')
+        self.file_le = QLineEdit('tt.txt')
         self.tp_le = QLineEdit()
         self.tp_le.setFixedWidth(100)
         self.tp_le.setProperty('name', 'tp')
@@ -72,6 +72,10 @@ class progress_bar_with_read_allan(QGroupBox):
     def set_filename(self):
         self.filename = self.file_le.text()
         print(self.file_le.text())
+
+    def set_filename_ext(self, name):
+        self.file_le.setText(name)
+        self.filename = name
 
     @property
     def filename(self):
@@ -151,7 +155,7 @@ class progress_bar_with_read(QGroupBox):
     def __init__(self, title=''):
         super(progress_bar_with_read, self).__init__()
         self.setTitle(title)
-        self.file_le = QLineEdit('0402.txt')
+        self.file_le = QLineEdit('tt.txt')
         self.read_bt = QPushButton('read')
         self.status_lb = QLabel()
         self.pbar_text = ''
@@ -178,6 +182,10 @@ class progress_bar_with_read(QGroupBox):
     def set_filename(self):
         self.filename = self.file_le.text()
         print(self.file_le.text())
+
+    def set_filename_ext(self, name):
+        self.file_le.setText(name)
+        self.filename = name
 
     @property
     def filename(self):

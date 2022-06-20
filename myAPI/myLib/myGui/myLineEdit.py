@@ -23,6 +23,7 @@ class dataSaveBlock(QGroupBox):
         self.setFont(QFont('Arial', 10))
         self.rb = QRadioButton("save")
         self.le_filename = QLineEdit("enter_file_name")
+        # self.le_filename.editingFinished.connect(lambda: self.le_text_connect(self.le_filename))
         self.le_ext = QLineEdit(".txt")
         self.le_ext.setFixedWidth(50)
         self.rb.setChecked(False)

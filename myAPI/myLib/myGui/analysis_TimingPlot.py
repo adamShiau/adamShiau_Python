@@ -48,18 +48,19 @@ class analysis_timing_plot_widget(QWidget):
         self.__time = None
         self.linkfunction()
         # this line will emit a cb defaut key, must after linkfunction()
-        self.cb.addItem(['wx', 'wy', 'wz', 'ax', 'ay', 'az'])
+        self.cb.addItem(['fog', 'wx', 'wy', 'wz', 'ax', 'ay', 'az'])
         # self.cb.addItem(['fog', 'wz', 'pd_T'])
         self.layout()
 
     def layout(self):
         layout = QGridLayout()
         layout.addWidget(self.cal_bt, 0, 0, 1, 1)
+        layout.addWidget(self.cb, 1, 0, 1, 1)
         # layout.addWidget(self.read_bt, 0, 1, 1, 1)
         # layout.addWidget(self.file_le, 0, 2, 1, 3)
-        layout.addWidget(self.pbar.inst(), 0, 5, 1, 5)
-        layout.addWidget(self.cb, 2, 0, 1, 1)
-        layout.addWidget(self.timing_plot, 2, 1, 10, 10)
+        layout.addWidget(self.pbar.inst(), 0, 1, 2, 5)
+
+        layout.addWidget(self.timing_plot, 2, 0, 10, 10)
         self.setLayout(layout)
 
     def linkfunction(self):
@@ -91,6 +92,10 @@ class analysis_timing_plot_widget(QWidget):
 
     def store_data(self, data=None):
         self.__time = data['time']
+        data['fog'] = data['fog'] * 3600
+        data['wx'] = data['wx'] * 3600
+        data['wy'] = data['wy'] * 3600
+        data['wz'] = data['wz'] * 3600
         self.datahub.store_df_data(data)
 
     def plot(self):
@@ -98,7 +103,38 @@ class analysis_timing_plot_widget(QWidget):
         y = self.datahub.switch_df_data()
         self.timing_plot.ax.clear()
         self.timing_plot.ax.plot(x, y)
+        self.timing_plot.ax.set_xlabel('time(s)')
+        self.timing_plot.ax.grid(False)
+
+        self.plot_control(self.timing_plot.ax, y)
         self.timing_plot.fig.canvas.draw()
+
+    def plot_control(self, ax, y):
+        name = y.name
+        if name == 'fog':
+            ax.set_title('fog')
+            ax.set_ylabel('degree/hour')
+        elif name == 'wx':
+            ax.set_title('wx')
+            ax.set_ylabel('degree/hour')
+        elif name == 'wy':
+            ax.set_title('wy')
+            ax.set_ylabel('degree/hour')
+        elif name == 'wz':
+            ax.set_title('wz')
+            ax.set_ylabel('degree/hour')
+        elif name == 'ax':
+            ax.set_title('ax')
+            ax.set_ylabel('g')
+        elif name == 'ay':
+            ax.set_title('ay')
+            ax.set_ylabel('g')
+        elif name == 'az':
+            ax.set_title('az')
+            ax.set_ylabel('g')
+        ax.xaxis.label.set_size(14)
+        ax.yaxis.label.set_size(14)
+        # ax.text(0.9, 0.9, 'matplotlib', ha='center', va='center', transform=ax.transAxes, color='blue')
 
 
 class analysis_timing_plot_widget_thread(QWidget):
@@ -164,8 +200,12 @@ class analysis_timing_plot_widget_thread(QWidget):
         x = self.__time
         y = self.datahub.switch_df_data()
         self.timing_plot.ax.clear()
+        self.timing_plot.ax.set_xlabel('time(s)')
+        self.timing_plot.ax.set_ylabel('degree/hour')
         self.timing_plot.ax.plot(x, y)
+
         self.timing_plot.fig.canvas.draw()
+        self.show()
 
     def thread_start(self):
         self.cal_bt.setEnabled(False)

@@ -95,7 +95,7 @@ class pigImuReader(QThread):
     @sf_a.setter
     def sf_a(self, value):
         self.__sf_a = value
-        # print("act.sf_a: ", self.__sf_a)
+        print("act.sf_a: ", self.sf_a)
 
     @property
     def sf_b(self):

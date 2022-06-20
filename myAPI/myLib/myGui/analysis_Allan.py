@@ -50,7 +50,7 @@ class analysis_allan_widget(QWidget):
         # end of add widget
         self.linkfunction()
         # self.cb.addItem(['fog', 'wz', 'pd_T'])
-        self.cb.addItem(['wx', 'wy', 'wz'])
+        self.cb.addItem(['fog', 'wx', 'wy', 'wz'])
         self.layout()
 
     def layout(self):
@@ -177,17 +177,24 @@ class analysis_allan_widget(QWidget):
         idx_arw = np.where(tau == 1)[0][0]
         x = np.log10(tau[0:idx_arw + 1])
         y = np.log10(dev[0:idx_arw + 1])
-        # print(x)
-        # print(y)
         a, b = np.polyfit(x, y, 1)
+        arw = (10 ** b * 3600) / 60
+
         self.allan_plot.ax.loglog(tau[0:idx_arw + 3], 10 ** (a * np.log10(tau[0:idx_arw + 3]) + b) * 3600, color='blue',
                                   linestyle='--', linewidth=2)
+        ax = self.allan_plot.ax
+        ax.text(0.9, 0.9, 'slope: ' + str(round(a, 2)), ha='center', va='center', transform=ax.transAxes, color='blue')
+        ax.text(0.9, 0.8, 'ARW: ' + str(round(arw, 4)) + ' degree/sqrt(hr)', ha='center', va='center',
+                transform=ax.transAxes, color='green')
         bias = self.findBias(tau, dev)
         if bias is not None:
             bias = (10 ** bias) * 3600
             self.allan_plot.ax.loglog(tau, [bias] * len(tau), color='green', linestyle='--', linewidth=2)
+            ax.text(0.9, 0.7, 'bias stability: ' + str(round(bias, 2)) + ' degree/hour', ha='center', va='center', transform=ax.transAxes,
+                    color='k')
         self.allan_plot.fig.canvas.draw()
-        arw = (10 ** b * 3600) / 60
+
+
         print(a, b, arw)
         print(bias)
 
@@ -209,7 +216,17 @@ class analysis_allan_widget(QWidget):
     def plot(self, tau, dev):
         self.allan_plot.ax.clear()
         self.allan_plot.ax.loglog(tau, dev * 3600, 'k-*')  # convert unit to dph
+        self.plot_control(self.allan_plot.ax)
         self.allan_plot.fig.canvas.draw()
+
+    def plot_control(self, a=0, b=0):
+        ax = self.allan_plot.ax
+        ax.set_xlabel('s')
+        ax.set_ylabel('Degree / hour')
+        ax.xaxis.label.set_size(14)
+        ax.yaxis.label.set_size(14)
+        # if a != 0:
+        #     ax.text(0.9, 0.9, str(a), ha='center', va='center', transform=ax.transAxes, color='blue')
 
 
 class allan_dev(QThread):

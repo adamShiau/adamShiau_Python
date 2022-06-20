@@ -222,14 +222,14 @@ class calibrationBlock(QGroupBox):
     def __init__(self):
         super(calibrationBlock, self).__init__()
         self.__isCali_a = False
-        self.__isCali_w = True
+        self.__isCali_w = False
         self.resize(320, 100)
         self.setWindowTitle('IMU calibration')
         # self.setTitle('enable')
         # self.setCheckable(True)
         self.cb_cali_w = QCheckBox('calibrate gyro')
         self.cb_cali_a = QCheckBox('calibrate accelerometer')
-        self.cb_cali_w.setChecked(True)
+        # self.cb_cali_w.setChecked(True)
         self.cb_cali_a.stateChanged.connect(lambda: self.cbstate_connect(self.cb_cali_a))
         self.cb_cali_w.stateChanged.connect(lambda: self.cbstate_connect(self.cb_cali_w))
 

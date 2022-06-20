@@ -39,6 +39,7 @@ def readPIG(dataPacket, EN=1, POS_TIME=25, sf_a=1, sf_b=0, PRINT=0):
 
     if PRINT:
         print()
+        print(sf_a, sf_b)
         print(round(fpga_time, 4), end='\t\t')
         print(round(err_mv, 3), end='\t\t')
         print(round(step_dps, 3), end='\t\t')

@@ -27,11 +27,14 @@ import time
 from myLib.mySerial.Connector import Connector
 from myLib.myGui.pig_parameters_widget import pig_parameters_widget
 from myLib.myGui.pig_menu_manager import pig_menu_manager
+from myLib.myGui import analysis_Allan, analysis_TimingPlot
 from PyQt5.QtWidgets import *
 from pigImu_Widget import pigImuWidget as TOP
 from pigImuReader import pigImuReader as ACTION
 from pigImuReader import IMU_DATA_STRUCTURE
 import numpy as np
+
+PRINT_DEBUG = 1
 
 
 class mainWindow(QMainWindow):
@@ -51,6 +54,8 @@ class mainWindow(QMainWindow):
         self.act.isCali = True
         self.menu = self.menuBar()
         self.pig_menu = pig_menu_manager(self.menu, self)
+        self.analysis_allan = analysis_Allan.analysis_allan_widget()
+        self.analysis_timing_plot = analysis_TimingPlot.analysis_timing_plot_widget()
         self.linkfunction()
         self.act.arrayNum = 10
         self.mainUI()
@@ -79,13 +84,33 @@ class mainWindow(QMainWindow):
         self.act.buffer_qt.connect(self.printBuffer)
         self.is_port_open_qt.connect(self.is_port_open_status_manager)
         # menu trigger connection
-        self.pig_menu.action_trigger_connect([self.show_parameters, self.show_calibration_menu])
+        self.pig_menu.action_trigger_connect([self.show_parameters,
+                                              self.show_calibration_menu,
+                                              self.show_plot_data_menu,
+                                              self.show_cal_allan_menu
+                                              ])
+        # file name le
+        self.top.save_block.le_filename.editingFinished.connect(
+            lambda: self.file_name_le_connect(self.top.save_block.le_filename))
+
+
+    def file_name_le_connect(self, obj):
+        cmn.print_debug('file name: %s' % obj.text(), PRINT_DEBUG)
+        filename = obj.text() + self.top.save_block.le_ext.text()
+        self.analysis_timing_plot.pbar.set_filename_ext(filename)
+        self.analysis_allan.pbar.set_filename_ext(filename)
 
     def show_parameters(self):
         self.pig_parameter_widget.show()
 
     def show_calibration_menu(self):
         self.pig_cali_menu.show()
+
+    def show_plot_data_menu(self):
+        self.analysis_timing_plot.show()
+
+    def show_cal_allan_menu(self):
+        self.analysis_allan.show()
 
     def update_kalFilter_en(self, rb):
         self.act.isKal = rb.isChecked()
@@ -138,7 +163,7 @@ class mainWindow(QMainWindow):
         file_name = self.top.save_block.le_filename.text() + self.top.save_block.le_ext.text()
         self.imudata_file.name = file_name
         self.imudata_file.open(self.top.save_block.rb.isChecked())
-        self.imudata_file.write_line('time, fog, wx, wy, wz, ax, ay, az, T')
+        self.imudata_file.write_line('time,fog,wx,wy,wz,ax,ay,az,T')
 
     def stop(self):
         self.act.isRun = False
@@ -176,10 +201,10 @@ class mainWindow(QMainWindow):
         debug_info = "MAIN: ," + str(input_buf) + ", " + str(round((t2 - t0) * 1000, 5)) + ", " \
                      + str(round((t1 - t0) * 1000, 5)) + ", " + str(round((t2 - t1) * 1000, 5))
         cmn.print_debug(debug_info, self.__debug)
-
+        # print(imudata["PIG_WZ"])
         datalist = [imudata["TIME"], imudata["PIG_WZ"], imudata["NANO33_WX"], imudata["NANO33_WY"], imudata["NANO33_WZ"]
             , imudata["ADXL_AX"], imudata["ADXL_AY"], imudata["ADXL_AZ"], imudata["PD_TEMP"]]
-        data_fmt = "%.5f, %.5f, %.5f, %.5f, %.5f, %.5f, %.5f, %.5f, %.1f"
+        data_fmt = "%.5f, %.5, %.5f, %.5f, %.5f, %.5f, %.5f, %.5f, %.1f"
         self.imudata_file.saveData(datalist, data_fmt)
         self.plotdata(self.imudata)
         self.printUpdateRate(self.imudata["TIME"])

@@ -4,3 +4,13 @@
 __pycache__
 
 *.txt
+
+# pyinstaller file
+*.toc
+*.zip
+*.pkg
+*.pyz
+*.exe.*
+xref-*
+*.exe
+*.spec

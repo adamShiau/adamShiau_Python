@@ -42,6 +42,7 @@ class mainWindow(QMainWindow):
 
     def __init__(self, debug_en: bool = False):
         super(mainWindow, self).__init__()
+        self.resize(1450, 800)
         self.pig_parameter_widget = None
         self.__portName = None
         self.setWindowTitle("Aegiverse IMU GUI")
@@ -54,8 +55,9 @@ class mainWindow(QMainWindow):
         self.act.isCali = True
         self.menu = self.menuBar()
         self.pig_menu = pig_menu_manager(self.menu, self)
-        self.analysis_allan = analysis_Allan.analysis_allan_widget()
-        self.analysis_timing_plot = analysis_TimingPlot.analysis_timing_plot_widget()
+        self.analysis_allan = analysis_Allan.analysis_allan_widget(['fog', 'wx', 'wy', 'wz'])
+        self.analysis_timing_plot = analysis_TimingPlot.analysis_timing_plot_widget(
+            ['fog', 'wx', 'wy', 'wz', 'ax', 'ay', 'az'])
         self.linkfunction()
         self.act.arrayNum = 10
         self.mainUI()

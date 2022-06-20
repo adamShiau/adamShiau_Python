@@ -50,7 +50,7 @@ class progress_bar_with_read_allan(QGroupBox):
         self.file_le.setFixedWidth(150)
         self.filename = self.file_le.text()
         self.pbar = QProgressBar()
-        self.pbar.setFixedWidth(600)
+        self.pbar.setFixedWidth(300)
         self.connect()
         self.layout()
 

@@ -19,6 +19,7 @@ logger.info('process start')
 """ ####### end of log stuff creation ########  """
 
 import sys
+
 sys.path.append("../")
 from myLib import common as cmn
 from myLib.myGui.mygui_serial import *
@@ -34,12 +35,12 @@ from memsImuReader import IMU_DATA_STRUCTURE
 import numpy as np
 
 
-
 class mainWindow(QMainWindow):
     is_port_open_qt = pyqtSignal(bool)
 
     def __init__(self, debug_en: bool = False):
         super(mainWindow, self).__init__()
+        self.resize(1450, 800)
         self.pig_parameter_widget = None
         self.__portName = None
         self.setWindowTitle("memsImuPlot")
@@ -49,8 +50,8 @@ class mainWindow(QMainWindow):
         self.act = ACTION()
         self.imudata_file = cmn.data_manager(fnum=0)
         self.pig_cali_menu = calibrationBlock()
-        self.analysis_allan = analysis_Allan.analysis_allan_widget()
-        self.analysis_timing_plot = analysis_TimingPlot.analysis_timing_plot_widget()
+        self.analysis_allan = analysis_Allan.analysis_allan_widget(['wx', 'wy', 'wz'])
+        self.analysis_timing_plot = analysis_TimingPlot.analysis_timing_plot_widget(['wx', 'wy', 'wz', 'ax', 'ay', 'az'])
         self.act.isCali = True
         self.menu = self.menuBar()
         self.pig_menu = pig_menu_manager(self.menu, self)
@@ -87,6 +88,15 @@ class mainWindow(QMainWindow):
                                               self.show_plot_data_menu,
                                               self.show_cal_allan_menu
                                               ])
+        # file name le
+        self.top.save_block.le_filename.editingFinished.connect(
+            lambda: self.file_name_le_connect(self.top.save_block.le_filename))
+
+    def file_name_le_connect(self, obj):
+        cmn.print_debug('file name: %s' % obj.text(), PRINT_DEBUG)
+        filename = obj.text() + self.top.save_block.le_ext.text()
+        self.analysis_timing_plot.pbar.set_filename_ext(filename)
+        self.analysis_allan.pbar.set_filename_ext(filename)
 
     def show_parameters(self):
         self.pig_parameter_widget.show()
@@ -132,7 +142,7 @@ class mainWindow(QMainWindow):
     def connect(self):
         is_port_open = self.act.connect(self.__connector, self.__portName, 230400)
         self.is_port_open_qt.emit(is_port_open)
-        self.pig_parameter_widget = pig_parameters_widget(self.act, self.top.para_block.le_filename.text()+'.json')
+        self.pig_parameter_widget = pig_parameters_widget(self.act, self.top.para_block.le_filename.text() + '.json')
         self.act.isCali_w, self.act.isCali_a = self.pig_cali_menu.cali_status()  # update calibration flag to act
 
     def disconnect(self):

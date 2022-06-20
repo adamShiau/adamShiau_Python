@@ -31,7 +31,7 @@ import matplotlib.pyplot as plt
 
 
 class analysis_timing_plot_widget(QWidget):
-    def __init__(self):
+    def __init__(self, key_item=['fog', 'wx', 'wy', 'wz', 'ax', 'ay', 'az']):
         super(analysis_timing_plot_widget, self).__init__()
         self.data = None
         self.setWindowTitle('Plot Timing Data')
@@ -48,7 +48,7 @@ class analysis_timing_plot_widget(QWidget):
         self.__time = None
         self.linkfunction()
         # this line will emit a cb defaut key, must after linkfunction()
-        self.cb.addItem(['fog', 'wx', 'wy', 'wz', 'ax', 'ay', 'az'])
+        self.cb.addItem(key_item)
         # self.cb.addItem(['fog', 'wz', 'pd_T'])
         self.layout()
 
@@ -92,7 +92,11 @@ class analysis_timing_plot_widget(QWidget):
 
     def store_data(self, data=None):
         self.__time = data['time']
-        data['fog'] = data['fog'] * 3600
+        try:
+            data['fog'] = data['fog'] * 3600
+        except KeyError:
+            logger.info('nano33_mode')
+            pass
         data['wx'] = data['wx'] * 3600
         data['wy'] = data['wy'] * 3600
         data['wz'] = data['wz'] * 3600
@@ -104,7 +108,7 @@ class analysis_timing_plot_widget(QWidget):
         self.timing_plot.ax.clear()
         self.timing_plot.ax.plot(x, y)
         self.timing_plot.ax.set_xlabel('time(s)')
-        self.timing_plot.ax.grid(False)
+        self.timing_plot.ax.grid(True)
 
         self.plot_control(self.timing_plot.ax, y)
         self.timing_plot.fig.canvas.draw()

@@ -30,13 +30,14 @@ import matplotlib.pyplot as plt
 
 
 class analysis_allan_widget(QWidget):
-    def __init__(self):
+    def __init__(self, key_item=['fog', 'wx', 'wy', 'wz']):
         super(analysis_allan_widget, self).__init__()
         self.tau0 = 1
         self.tauArray = None
         self.__time = None
         self.data = None
         self.setWindowTitle('Allen Variance Analysis')
+        self.resize(900,900)
         self.dev = np.empty(0)  # Create empty array to store the output.
         self.actualTau = np.empty(0)
         self.allan = allan_dev()
@@ -49,8 +50,7 @@ class analysis_allan_widget(QWidget):
         self.cal_bt.setEnabled(False)
         # end of add widget
         self.linkfunction()
-        # self.cb.addItem(['fog', 'wz', 'pd_T'])
-        self.cb.addItem(['fog', 'wx', 'wy', 'wz'])
+        self.cb.addItem(key_item)
         self.layout()
 
     def layout(self):
@@ -68,16 +68,12 @@ class analysis_allan_widget(QWidget):
         self.pbar.is_load_done_qt.connect(self.set_is_load_done_connect)
         self.allan.is_allan_done_qt.connect(self.set_is_allan_done_connect)
         self.cb.default_Item_qt.connect(self.set_default_key)
-        # self.adj_tau.read_bt.clicked.connect(lambda: self.allan.readData(self.adj_tau.file_le.text()))
-        # self.pbar.read_bt.clicked.connect(self.readData)
         self.pbar.tauarray_le.editingFinished.connect(
             lambda: self.set_tau_array(self.pbar.tauarray_le))
         self.pbar.tp_le.editingFinished.connect(lambda: self.set_tau_array(self.pbar.tp_le))
         self.allan.progress_qt.connect(self.update_progress_bar)
         self.allan.allan_qt.connect(self.plot)
         self.allan.finish_qt.connect(self.fit_data)
-        # self.allan.tauarray_qt.connect(self.setTauArray)
-        # self.allan.progress_qt.connect(self.update_progress_bar)
 
     def cal_tau_array(self):
         t = np.array(self.__time)
@@ -174,29 +170,37 @@ class analysis_allan_widget(QWidget):
         self.allan.start()
 
     def fit_data(self, tau, dev):
+        ax = self.allan_plot.ax
+        idx_bias = self.findBias(tau, dev)
+        if idx_bias is not None:
+            # bias = (10 ** bias) * 3600
+            bias = dev[idx_bias] * 3600
+            # plot bias stability  line
+            self.allan_plot.ax.loglog(tau, [bias] * len(tau), color='green', linestyle='--', linewidth=2)
+            ax.text(0.8, 0.7, 'bias stability: ' + str(round(bias, 2)) + '$^\circ$/hr', ha='left', va='center',
+                    transform=ax.transAxes,
+                    color='k')
         idx_arw = np.where(tau == 1)[0][0]
         x = np.log10(tau[0:idx_arw + 1])
         y = np.log10(dev[0:idx_arw + 1])
         a, b = np.polyfit(x, y, 1)
         arw = (10 ** b * 3600) / 60
-
-        self.allan_plot.ax.loglog(tau[0:idx_arw + 3], 10 ** (a * np.log10(tau[0:idx_arw + 3]) + b) * 3600, color='blue',
+        # plot fitted line
+        if idx_bias is not None:
+            idx_arw_max = idx_bias
+        else:
+            idx_arw_max = len(tau)
+        self.allan_plot.ax.loglog(tau[0:idx_arw_max], 10 ** (a * np.log10(tau[0:idx_arw_max]) + b) * 3600, color='b',
                                   linestyle='--', linewidth=2)
-        ax = self.allan_plot.ax
-        ax.text(0.9, 0.9, 'slope: ' + str(round(a, 2)), ha='center', va='center', transform=ax.transAxes, color='blue')
-        ax.text(0.9, 0.8, 'ARW: ' + str(round(arw, 4)) + ' degree/sqrt(hr)', ha='center', va='center',
-                transform=ax.transAxes, color='green')
-        bias = self.findBias(tau, dev)
-        if bias is not None:
-            bias = (10 ** bias) * 3600
-            self.allan_plot.ax.loglog(tau, [bias] * len(tau), color='green', linestyle='--', linewidth=2)
-            ax.text(0.9, 0.7, 'bias stability: ' + str(round(bias, 2)) + ' degree/hour', ha='center', va='center', transform=ax.transAxes,
-                    color='k')
+
+        ax.text(0.8, 0.9, 'line fitting: ' + str(round(a, 2)) +'x + ' + str(round(b, 2)), ha='left', va='center',
+                transform=ax.transAxes, color='b')
+        ax.text(0.8, 0.8, 'ARW: ' + str(round(arw, 4)) + '$^\circ$/'+r'$\sqrt{hr}$', ha='left', va='center',
+                transform=ax.transAxes, color='g')
+
         self.allan_plot.fig.canvas.draw()
-
-
-        print(a, b, arw)
-        print(bias)
+        # print(a, b, arw)
+        # print(bias)
 
     def findBias(self, tau, dev):
         size = len(tau)
@@ -208,7 +212,8 @@ class analysis_allan_widget(QWidget):
         # print(slope)
         try:
             idx = np.where(slope > 0)[0][0]
-            return np.log10(dev[idx])
+            return idx
+            # return np.log10(dev[idx])
         except IndexError:
             logger.info('no bias instability value.')
             return None
@@ -216,17 +221,16 @@ class analysis_allan_widget(QWidget):
     def plot(self, tau, dev):
         self.allan_plot.ax.clear()
         self.allan_plot.ax.loglog(tau, dev * 3600, 'k-*')  # convert unit to dph
-        self.plot_control(self.allan_plot.ax)
+        self.plot_control()
         self.allan_plot.fig.canvas.draw()
 
-    def plot_control(self, a=0, b=0):
+    def plot_control(self):
         ax = self.allan_plot.ax
         ax.set_xlabel('s')
         ax.set_ylabel('Degree / hour')
         ax.xaxis.label.set_size(14)
         ax.yaxis.label.set_size(14)
-        # if a != 0:
-        #     ax.text(0.9, 0.9, str(a), ha='center', va='center', transform=ax.transAxes, color='blue')
+        ax.grid(True)
 
 
 class allan_dev(QThread):

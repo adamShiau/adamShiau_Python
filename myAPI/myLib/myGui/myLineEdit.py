@@ -2,6 +2,7 @@
 """ ####### log stuff creation, always on the top ########  """
 import builtins
 import logging
+import sys
 
 if hasattr(builtins, 'LOGGER_NAME'):
     logger_name = builtins.LOGGER_NAME
@@ -55,16 +56,20 @@ class lineEditBlock(QGroupBox):
     def __init__(self, name="", le_name="parameters_SP9"):
         super(lineEditBlock, self).__init__()
         self.setTitle(name)
-        self.setFont(QFont('', 10))
+        self.setFont(QFont('Arial', 10))
         self.le_filename = QLineEdit(le_name)
 
         layout = QGridLayout()
         layout.addWidget(self.le_filename, 0, 1, 1, 1)
         self.setLayout(layout)
 
+    def inst(self):
+        return self
+
 
 if __name__ == '__main__':
-    app = QApplication
-    w = btnLineEditBlock('read file', 'read', 'abc.txt')
+    app = QApplication(sys.argv)
+    # w = btnLineEditBlock('read file', 'read', 'abc.txt')
+    w = lineEditBlock('parameter configuration').inst()
     w.show()
     app.exec_()

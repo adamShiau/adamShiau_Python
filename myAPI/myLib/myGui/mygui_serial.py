@@ -48,14 +48,21 @@ class usbConnect():
     def addPortItems(self, num, ports):
         self.__portList = ports
         self.cb.clear()
+        logger.debug('port_num: %d' % num)
+        logger.debug('ports: %s' % ports[0])
+        logger.debug(dir(ports[0]))
+        logger.debug('ports.description: %s' % ports[0].description)
+        logger.debug('ports.device: %s' % ports[0].device)
+        logger.debug('ports.name: %s' % ports[0].name)
         if num > 0:
             for i in range(num):
-                self.cb.addItem(ports[i].name)
+                self.cb.addItem(ports[i].device)
+                logger.debug('port_name: %s' % ports[i].device)
 
     def selectPort(self):
         idx = self.cb.currentIndex()
         self.lb_comDisp.setText(self.__portList[idx].description)
-        return self.__portList[idx].name
+        return self.__portList[idx].device
 
     def updateStatusLabel(self, is_open):
         self.bt_connect.setEnabled(not is_open)

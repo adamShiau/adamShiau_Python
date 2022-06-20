@@ -14,6 +14,7 @@ import serial
 import serial.tools.list_ports
 import time
 import sys
+sys.path.append('../../')
 import numpy as np
 import myLib.common as cmn
 
@@ -152,19 +153,23 @@ class Connector:
 
 
 if __name__ == "__main__":
-    print("running Connector.py")
-    old_time = time.perf_counter_ns()
-    ser = Connector("COM6")
-    ser.connect()
-    ser.flushInputBuffer()
-    ser.write([2, 0, 0, 0, 1])
+    # print("running Connector.py")
+    # old_time = time.perf_counter_ns()
+    # ser = Connector("COM5")
+    # ser.connect()
+    # ser.flushInputBuffer()
+    # ser.write([5, 0, 0, 0, 1])
+    ser=Connector()
+    print(ser.portList())
+
     '''for sparrow test
     ser.write([6, 0, 0, 0, 3])
     time.sleep(1)
     ser.write([6, 0, 0, 0, 1])
     '''
 
-    try:
+    '''
+        try:
         while 1:
             # if ser.readInputBuffer() > 0:
             new = time.perf_counter_ns()
@@ -176,7 +181,9 @@ if __name__ == "__main__":
             time.sleep(0.001)
 
     except KeyboardInterrupt:
-        ser.write([2, 0, 0, 0, 4])
+        ser.write([5, 0, 0, 0, 4])
         # ser.write([6, 0, 0, 0, 4])
         ser.disconnect()
     pass
+    '''
+

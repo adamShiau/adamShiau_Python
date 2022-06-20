@@ -121,6 +121,7 @@ class mainWindow(QMainWindow):
 
     def selectComPort(self):
         self.__portName = self.top.usb.selectPort()
+        logger.debug('selectComPort.__portName: %s' % self.__portName)
 
     def is_port_open_status_manager(self, open):
         # print("port open: ", open)

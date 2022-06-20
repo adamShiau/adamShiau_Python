@@ -48,8 +48,8 @@ class analysis_timing_plot_widget(QWidget):
         self.__time = None
         self.linkfunction()
         # this line will emit a cb defaut key, must after linkfunction()
-        # self.cb.addItem(['wx', 'wy', 'wz', 'ax', 'ay', 'az'])
-        self.cb.addItem(['fog', 'wz', 'pd_T'])
+        self.cb.addItem(['wx', 'wy', 'wz', 'ax', 'ay', 'az'])
+        # self.cb.addItem(['fog', 'wz', 'pd_T'])
         self.layout()
 
     def layout(self):
@@ -90,7 +90,7 @@ class analysis_timing_plot_widget(QWidget):
         self.pbar.read_btn()
 
     def store_data(self, data=None):
-        self.__time = data['t']
+        self.__time = data['time']
         self.datahub.store_df_data(data)
 
     def plot(self):

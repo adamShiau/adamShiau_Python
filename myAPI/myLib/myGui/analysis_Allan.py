@@ -49,7 +49,8 @@ class analysis_allan_widget(QWidget):
         self.cal_bt.setEnabled(False)
         # end of add widget
         self.linkfunction()
-        self.cb.addItem(['fog', 'wz', 'pd_T'])
+        # self.cb.addItem(['fog', 'wz', 'pd_T'])
+        self.cb.addItem(['wx', 'wy', 'wz'])
         self.layout()
 
     def layout(self):
@@ -147,7 +148,7 @@ class analysis_allan_widget(QWidget):
         self.datahub.key = key
 
     def store_data(self, data=None):
-        self.__time = data['t']
+        self.__time = data['time']
         self.datahub.store_df_data(data)
         self.cal_tau_array()
 

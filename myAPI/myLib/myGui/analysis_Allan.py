@@ -37,7 +37,7 @@ class analysis_allan_widget(QWidget):
         self.__time = None
         self.data = None
         self.setWindowTitle('Allen Variance Analysis')
-        self.resize(900,900)
+        self.resize(900, 900)
         self.dev = np.empty(0)  # Create empty array to store the output.
         self.actualTau = np.empty(0)
         self.allan = allan_dev()
@@ -173,14 +173,12 @@ class analysis_allan_widget(QWidget):
         ax = self.allan_plot.ax
         idx_bias = self.findBias(tau, dev)
         if idx_bias is not None:
-            # bias = (10 ** bias) * 3600
             bias = dev[idx_bias] * 3600
-            # plot bias stability  line
             self.allan_plot.ax.loglog(tau, [bias] * len(tau), color='green', linestyle='--', linewidth=2)
             ax.text(0.8, 0.7, 'bias stability: ' + str(round(bias, 2)) + '$^\circ$/hr', ha='left', va='center',
                     transform=ax.transAxes,
                     color='k')
-        idx_arw = np.where(tau == 1)[0][0]
+        idx_arw = np.where((tau-1) < 0.005)[0][0]
         x = np.log10(tau[0:idx_arw + 1])
         y = np.log10(dev[0:idx_arw + 1])
         a, b = np.polyfit(x, y, 1)
@@ -193,9 +191,9 @@ class analysis_allan_widget(QWidget):
         self.allan_plot.ax.loglog(tau[0:idx_arw_max], 10 ** (a * np.log10(tau[0:idx_arw_max]) + b) * 3600, color='b',
                                   linestyle='--', linewidth=2)
 
-        ax.text(0.8, 0.9, 'line fitting: ' + str(round(a, 2)) +'x + ' + str(round(b, 2)), ha='left', va='center',
+        ax.text(0.8, 0.9, 'line fitting: ' + str(round(a, 2)) + 'x + ' + str(round(b, 2)), ha='left', va='center',
                 transform=ax.transAxes, color='b')
-        ax.text(0.8, 0.8, 'ARW: ' + str(round(arw, 4)) + '$^\circ$/'+r'$\sqrt{hr}$', ha='left', va='center',
+        ax.text(0.8, 0.8, 'ARW: ' + str(round(arw, 4)) + '$^\circ$/' + r'$\sqrt{hr}$', ha='left', va='center',
                 transform=ax.transAxes, color='g')
 
         self.allan_plot.fig.canvas.draw()

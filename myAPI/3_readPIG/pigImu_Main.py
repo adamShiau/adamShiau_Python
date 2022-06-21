@@ -206,7 +206,7 @@ class mainWindow(QMainWindow):
         # print(imudata["PIG_WZ"])
         datalist = [imudata["TIME"], imudata["PIG_WZ"], imudata["NANO33_WX"], imudata["NANO33_WY"], imudata["NANO33_WZ"]
             , imudata["ADXL_AX"], imudata["ADXL_AY"], imudata["ADXL_AZ"], imudata["PD_TEMP"]]
-        data_fmt = "%.5f, %.5, %.5f, %.5f, %.5f, %.5f, %.5f, %.5f, %.1f"
+        data_fmt = "%.5f,%.5f,%.5f,%.5f,%.5f,%.5f,%.5f,%.5f,%.1f"
         self.imudata_file.saveData(datalist, data_fmt)
         self.plotdata(self.imudata)
         self.printUpdateRate(self.imudata["TIME"])

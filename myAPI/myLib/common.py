@@ -142,6 +142,52 @@ def readADXL355(dataPacket, dataLen=3, POS_AX=4, EN=1, sf=1.0, PRINT=0):
 
 # End of ImuConnector::readADXL355
 
+def readVBOX(dataPacket, POS_GPS_SATS, POS_Z_accel, POS_Time, POS_Heading, POS_Heading_from_KF,
+                     POS_Altitude, POS_Latitude, POS_Longitude, POS_Velocity, POS_Vertical_velocity, EN=1, PRINT=0):
+    if EN:
+        GPS_sats = dataPacket[POS_GPS_SATS]
+        temp_Z_accel = dataPacket[POS_Z_accel:POS_Z_accel + 2]
+        temp_Time = dataPacket[POS_Time:POS_Time + 3]
+        temp_Heading = dataPacket[POS_Heading:POS_Heading + 2]
+        temp_Heading_from_KF = dataPacket[POS_Heading_from_KF:POS_Heading_from_KF + 2]
+        temp_Altitude = dataPacket[POS_Altitude:POS_Altitude + 3]
+        temp_Latitude = dataPacket[POS_Latitude:POS_Latitude + 4]
+        temp_Longtitude = dataPacket[POS_Longitude:POS_Longitude + 4]
+        temp_Velocity = dataPacket[POS_Velocity:POS_Velocity + 3]
+        temp_Vertical_velocity = dataPacket[POS_Vertical_velocity:POS_Vertical_velocity + 3]
+
+        Z_accel = round(convert2Sign_2B(temp_Z_accel) * 0.01, 2)
+        Time = convert2Unsign_3B(temp_Time)
+        Heading = round(convert2Sign_2B(temp_Heading) * 0.01, 2)
+        Heading_from_KF = round(convert2Sign_2B(temp_Heading_from_KF) * 0.01, 2)
+        Altitude = round(convert2Sign_3B(temp_Altitude) * 0.01, 2)
+        Latitude = round(convert2Sign_4B(temp_Latitude) * 0.0000001, 7)
+        Longitude = round(convert2Sign_4B(temp_Longtitude) * 0.0000001, 7)
+        Velocity = round(convert2Unsign_3B(temp_Velocity) * 0.001, 3)
+        Vertical_velocity = round(convert2Sign_3B(temp_Vertical_velocity) * 0.001, 3)
+
+    else:
+        logger.info('readVBOX EN = 0')
+    # End of if-condition
+
+    if PRINT:
+        print('GPS_sats: ', GPS_sats)
+        print('Time: ', Time)
+        print('Z_accel: ', Z_accel)
+        print('Heading: ', Heading)
+        print('Heading_from_KF: ', Heading_from_KF)
+        print('Altitude: ', Altitude)
+        print('Latitude: ', Latitude)
+        print('Longitude: ', Longitude)
+        print('Velocity: ', Velocity)
+        print('Vertical_velocity: ', Vertical_velocity)
+    # End of if-condition
+
+    return GPS_sats, Heading, Heading_from_KF, Altitude, Latitude, Longitude, Velocity, Vertical_velocity, Z_accel
+
+
+# End of ImuConnector::readADXL355
+
 def readSparrow(dataPacket, POS_SPARROW=25, EN=1, sf_a=1.0, sf_b=0.0, PRINT=0):
     if EN:
         sparrow_wz = dataPacket[POS_SPARROW:POS_SPARROW + 4]
@@ -347,7 +393,31 @@ def convert2Temperature(datain):
     return temp
 
 
-# End of convert2Unsign_4B
+def convert2Unsign_2B(datain):
+    shift_data = (datain[0] << 8 | datain[1])
+    return shift_data
+
+
+def convert2Sign_2B(datain):
+    shift_data = (datain[0] << 8 | datain[1])
+    if (datain[0] >> 7) == 1:
+        return shift_data - (1 << 16)
+    else:
+        return shift_data
+
+
+def convert2Unsign_3B(datain):
+    shift_data = (datain[0] << 16 | datain[1] << 8 | datain[2])
+    return shift_data
+
+
+def convert2Sign_3B(datain):
+    shift_data = (datain[0] << 16 | datain[1] << 8 | datain[2])
+    if (datain[0] >> 7) == 1:
+        return shift_data - (1 << 24)
+    else:
+        return shift_data
+
 
 def convert2Unsign_4B(datain):
     shift_data = (datain[0] << 24 | datain[1] << 16 | datain[2] << 8 | datain[3])

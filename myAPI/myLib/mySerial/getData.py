@@ -32,6 +32,25 @@ def alignHeader_4B(comportObj, header):
             # print(datain)
 # End of alignHeader_4B
 
+def alignHeader_7B(comportObj, header):
+    datain = comportObj.readBinaryList(7)
+    while 1:
+        if datain == header:
+            return datain
+        else:
+            try:
+                datain[0] = datain[1]
+                datain[1] = datain[2]
+                datain[2] = datain[3]
+                datain[3] = datain[4]
+                datain[4] = datain[5]
+                datain[5] = datain[6]
+                datain[6] = comportObj.readBinaryList(1)[0]
+                # print(datain, header, datain==header)
+            except IndexError:
+                logger.error('IndexError: alignHeader_7B')
+                sys.exit()
+                break
 
 def getdataPacket(comportObj, head, rbytes=25):
     rdata = comportObj.readBinaryList(rbytes)

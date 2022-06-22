@@ -17,7 +17,6 @@ sys.path.append("../")
 from myLib.mySerial.Connector import Connector
 from myLib.mySerial import getData
 from myLib.crcCalculator import crcLib
-from myLib.myFilter import filter
 import time
 from PyQt5.QtCore import QThread, pyqtSignal
 from myLib import common as cmn
@@ -78,7 +77,6 @@ class vboxReader(QThread):
         self.__portName = portName
         self.__baudRate = baudRate
         self.__isRun = True
-        self.__callBack = None
         self.__crcFail = 0
         self.arrayNum = 10
         self.__debug = debug_en
@@ -128,8 +126,6 @@ class vboxReader(QThread):
         # self.writeImuCmd(2, 4)
         pass
 
-    def setCallback(self, callback):
-        self.__callBack = callback
 
     # End of memsImuReader::setCallback
 

@@ -26,6 +26,7 @@ from myLib.myGui.mygui_serial import *
 import time
 from myLib.mySerial.Connector import Connector
 from myLib.myGui.pig_parameters_widget import pig_parameters_widget
+from myLib.myGui.pig_parameters_widget import CMD_FOG_TIMER_RST
 from myLib.myGui.pig_menu_manager import pig_menu_manager
 from myLib.myGui import analysis_Allan, analysis_TimingPlot
 from PyQt5.QtWidgets import *
@@ -158,7 +159,11 @@ class mainWindow(QMainWindow):
     def resetDataContainer(self):
         return {k: np.empty(0) for k in set(IMU_DATA_STRUCTURE)}
 
+    def resetFPGATimer(self):
+        self.act.writeImuCmd(CMD_FOG_TIMER_RST, 1)
+
     def start(self):
+        self.resetFPGATimer()
         self.act.readIMU()
         self.act.isRun = True
         self.act.start()

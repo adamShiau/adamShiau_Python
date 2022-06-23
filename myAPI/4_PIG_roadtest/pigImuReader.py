@@ -18,6 +18,7 @@ from myLib.mySerial.Connector import Connector
 from myLib.mySerial import getData
 from myLib.crcCalculator import crcLib
 from myLib.myFilter import filter
+from myLib.myNavigation import planar_Navigation
 import time
 from PyQt5.QtCore import QThread, pyqtSignal
 from myLib import common as cmn
@@ -81,10 +82,12 @@ class pigImuReader(QThread):
         imudata_qt = pyqtSignal(object, object)
         imuThreadStop_qt = pyqtSignal()
         buffer_qt = pyqtSignal(int)
+        nav_qt = pyqtSignal(float, float)
 
     def __init__(self, portName: str = "None", boolCaliw=False, boolCalia=False, baudRate: int = 230400,
                  debug_en: bool = 0):
         super(pigImuReader, self).__init__()
+        self.navi = planar_Navigation.planarNav()
         self.vboxdata = None
         self.Vertical_velocity = 0
         self.Velocity = 0
@@ -233,28 +236,13 @@ class pigImuReader(QThread):
         self.__encoder_speed = speed
 
     @property
-    def GPS_sats(self):
-        return self.__GPS_sats
-
-    @GPS_sats.setter
-    def GPS_sats(self, val):
-        self.__GPS_sats = val
-
-    @property
     def Heading(self):
         return self.__Heading
 
     @Heading.setter
     def Heading(self, val):
         self.__Heading = val
-
-    @property
-    def Heading_from_KF(self):
-        return self.__Heading_from_KF
-
-    @Heading_from_KF.setter
-    def Heading_from_KF(self, val):
-        self.__Heading_from_KF = val
+        print('setting initial heading: ', self.Heading)
 
     @property
     def Altitude(self):
@@ -263,6 +251,7 @@ class pigImuReader(QThread):
     @Altitude.setter
     def Altitude(self, val):
         self.__Altitude = val
+        print('setting hei0: ', self.Altitude)
 
     @property
     def Latitude(self):
@@ -271,6 +260,7 @@ class pigImuReader(QThread):
     @Latitude.setter
     def Latitude(self, val):
         self.__Latitude = val
+        print('setting lat0: ', self.Latitude)
 
     @property
     def Longitude(self):
@@ -279,30 +269,7 @@ class pigImuReader(QThread):
     @Longitude.setter
     def Longitude(self, val):
         self.__Longitude = val
-
-    @property
-    def Velocity(self):
-        return self.__Velocity
-
-    @Velocity.setter
-    def Velocity(self, val):
-        self.__Velocity = val
-
-    @property
-    def Vertical_velocity(self):
-        return self.__Vertical_velocity
-
-    @Vertical_velocity.setter
-    def Vertical_velocity(self, val):
-        self.__Vertical_velocity = val
-
-    @property
-    def accz(self):
-        return self.__accz
-
-    @accz.setter
-    def accz(self, val):
-        self.__accz = val
+        print('setting lon0: ', self.Longitude)
 
     @property
     def vboxdata(self):
@@ -339,6 +306,8 @@ class pigImuReader(QThread):
 
     def readIMU(self):
         self.writeImuCmd(2, 1)
+        # self.navi.set_init(lat0=self.Latitude, lon0=self.Longitude, head0=self.Heading, hei0=self.Altitude)
+        self.navi.set_init(lat0=24.898628, lon0=121.156344, head0=self.Heading, hei0=self.Altitude)
 
     def stopIMU(self):
         self.writeImuCmd(2, 4)
@@ -452,7 +421,11 @@ class pigImuReader(QThread):
                 vboxArray['Vertical_velocity'] = np.append(vboxArray['Vertical_velocity'],
                                                            self.vboxdata['Vertical_velocity'])
                 speedArray = np.append(speedArray, self.encoder_speed)
-                # acczArray = np.append(acczArray, self.vboxdata['Accz'])
+                # self.navi.track(t=imudata["TIME"], wz=imudata['PIG_WZ'], speed=self.encoder_speed/3.6,
+                #                 hei=self.vboxdata['Altitude'])
+                lon, lat = self.navi.track(t=imudata["TIME"], wz=imudata['PIG_WZ'], speed=1,
+                                hei=self.vboxdata['Altitude'])
+                self.nav_qt.emit(lon, lat)
 
                 t5 = time.perf_counter()
 

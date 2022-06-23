@@ -45,6 +45,10 @@ class mainWindow(QMainWindow):
 
     def __init__(self, debug_en: bool = False):
         super(mainWindow, self).__init__()
+        self.hei0 = None
+        self.lon0 = None
+        self.lat0 = None
+        self.head0 = None
         self.press_stop = False
         self.resize(1450, 800)
         self.pig_parameter_widget = None
@@ -104,6 +108,7 @@ class mainWindow(QMainWindow):
         # encoder
         self.encoder.speed_qt.connect(self.show_encoder_speed)
         self.vbox.vboxdata_qt.connect(self.show_vbox)
+        self.act.nav_qt.connect(self.plotimuNavi)
 
     def file_name_le_connect(self, obj):
         cmn.print_debug('file name: %s' % obj.text(), PRINT_DEBUG)
@@ -153,13 +158,23 @@ class mainWindow(QMainWindow):
 
     def show_encoder_speed(self, speed):
         self.act.encoder_speed = speed
+        self.top.speed_lb.lb.setText(str(round(speed, 2)))
         pass
 
     def show_vbox(self, vboxdata):
         # print(vboxdata)
         # self.act.accz = vboxdata['Accz']
         self.act.vboxdata = vboxdata
-        pass
+        self.head0 = vboxdata['Heading']
+        self.lat0 = vboxdata['Latitude']
+        self.lon0 = vboxdata['Longitude']
+        self.hei0 = vboxdata['Altitude']
+        self.top.head_lb.lb.setText(str(self.head0))
+        self.top.lat_lb.lb.setText(str(self.lat0))
+        self.top.lon_lb.lb.setText(str(self.lon0))
+        self.top.alt_lb.lb.setText(str(self.hei0))
+        self.plotvboxNavi(self.lon0 , self.lat0)
+
 
     def connect(self):
         is_port_open = self.act.connect(self.__connector, self.__portName, 230400)
@@ -190,16 +205,21 @@ class mainWindow(QMainWindow):
         self.act.writeImuCmd(CMD_FOG_TIMER_RST, 1)
 
     def start(self):
-        self.resetFPGATimer()
-        self.act.readIMU()
-        self.act.isRun = True
-        self.press_stop = False
-        self.act.start()
+        self.act.Heading = self.head0
+        self.act.Latitude = self.lat0
+        self.act.Longitude = self.lon0
+        self.act.Altitude = self.hei0
+
         file_name = self.top.save_block.le_filename.text() + self.top.save_block.le_ext.text()
         self.imudata_file.name = file_name
         self.imudata_file.open(self.top.save_block.rb.isChecked())
         self.imudata_file.write_line('time,fog,wx,wy,wz,ax,ay,az,T,speed,sats,Heading,Heading_KF,Altitude,Latitude,'
                                      'Longitude,Velocity,Vertical_velocity')
+        self.resetFPGATimer()
+        self.act.readIMU()
+        self.act.isRun = True
+        self.press_stop = False
+        self.act.start()
 
     def stop(self):
         self.resetFPGATimer()
@@ -283,11 +303,27 @@ class mainWindow(QMainWindow):
         else:
             self.top.plot1.ax2.clear()
 
-        self.top.plot2.ax.setData(imudata["ADXL_AX"])
-        self.top.plot3.ax.setData(imudata["ADXL_AY"])
-        self.top.plot4.ax.setData(imudata["ADXL_AZ"])
-        self.top.plot5.ax.setData(imudata["NANO33_WX"])
-        self.top.plot6.ax.setData(imudata["NANO33_WY"])
+        # self.top.plot2.ax.setData(imudata["ADXL_AX"])
+        # self.top.plot3.ax.setData(imudata["ADXL_AY"])
+        # self.top.plot4.ax.setData(imudata["ADXL_AZ"])
+        # self.top.plot5.ax.setData(imudata["NANO33_WX"])
+        # self.top.plot6.ax.setData(imudata["NANO33_WY"])
+
+    def plotimuNavi(self, lon, lat):
+        print('imuNavi')
+        lon = [lon]
+        lat = [lat]
+        print(lon)
+        print(lat)
+        self.top.plotrt.ax1.setData(lon, lat)
+
+    def plotvboxNavi(self, lon, lat):
+        print('vboxNavi')
+        lon = [lon]
+        lat = [lat]
+        print(lon)
+        print(lat)
+        self.top.plotrt.ax2.setData(lon, lat)
 
 
 if __name__ == "__main__":

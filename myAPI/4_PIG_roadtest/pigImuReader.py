@@ -242,6 +242,7 @@ class pigImuReader(QThread):
     @Heading.setter
     def Heading(self, val):
         self.__Heading = val
+        self.navi.head0 = self.Heading
         print('setting initial heading: ', self.Heading)
 
     @property

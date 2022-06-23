@@ -13,6 +13,7 @@ logger.info(__name__ + ' logger start')
 
 import numpy as np
 from numpy import sin, cos, arctan2
+import time
 
 radius_a = 6378137
 radius_b = 6356752.3142
@@ -23,7 +24,10 @@ eccenp = ((radius_a ** 2 - radius_b ** 2) / (radius_b ** 2)) ** 0.5
 class planarNav:
 
     def __init__(self):
+        self.is_rate_pass = False
+        self.__head0 = None
         self.t0 = 0
+        self.cnt = 0
 
     def set_init(self, lat0, lon0, hei0, head0):
         self.lat0 = lat0
@@ -70,8 +74,31 @@ class planarNav:
                                      (cos(THE * np.pi / 180)) ** 3))) * 180 / np.pi
         ecef_l = arctan2(ecef_y, ecef_x) * 180 / np.pi  # longitude
 
-        # print(ecef_b, end=', ')
-        # print(ecef_l)
-        # self.t0 = t
-        # print('dt: ', dt)
         return ecef_l, ecef_b
+
+        # if self.is_rate_pass:
+        #     return ecef_l, ecef_b
+        #     self.is_rate_pass = False
+
+
+
+    def output_rate(self, rate):
+        period = 1/rate
+        if (time.perf_counter() - self.cnt) > period:
+            self.is_rate_pass = True
+
+    @property
+    def is_rate_pass(self):
+        return self.__is_rate_pass
+
+    @is_rate_pass.setter
+    def is_rate_pass(self, val):
+        self.__is_rate_pass = val
+
+    @property
+    def head0(self):
+        return self.__head0
+
+    @head0.setter
+    def head0(self, head):
+        self.__head0 = head

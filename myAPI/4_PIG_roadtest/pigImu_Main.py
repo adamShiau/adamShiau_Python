@@ -45,10 +45,15 @@ class mainWindow(QMainWindow):
 
     def __init__(self, debug_en: bool = False):
         super(mainWindow, self).__init__()
+        self.imu_lat = None
+        self.imu_lon = None
+        self.navi_rate = 1
         self.hei0 = None
         self.lon0 = None
         self.lat0 = None
         self.head0 = None
+        self.tcnt0 = 0
+        self.tcnt1 = 0
         self.press_stop = False
         self.resize(1450, 800)
         self.pig_parameter_widget = None
@@ -102,13 +107,15 @@ class mainWindow(QMainWindow):
                                               self.show_plot_data_menu,
                                               self.show_cal_allan_menu
                                               ])
-        # file name le
+        # le
         self.top.save_block.le_filename.editingFinished.connect(
             lambda: self.file_name_le_connect(self.top.save_block.le_filename))
+        self.top.headset_le.le_filename.editingFinished.connect(self.set_heading_angle)
+        self.top.naviRate_le.le_filename.editingFinished.connect(self.navi_rate_le_connect)
         # encoder
         self.encoder.speed_qt.connect(self.show_encoder_speed)
         self.vbox.vboxdata_qt.connect(self.show_vbox)
-        self.act.nav_qt.connect(self.plotimuNavi)
+        self.act.nav_qt.connect(self.collectImuNaviData)
 
     def file_name_le_connect(self, obj):
         cmn.print_debug('file name: %s' % obj.text(), PRINT_DEBUG)
@@ -173,8 +180,13 @@ class mainWindow(QMainWindow):
         self.top.lat_lb.lb.setText(str(self.lat0))
         self.top.lon_lb.lb.setText(str(self.lon0))
         self.top.alt_lb.lb.setText(str(self.hei0))
-        self.plotvboxNavi(self.lon0 , self.lat0)
+        self.plotvboxNavi(self.lon0, self.lat0)
 
+    def set_heading_angle(self):
+        self.act.Heading = float(self.top.headset_le.le_filename.text())
+
+    def navi_rate_le_connect(self):
+        self.navi_rate = float(self.top.naviRate_le.le_filename.text())
 
     def connect(self):
         is_port_open = self.act.connect(self.__connector, self.__portName, 230400)
@@ -205,10 +217,12 @@ class mainWindow(QMainWindow):
         self.act.writeImuCmd(CMD_FOG_TIMER_RST, 1)
 
     def start(self):
+        # set planar navi. init value
         self.act.Heading = self.head0
         self.act.Latitude = self.lat0
         self.act.Longitude = self.lon0
         self.act.Altitude = self.hei0
+        self.top.headset_le.le_filename.setText(str(self.head0))
 
         file_name = self.top.save_block.le_filename.text() + self.top.save_block.le_ext.text()
         self.imudata_file.name = file_name
@@ -236,6 +250,15 @@ class mainWindow(QMainWindow):
     @press_stop.setter
     def press_stop(self, stop):
         self.__stop = stop
+
+    @property
+    def navi_rate(self):
+        return self.__navi_rate
+
+    @navi_rate.setter
+    def navi_rate(self, rate):
+        self.__navi_rate = rate
+
 
     def collectData(self, imudata, vboxdata):
         if not self.press_stop:
@@ -309,12 +332,34 @@ class mainWindow(QMainWindow):
         # self.top.plot5.ax.setData(imudata["NANO33_WX"])
         # self.top.plot6.ax.setData(imudata["NANO33_WY"])
 
+    def collectImuNaviData(self, lon, lat):
+        period = 1/self.navi_rate
+        if (np.abs(time.perf_counter() - self.tcnt0)) > period:
+            self.tcnt0 = time.perf_counter()
+            self.imu_lon = np.append(self.imu_lon, lon)
+            self.imu_lat = np.append(self.imu_lat, lat)
+            lon_array = self.imu_lon
+            lat_array = self.imu_lat
+            size = len(self.imu_lon)
+            if size > 1000:
+                lon_array = self.imu_lon[size - 1000:size + 1]
+                lat_array = self.imu_lat[size - 1000:size + 1]
+            self.plotimuNavi(lon_array, lat_array)
+
+        if self.press_stop:
+            print('stop pressed, reset self.imu_lon and self.imu_lat')
+            self.plotimuNavi(self.imu_lon, self.imu_lat)
+            self.imu_lon = np.empty(0)
+            self.imu_lat = np.empty(0)
+
+
+
+    def collectVboxNaviData(self, lon, lat):
+        pass
+
+
     def plotimuNavi(self, lon, lat):
         print('imuNavi')
-        lon = [lon]
-        lat = [lat]
-        print(lon)
-        print(lat)
         self.top.plotrt.ax1.setData(lon, lat)
 
     def plotvboxNavi(self, lon, lat):

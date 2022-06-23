@@ -53,7 +53,7 @@ class btnLineEditBlock(QGroupBox):
 
 
 class lineEditBlock(QGroupBox):
-    def __init__(self, name="", le_name="parameters_SP9"):
+    def __init__(self, name="", le_name=""):
         super(lineEditBlock, self).__init__()
         self.setTitle(name)
         self.setFont(QFont('Arial', 10))

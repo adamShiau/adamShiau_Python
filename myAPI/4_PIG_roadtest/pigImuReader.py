@@ -1,6 +1,7 @@
 """ ####### log stuff creation, always on the top ########  """
 import builtins
 import logging
+
 if hasattr(builtins, 'LOGGER_NAME'):
     logger_name = builtins.LOGGER_NAME
 else:
@@ -38,6 +39,32 @@ IMU_DATA_STRUCTURE = {
     "TIME": np.zeros(1)
 }
 
+VBOX_DATA_STRUCTURE = {
+    "GPS_sats": np.zeros(1),
+    "Heading": np.zeros(1),
+    "Heading_from_KF": np.zeros(1),
+    "Altitude": np.zeros(1),
+    "Latitude": np.zeros(1),
+    "Longitude": np.zeros(1),
+    "Velocity": np.zeros(1),
+    "Vertical_velocity": np.zeros(1),
+    "Accz": np.zeros(1)
+}
+
+INS_DATA_STRUCTURE = {
+    "NANO33_WX": np.zeros(1),
+    "NANO33_WY": np.zeros(1),
+    "NANO33_WZ": np.zeros(1),
+    "ADXL_AX": np.zeros(1),
+    "ADXL_AY": np.zeros(1),
+    "ADXL_AZ": np.zeros(1),
+    "PIG_ERR": np.zeros(1),
+    "PIG_WZ": np.zeros(1),
+    "PD_TEMP": np.zeros(1),
+    "TIME": np.zeros(1),
+    'SPEED': np.zeros(1)
+}
+
 HEADER_KVH = [0xFE, 0x81, 0xFF, 0x55]
 SENS_ADXL355_8G = 0.0000156
 SENS_NANO33_GYRO_250 = 0.00875
@@ -51,13 +78,24 @@ old = time.perf_counter_ns()
 
 class pigImuReader(QThread):
     if not __name__ == "__main__":
-        imudata_qt = pyqtSignal(object)
+        imudata_qt = pyqtSignal(object, object)
         imuThreadStop_qt = pyqtSignal()
         buffer_qt = pyqtSignal(int)
 
     def __init__(self, portName: str = "None", boolCaliw=False, boolCalia=False, baudRate: int = 230400,
                  debug_en: bool = 0):
         super(pigImuReader, self).__init__()
+        self.vboxdata = None
+        self.Vertical_velocity = 0
+        self.Velocity = 0
+        self.Longitude = 0
+        self.Latitude = 0
+        self.Altitude = 0
+        self.Heading_from_KF = 0
+        self.Heading = 0
+        self.GPS_sats = 0
+        self.accz = 0
+        self.encoder_speed = 0
         self.nano33_wz_kal = filter.kalman_1D()
         self.pig_wz_kal = filter.kalman_1D()
         self.__isCali_a = boolCalia
@@ -186,6 +224,94 @@ class pigImuReader(QThread):
 
     # End of ImuReader::isCali_a(setter)
 
+    @property
+    def encoder_speed(self):
+        return self.__encoder_speed
+
+    @encoder_speed.setter
+    def encoder_speed(self, speed):
+        self.__encoder_speed = speed
+
+    @property
+    def GPS_sats(self):
+        return self.__GPS_sats
+
+    @GPS_sats.setter
+    def GPS_sats(self, val):
+        self.__GPS_sats = val
+
+    @property
+    def Heading(self):
+        return self.__Heading
+
+    @Heading.setter
+    def Heading(self, val):
+        self.__Heading = val
+
+    @property
+    def Heading_from_KF(self):
+        return self.__Heading_from_KF
+
+    @Heading_from_KF.setter
+    def Heading_from_KF(self, val):
+        self.__Heading_from_KF = val
+
+    @property
+    def Altitude(self):
+        return self.__Altitude
+
+    @Altitude.setter
+    def Altitude(self, val):
+        self.__Altitude = val
+
+    @property
+    def Latitude(self):
+        return self.__Latitude
+
+    @Latitude.setter
+    def Latitude(self, val):
+        self.__Latitude = val
+
+    @property
+    def Longitude(self):
+        return self.__Longitude
+
+    @Longitude.setter
+    def Longitude(self, val):
+        self.__Longitude = val
+
+    @property
+    def Velocity(self):
+        return self.__Velocity
+
+    @Velocity.setter
+    def Velocity(self, val):
+        self.__Velocity = val
+
+    @property
+    def Vertical_velocity(self):
+        return self.__Vertical_velocity
+
+    @Vertical_velocity.setter
+    def Vertical_velocity(self, val):
+        self.__Vertical_velocity = val
+
+    @property
+    def accz(self):
+        return self.__accz
+
+    @accz.setter
+    def accz(self, val):
+        self.__accz = val
+
+    @property
+    def vboxdata(self):
+        return self.__vboxdata
+
+    @vboxdata.setter
+    def vboxdata(self, val):
+        self.__vboxdata = val
+
     def writeImuCmd(self, cmd, value):
         if value < 0:
             value = (1 << 32) + value
@@ -233,12 +359,14 @@ class pigImuReader(QThread):
                                                    sf_xlm=SENS_NANO33_AXLM_4G,
                                                    sf_gyro=SENS_NANO33_GYRO_250)
 
-        FPGA_TIME, ERR, STEP, PD_TEMP = cmn.readPIG(dataPacket, EN=1, PRINT=0, sf_a=self.sf_a, sf_b=self.sf_b, POS_TIME=POS_PIG)
+        FPGA_TIME, ERR, STEP, PD_TEMP = cmn.readPIG(dataPacket, EN=1, PRINT=0, sf_a=self.sf_a, sf_b=self.sf_b,
+                                                    POS_TIME=POS_PIG)
         if not self.isCali:
             if self.isKal:
                 NANO_WZ = self.nano33_wz_kal.update(NANO_WZ)
                 STEP = self.pig_wz_kal.update(STEP)
-        t = time.perf_counter()
+        # t = time.perf_counter()
+        t = FPGA_TIME
         imudata = {"NANO33_WX": NANO_WX, "NANO33_WY": NANO_WY, "NANO33_WZ": NANO_WZ,
                    "ADXL_AX": NANO_AX, "ADXL_AY": ADXL_AY, "ADXL_AZ": ADXL_AZ, "TIME": t,
                    "PIG_ERR": ERR, "PIG_WZ": STEP, "PD_TEMP": PD_TEMP
@@ -275,6 +403,11 @@ class pigImuReader(QThread):
             self.__imuoffset = self.do_cali(self.__imuoffset, 100)
 
             imudataArray = {k: np.empty(0) for k in set(IMU_DATA_STRUCTURE)}
+            vboxArray = {k: np.empty(0) for k in set(VBOX_DATA_STRUCTURE)}
+            speedArray = np.empty(0)
+
+            acczArray = np.empty(0)
+            # print(imudataArray)
 
             for i in range(self.arrayNum):
                 input_buf = self.readInputBuffer()
@@ -296,6 +429,7 @@ class pigImuReader(QThread):
                 # end of err correction
                 t4 = time.perf_counter()
                 # imudataArray = cmn.dictOperation(imudataArray, imudata, "APPEND", IMU_DATA_STRUCTURE)
+                # print('act.loop: ', imudataArray["TIME"], imudata["TIME"])
                 imudataArray["TIME"] = np.append(imudataArray["TIME"], imudata["TIME"])
                 imudataArray["ADXL_AX"] = np.append(imudataArray["ADXL_AX"], imudata["ADXL_AX"])
                 imudataArray["ADXL_AY"] = np.append(imudataArray["ADXL_AY"], imudata["ADXL_AY"])
@@ -306,6 +440,20 @@ class pigImuReader(QThread):
                 imudataArray["PIG_ERR"] = np.append(imudataArray["PIG_ERR"], imudata["PIG_ERR"])
                 imudataArray["PIG_WZ"] = np.append(imudataArray["PIG_WZ"], imudata["PIG_WZ"])
                 imudataArray["PD_TEMP"] = np.append(imudataArray["PD_TEMP"], imudata["PD_TEMP"])
+
+                vboxArray['GPS_sats'] = np.append(vboxArray['GPS_sats'], self.vboxdata['GPS_sats'])
+                vboxArray['Heading'] = np.append(vboxArray['Heading'], self.vboxdata['Heading'])
+                vboxArray['Heading_from_KF'] = np.append(vboxArray['Heading_from_KF'], self.vboxdata['Heading_from_KF'])
+                vboxArray['Altitude'] = np.append(vboxArray['Altitude'], self.vboxdata['Altitude'])
+                vboxArray['Latitude'] = np.append(vboxArray['Latitude'], self.vboxdata['Latitude'])
+                vboxArray['Longitude'] = np.append(vboxArray['Longitude'], self.vboxdata['Longitude'])
+                vboxArray['Velocity'] = np.append(vboxArray['Velocity'], self.vboxdata['Velocity'])
+                vboxArray['Accz'] = np.append(vboxArray['Accz'], self.vboxdata['Accz'])
+                vboxArray['Vertical_velocity'] = np.append(vboxArray['Vertical_velocity'],
+                                                           self.vboxdata['Vertical_velocity'])
+                speedArray = np.append(speedArray, self.encoder_speed)
+                # acczArray = np.append(acczArray, self.vboxdata['Accz'])
+
                 t5 = time.perf_counter()
 
                 debug_info = "ACT: ," + str(input_buf) + ", " + str(round((t5 - t1) * 1000, 5)) + ", " \
@@ -315,16 +463,17 @@ class pigImuReader(QThread):
 
             # end of for loop
 
-            imudataArray["TIME"] = imudataArray["TIME"] - t0
+            # imudataArray["TIME"] = imudataArray["TIME"] - t0
 
             self.offset_setting(self.__imuoffset)
             imudataArray = cmn.dictOperation(imudataArray, self.__imuoffset, "SUB", IMU_DATA_STRUCTURE)
-
+            imudataArray['SPEED'] = speedArray
+            # imudataArray['Accz'] = acczArray
             if self.__callBack is not None:
                 self.__callBack(imudataArray)
-
+            # print('act', imudataArray)
             if not __name__ == "__main__":
-                self.imudata_qt.emit(imudataArray)
+                self.imudata_qt.emit(imudataArray, vboxArray)
             # print(imudataArray)
 
         # end of while loop

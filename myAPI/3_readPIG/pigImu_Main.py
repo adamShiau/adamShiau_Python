@@ -35,7 +35,7 @@ from pigImuReader import pigImuReader as ACTION
 from pigImuReader import IMU_DATA_STRUCTURE
 import numpy as np
 
-PRINT_DEBUG = 1
+PRINT_DEBUG = 0
 
 
 class mainWindow(QMainWindow):
@@ -43,6 +43,7 @@ class mainWindow(QMainWindow):
 
     def __init__(self, debug_en: bool = False):
         super(mainWindow, self).__init__()
+        self.press_stop = False
         self.resize(1450, 800)
         self.pig_parameter_widget = None
         self.__portName = None
@@ -166,6 +167,7 @@ class mainWindow(QMainWindow):
         self.resetFPGATimer()
         self.act.readIMU()
         self.act.isRun = True
+        self.press_stop = False
         self.act.start()
         file_name = self.top.save_block.le_filename.text() + self.top.save_block.le_ext.text()
         self.imudata_file.name = file_name
@@ -173,52 +175,65 @@ class mainWindow(QMainWindow):
         self.imudata_file.write_line('time,fog,wx,wy,wz,ax,ay,az,T')
 
     def stop(self):
+        self.resetFPGATimer()
         self.act.isRun = False
         self.top.save_block.rb.setChecked(False)
         self.imudata_file.close()
+        self.press_stop = True
+        print('press stop')
+
+    @property
+    def press_stop(self):
+        return self.__stop
+
+    @press_stop.setter
+    def press_stop(self, stop):
+        self.__stop = stop
 
     def collectData(self, imudata):
-        input_buf = self.act.readInputBuffer()
-        t0 = time.perf_counter()
-        # imudata = cmn.dictOperation(imudata, imuoffset, "SUB", IMU_DATA_STRUCTURE)
-        self.printPdTemperature(imudata["PD_TEMP"][0])
-        t1 = time.perf_counter()
-        # self.imudata = cmn.dictOperation(self.imudata, imudata, "APPEND", IMU_DATA_STRUCTURE)
-        self.imudata["TIME"] = np.append(self.imudata["TIME"], imudata["TIME"])
-        self.imudata["ADXL_AX"] = np.append(self.imudata["ADXL_AX"], imudata["ADXL_AX"])
-        self.imudata["ADXL_AY"] = np.append(self.imudata["ADXL_AY"], imudata["ADXL_AY"])
-        self.imudata["ADXL_AZ"] = np.append(self.imudata["ADXL_AZ"], imudata["ADXL_AZ"])
-        self.imudata["NANO33_WX"] = np.append(self.imudata["NANO33_WX"], imudata["NANO33_WX"])
-        self.imudata["NANO33_WY"] = np.append(self.imudata["NANO33_WY"], imudata["NANO33_WY"])
-        self.imudata["NANO33_WZ"] = np.append(self.imudata["NANO33_WZ"], imudata["NANO33_WZ"])
-        self.imudata["PIG_WZ"] = np.append(self.imudata["PIG_WZ"], imudata["PIG_WZ"])
-        self.imudata["PD_TEMP"] = np.append(self.imudata["PD_TEMP"], imudata["PD_TEMP"])
-        # print(len(self.imudata["TIME"]), end=", ")
-        if len(self.imudata["TIME"]) > 1000:
-            self.imudata["TIME"] = self.imudata["TIME"][self.act.arrayNum:self.act.arrayNum + 1000]
-            self.imudata["ADXL_AX"] = self.imudata["ADXL_AX"][self.act.arrayNum:self.act.arrayNum + 1000]
-            self.imudata["ADXL_AY"] = self.imudata["ADXL_AY"][self.act.arrayNum:self.act.arrayNum + 1000]
-            self.imudata["ADXL_AZ"] = self.imudata["ADXL_AZ"][self.act.arrayNum:self.act.arrayNum + 1000]
-            self.imudata["NANO33_WX"] = self.imudata["NANO33_WX"][self.act.arrayNum:self.act.arrayNum + 1000]
-            self.imudata["NANO33_WY"] = self.imudata["NANO33_WY"][self.act.arrayNum:self.act.arrayNum + 1000]
-            self.imudata["NANO33_WZ"] = self.imudata["NANO33_WZ"][self.act.arrayNum:self.act.arrayNum + 1000]
-            self.imudata["PIG_WZ"] = self.imudata["PIG_WZ"][self.act.arrayNum:self.act.arrayNum + 1000]
-            self.imudata["PD_TEMP"] = self.imudata["PD_TEMP"][self.act.arrayNum:self.act.arrayNum + 1000]
-        t2 = time.perf_counter()
-        debug_info = "MAIN: ," + str(input_buf) + ", " + str(round((t2 - t0) * 1000, 5)) + ", " \
-                     + str(round((t1 - t0) * 1000, 5)) + ", " + str(round((t2 - t1) * 1000, 5))
-        cmn.print_debug(debug_info, self.__debug)
-        # print(imudata["PIG_WZ"])
-        datalist = [imudata["TIME"], imudata["PIG_WZ"], imudata["NANO33_WX"], imudata["NANO33_WY"], imudata["NANO33_WZ"]
-            , imudata["ADXL_AX"], imudata["ADXL_AY"], imudata["ADXL_AZ"], imudata["PD_TEMP"]]
-        data_fmt = "%.5f,%.5f,%.5f,%.5f,%.5f,%.5f,%.5f,%.5f,%.1f"
-        self.imudata_file.saveData(datalist, data_fmt)
-        self.plotdata(self.imudata)
-        self.printUpdateRate(self.imudata["TIME"])
-        # print(len(self.imudata["TIME"]))
+        if not self.press_stop:
+            # print('collectData: ', imudata['TIME'])
+            input_buf = self.act.readInputBuffer()
+            t0 = time.perf_counter()
+            # imudata = cmn.dictOperation(imudata, imuoffset, "SUB", IMU_DATA_STRUCTURE)
+            self.printPdTemperature(imudata["PD_TEMP"][0])
+            t1 = time.perf_counter()
+            # self.imudata = cmn.dictOperation(self.imudata, imudata, "APPEND", IMU_DATA_STRUCTURE)
+            self.imudata["TIME"] = np.append(self.imudata["TIME"], imudata["TIME"])
+            self.imudata["ADXL_AX"] = np.append(self.imudata["ADXL_AX"], imudata["ADXL_AX"])
+            self.imudata["ADXL_AY"] = np.append(self.imudata["ADXL_AY"], imudata["ADXL_AY"])
+            self.imudata["ADXL_AZ"] = np.append(self.imudata["ADXL_AZ"], imudata["ADXL_AZ"])
+            self.imudata["NANO33_WX"] = np.append(self.imudata["NANO33_WX"], imudata["NANO33_WX"])
+            self.imudata["NANO33_WY"] = np.append(self.imudata["NANO33_WY"], imudata["NANO33_WY"])
+            self.imudata["NANO33_WZ"] = np.append(self.imudata["NANO33_WZ"], imudata["NANO33_WZ"])
+            self.imudata["PIG_WZ"] = np.append(self.imudata["PIG_WZ"], imudata["PIG_WZ"])
+            self.imudata["PD_TEMP"] = np.append(self.imudata["PD_TEMP"], imudata["PD_TEMP"])
+            # print(len(self.imudata["TIME"]), end=", ")
+            if len(self.imudata["TIME"]) > 1000:
+                self.imudata["TIME"] = self.imudata["TIME"][self.act.arrayNum:self.act.arrayNum + 1000]
+                self.imudata["ADXL_AX"] = self.imudata["ADXL_AX"][self.act.arrayNum:self.act.arrayNum + 1000]
+                self.imudata["ADXL_AY"] = self.imudata["ADXL_AY"][self.act.arrayNum:self.act.arrayNum + 1000]
+                self.imudata["ADXL_AZ"] = self.imudata["ADXL_AZ"][self.act.arrayNum:self.act.arrayNum + 1000]
+                self.imudata["NANO33_WX"] = self.imudata["NANO33_WX"][self.act.arrayNum:self.act.arrayNum + 1000]
+                self.imudata["NANO33_WY"] = self.imudata["NANO33_WY"][self.act.arrayNum:self.act.arrayNum + 1000]
+                self.imudata["NANO33_WZ"] = self.imudata["NANO33_WZ"][self.act.arrayNum:self.act.arrayNum + 1000]
+                self.imudata["PIG_WZ"] = self.imudata["PIG_WZ"][self.act.arrayNum:self.act.arrayNum + 1000]
+                self.imudata["PD_TEMP"] = self.imudata["PD_TEMP"][self.act.arrayNum:self.act.arrayNum + 1000]
+            t2 = time.perf_counter()
+            debug_info = "MAIN: ," + str(input_buf) + ", " + str(round((t2 - t0) * 1000, 5)) + ", " \
+                         + str(round((t1 - t0) * 1000, 5)) + ", " + str(round((t2 - t1) * 1000, 5))
+            cmn.print_debug(debug_info, self.__debug)
+            # print(imudata["PIG_WZ"])
+            datalist = [imudata["TIME"], imudata["PIG_WZ"], imudata["NANO33_WX"], imudata["NANO33_WY"], imudata["NANO33_WZ"]
+                , imudata["ADXL_AX"], imudata["ADXL_AY"], imudata["ADXL_AZ"], imudata["PD_TEMP"]]
+            data_fmt = "%.5f,%.5f,%.5f,%.5f,%.5f,%.5f,%.5f,%.5f,%.1f"
+            self.imudata_file.saveData(datalist, data_fmt)
+            self.plotdata(self.imudata)
+            self.printUpdateRate(self.imudata["TIME"])
+            # print(len(self.imudata["TIME"]))
 
     def plotdata(self, imudata):
-
+        # print('plotdata: ', imudata['TIME'])
         if self.top.plot1_unit_rb.btn_status == 'dph':
             factor = 3600
         else:

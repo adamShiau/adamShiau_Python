@@ -238,7 +238,8 @@ class pigImuReader(QThread):
             if self.isKal:
                 NANO_WZ = self.nano33_wz_kal.update(NANO_WZ)
                 STEP = self.pig_wz_kal.update(STEP)
-        t = time.perf_counter()
+        # t = time.perf_counter()
+        t = FPGA_TIME
         imudata = {"NANO33_WX": NANO_WX, "NANO33_WY": NANO_WY, "NANO33_WZ": NANO_WZ,
                    "ADXL_AX": NANO_AX, "ADXL_AY": ADXL_AY, "ADXL_AZ": ADXL_AZ, "TIME": t,
                    "PIG_ERR": ERR, "PIG_WZ": STEP, "PD_TEMP": PD_TEMP
@@ -296,6 +297,7 @@ class pigImuReader(QThread):
                 # end of err correction
                 t4 = time.perf_counter()
                 # imudataArray = cmn.dictOperation(imudataArray, imudata, "APPEND", IMU_DATA_STRUCTURE)
+                # print('act.loop: ', imudataArray["TIME"], imudata["TIME"])
                 imudataArray["TIME"] = np.append(imudataArray["TIME"], imudata["TIME"])
                 imudataArray["ADXL_AX"] = np.append(imudataArray["ADXL_AX"], imudata["ADXL_AX"])
                 imudataArray["ADXL_AY"] = np.append(imudataArray["ADXL_AY"], imudata["ADXL_AY"])
@@ -315,11 +317,10 @@ class pigImuReader(QThread):
 
             # end of for loop
 
-            imudataArray["TIME"] = imudataArray["TIME"] - t0
+            # imudataArray["TIME"] = imudataArray["TIME"] - t0
 
             self.offset_setting(self.__imuoffset)
             imudataArray = cmn.dictOperation(imudataArray, self.__imuoffset, "SUB", IMU_DATA_STRUCTURE)
-
             if self.__callBack is not None:
                 self.__callBack(imudataArray)
 

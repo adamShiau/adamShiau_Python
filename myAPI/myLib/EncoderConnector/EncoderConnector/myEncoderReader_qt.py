@@ -1,14 +1,15 @@
 import sys
-
-sys.path.append("../../../")
-# from myLib.EncoderConnector.EncoderConnector import myEncoderConnector
-from EncoderConnector import myEncoderConnector
+sys.path.append('../../../')
+# from EncoderConnector import myEncoderConnector
+from myLib.EncoderConnector.EncoderConnector import myEncoderConnector
+from PyQt5.QtCore import QThread, pyqtSignal
 
 import time
 from threading import Thread
 
 
-class myEncoderReader(Thread):
+class myEncoderReader(QThread):
+    speed_qt = pyqtSignal(object)
     """
     Description:
     ===============================================================
@@ -40,7 +41,7 @@ class myEncoderReader(Thread):
         """
         super().__init__()
 
-        self.__m_oEncoderConnector = myEncoderConnector(strIP, iPort)
+        self.__m_oEncoderConnector = myEncoderConnector.myEncoderConnector(strIP, iPort)
         self.__m_fUpdateTime = fUpdateTime
         self.__m_isRun = True
         self.__m_oCallBacker = None
@@ -131,6 +132,7 @@ class myEncoderReader(Thread):
                 dctStatus["EncoderSpeed"] = fEncoderSpeed
                 dctStatus["VehicleSpeed"] = fVehicleSpeed
                 dctStatus["VehicleAcceleration"] = fVehicleAcceleration
+                self.speed_qt.emit(fVehicleSpeed)
                 if not self.__m_oCallBacker is None:
                     self.__m_oCallBacker(dctStatus)
                 # End of if-condition

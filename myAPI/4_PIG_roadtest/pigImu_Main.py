@@ -26,15 +26,18 @@ from myLib.myGui.mygui_serial import *
 import time
 from myLib.mySerial.Connector import Connector
 from myLib.myGui.pig_parameters_widget import pig_parameters_widget
+from myLib.myGui.pig_parameters_widget import CMD_FOG_TIMER_RST
 from myLib.myGui.pig_menu_manager import pig_menu_manager
 from myLib.myGui import analysis_Allan, analysis_TimingPlot
 from PyQt5.QtWidgets import *
 from pigImu_Widget import pigImuWidget as TOP
 from pigImuReader import pigImuReader as ACTION
-from pigImuReader import IMU_DATA_STRUCTURE
+from pigImuReader import IMU_DATA_STRUCTURE, INS_DATA_STRUCTURE
 import numpy as np
+from myLib.EncoderConnector.EncoderConnector import myEncoderReader_qt
+import vboxReader
 
-PRINT_DEBUG = 1
+PRINT_DEBUG = 0
 
 
 class mainWindow(QMainWindow):
@@ -42,14 +45,18 @@ class mainWindow(QMainWindow):
 
     def __init__(self, debug_en: bool = False):
         super(mainWindow, self).__init__()
+        self.press_stop = False
         self.resize(1450, 800)
         self.pig_parameter_widget = None
         self.__portName = None
         self.setWindowTitle("Aegiverse IMU GUI")
         self.__connector = Connector()
+        self.__connector_vbox = Connector()
         self.__isFileOpen = False
         self.top = TOP()
         self.act = ACTION()
+        self.encoder = myEncoderReader_qt.myEncoderReader()
+        self.vbox = vboxReader.vboxReader()
         self.imudata_file = cmn.data_manager(fnum=0)
         self.pig_cali_menu = calibrationBlock()
         self.act.isCali = True
@@ -94,7 +101,9 @@ class mainWindow(QMainWindow):
         # file name le
         self.top.save_block.le_filename.editingFinished.connect(
             lambda: self.file_name_le_connect(self.top.save_block.le_filename))
-
+        # encoder
+        self.encoder.speed_qt.connect(self.show_encoder_speed)
+        self.vbox.vboxdata_qt.connect(self.show_vbox)
 
     def file_name_le_connect(self, obj):
         cmn.print_debug('file name: %s' % obj.text(), PRINT_DEBUG)
@@ -142,78 +151,124 @@ class mainWindow(QMainWindow):
         self.pig_menu.setEnable(open)
         self.top.setBtnEnable(open)
 
+    def show_encoder_speed(self, speed):
+        self.act.encoder_speed = speed
+        pass
+
+    def show_vbox(self, vboxdata):
+        # print(vboxdata)
+        # self.act.accz = vboxdata['Accz']
+        self.act.vboxdata = vboxdata
+        pass
+
     def connect(self):
         is_port_open = self.act.connect(self.__connector, self.__portName, 230400)
         self.is_port_open_qt.emit(is_port_open)
         self.pig_parameter_widget = pig_parameters_widget(self.act, self.top.para_block.le_filename.text() + '.json')
         self.act.isCali_w, self.act.isCali_a = self.pig_cali_menu.cali_status()  # update calibration flag to act
+        self.encoder.connectServer()
+        self.vbox.connect(self.__connector_vbox, 'COM11', 115200)
+        self.encoder.isRun = True
+        self.vbox.isRun = True
+        self.encoder.start()
+        self.vbox.start()
 
     def disconnect(self):
         is_port_open = self.act.disconnect()
         self.is_port_open_qt.emit(is_port_open)
+        self.vbox.isRun = False
+        # self.encoder.isRun = False
 
     def imuThreadStopDetect(self):
         self.imudata = self.resetDataContainer()
 
     def resetDataContainer(self):
-        return {k: np.empty(0) for k in set(IMU_DATA_STRUCTURE)}
+        # return {k: np.empty(0) for k in set(IMU_DATA_STRUCTURE)}
+        return {k: np.empty(0) for k in set(INS_DATA_STRUCTURE)}
+
+    def resetFPGATimer(self):
+        self.act.writeImuCmd(CMD_FOG_TIMER_RST, 1)
 
     def start(self):
+        self.resetFPGATimer()
         self.act.readIMU()
         self.act.isRun = True
+        self.press_stop = False
         self.act.start()
         file_name = self.top.save_block.le_filename.text() + self.top.save_block.le_ext.text()
         self.imudata_file.name = file_name
         self.imudata_file.open(self.top.save_block.rb.isChecked())
-        self.imudata_file.write_line('time,fog,wx,wy,wz,ax,ay,az,T')
+        self.imudata_file.write_line('time,fog,wx,wy,wz,ax,ay,az,T,speed,sats,Heading,Heading_KF,Altitude,Latitude,'
+                                     'Longitude,Velocity,Vertical_velocity')
 
     def stop(self):
+        self.resetFPGATimer()
         self.act.isRun = False
         self.top.save_block.rb.setChecked(False)
         self.imudata_file.close()
+        self.press_stop = True
+        print('press stop')
 
-    def collectData(self, imudata):
-        input_buf = self.act.readInputBuffer()
-        t0 = time.perf_counter()
-        # imudata = cmn.dictOperation(imudata, imuoffset, "SUB", IMU_DATA_STRUCTURE)
-        self.printPdTemperature(imudata["PD_TEMP"][0])
-        t1 = time.perf_counter()
-        # self.imudata = cmn.dictOperation(self.imudata, imudata, "APPEND", IMU_DATA_STRUCTURE)
-        self.imudata["TIME"] = np.append(self.imudata["TIME"], imudata["TIME"])
-        self.imudata["ADXL_AX"] = np.append(self.imudata["ADXL_AX"], imudata["ADXL_AX"])
-        self.imudata["ADXL_AY"] = np.append(self.imudata["ADXL_AY"], imudata["ADXL_AY"])
-        self.imudata["ADXL_AZ"] = np.append(self.imudata["ADXL_AZ"], imudata["ADXL_AZ"])
-        self.imudata["NANO33_WX"] = np.append(self.imudata["NANO33_WX"], imudata["NANO33_WX"])
-        self.imudata["NANO33_WY"] = np.append(self.imudata["NANO33_WY"], imudata["NANO33_WY"])
-        self.imudata["NANO33_WZ"] = np.append(self.imudata["NANO33_WZ"], imudata["NANO33_WZ"])
-        self.imudata["PIG_WZ"] = np.append(self.imudata["PIG_WZ"], imudata["PIG_WZ"])
-        self.imudata["PD_TEMP"] = np.append(self.imudata["PD_TEMP"], imudata["PD_TEMP"])
-        # print(len(self.imudata["TIME"]), end=", ")
-        if len(self.imudata["TIME"]) > 1000:
-            self.imudata["TIME"] = self.imudata["TIME"][self.act.arrayNum:self.act.arrayNum + 1000]
-            self.imudata["ADXL_AX"] = self.imudata["ADXL_AX"][self.act.arrayNum:self.act.arrayNum + 1000]
-            self.imudata["ADXL_AY"] = self.imudata["ADXL_AY"][self.act.arrayNum:self.act.arrayNum + 1000]
-            self.imudata["ADXL_AZ"] = self.imudata["ADXL_AZ"][self.act.arrayNum:self.act.arrayNum + 1000]
-            self.imudata["NANO33_WX"] = self.imudata["NANO33_WX"][self.act.arrayNum:self.act.arrayNum + 1000]
-            self.imudata["NANO33_WY"] = self.imudata["NANO33_WY"][self.act.arrayNum:self.act.arrayNum + 1000]
-            self.imudata["NANO33_WZ"] = self.imudata["NANO33_WZ"][self.act.arrayNum:self.act.arrayNum + 1000]
-            self.imudata["PIG_WZ"] = self.imudata["PIG_WZ"][self.act.arrayNum:self.act.arrayNum + 1000]
-            self.imudata["PD_TEMP"] = self.imudata["PD_TEMP"][self.act.arrayNum:self.act.arrayNum + 1000]
-        t2 = time.perf_counter()
-        debug_info = "MAIN: ," + str(input_buf) + ", " + str(round((t2 - t0) * 1000, 5)) + ", " \
-                     + str(round((t1 - t0) * 1000, 5)) + ", " + str(round((t2 - t1) * 1000, 5))
-        cmn.print_debug(debug_info, self.__debug)
-        # print(imudata["PIG_WZ"])
-        datalist = [imudata["TIME"], imudata["PIG_WZ"], imudata["NANO33_WX"], imudata["NANO33_WY"], imudata["NANO33_WZ"]
-            , imudata["ADXL_AX"], imudata["ADXL_AY"], imudata["ADXL_AZ"], imudata["PD_TEMP"]]
-        data_fmt = "%.5f,%.5f,%.5f,%.5f,%.5f,%.5f,%.5f,%.5f,%.1f"
-        self.imudata_file.saveData(datalist, data_fmt)
-        self.plotdata(self.imudata)
-        self.printUpdateRate(self.imudata["TIME"])
-        # print(len(self.imudata["TIME"]))
+    @property
+    def press_stop(self):
+        return self.__stop
+
+    @press_stop.setter
+    def press_stop(self, stop):
+        self.__stop = stop
+
+    def collectData(self, imudata, vboxdata):
+        if not self.press_stop:
+            # print('collectData: ', vboxdata)
+            input_buf = self.act.readInputBuffer()
+            t0 = time.perf_counter()
+            # imudata = cmn.dictOperation(imudata, imuoffset, "SUB", IMU_DATA_STRUCTURE)
+            self.printPdTemperature(imudata["PD_TEMP"][0])
+            t1 = time.perf_counter()
+            # self.imudata = cmn.dictOperation(self.imudata, imudata, "APPEND", IMU_DATA_STRUCTURE)
+            self.imudata["TIME"] = np.append(self.imudata["TIME"], imudata["TIME"])
+            self.imudata["ADXL_AX"] = np.append(self.imudata["ADXL_AX"], imudata["ADXL_AX"])
+            self.imudata["ADXL_AY"] = np.append(self.imudata["ADXL_AY"], imudata["ADXL_AY"])
+            self.imudata["ADXL_AZ"] = np.append(self.imudata["ADXL_AZ"], imudata["ADXL_AZ"])
+            self.imudata["NANO33_WX"] = np.append(self.imudata["NANO33_WX"], imudata["NANO33_WX"])
+            self.imudata["NANO33_WY"] = np.append(self.imudata["NANO33_WY"], imudata["NANO33_WY"])
+            self.imudata["NANO33_WZ"] = np.append(self.imudata["NANO33_WZ"], imudata["NANO33_WZ"])
+            self.imudata["PIG_WZ"] = np.append(self.imudata["PIG_WZ"], imudata["PIG_WZ"])
+            self.imudata["PD_TEMP"] = np.append(self.imudata["PD_TEMP"], imudata["PD_TEMP"])
+            self.imudata["SPEED"] = np.append(self.imudata["SPEED"], imudata["SPEED"])
+            # print(len(self.imudata["TIME"]), end=", ")
+            if len(self.imudata["TIME"]) > 1000:
+                self.imudata["TIME"] = self.imudata["TIME"][self.act.arrayNum:self.act.arrayNum + 1000]
+                self.imudata["ADXL_AX"] = self.imudata["ADXL_AX"][self.act.arrayNum:self.act.arrayNum + 1000]
+                self.imudata["ADXL_AY"] = self.imudata["ADXL_AY"][self.act.arrayNum:self.act.arrayNum + 1000]
+                self.imudata["ADXL_AZ"] = self.imudata["ADXL_AZ"][self.act.arrayNum:self.act.arrayNum + 1000]
+                self.imudata["NANO33_WX"] = self.imudata["NANO33_WX"][self.act.arrayNum:self.act.arrayNum + 1000]
+                self.imudata["NANO33_WY"] = self.imudata["NANO33_WY"][self.act.arrayNum:self.act.arrayNum + 1000]
+                self.imudata["NANO33_WZ"] = self.imudata["NANO33_WZ"][self.act.arrayNum:self.act.arrayNum + 1000]
+                self.imudata["PIG_WZ"] = self.imudata["PIG_WZ"][self.act.arrayNum:self.act.arrayNum + 1000]
+                self.imudata["PD_TEMP"] = self.imudata["PD_TEMP"][self.act.arrayNum:self.act.arrayNum + 1000]
+                self.imudata["SPEED"] = self.imudata["SPEED"][self.act.arrayNum:self.act.arrayNum + 1000]
+            t2 = time.perf_counter()
+            debug_info = "MAIN: ," + str(input_buf) + ", " + str(round((t2 - t0) * 1000, 5)) + ", " \
+                         + str(round((t1 - t0) * 1000, 5)) + ", " + str(round((t2 - t1) * 1000, 5))
+            cmn.print_debug(debug_info, self.__debug)
+            # print(imudata["PIG_WZ"])
+            datalist = [imudata["TIME"], imudata["PIG_WZ"], imudata["NANO33_WX"], imudata["NANO33_WY"],
+                        imudata["NANO33_WZ"], imudata["ADXL_AX"], imudata["ADXL_AY"], imudata["ADXL_AZ"],
+                        imudata["PD_TEMP"], imudata["SPEED"],
+                        vboxdata['GPS_sats'], vboxdata['Heading'], vboxdata['Heading_from_KF'], vboxdata['Altitude'],
+                        vboxdata['Latitude'], vboxdata['Longitude'], vboxdata['Velocity'],
+                        vboxdata['Vertical_velocity']]
+            data_fmt = "%.5f,%.5f,%.5f,%.5f,%.5f,%.5f,%.5f,%.5f,%.1f"
+            speed_fmt = ',%.6f,'
+            vbox_fmt = '%d,%.2f,%.2f,%.2f,%.7f,%.7f,%.3f,%.3f'
+            self.imudata_file.saveData(datalist, data_fmt + speed_fmt + vbox_fmt)
+            self.plotdata(self.imudata)
+            self.printUpdateRate(self.imudata["TIME"])
+            # print(len(self.imudata["TIME"]))
 
     def plotdata(self, imudata):
-
+        # print('plotdata: ', imudata['TIME'])
         if self.top.plot1_unit_rb.btn_status == 'dph':
             factor = 3600
         else:

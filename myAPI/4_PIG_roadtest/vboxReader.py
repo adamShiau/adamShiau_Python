@@ -33,7 +33,8 @@ VBOX_DATA_STRUCTURE = {
     "Latitude": np.zeros(1),
     "Longitude": np.zeros(1),
     "Velocity": np.zeros(1),
-    "Vertical_velocity": np.zeros(1)
+    "Vertical_velocity": np.zeros(1),
+    "Accz": np.zeros(1)
 }
 
 HEADER_VBOX_TEXT = ['$', 'V', 'B', '3', 'i', 's', '$']
@@ -76,9 +77,9 @@ class vboxReader(QThread):
         self.__Connector = None
         self.__portName = portName
         self.__baudRate = baudRate
-        self.__isRun = True
+        self.isRun = False
         self.__crcFail = 0
-        self.arrayNum = 10
+        self.arrayNum = 1
         self.__debug = debug_en
         self.__old_imudata = {k: (-1,) * len(VBOX_DATA_STRUCTURE.get(k)) for k in set(VBOX_DATA_STRUCTURE)}
         self.__imuoffset = {k: np.zeros(1) for k in set(VBOX_DATA_STRUCTURE)}
@@ -142,7 +143,7 @@ class vboxReader(QThread):
                                          POS_Vertical_velocity, EN=1, PRINT=0)
         vboxdata = {"GPS_sats": GPS_sats, "Heading": Heading, "Heading_from_KF": Heading_from_KF,
                     "Altitude": Altitude, "Latitude": Latitude, "Longitude": Longitude, "Velocity": Velocity,
-                    "Vertical_velocity": Vertical_velocity, "accz": accz
+                    "Vertical_velocity": Vertical_velocity, "Accz": accz
                     }
         return dataPacket, vboxdata
 

@@ -45,8 +45,10 @@ class mainWindow(QMainWindow):
 
     def __init__(self, debug_en: bool = False):
         super(mainWindow, self).__init__()
-        self.imu_lat = None
-        self.imu_lon = None
+        self.vbox_lon = np.empty(0)
+        self.vbox_lat = np.empty(0)
+        self.imu_lat = np.empty(0)
+        self.imu_lon = np.empty(0)
         self.navi_rate = 1
         self.hei0 = None
         self.lon0 = None
@@ -180,7 +182,7 @@ class mainWindow(QMainWindow):
         self.top.lat_lb.lb.setText(str(self.lat0))
         self.top.lon_lb.lb.setText(str(self.lon0))
         self.top.alt_lb.lb.setText(str(self.hei0))
-        self.plotvboxNavi(self.lon0, self.lat0)
+        self.collectVboxNaviData(self.lon0, self.lat0)
 
     def set_heading_angle(self):
         self.act.Heading = float(self.top.headset_le.le_filename.text())
@@ -193,6 +195,8 @@ class mainWindow(QMainWindow):
         self.is_port_open_qt.emit(is_port_open)
         self.pig_parameter_widget = pig_parameters_widget(self.act, self.top.para_block.le_filename.text() + '.json')
         self.act.isCali_w, self.act.isCali_a = self.pig_cali_menu.cali_status()  # update calibration flag to act
+        print('main.connect.isCali_w: ', self.act.isCali_w)
+        print('main.connect.isCali_a: ', self.act.isCali_a)
         self.encoder.connectServer()
         self.vbox.connect(self.__connector_vbox, 'COM11', 115200)
         self.encoder.isRun = True
@@ -223,6 +227,11 @@ class mainWindow(QMainWindow):
         self.act.Longitude = self.lon0
         self.act.Altitude = self.hei0
         self.top.headset_le.le_filename.setText(str(self.head0))
+        #  reset Navi. plot variable
+        self.imu_lon = np.empty(0)
+        self.imu_lat = np.empty(0)
+        self.vbox_lon = np.empty(0)
+        self.vbox_lat = np.empty(0)
 
         file_name = self.top.save_block.le_filename.text() + self.top.save_block.le_ext.text()
         self.imudata_file.name = file_name
@@ -242,6 +251,9 @@ class mainWindow(QMainWindow):
         self.imudata_file.close()
         self.press_stop = True
         print('press stop')
+        # send the stored data to plot Navi. before clear
+        self.plotimuNavi(self.imu_lon, self.imu_lat)
+        self.plotvboxNavi(self.vbox_lon, self.vbox_lat)
 
     @property
     def press_stop(self):
@@ -258,7 +270,6 @@ class mainWindow(QMainWindow):
     @navi_rate.setter
     def navi_rate(self, rate):
         self.__navi_rate = rate
-
 
     def collectData(self, imudata, vboxdata):
         if not self.press_stop:
@@ -316,7 +327,6 @@ class mainWindow(QMainWindow):
             factor = 3600
         else:
             factor = 1
-
         if self.top.plot1_showWz_cb.cb_1.isChecked():
             self.top.plot1.ax1.setData(imudata["TIME"], imudata["PIG_WZ"] * factor)
         else:
@@ -333,7 +343,7 @@ class mainWindow(QMainWindow):
         # self.top.plot6.ax.setData(imudata["NANO33_WY"])
 
     def collectImuNaviData(self, lon, lat):
-        period = 1/self.navi_rate
+        period = 1 / self.navi_rate
         if (np.abs(time.perf_counter() - self.tcnt0)) > period:
             self.tcnt0 = time.perf_counter()
             self.imu_lon = np.append(self.imu_lon, lon)
@@ -344,31 +354,42 @@ class mainWindow(QMainWindow):
             if size > 1000:
                 lon_array = self.imu_lon[size - 1000:size + 1]
                 lat_array = self.imu_lat[size - 1000:size + 1]
-            self.plotimuNavi(lon_array, lat_array)
-
-        if self.press_stop:
-            print('stop pressed, reset self.imu_lon and self.imu_lat')
-            self.plotimuNavi(self.imu_lon, self.imu_lat)
-            self.imu_lon = np.empty(0)
-            self.imu_lat = np.empty(0)
-
+            if not self.press_stop:
+                self.plotimuNavi(lon_array, lat_array)
 
 
     def collectVboxNaviData(self, lon, lat):
-        pass
-
+        period = 1 / self.navi_rate
+        if (np.abs(time.perf_counter() - self.tcnt1)) > period:
+            self.tcnt1 = time.perf_counter()
+            self.vbox_lon = np.append(self.vbox_lon, lon)
+            self.vbox_lat = np.append(self.vbox_lat, lat)
+            lon_array = self.vbox_lon
+            lat_array = self.vbox_lat
+            size = len(self.vbox_lat)
+            if size > 1000:
+                lon_array = self.vbox_lon[size - 1000:size + 1]
+                lat_array = self.vbox_lat[size - 1000:size + 1]
+            if not self.press_stop:
+                self.plotvboxNavi(lon_array, lat_array)
 
     def plotimuNavi(self, lon, lat):
-        print('imuNavi')
+        # print('imuNavi')
+        # print(len(lon))
+        # print(len(lat))
+        # self.top.plotrt.ax1.clear()
         self.top.plotrt.ax1.setData(lon, lat)
 
+
     def plotvboxNavi(self, lon, lat):
-        print('vboxNavi')
-        lon = [lon]
-        lat = [lat]
-        print(lon)
-        print(lat)
+        # print('vboxNavi')
+        # print(len(lon))
+        # print(len(lat))
+        # print(lon)
+        # print(lat)
+        # self.top.plotrt.ax2.clear()
         self.top.plotrt.ax2.setData(lon, lat)
+        # self.top.plotrt.ax2.setData([100,101,101.2,101.3,101.4], [10,10.1,10.2,10.3,10.4])
 
 
 if __name__ == "__main__":

@@ -31,6 +31,7 @@ import matplotlib.pyplot as plt
 
 class analysis_allan_widget(QWidget):
     def __init__(self, key_item=['fog', 'wx', 'wy', 'wz']):
+        # logging.basicConfig(level=100)
         super(analysis_allan_widget, self).__init__()
         self.tau0 = 1
         self.tauArray = None
@@ -178,7 +179,10 @@ class analysis_allan_widget(QWidget):
             ax.text(0.8, 0.7, 'bias stability: ' + str(round(bias, 2)) + '$^\circ$/hr', ha='left', va='center',
                     transform=ax.transAxes,
                     color='k')
-        idx_arw = np.where((tau-1) < 0.005)[0][0]
+
+        idx_arw = np.where(np.abs(tau-1) < 0.005)[0][0]
+        # print('tau-1: ', tau - 1)
+        # print('idx_arw: ', idx_arw)
         x = np.log10(tau[0:idx_arw + 1])
         y = np.log10(dev[0:idx_arw + 1])
         a, b = np.polyfit(x, y, 1)

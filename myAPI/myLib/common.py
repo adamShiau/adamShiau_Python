@@ -142,10 +142,13 @@ def readADXL355(dataPacket, dataLen=3, POS_AX=4, EN=1, sf=1.0, PRINT=0):
 
 # End of ImuConnector::readADXL355
 
-def readVBOX(dataPacket, POS_GPS_SATS, POS_Z_accel, POS_Time, POS_Heading, POS_Heading_from_KF,
-                     POS_Altitude, POS_Latitude, POS_Longitude, POS_Velocity, POS_Vertical_velocity, EN=1, PRINT=0):
+def readVBOX(dataPacket, POS_GPS_SATS, POS_GLONASS_SATS, POS_BeiDou_SATS, POS_Z_accel, POS_Time, POS_Heading,
+             POS_Heading_from_KF,
+             POS_Altitude, POS_Latitude, POS_Longitude, POS_Velocity, POS_Vertical_velocity, EN=1, PRINT=0):
     if EN:
         GPS_sats = dataPacket[POS_GPS_SATS]
+        GPS_sats_glo = dataPacket[POS_GLONASS_SATS]
+        GPS_sats_bei = dataPacket[POS_BeiDou_SATS]
         temp_Z_accel = dataPacket[POS_Z_accel:POS_Z_accel + 2]
         temp_Time = dataPacket[POS_Time:POS_Time + 3]
         temp_Heading = dataPacket[POS_Heading:POS_Heading + 2]
@@ -172,6 +175,8 @@ def readVBOX(dataPacket, POS_GPS_SATS, POS_Z_accel, POS_Time, POS_Heading, POS_H
 
     if PRINT:
         print('GPS_sats: ', GPS_sats)
+        print('GPS_sats_glo: ', GPS_sats_glo)
+        print('GPS_sats_bei: ', GPS_sats_bei)
         print('Time: ', Time)
         print('Z_accel: ', Z_accel)
         print('Heading: ', Heading)
@@ -183,7 +188,8 @@ def readVBOX(dataPacket, POS_GPS_SATS, POS_Z_accel, POS_Time, POS_Heading, POS_H
         print('Vertical_velocity: ', Vertical_velocity)
     # End of if-condition
 
-    return GPS_sats, Heading, Heading_from_KF, Altitude, Latitude, Longitude, Velocity, Vertical_velocity, Z_accel
+    return (GPS_sats, GPS_sats_glo, GPS_sats_bei, Heading, Heading_from_KF, Altitude, Latitude, Longitude, Velocity, \
+            Vertical_velocity, Z_accel)
 
 
 # End of ImuConnector::readADXL355

@@ -58,6 +58,10 @@ class planarNav:
 
     def track(self, t, wz, speed, hei):
         dt = round((t - self.t0), 3)
+        self.t0 = t
+        # print('dt:', dt)
+        # print('wz:', wz)
+        # print('speed:', speed)
         self.theta_w = self.theta_w - wz * dt  # accumulate theta in w-frame
         self.x_w = self.x_w + speed * np.sin(self.theta_w * np.pi / 180) * dt  # x in w-frame
         self.y_w = self.y_w + speed * np.cos(self.theta_w * np.pi / 180) * dt  # y in w-frame

@@ -127,7 +127,6 @@ class vboxReader(QThread):
         # self.writeImuCmd(2, 4)
         pass
 
-
     # End of memsImuReader::setCallback
 
     def getVboxData(self):
@@ -135,16 +134,18 @@ class vboxReader(QThread):
         dataPacket = getData.getdataPacket(self.__Connector, head, 66)
         # print('dataPacket: ', dataPacket)
         # print('\nbuf: ', self.readInputBuffer())
-
-        GPS_sats, Heading, Heading_from_KF, Altitude, \
+        GPS_sats, GPS_sats_glo, GPS_sats_bei, Heading, Heading_from_KF, Altitude, \
         Latitude, Longitude, Velocity, \
-        Vertical_velocity, accz = cmn.readVBOX(dataPacket, POS_GPS_SATS, POS_Z_accel, POS_Time, POS_Heading,
-                                         POS_Heading_from_KF, POS_Altitude, POS_Latitude, POS_Longitude, POS_Velocity,
-                                         POS_Vertical_velocity, EN=1, PRINT=0)
+        Vertical_velocity, accz = cmn.readVBOX(dataPacket, POS_GPS_SATS, POS_GLONASS_SATS, POS_BeiDou_SATS, POS_Z_accel,
+                                               POS_Time, POS_Heading,
+                                               POS_Heading_from_KF, POS_Altitude, POS_Latitude, POS_Longitude,
+                                               POS_Velocity,
+                                               POS_Vertical_velocity, EN=1, PRINT=0)
         vboxdata = {"GPS_sats": GPS_sats, "Heading": Heading, "Heading_from_KF": Heading_from_KF,
                     "Altitude": Altitude, "Latitude": Latitude, "Longitude": Longitude, "Velocity": Velocity,
                     "Vertical_velocity": Vertical_velocity, "Accz": accz
                     }
+        print('vbox.getVboxData, GPS_sats: ', GPS_sats, GPS_sats_glo, GPS_sats_bei, accz)
         return dataPacket, vboxdata
 
     def readInputBuffer(self):
@@ -180,17 +181,6 @@ class vboxReader(QThread):
                 # end of err correction
                 t4 = time.perf_counter()
                 # print(vboxdata)
-                # imudataArray = cmn.dictOperation(imudataArray, imudata, "APPEND", IMU_DATA_STRUCTURE)
-                # imudataArray["TIME"] = np.append(imudataArray["TIME"], imudata["TIME"])
-                # imudataArray["ADXL_AX"] = np.append(imudataArray["ADXL_AX"], imudata["ADXL_AX"])
-                # imudataArray["ADXL_AY"] = np.append(imudataArray["ADXL_AY"], imudata["ADXL_AY"])
-                # imudataArray["ADXL_AZ"] = np.append(imudataArray["ADXL_AZ"], imudata["ADXL_AZ"])
-                # imudataArray["NANO33_WX"] = np.append(imudataArray["NANO33_WX"], imudata["NANO33_WX"])
-                # imudataArray["NANO33_WY"] = np.append(imudataArray["NANO33_WY"], imudata["NANO33_WY"])
-                # imudataArray["NANO33_WZ"] = np.append(imudataArray["NANO33_WZ"], imudata["NANO33_WZ"])
-                # imudataArray["PIG_ERR"] = np.append(imudataArray["PIG_ERR"], imudata["PIG_ERR"])
-                # imudataArray["PIG_WZ"] = np.append(imudataArray["PIG_WZ"], imudata["PIG_WZ"])
-                # imudataArray["PD_TEMP"] = np.append(imudataArray["PD_TEMP"], imudata["PD_TEMP"])
                 t5 = time.perf_counter()
 
                 debug_info = "ACT: ," + str(input_buf) + ", " + str(round((t5 - t1) * 1000, 5)) + ", " \

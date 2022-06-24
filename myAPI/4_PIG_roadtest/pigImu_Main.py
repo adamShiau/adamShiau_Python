@@ -73,9 +73,12 @@ class mainWindow(QMainWindow):
         self.act.isCali = True
         self.menu = self.menuBar()
         self.pig_menu = pig_menu_manager(self.menu, self)
+        # alan_fmt = 'time,fog,wx,wy,wz,ax,ay,az,T,speed,sats,Heading,Heading_KF,Altitude,Latitude,'
+        #                              'Longitude,Velocity,Vertical_velocity'
         self.analysis_allan = analysis_Allan.analysis_allan_widget(['fog', 'wx', 'wy', 'wz'])
         self.analysis_timing_plot = analysis_TimingPlot.analysis_timing_plot_widget(
-            ['fog', 'wx', 'wy', 'wz', 'ax', 'ay', 'az'])
+            ['fog', 'wx', 'wy', 'wz', 'ax', 'ay', 'az', 'T', 'speed', 'sats', 'Heading', 'Heading_KF', 'Altitude',
+             'Latitude', 'Longitude', 'Velocity', 'Vertical_velocity'])
         self.linkfunction()
         self.act.arrayNum = 10
         self.mainUI()
@@ -174,14 +177,17 @@ class mainWindow(QMainWindow):
         # print(vboxdata)
         # self.act.accz = vboxdata['Accz']
         self.act.vboxdata = vboxdata
-        self.head0 = vboxdata['Heading']
+        # self.head0 = vboxdata['Heading']
+        self.head0 = vboxdata['Heading_from_KF']
         self.lat0 = vboxdata['Latitude']
         self.lon0 = vboxdata['Longitude']
         self.hei0 = vboxdata['Altitude']
+        sats = vboxdata['GPS_sats']
         self.top.head_lb.lb.setText(str(self.head0))
         self.top.lat_lb.lb.setText(str(self.lat0))
         self.top.lon_lb.lb.setText(str(self.lon0))
         self.top.alt_lb.lb.setText(str(self.hei0))
+        self.top.sat_lb.lb.setText(str(int(sats)))
         self.collectVboxNaviData(self.lon0, self.lat0)
 
     def set_heading_angle(self):
@@ -357,7 +363,6 @@ class mainWindow(QMainWindow):
             if not self.press_stop:
                 self.plotimuNavi(lon_array, lat_array)
 
-
     def collectVboxNaviData(self, lon, lat):
         period = 1 / self.navi_rate
         if (np.abs(time.perf_counter() - self.tcnt1)) > period:
@@ -377,9 +382,11 @@ class mainWindow(QMainWindow):
         # print('imuNavi')
         # print(len(lon))
         # print(len(lat))
-        # self.top.plotrt.ax1.clear()
-        self.top.plotrt.ax1.setData(lon, lat)
-
+        if self.top.plot2_showTrack_cb.cb_1.isChecked():
+            self.top.plotrt.ax1.clear()
+            self.top.plotrt.ax1.setData(lon, lat)
+        else:
+            self.top.plotrt.ax1.clear()
 
     def plotvboxNavi(self, lon, lat):
         # print('vboxNavi')
@@ -387,9 +394,11 @@ class mainWindow(QMainWindow):
         # print(len(lat))
         # print(lon)
         # print(lat)
-        # self.top.plotrt.ax2.clear()
-        self.top.plotrt.ax2.setData(lon, lat)
-        # self.top.plotrt.ax2.setData([100,101,101.2,101.3,101.4], [10,10.1,10.2,10.3,10.4])
+        if self.top.plot2_showTrack_cb.cb_1.isChecked():
+            self.top.plotrt.ax2.clear()
+            self.top.plotrt.ax2.setData(lon, lat)
+        else:
+            self.top.plotrt.ax2.clear()
 
 
 if __name__ == "__main__":

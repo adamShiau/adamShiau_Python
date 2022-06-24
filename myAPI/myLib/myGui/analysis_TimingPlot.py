@@ -136,6 +136,37 @@ class analysis_timing_plot_widget(QWidget):
         elif name == 'az':
             ax.set_title('az')
             ax.set_ylabel('g')
+        elif name == 'T':
+            ax.set_title('PD Temperature')
+            ax.set_ylabel('$^\circ$C')
+        elif name == 'speed':
+            ax.set_title('Encoder Speed')
+            ax.set_ylabel('km/h')
+        elif name == 'sats':
+            ax.set_title('Vbox satellites')
+            ax.set_ylabel('satellites number')
+        elif name == 'Heading':
+            ax.set_title('Vbox Heading')
+            ax.set_ylabel('degree')
+        elif name == 'Heading_KF':
+            ax.set_title('Vbox Heading derived from KF')
+            ax.set_ylabel('degree')
+        elif name == 'Altitude':
+            ax.set_title('Vbox Altitude')
+            ax.set_ylabel('m')
+        elif name == 'Latitude':
+            ax.set_title('Vbox Latitude')
+            ax.set_ylabel('degree')
+        elif name == 'Longitude':
+            ax.set_title('Vbox Longitude')
+            ax.set_ylabel('degree')
+        elif name == 'Velocity':
+            ax.set_title('Vbox Velocity')
+            ax.set_ylabel('km/h')
+        elif name == 'Vertical_velocity':
+            ax.set_title('Vbox Vertical_velocity')
+            ax.set_ylabel('m/s')
+
         ax.xaxis.label.set_size(14)
         ax.yaxis.label.set_size(14)
         # ax.text(0.9, 0.9, 'matplotlib', ha='center', va='center', transform=ax.transAxes, color='blue')

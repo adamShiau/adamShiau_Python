@@ -141,11 +141,12 @@ class vboxReader(QThread):
                                                POS_Heading_from_KF, POS_Altitude, POS_Latitude, POS_Longitude,
                                                POS_Velocity,
                                                POS_Vertical_velocity, EN=1, PRINT=0)
-        vboxdata = {"GPS_sats": GPS_sats, "Heading": Heading, "Heading_from_KF": Heading_from_KF,
+        vboxdata = {"GPS_sats": GPS_sats+GPS_sats_glo+GPS_sats_bei, "Heading": Heading, "Heading_from_KF": Heading_from_KF,
                     "Altitude": Altitude, "Latitude": Latitude, "Longitude": Longitude, "Velocity": Velocity,
                     "Vertical_velocity": Vertical_velocity, "Accz": accz
                     }
-        print('vbox.getVboxData, GPS_sats: ', GPS_sats, GPS_sats_glo, GPS_sats_bei, accz)
+        # print('vbox.getVboxData, GPS_sats: ', GPS_sats+GPS_sats_glo+GPS_sats_bei)
+        # print(Heading, Heading_from_KF)
         return dataPacket, vboxdata
 
     def readInputBuffer(self):

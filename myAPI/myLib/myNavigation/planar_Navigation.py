@@ -33,7 +33,7 @@ class planarNav:
         self.lat0 = lat0
         self.lon0 = lon0
         self.hei0 = hei0
-        self.head0 = head0 * np.pi / 180
+        self.head0 = head0
         self.theta_w = 0
         self.x_w = 0
         self.y_w = 0
@@ -65,9 +65,9 @@ class planarNav:
         self.theta_w = self.theta_w - wz * dt  # accumulate theta in w-frame
         self.x_w = self.x_w + speed * np.sin(self.theta_w * np.pi / 180) * dt  # x in w-frame
         self.y_w = self.y_w + speed * np.cos(self.theta_w * np.pi / 180) * dt  # y in w-frame
-        x_l = self.x_w * np.cos(self.head0) - self.y_w * np.sin(self.head0)  # x in l-frame
-        y_l = self.x_w * np.sin(self.head0) + self.y_w * np.cos(self.head0)  # y in l-frame
-        enu_xyz = np.array([[x_l], [y_l], [hei - self.hei0]])  # l-frame enu coordinate
+        x_l = self.x_w * np.cos(self.head0 * np.pi / 180) - self.y_w * np.sin(self.head0 * np.pi / 180)  # x in l-frame
+        y_l = self.x_w * np.sin(self.head0 * np.pi / 180) + self.y_w * np.cos(self.head0 * np.pi / 180)  # y in l-frame
+        enu_xyz = np.array([[x_l], [y_l], [hei - self.hei0]])  # l-frame ENU coordinate
         Vec_ecef_xyz = self.Vec_ecef_xyz0 + self.Rn2e.dot(enu_xyz)  # ECEF coordinate
         ecef_x = Vec_ecef_xyz[0]
         ecef_y = Vec_ecef_xyz[1]

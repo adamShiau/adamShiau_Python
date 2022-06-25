@@ -394,7 +394,7 @@ class mainWindow(QMainWindow):
         # print(len(lat))
         # print(lon)
         # print(lat)
-        if self.top.plot2_showTrack_cb.cb_1.isChecked():
+        if self.top.plot2_showTrack_cb.cb_2.isChecked():
             self.top.plotrt.ax2.clear()
             self.top.plotrt.ax2.setData(lon, lat)
         else:

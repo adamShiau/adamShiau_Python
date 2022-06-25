@@ -72,14 +72,14 @@ class pgGraph_1(QMainWindow):
 
 
 class pgGraph_1_2(QMainWindow):
-    def __init__(self, color1="w", color2="w", title="add title"):
+    def __init__(self, color1="w", color2="w", width1=1, width2=1, title="add title"):
         super(pgGraph_1_2, self).__init__()
 
         win = pg.GraphicsLayoutWidget()
         # win.setBackground((100, 10, 34))
         win.setBackground('k')
-        pen1 = pg.mkPen(color=color1, width=1)
-        pen2 = pg.mkPen(color=color2, width=1)
+        pen1 = pg.mkPen(color=color1, width=width1)
+        pen2 = pg.mkPen(color=color2, width=width2)
         self.p = win.addPlot(title=title)
         # print(type(win))
         # print(type(self.p))

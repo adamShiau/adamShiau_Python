@@ -51,7 +51,7 @@ class pigImuWidget(QWidget):
         self.plot1_unit_rb = radioButtonBlock_2('Unit', 'dph', 'dps')
         self.plot2_showTrack_cb = checkBoxBlock_2('Show Track', 'imu', 'gps')
         self.plot1 = pgGraph_1_2(color1="w", color2="r", title="FOG_WZ VS MEMS_WZ")
-        self.plotrt = pgGraph_1_2(color1="w", color2="r", title="IMU VS GPS Track")
+        self.plotrt = pgGraph_1_2(color1="w", color2="r", width1=3, width2=3, title="IMU VS GPS Track")
         # self.plot2 = pgGraph_1(color=(255, 0, 0), title="MEMS_AX [g]")
         # self.plot3 = pgGraph_1(color=(255, 0, 0), title="MEMS_AY [g]")
         # self.plot4 = pgGraph_1(color=(255, 0, 0), title="MEMS_AZ [g]")

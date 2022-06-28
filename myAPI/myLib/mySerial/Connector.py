@@ -21,7 +21,7 @@ import myLib.common as cmn
 PRINT_DEBUG = 0
 
 class Connector:
-    def __init__(self, portName: str = "COM7", baudRate: int = 230400) -> None:
+    def __init__(self, portName: str = "COM11", baudRate: int = 115200) -> None:
         # self.portlist = None
         self.__portName = portName
         self.__baudRate = baudRate
@@ -155,7 +155,7 @@ class Connector:
 if __name__ == "__main__":
     print("running Connector.py")
     old_time = time.perf_counter_ns()
-    ser = Connector("COM11", 115200)
+    ser = Connector("COM4", 115200)
     ser.connect()
     ser.flushInputBuffer()
 

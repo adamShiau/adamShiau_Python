@@ -106,3 +106,11 @@ class planarNav:
     @head0.setter
     def head0(self, head):
         self.__head0 = head
+
+    @property
+    def t0(self):
+        return self.__t0
+
+    @t0.setter
+    def t0(self, t0):
+        self.__t0 = t0

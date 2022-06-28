@@ -155,6 +155,7 @@ class vboxReader(QThread):
     def run(self):
         logging.basicConfig(level=100)
         t0 = time.perf_counter()
+        # print('vbox run')
         while True:
             if not self.isRun:
                 self.stopIMU()
@@ -174,6 +175,7 @@ class vboxReader(QThread):
                 t1 = time.perf_counter()
 
                 dataPacket, vboxdata = self.getVboxData()
+                # print(dataPacket)
                 t2 = time.perf_counter()
                 isCrcFail = crcLib.isCrc16_vbox_Fail(dataPacket, len(dataPacket))
                 t3 = time.perf_counter()
@@ -225,7 +227,7 @@ if __name__ == "__main__":
     ser = Connector()
     myImu = vboxReader(debug_en=False)
     myImu.arrayNum = 1
-    myImu.setCallback(myCallBack)
+    # myImu.setCallback(myCallBack)
     myImu.connect(ser, "COM11", baudRate=115200)
     myImu.readIMU()
     myImu.isRun = True

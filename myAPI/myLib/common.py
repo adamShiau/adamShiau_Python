@@ -362,6 +362,9 @@ class data_hub_manager:
     def switch_df_data(self):
         return self.df_data[self.key]
 
+    def manual_access_data(self, key):
+        return self.df_data[key]
+
     @property
     def key(self):
         return self.__key

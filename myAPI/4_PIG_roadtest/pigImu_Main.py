@@ -78,7 +78,7 @@ class mainWindow(QMainWindow):
         self.analysis_allan = analysis_Allan.analysis_allan_widget(['fog', 'wx', 'wy', 'wz'])
         self.analysis_timing_plot = analysis_TimingPlot.analysis_timing_plot_widget(
             ['fog', 'wx', 'wy', 'wz', 'ax', 'ay', 'az', 'T', 'speed', 'sats', 'Heading', 'Heading_KF', 'Altitude',
-             'Latitude', 'Longitude', 'Velocity', 'Vertical_velocity'])
+             'Latitude', 'Longitude', 'Velocity', 'Vertical_velocity', 'plot_track'])
         self.linkfunction()
         self.act.arrayNum = 10
         self.mainUI()
@@ -178,7 +178,7 @@ class mainWindow(QMainWindow):
         # self.act.accz = vboxdata['Accz']
         self.act.vboxdata = vboxdata
         # self.head0 = vboxdata['Heading']
-        self.head0 = vboxdata['Heading_from_KF']
+        self.head0 = -vboxdata['Heading_from_KF']
         self.lat0 = vboxdata['Latitude']
         self.lon0 = vboxdata['Longitude']
         self.hei0 = vboxdata['Altitude']
@@ -192,7 +192,6 @@ class mainWindow(QMainWindow):
 
     def set_heading_angle(self):
         self.act.Heading = float(self.top.headset_le.le_filename.text())
-
     def navi_rate_le_connect(self):
         self.navi_rate = float(self.top.naviRate_le.le_filename.text())
 
@@ -204,7 +203,7 @@ class mainWindow(QMainWindow):
         print('main.connect.isCali_w: ', self.act.isCali_w)
         print('main.connect.isCali_a: ', self.act.isCali_a)
         self.encoder.connectServer()
-        self.vbox.connect(self.__connector_vbox, 'COM11', 115200)
+        self.vbox.connect(self.__connector_vbox, 'COM4', 115200)
         self.encoder.isRun = True
         self.vbox.isRun = True
         self.encoder.start()
@@ -367,8 +366,10 @@ class mainWindow(QMainWindow):
         period = 1 / self.navi_rate
         if (np.abs(time.perf_counter() - self.tcnt1)) > period:
             self.tcnt1 = time.perf_counter()
-            self.vbox_lon = np.append(self.vbox_lon, lon)
-            self.vbox_lat = np.append(self.vbox_lat, lat)
+            # print( lon != 0 and lat != 0)
+            if lon != 0 and lat != 0:
+                self.vbox_lon = np.append(self.vbox_lon, lon)
+                self.vbox_lat = np.append(self.vbox_lat, lat)
             lon_array = self.vbox_lon
             lat_array = self.vbox_lat
             size = len(self.vbox_lat)

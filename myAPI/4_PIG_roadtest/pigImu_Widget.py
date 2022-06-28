@@ -75,7 +75,7 @@ class pigImuWidget(QWidget):
         layout.addWidget(self.plot1_unit_rb, 1, 0, 1, 2)
         layout.addWidget(self.speed_lb, 2, 10, 1, 2)
         layout.addWidget(self.head_lb, 2, 12, 1, 2)
-        layout.addWidget(self.sat_lb, 2, 17, 1, 1)
+        layout.addWidget(self.sat_lb, 2, 17, 1, 2)
         layout.addWidget(self.headset_le, 1, 8, 1, 2)
         layout.addWidget(self.naviRate_le, 0, 8, 1, 2)
         layout.addWidget(self.alt_lb, 2, 14, 1, 3)

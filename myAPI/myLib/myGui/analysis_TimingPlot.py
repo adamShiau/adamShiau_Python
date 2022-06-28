@@ -31,8 +31,10 @@ import matplotlib.pyplot as plt
 
 
 class analysis_timing_plot_widget(QWidget):
-    def __init__(self, key_item=['fog', 'wx', 'wy', 'wz', 'ax', 'ay', 'az']):
+    def __init__(self, key_item=['fog', 'wx', 'wy', 'wz', 'ax', 'ay', 'az', 'T', 'speed', 'sats', 'Heading', 'Heading_KF', 'Altitude',
+             'Latitude', 'Longitude', 'Velocity', 'Vertical_velocity', 'plot_track']):
         super(analysis_timing_plot_widget, self).__init__()
+        self.__plot_mode = None
         self.data = None
         self.setWindowTitle('Plot Timing Data')
         self.cb = myComboBox.comboGroup_1('select data', 'select')
@@ -64,12 +66,26 @@ class analysis_timing_plot_widget(QWidget):
         self.setLayout(layout)
 
     def linkfunction(self):
-        self.cb.getText_connect(self.datahub.connect_combobox)
-        # self.read_bt.clicked.connect(self.readData)
+        # self.cb.getText_connect(self.datahub.connect_combobox)
+        self.cb.getText_connect(self.cb_connect)
         self.cal_bt.clicked.connect(self.plot)
         self.pbar.data_qt.connect(self.store_data)
         self.pbar.is_load_done_qt.connect(self.set_is_load_done_connect)
         self.cb.default_Item_qt.connect(self.set_default_key)
+
+    def cb_connect(self, obj):
+        if obj.currentText() == 'plot_track':
+            self.plot_mode = 'plot_track'
+        else:
+            self.datahub.connect_combobox(obj)
+    
+    @property
+    def plot_mode(self):
+        return self.__plot_mode
+    
+    @plot_mode.setter
+    def plot_mode(self, mode):
+        self.__plot_mode = mode
 
     def set_is_load_done_connect(self, done):
         self.cal_bt.setEnabled(done)
@@ -103,15 +119,30 @@ class analysis_timing_plot_widget(QWidget):
         self.datahub.store_df_data(data)
 
     def plot(self):
-        x = self.__time
-        y = self.datahub.switch_df_data()
-        self.timing_plot.ax.clear()
-        self.timing_plot.ax.plot(x, y)
-        self.timing_plot.ax.set_xlabel('time(s)')
-        self.timing_plot.ax.grid(True)
+        if self.plot_mode == 'plot_track':
+            x = self.datahub.manual_access_data('Latitude')
+            y = self.datahub.manual_access_data('Longitude')
+            # print(self.datahub.manual_access_data('Heading_KF'))
+            # print(self.datahub.manual_access_data('Heading'))
+            self.timing_plot.ax.clear()
+            self.timing_plot.ax.plot(x, y)
+            self.timing_plot.ax.set_title('track')
+            self.timing_plot.ax.set_xlabel('Latitude')
+            self.timing_plot.ax.set_ylabel('Longitude')
+            self.timing_plot.ax.grid(True)
 
-        self.plot_control(self.timing_plot.ax, y)
-        self.timing_plot.fig.canvas.draw()
+            self.timing_plot.fig.canvas.draw()
+            self.plot_mode = None
+        else:
+            x = self.__time
+            y = self.datahub.switch_df_data()
+            self.timing_plot.ax.clear()
+            self.timing_plot.ax.plot(x, y)
+            self.timing_plot.ax.set_xlabel('time(s)')
+            self.timing_plot.ax.grid(True)
+
+            self.plot_control(self.timing_plot.ax, y)
+            self.timing_plot.fig.canvas.draw()
 
     def plot_control(self, ax, y):
         name = y.name

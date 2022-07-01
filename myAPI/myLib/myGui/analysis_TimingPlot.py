@@ -120,8 +120,8 @@ class analysis_timing_plot_widget(QWidget):
 
     def plot(self):
         if self.plot_mode == 'plot_track':
-            x = self.datahub.manual_access_data('Latitude')
-            y = self.datahub.manual_access_data('Longitude')
+            x = self.datahub.manual_access_data('Longitude')
+            y = self.datahub.manual_access_data('Latitude')
             # print(self.datahub.manual_access_data('Heading_KF'))
             # print(self.datahub.manual_access_data('Heading'))
             self.timing_plot.ax.clear()

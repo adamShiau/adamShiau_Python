@@ -56,6 +56,7 @@ class mainWindow(QMainWindow):
         self.head0 = None
         self.tcnt0 = 0
         self.tcnt1 = 0
+        self.tcnt2 = 0
         self.press_stop = False
         self.resize(1450, 800)
         self.pig_parameter_widget = None
@@ -170,7 +171,9 @@ class mainWindow(QMainWindow):
 
     def show_encoder_speed(self, speed):
         self.act.encoder_speed = speed
-        self.top.speed_lb.lb.setText(str(round(speed, 2)))
+        if (time.perf_counter() - self.tcnt2) > 0.1:
+            self.top.speed_lb.lb.setText(str(round(speed, 2)))
+            self.tcnt2 = time.perf_counter()
         pass
 
     def show_vbox(self, vboxdata):
@@ -178,7 +181,7 @@ class mainWindow(QMainWindow):
         # self.act.accz = vboxdata['Accz']
         self.act.vboxdata = vboxdata
         # self.head0 = vboxdata['Heading']
-        self.head0 = -vboxdata['Heading_from_KF']
+        self.head0 = round(-vboxdata['Heading_from_KF']+360, 2)
         self.lat0 = vboxdata['Latitude']
         self.lon0 = vboxdata['Longitude']
         self.hei0 = vboxdata['Altitude']
@@ -192,6 +195,7 @@ class mainWindow(QMainWindow):
 
     def set_heading_angle(self):
         self.act.Heading = float(self.top.headset_le.le_filename.text())
+
     def navi_rate_le_connect(self):
         self.navi_rate = float(self.top.naviRate_le.le_filename.text())
 
@@ -202,8 +206,8 @@ class mainWindow(QMainWindow):
         self.act.isCali_w, self.act.isCali_a = self.pig_cali_menu.cali_status()  # update calibration flag to act
         print('main.connect.isCali_w: ', self.act.isCali_w)
         print('main.connect.isCali_a: ', self.act.isCali_a)
+        self.vbox.connect(self.__connector_vbox, 'COM11', 115200)
         self.encoder.connectServer()
-        self.vbox.connect(self.__connector_vbox, 'COM4', 115200)
         self.encoder.isRun = True
         self.vbox.isRun = True
         self.encoder.start()

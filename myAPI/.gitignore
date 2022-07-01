@@ -15,3 +15,7 @@ xref-*
 *.exe
 *.spec
 *.rar
+
+#google earth
+*.kml
+*.qgz

@@ -14,6 +14,7 @@ logger.info(__name__ + ' logger start')
 import numpy as np
 from numpy import sin, cos, arctan2
 import time
+from myLib.myFilter import filter
 
 radius_a = 6378137
 radius_b = 6356752.3142
@@ -23,11 +24,14 @@ eccenp = ((radius_a ** 2 - radius_b ** 2) / (radius_b ** 2)) ** 0.5
 
 class planarNav:
 
-    def __init__(self):
+    def __init__(self, kalman_filter=False):
         self.is_rate_pass = False
         self.__head0 = None
         self.t0 = 0
         self.cnt = 0
+        self.kal = filter.kalman_1D()
+        self.__kal_en = kalman_filter
+        self.wz_array = np.empty(0)
 
     def set_init(self, lat0, lon0, hei0, head0):
         self.lat0 = lat0
@@ -37,7 +41,6 @@ class planarNav:
         self.theta_w = 0
         self.x_w = 0
         self.y_w = 0
-
 
         RN = radius_a / (1 - (eccen ** 2) * ((sin(self.lat0 * np.pi / 180)) ** 2)) ** 0.5
         ecef_x0 = (RN + hei0) * cos(lat0 * np.pi / 180) * cos(lon0 * np.pi / 180)
@@ -62,6 +65,9 @@ class planarNav:
         # print('dt:', dt)
         # print('wz:', wz)
         # print('speed:', speed)
+        if self.__kal_en:
+            wz = self.kal.update(wz)
+        self.wz_array = np.append(self.wz_array, wz)
         self.theta_w = self.theta_w - wz * dt  # accumulate theta in w-frame
         self.x_w = self.x_w + speed * np.sin(self.theta_w * np.pi / 180) * dt  # x in w-frame
         self.y_w = self.y_w + speed * np.cos(self.theta_w * np.pi / 180) * dt  # y in w-frame
@@ -75,7 +81,7 @@ class planarNav:
         THE = arctan2((ecef_z * radius_a), (((ecef_x ** 2 + ecef_y ** 2) ** 0.5) * radius_b)) * 180 / np.pi
         ecef_b = arctan2((ecef_z + (eccenp ** 2) * radius_b * ((sin(THE * np.pi / 180)) ** 3)),  # latitude
                          ((ecef_x ** 2 + ecef_y ** 2) ** 0.5 - (eccen ** 2) * radius_a * (
-                                     (cos(THE * np.pi / 180)) ** 3))) * 180 / np.pi
+                                 (cos(THE * np.pi / 180)) ** 3))) * 180 / np.pi
         ecef_l = arctan2(ecef_y, ecef_x) * 180 / np.pi  # longitude
 
         return ecef_l, ecef_b
@@ -84,10 +90,11 @@ class planarNav:
         #     return ecef_l, ecef_b
         #     self.is_rate_pass = False
 
-
+    def yaw_gyro_return(self):
+        return self.wz_array
 
     def output_rate(self, rate):
-        period = 1/rate
+        period = 1 / rate
         if (time.perf_counter() - self.cnt) > period:
             self.is_rate_pass = True
 

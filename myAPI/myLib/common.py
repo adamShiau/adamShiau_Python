@@ -142,6 +142,36 @@ def readADXL355(dataPacket, dataLen=3, POS_AX=4, EN=1, sf=1.0, PRINT=0):
 
 # End of ImuConnector::readADXL355
 
+def readGPS(dataPacket, POS_data, EN=1, PRINT=0):
+    if EN:
+        temp_date = dataPacket[POS_data:POS_data + 2]
+        temp_time = dataPacket[POS_data + 2:POS_data + 6]
+        valid = bool(dataPacket[POS_data + 6])
+        gps_data = convert2Unsign_2B(temp_date)
+        gps_time = convert2Unsign_4B(temp_time)
+        # if valid:
+        #     print(time.perf_counter())
+        #     print(gps_data, gps_time)
+
+    else:
+        gps_data = 10722
+        gps_time = 8292000
+        valid = 0
+    # End of if-condition
+
+    if PRINT:
+        if valid:
+            print(gps_data, end='\t\t')
+            print(gps_time, end='\t\t')
+            print(time.perf_counter())
+            # print(valid)
+    # End of if-condition
+
+    return gps_data, gps_time
+
+# def convert2GpsData(data):
+
+
 def readVBOX(dataPacket, POS_GPS_SATS, POS_GLONASS_SATS, POS_BeiDou_SATS, POS_Z_accel, POS_Time, POS_Heading,
              POS_Heading_from_KF,
              POS_Altitude, POS_Latitude, POS_Longitude, POS_Velocity, POS_Vertical_velocity, EN=1, PRINT=0):

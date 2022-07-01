@@ -155,7 +155,7 @@ class Connector:
 if __name__ == "__main__":
     print("running Connector.py")
     old_time = time.perf_counter_ns()
-    ser = Connector("COM4", 115200)
+    ser = Connector("COM5", 230400)
     ser.connect()
     ser.flushInputBuffer()
 

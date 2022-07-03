@@ -38,9 +38,14 @@ IMU_DATA_STRUCTURE = {
     "ADXL_AY": np.zeros(1),
     "ADXL_AZ": np.zeros(1),
     "TIME": np.zeros(1),
-    'GPS_DATE': np.zeros(1),
-    'GPS_TIME': np.zeros(1),
-    'DATA_CNT': np.zeros(1)
+    'GPS_YEAR': np.zeros(1),
+    'GPS_MON': np.zeros(1),
+    'GPS_DAY': np.zeros(1),
+    'GPS_HOUR': np.zeros(1),
+    'GPS_MIN': np.zeros(1),
+    'GPS_SEC': np.zeros(1),
+    'DATA_CNT': np.zeros(1),
+    'GPS_ALIVE': np.zeros(1)
 }
 
 GPS_DATA_STRUCTURE = {
@@ -89,6 +94,7 @@ class memsImuReader(QThread):
         self.__crcFail = 0
         self.arrayNum = 10
         self.__datacnt = 0
+        self.__gpstime_old = 0
         self.__debug = debug_en
         self.__old_imudata = {k: (-1,) * len(IMU_DATA_STRUCTURE.get(k)) for k in set(IMU_DATA_STRUCTURE)}
         self.__imuoffset = {k: np.zeros(1) for k in set(IMU_DATA_STRUCTURE)}
@@ -244,17 +250,36 @@ class memsImuReader(QThread):
                                                    sf_gyro=SENS_NANO33_GYRO_250)
         ADXL_AX, ADXL_AY, ADXL_AZ = cmn.readADXL355(dataPacket, EN=1, PRINT=0, POS_AX=POS_ADXL355_AX,
                                                     sf=SENS_ADXL355_8G)
-        GPS_DATE, GPS_TIME = cmn.readGPS(dataPacket, EN=1, PRINT=1, POS_data=POS_DATE)
+        GPS_DATE, GPS_TIME, valid = cmn.readGPS(dataPacket, EN=1, PRINT=0, POS_data=POS_DATE)
         if not self.isCali:
             if self.isKal:
                 NANO_WZ = self.nano33_wz_kal.update(NANO_WZ)
+        is_gpstime_renew = (GPS_TIME != self.__gpstime_old)
+
         t = time.perf_counter()
+        gps_still_alive = is_gpstime_renew & valid
+        # print('valid: ', valid)
+        self.__datacnt += 1
+        if bool(gps_still_alive):
+            self.__datacnt = 0
+        # print(self.__gpstime_old, GPS_TIME, is_gpstime_renew, valid, gps_still_alive)
+        self.__gpstime_old = GPS_TIME
+        gps_yy = int(GPS_DATE % 100 + 2000)
+        gps_MM = int((GPS_DATE * 1e-2) % 100)
+        gps_dd = int(GPS_DATE * 1e-4)
+        gps_hh = int(GPS_TIME * 1e-6)
+        gps_mm = int((GPS_TIME * 1e-4) % 100)
+        gps_ss = int((GPS_TIME * 1e-2) % 100)
+        # print(gps_yy, gps_MM, gps_dd, gps_hh, gps_mm, gps_ss, self.__datacnt)
+
         imudata = {"NANO33_WX": NANO_WX, "NANO33_WY": NANO_WY, "NANO33_WZ": NANO_WZ,
                    "ADXL_AX": NANO_AX, "ADXL_AY": ADXL_AY, "ADXL_AZ": ADXL_AZ, "TIME": t,
                    "NANO33_AX": NANO_AX, "NANO33_AY": NANO_AY, "NANO33_AZ": NANO_AZ,
-                   'GPS_DATE': GPS_DATE, 'GPS_TIME': GPS_TIME, 'DATA_CNT': self.__datacnt
+                   'GPS_YEAR': gps_yy, 'GPS_MON': gps_MM, 'GPS_DAY': gps_dd, 'GPS_HOUR': gps_hh,
+                   'GPS_MIN': gps_mm, 'GPS_SEC': gps_ss, 'DATA_CNT': self.__datacnt, 'GPS_ALIVE': gps_still_alive
                    }
-        self.__datacnt += 1
+        # print('valid: ', bool(valid))
+
         return dataPacket, imudata
 
     def readInputBuffer(self):
@@ -293,7 +318,7 @@ class memsImuReader(QThread):
             cmn.print_debug('self.__imuoffset after: %s' % self.__imuoffset, PRINT_DEBUG)
 
             imudataArray = {k: np.empty(0) for k in set(IMU_DATA_STRUCTURE)}
-            gpsdataArray = {k: np.empty(0) for k in set(GPS_DATA_STRUCTURE)}
+            # gpsdataArray = {k: np.empty(0) for k in set(GPS_DATA_STRUCTURE)}
 
             for i in range(self.arrayNum):
                 input_buf = self.readInputBuffer()
@@ -315,6 +340,7 @@ class memsImuReader(QThread):
                 # end of err correction
                 t4 = time.perf_counter()
                 # imudataArray = cmn.dictOperation(imudataArray, imudata, "APPEND", IMU_DATA_STRUCTURE)
+                # print(imudata)
                 imudataArray["TIME"] = np.append(imudataArray["TIME"], imudata["TIME"])
                 imudataArray["ADXL_AX"] = np.append(imudataArray["ADXL_AX"], imudata["ADXL_AX"])
                 imudataArray["ADXL_AY"] = np.append(imudataArray["ADXL_AY"], imudata["ADXL_AY"])
@@ -325,9 +351,16 @@ class memsImuReader(QThread):
                 imudataArray["NANO33_AX"] = np.append(imudataArray["NANO33_AX"], imudata["NANO33_AX"])
                 imudataArray["NANO33_AY"] = np.append(imudataArray["NANO33_AY"], imudata["NANO33_AY"])
                 imudataArray["NANO33_AZ"] = np.append(imudataArray["NANO33_AZ"], imudata["NANO33_AZ"])
-                imudataArray["GPS_DATE"] = np.append(imudataArray["GPS_DATE"], imudata["GPS_DATE"])
-                imudataArray["GPS_TIME"] = np.append(imudataArray["GPS_TIME"], imudata["GPS_TIME"])
+                imudataArray["GPS_YEAR"] = np.append(imudataArray["GPS_YEAR"], imudata["GPS_YEAR"])
+                imudataArray["GPS_MON"] = np.append(imudataArray["GPS_MON"], imudata["GPS_MON"])
+                imudataArray["GPS_DAY"] = np.append(imudataArray["GPS_DAY"], imudata["GPS_DAY"])
+                imudataArray["GPS_HOUR"] = np.append(imudataArray["GPS_HOUR"], imudata["GPS_HOUR"])
+                imudataArray["GPS_MIN"] = np.append(imudataArray["GPS_MIN"], imudata["GPS_MIN"])
+                imudataArray["GPS_SEC"] = np.append(imudataArray["GPS_SEC"], imudata["GPS_SEC"])
                 imudataArray["DATA_CNT"] = np.append(imudataArray["DATA_CNT"], imudata["DATA_CNT"])
+                imudataArray["GPS_ALIVE"] = np.append(imudataArray["GPS_ALIVE"], imudata["GPS_ALIVE"])
+                # print(imudata["GPS_YEAR"], imudata["GPS_MON"], imudata["GPS_DAY"], imudata["GPS_HOUR"],
+                #       imudata["GPS_MIN"], imudata["GPS_SEC"], imudata["DATA_CNT"])
                 t5 = time.perf_counter()
 
                 debug_info = "ACT: ," + str(input_buf) + ", " + str(round((t5 - t1) * 1000, 5)) + ", " \
@@ -355,8 +388,13 @@ class memsImuReader(QThread):
 
     def offset_setting(self, imuoffset):
         imuoffset["TIME"] = [0]
-        imuoffset["GPS_DATE"] = [0]
-        imuoffset["GPS_TIME"] = [0]
+        imuoffset["GPS_YEAR"] = [0]
+        imuoffset["GPS_MON"] = [0]
+        imuoffset["GPS_DAY"] = [0]
+        imuoffset["GPS_HOUR"] = [0]
+        imuoffset["GPS_MIN"] = [0]
+        imuoffset["GPS_SEC"] = [0]
+        imuoffset["GPS_ALIVE"] = [0]
         imuoffset["DATA_CNT"] = [0]
         if not self.isCali_w:
             imuoffset["NANO33_WX"] = [0]

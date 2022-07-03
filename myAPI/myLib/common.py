@@ -167,7 +167,7 @@ def readGPS(dataPacket, POS_data, EN=1, PRINT=0):
             # print(valid)
     # End of if-condition
 
-    return gps_data, gps_time
+    return gps_data, gps_time, valid
 
 # def convert2GpsData(data):
 

@@ -40,9 +40,12 @@ class mainWindow(QMainWindow):
 
     def __init__(self, debug_en: bool = False):
         super(mainWindow, self).__init__()
+        self.update_rate = None
         self.resize(1450, 800)
         self.pig_parameter_widget = None
         self.__portName = None
+        self.__skipcnt = 0
+        self.__skiptime = 0
         self.setWindowTitle("memsImuPlot")
         self.__connector = Connector()
         self.__isFileOpen = False
@@ -51,7 +54,8 @@ class mainWindow(QMainWindow):
         self.imudata_file = cmn.data_manager(fnum=0)
         self.pig_cali_menu = calibrationBlock()
         self.analysis_allan = analysis_Allan.analysis_allan_widget(['wx', 'wy', 'wz'])
-        self.analysis_timing_plot = analysis_TimingPlot.analysis_timing_plot_widget(['wx', 'wy', 'wz', 'ax', 'ay', 'az'])
+        self.analysis_timing_plot = analysis_TimingPlot.analysis_timing_plot_widget(
+            ['wx', 'wy', 'wz', 'ax', 'ay', 'az'])
         self.act.isCali = True
         self.menu = self.menuBar()
         self.pig_menu = pig_menu_manager(self.menu, self)
@@ -116,14 +120,17 @@ class mainWindow(QMainWindow):
     def printBuffer(self, val):
         self.top.buffer_lb.lb.setText(str(val))
 
+    def printGPS_Time(self, val):
+        self.top.gpstime_lb.lb.setText(val)
+
     def printPdTemperature(self, val):
         if (time.perf_counter() - self.t_start) > 0.5:
             self.top.pd_temp_lb.lb.setText(str(val))
             self.t_start = time.perf_counter()
 
     def printUpdateRate(self, t_list):
-        update_rate = round(((t_list[-1] - t_list[0]) / (len(t_list) - 1)) ** -1, 1)
-        self.top.data_rate_lb.lb.setText(str(update_rate))
+        self.update_rate = round(((t_list[-1] - t_list[0]) / (len(t_list) - 1)) ** -1, 1)
+        self.top.data_rate_lb.lb.setText(str(self.update_rate))
 
     def updateComPort(self):
         portNum, portList = self.__connector.portList()
@@ -159,6 +166,7 @@ class mainWindow(QMainWindow):
         self.act.readIMU()
         self.act.isRun = True
         self.act.start()
+        self.__skipcnt = 0
         file_name = self.top.save_block.le_filename.text() + self.top.save_block.le_ext.text()
         self.imudata_file.name = file_name
         self.imudata_file.open(self.top.save_block.rb.isChecked())
@@ -170,8 +178,12 @@ class mainWindow(QMainWindow):
         self.imudata_file.close()
 
     def collectData(self, imudata):
+        # print(imudata)
         input_buf = self.act.readInputBuffer()
-        print(imudata['DATA_CNT'])
+        # if self.__skipcnt < 10:
+        #     self.__skipcnt += 1
+        #     print('self.__skipcnt: ', self.__skipcnt)
+        #     return
         t0 = time.perf_counter()
         self.printPdTemperature("N.A.")
         t1 = time.perf_counter()
@@ -197,16 +209,34 @@ class mainWindow(QMainWindow):
             self.imudata["NANO33_AY"] = self.imudata["NANO33_AY"][self.act.arrayNum:self.act.arrayNum + 1000]
             self.imudata["NANO33_AZ"] = self.imudata["NANO33_AZ"][self.act.arrayNum:self.act.arrayNum + 1000]
         t2 = time.perf_counter()
+        self.printUpdateRate(self.imudata["TIME"])
+        if self.__skipcnt < 10:
+            self.__skipcnt += 1
+            # print('self.__skipcnt: ', self.__skipcnt)
+            return
+        gps_secExt = imudata['GPS_SEC'] + imudata['DATA_CNT'] / self.update_rate
+        # print(imudata['GPS_YEAR'], imudata['GPS_MON'], imudata['GPS_DAY'], imudata['GPS_HOUR'], imudata['GPS_MIN'],
+        #       imudata['GPS_SEC'], gps_secExt)
+        # print(imudata['GPS_SEC'], imudata['DATA_CNT'], gps_secExt)
         debug_info = "MAIN: ," + str(input_buf) + ", " + str(round((t2 - t0) * 1000, 5)) + ", " \
                      + str(round((t1 - t0) * 1000, 5)) + ", " + str(round((t2 - t1) * 1000, 5))
         cmn.print_debug(debug_info, self.__debug)
 
         datalist = [imudata["TIME"], imudata["NANO33_WX"], imudata["NANO33_WY"], imudata["NANO33_WZ"]
-            , imudata["NANO33_AX"], imudata["NANO33_AY"], imudata["NANO33_AZ"]]
-        data_fmt = "%.4f,%.5f,%.5f,%.5f,%.5f,%.5f,%.5f"
+            , imudata["NANO33_AX"], imudata["NANO33_AY"], imudata["NANO33_AZ"], imudata['GPS_YEAR']
+            , imudata['GPS_MON'], imudata['GPS_DAY'], imudata['GPS_HOUR'], imudata['GPS_MIN']
+            , imudata['GPS_SEC'], gps_secExt
+                    ]
+        data_fmt = "%.4f,%.5f,%.5f,%.5f,%.5f,%.5f,%.5f,%d/%d/%d %d:%d:%d,%.2f"
+        # print('UTC %d/%d/%d %d:%d:%.2f' % (imudata['GPS_YEAR'][0], imudata['GPS_MON'][0], imudata['GPS_DAY'][0],
+        #                                  imudata['GPS_HOUR'][0], imudata['GPS_MIN'][0], gps_secExt[0]))
+        gps_time = '%d/%d/%d %d:%d:%.1f' % (imudata['GPS_YEAR'][0], imudata['GPS_MON'][0], imudata['GPS_DAY'][0],
+                                         imudata['GPS_HOUR'][0], imudata['GPS_MIN'][0], gps_secExt[0])
+        # print(gps_utc)
+        self.printGPS_Time(gps_time)
         self.imudata_file.saveData(datalist, data_fmt)
         self.plotdata(self.imudata)
-        self.printUpdateRate(self.imudata["TIME"])
+
         # print(len(self.imudata["TIME"]))
 
     def plotdata(self, imudata):

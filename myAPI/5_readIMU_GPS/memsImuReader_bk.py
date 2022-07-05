@@ -61,8 +61,8 @@ SENS_NANO33_AXLM_4G = 0.000122
 POS_ADXL355_AX = 4
 POS_NANO33_WX = 13
 POS_DATE = 25
-POS_PIG = 25
-
+# POS_PIG = 25
+# POS_CRC = 35
 old = time.perf_counter_ns()
 
 
@@ -250,8 +250,6 @@ class memsImuReader(QThread):
                                                    sf_gyro=SENS_NANO33_GYRO_250)
         ADXL_AX, ADXL_AY, ADXL_AZ = cmn.readADXL355(dataPacket, EN=1, PRINT=0, POS_AX=POS_ADXL355_AX,
                                                     sf=SENS_ADXL355_8G)
-        FPGA_TIME, ERR, STEP, PD_TEMP = cmn.readPIG(dataPacket, EN=1, PRINT=0, sf_a=self.sf_a, sf_b=self.sf_b,
-                                                    POS_TIME=POS_PIG)
         GPS_DATE, GPS_TIME, valid = cmn.readGPS(dataPacket, EN=1, PRINT=0, POS_data=POS_DATE)
         if not self.isCali:
             if self.isKal:

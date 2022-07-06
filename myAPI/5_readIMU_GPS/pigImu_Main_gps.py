@@ -29,9 +29,9 @@ from myLib.myGui.pig_parameters_widget import pig_parameters_widget
 from myLib.myGui.pig_menu_manager import pig_menu_manager
 from myLib.myGui import analysis_Allan, analysis_TimingPlot
 from PyQt5.QtWidgets import *
-from memsImu_Widget import memsImuWidget as TOP
-from memsImuReader_gps import memsImuReader as ACTION
-from memsImuReader_gps import IMU_DATA_STRUCTURE
+from pigImu_Widget_gps import pigImuWidget as TOP
+from pigImuReader_gps import pigImuReader as ACTION
+from pigImuReader_gps import IMU_DATA_STRUCTURE
 import numpy as np
 
 
@@ -46,7 +46,7 @@ class mainWindow(QMainWindow):
         self.__portName = None
         self.__skipcnt = 0
         self.__skiptime = 0
-        self.setWindowTitle("memsImuPlot")
+        self.setWindowTitle("pigImuPlot")
         self.__connector = Connector()
         self.__isFileOpen = False
         self.top = TOP()
@@ -180,34 +180,28 @@ class mainWindow(QMainWindow):
     def collectData(self, imudata):
         # print(imudata)
         input_buf = self.act.readInputBuffer()
-        # if self.__skipcnt < 10:
-        #     self.__skipcnt += 1
-        #     print('self.__skipcnt: ', self.__skipcnt)
-        #     return
         t0 = time.perf_counter()
-        self.printPdTemperature("N.A.")
+        self.printPdTemperature(imudata["PD_TEMP"][0])
         t1 = time.perf_counter()
         self.imudata["TIME"] = np.append(self.imudata["TIME"], imudata["TIME"])
+        self.imudata["PIG_WZ"] = np.append(self.imudata["PIG_WZ"], imudata["PIG_WZ"])
+        self.imudata["PD_TEMP"] = np.append(self.imudata["PD_TEMP"], imudata["PD_TEMP"])
         self.imudata["ADXL_AX"] = np.append(self.imudata["ADXL_AX"], imudata["ADXL_AX"])
         self.imudata["ADXL_AY"] = np.append(self.imudata["ADXL_AY"], imudata["ADXL_AY"])
         self.imudata["ADXL_AZ"] = np.append(self.imudata["ADXL_AZ"], imudata["ADXL_AZ"])
         self.imudata["NANO33_WX"] = np.append(self.imudata["NANO33_WX"], imudata["NANO33_WX"])
         self.imudata["NANO33_WY"] = np.append(self.imudata["NANO33_WY"], imudata["NANO33_WY"])
         self.imudata["NANO33_WZ"] = np.append(self.imudata["NANO33_WZ"], imudata["NANO33_WZ"])
-        self.imudata["NANO33_AX"] = np.append(self.imudata["NANO33_AX"], imudata["NANO33_AX"])
-        self.imudata["NANO33_AY"] = np.append(self.imudata["NANO33_AY"], imudata["NANO33_AY"])
-        self.imudata["NANO33_AZ"] = np.append(self.imudata["NANO33_AZ"], imudata["NANO33_AZ"])
         if len(self.imudata["TIME"]) > 1000:
             self.imudata["TIME"] = self.imudata["TIME"][self.act.arrayNum:self.act.arrayNum + 1000]
+            self.imudata["PIG_WZ"] = self.imudata["PIG_WZ"][self.act.arrayNum:self.act.arrayNum + 1000]
+            self.imudata["PD_TEMP"] = self.imudata["PD_TEMP"][self.act.arrayNum:self.act.arrayNum + 1000]
             self.imudata["ADXL_AX"] = self.imudata["ADXL_AX"][self.act.arrayNum:self.act.arrayNum + 1000]
             self.imudata["ADXL_AY"] = self.imudata["ADXL_AY"][self.act.arrayNum:self.act.arrayNum + 1000]
             self.imudata["ADXL_AZ"] = self.imudata["ADXL_AZ"][self.act.arrayNum:self.act.arrayNum + 1000]
             self.imudata["NANO33_WX"] = self.imudata["NANO33_WX"][self.act.arrayNum:self.act.arrayNum + 1000]
             self.imudata["NANO33_WY"] = self.imudata["NANO33_WY"][self.act.arrayNum:self.act.arrayNum + 1000]
             self.imudata["NANO33_WZ"] = self.imudata["NANO33_WZ"][self.act.arrayNum:self.act.arrayNum + 1000]
-            self.imudata["NANO33_AX"] = self.imudata["NANO33_AX"][self.act.arrayNum:self.act.arrayNum + 1000]
-            self.imudata["NANO33_AY"] = self.imudata["NANO33_AY"][self.act.arrayNum:self.act.arrayNum + 1000]
-            self.imudata["NANO33_AZ"] = self.imudata["NANO33_AZ"][self.act.arrayNum:self.act.arrayNum + 1000]
         t2 = time.perf_counter()
         self.printUpdateRate(self.imudata["TIME"])
         if self.__skipcnt < 10:
@@ -215,23 +209,20 @@ class mainWindow(QMainWindow):
             # print('self.__skipcnt: ', self.__skipcnt)
             return
         gps_secExt = imudata['GPS_SEC'] + imudata['DATA_CNT'] / self.update_rate
-        # print(imudata['GPS_YEAR'], imudata['GPS_MON'], imudata['GPS_DAY'], imudata['GPS_HOUR'], imudata['GPS_MIN'],
-        #       imudata['GPS_SEC'], gps_secExt)
-        # print(imudata['GPS_SEC'], imudata['DATA_CNT'], gps_secExt)
         debug_info = "MAIN: ," + str(input_buf) + ", " + str(round((t2 - t0) * 1000, 5)) + ", " \
                      + str(round((t1 - t0) * 1000, 5)) + ", " + str(round((t2 - t1) * 1000, 5))
         cmn.print_debug(debug_info, self.__debug)
 
-        datalist = [imudata["TIME"], imudata["NANO33_WX"], imudata["NANO33_WY"], imudata["NANO33_WZ"]
-            , imudata["NANO33_AX"], imudata["NANO33_AY"], imudata["NANO33_AZ"], imudata['GPS_YEAR']
-            , imudata['GPS_MON'], imudata['GPS_DAY'], imudata['GPS_HOUR'], imudata['GPS_MIN']
-            , imudata['GPS_SEC'], gps_secExt
+        datalist = [imudata["TIME"], imudata["PIG_WZ"], imudata["NANO33_WX"], imudata["NANO33_WY"], imudata["NANO33_WZ"]
+                    , imudata["ADXL_AX"], imudata["ADXL_AY"], imudata["ADXL_AZ"], imudata["PD_TEMP"]
+                    , imudata['GPS_YEAR'], imudata['GPS_MON'], imudata['GPS_DAY'], imudata['GPS_HOUR']
+                    , imudata['GPS_MIN'], imudata['GPS_SEC'], gps_secExt
                     ]
-        data_fmt = "%.4f,%.5f,%.5f,%.5f,%.5f,%.5f,%.5f,%d/%d/%d %d:%d:%d,%.2f"
+        data_fmt = "%.4f,%.5f,%.5f,%.5f,%.5f,%.5f,%.5f,%.5f,%.1f,%d/%d/%d %d:%d:%d,%.2f"
         # print('UTC %d/%d/%d %d:%d:%.2f' % (imudata['GPS_YEAR'][0], imudata['GPS_MON'][0], imudata['GPS_DAY'][0],
         #                                  imudata['GPS_HOUR'][0], imudata['GPS_MIN'][0], gps_secExt[0]))
         gps_time = '%d/%d/%d %d:%d:%.1f' % (imudata['GPS_YEAR'][0], imudata['GPS_MON'][0], imudata['GPS_DAY'][0],
-                                         imudata['GPS_HOUR'][0], imudata['GPS_MIN'][0], gps_secExt[0])
+                                            imudata['GPS_HOUR'][0], imudata['GPS_MIN'][0], gps_secExt[0])
         # print(gps_utc)
         self.printGPS_Time(gps_time)
         self.imudata_file.saveData(datalist, data_fmt)
@@ -246,19 +237,19 @@ class mainWindow(QMainWindow):
         else:
             factor = 1
 
-        # if self.top.plot1_showWz_cb.cb_1.isChecked():
-        #     self.top.plot1.ax1.setData(imudata["TIME"], imudata["PIG_WZ"] * factor)
-        # else:
-        #     self.top.plot1.ax1.clear()
+        if self.top.plot1_showWz_cb.cb_1.isChecked():
+            self.top.plot1.ax1.setData(imudata["TIME"], imudata["PIG_WZ"] * factor)
+        else:
+            self.top.plot1.ax1.clear()
         if self.top.plot1_showWz_cb.cb_2.isChecked():
             self.top.plot1.ax2.setData(imudata["TIME"], imudata["NANO33_WZ"] * factor)
         else:
             self.top.plot1.ax2.clear()
 
-        self.top.plot2.ax.setData(imudata["NANO33_AX"])
+        self.top.plot2.ax.setData(imudata["ADXL_AX"])
         self.top.plot2.title = 'NANO33_AX'
-        self.top.plot3.ax.setData(imudata["NANO33_AY"])
-        self.top.plot4.ax.setData(imudata["NANO33_AZ"])
+        self.top.plot3.ax.setData(imudata["ADXL_AY"])
+        self.top.plot4.ax.setData(imudata["ADXL_AZ"])
         self.top.plot5.ax.setData(imudata["NANO33_WX"])
         self.top.plot6.ax.setData(imudata["NANO33_WY"])
 

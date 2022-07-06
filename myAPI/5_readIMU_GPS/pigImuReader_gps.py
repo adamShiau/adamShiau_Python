@@ -31,13 +31,13 @@ IMU_DATA_STRUCTURE = {
     "NANO33_WX": np.zeros(1),
     "NANO33_WY": np.zeros(1),
     "NANO33_WZ": np.zeros(1),
-    "NANO33_AX": np.zeros(1),
-    "NANO33_AY": np.zeros(1),
-    "NANO33_AZ": np.zeros(1),
     "ADXL_AX": np.zeros(1),
     "ADXL_AY": np.zeros(1),
     "ADXL_AZ": np.zeros(1),
     "TIME": np.zeros(1),
+    "PIG_ERR": np.zeros(1),
+    "PIG_WZ": np.zeros(1),
+    "PD_TEMP": np.zeros(1),
     'GPS_YEAR': np.zeros(1),
     'GPS_MON': np.zeros(1),
     'GPS_DAY': np.zeros(1),
@@ -60,13 +60,14 @@ SENS_NANO33_GYRO_250 = 0.00875
 SENS_NANO33_AXLM_4G = 0.000122
 POS_ADXL355_AX = 4
 POS_NANO33_WX = 13
-POS_DATE = 25
 POS_PIG = 25
+POS_GPS = 39
+
 
 old = time.perf_counter_ns()
 
 
-class memsImuReader(QThread):
+class pigImuReader(QThread):
     if not __name__ == "__main__":
         imudata_qt = pyqtSignal(object)
         imuThreadStop_qt = pyqtSignal()
@@ -74,7 +75,7 @@ class memsImuReader(QThread):
 
     def __init__(self, portName: str = "None", boolCaliw=False, boolCalia=False, baudRate: int = 230400,
                  debug_en: bool = 0):
-        super(memsImuReader, self).__init__()
+        super(pigImuReader, self).__init__()
         self.nano33_wz_kal = filter.kalman_1D()
         # self.pig_wz_kal = filter.kalman_1D()
         self.__isCali_a = boolCalia
@@ -231,10 +232,10 @@ class memsImuReader(QThread):
     # End of memsImuReader::disconnectIMU
 
     def readIMU(self):
-        self.writeImuCmd(7, 1)
+        self.writeImuCmd(4, 1)
 
     def stopIMU(self):
-        self.writeImuCmd(7, 4)
+        self.writeImuCmd(4, 4)
 
     def setCallback(self, callback):
         self.__callBack = callback
@@ -243,7 +244,7 @@ class memsImuReader(QThread):
 
     def getImuData(self):
         head = getData.alignHeader_4B(self.__Connector, HEADER_KVH)
-        dataPacket = getData.getdataPacket(self.__Connector, head, 32)
+        dataPacket = getData.getdataPacket(self.__Connector, head, 46)
         NANO_WX, NANO_WY, NANO_WZ, \
         NANO_AX, NANO_AY, NANO_AZ = cmn.readNANO33(dataPacket, EN=1, PRINT=0, POS_WX=POS_NANO33_WX,
                                                    sf_xlm=SENS_NANO33_AXLM_4G,
@@ -252,13 +253,14 @@ class memsImuReader(QThread):
                                                     sf=SENS_ADXL355_8G)
         FPGA_TIME, ERR, STEP, PD_TEMP = cmn.readPIG(dataPacket, EN=1, PRINT=0, sf_a=self.sf_a, sf_b=self.sf_b,
                                                     POS_TIME=POS_PIG)
-        GPS_DATE, GPS_TIME, valid = cmn.readGPS(dataPacket, EN=1, PRINT=0, POS_data=POS_DATE)
+        GPS_DATE, GPS_TIME, valid = cmn.readGPS(dataPacket, EN=1, PRINT=0, POS_data=POS_GPS)
         if not self.isCali:
             if self.isKal:
                 NANO_WZ = self.nano33_wz_kal.update(NANO_WZ)
         is_gpstime_renew = (GPS_TIME != self.__gpstime_old)
 
-        t = time.perf_counter()
+        # t = time.perf_counter()
+        t = FPGA_TIME
         gps_still_alive = is_gpstime_renew & valid
         # print('valid: ', valid)
         self.__datacnt += 1
@@ -275,8 +277,8 @@ class memsImuReader(QThread):
         # print(gps_yy, gps_MM, gps_dd, gps_hh, gps_mm, gps_ss, self.__datacnt)
 
         imudata = {"NANO33_WX": NANO_WX, "NANO33_WY": NANO_WY, "NANO33_WZ": NANO_WZ,
-                   "ADXL_AX": NANO_AX, "ADXL_AY": ADXL_AY, "ADXL_AZ": ADXL_AZ, "TIME": t,
-                   "NANO33_AX": NANO_AX, "NANO33_AY": NANO_AY, "NANO33_AZ": NANO_AZ,
+                   "ADXL_AX": NANO_AX, "ADXL_AY": ADXL_AY, "ADXL_AZ": ADXL_AZ,
+                   "TIME": t, "PIG_ERR": ERR, "PIG_WZ": STEP, "PD_TEMP": PD_TEMP,
                    'GPS_YEAR': gps_yy, 'GPS_MON': gps_MM, 'GPS_DAY': gps_dd, 'GPS_HOUR': gps_hh,
                    'GPS_MIN': gps_mm, 'GPS_SEC': gps_ss, 'DATA_CNT': self.__datacnt, 'GPS_ALIVE': gps_still_alive
                    }
@@ -350,9 +352,9 @@ class memsImuReader(QThread):
                 imudataArray["NANO33_WX"] = np.append(imudataArray["NANO33_WX"], imudata["NANO33_WX"])
                 imudataArray["NANO33_WY"] = np.append(imudataArray["NANO33_WY"], imudata["NANO33_WY"])
                 imudataArray["NANO33_WZ"] = np.append(imudataArray["NANO33_WZ"], imudata["NANO33_WZ"])
-                imudataArray["NANO33_AX"] = np.append(imudataArray["NANO33_AX"], imudata["NANO33_AX"])
-                imudataArray["NANO33_AY"] = np.append(imudataArray["NANO33_AY"], imudata["NANO33_AY"])
-                imudataArray["NANO33_AZ"] = np.append(imudataArray["NANO33_AZ"], imudata["NANO33_AZ"])
+                imudataArray["PIG_ERR"] = np.append(imudataArray["PIG_ERR"], imudata["PIG_ERR"])
+                imudataArray["PIG_WZ"] = np.append(imudataArray["PIG_WZ"], imudata["PIG_WZ"])
+                imudataArray["PD_TEMP"] = np.append(imudataArray["PD_TEMP"], imudata["PD_TEMP"])
                 imudataArray["GPS_YEAR"] = np.append(imudataArray["GPS_YEAR"], imudata["GPS_YEAR"])
                 imudataArray["GPS_MON"] = np.append(imudataArray["GPS_MON"], imudata["GPS_MON"])
                 imudataArray["GPS_DAY"] = np.append(imudataArray["GPS_DAY"], imudata["GPS_DAY"])
@@ -361,8 +363,6 @@ class memsImuReader(QThread):
                 imudataArray["GPS_SEC"] = np.append(imudataArray["GPS_SEC"], imudata["GPS_SEC"])
                 imudataArray["DATA_CNT"] = np.append(imudataArray["DATA_CNT"], imudata["DATA_CNT"])
                 imudataArray["GPS_ALIVE"] = np.append(imudataArray["GPS_ALIVE"], imudata["GPS_ALIVE"])
-                # print(imudata["GPS_YEAR"], imudata["GPS_MON"], imudata["GPS_DAY"], imudata["GPS_HOUR"],
-                #       imudata["GPS_MIN"], imudata["GPS_SEC"], imudata["DATA_CNT"])
                 t5 = time.perf_counter()
 
                 debug_info = "ACT: ," + str(input_buf) + ", " + str(round((t5 - t1) * 1000, 5)) + ", " \
@@ -390,6 +390,7 @@ class memsImuReader(QThread):
 
     def offset_setting(self, imuoffset):
         imuoffset["TIME"] = [0]
+        imuoffset["PD_TEMP"] = [0]
         imuoffset["GPS_YEAR"] = [0]
         imuoffset["GPS_MON"] = [0]
         imuoffset["GPS_DAY"] = [0]
@@ -406,9 +407,6 @@ class memsImuReader(QThread):
             imuoffset["ADXL_AX"] = [0]
             imuoffset["ADXL_AY"] = [0]
             imuoffset["ADXL_AZ"] = [0]
-            imuoffset["NANO33_AX"] = [0]
-            imuoffset["NANO33_AY"] = [0]
-            imuoffset["NANO33_AZ"] = [0]
 
 
 def myCallBack(imudata):

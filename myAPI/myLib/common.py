@@ -144,10 +144,10 @@ def readADXL355(dataPacket, dataLen=3, POS_AX=4, EN=1, sf=1.0, PRINT=0):
 
 def readGPS(dataPacket, POS_data, EN=1, PRINT=0):
     if EN:
-        temp_date = dataPacket[POS_data:POS_data + 2]
-        temp_time = dataPacket[POS_data + 2:POS_data + 6]
-        valid = bool(dataPacket[POS_data + 6])
-        gps_data = convert2Unsign_2B(temp_date)
+        temp_date = dataPacket[POS_data:POS_data + 4]
+        temp_time = dataPacket[POS_data + 4:POS_data + 8]
+        valid = bool(dataPacket[POS_data + 8])
+        gps_data = convert2Unsign_4B(temp_date)
         gps_time = convert2Unsign_4B(temp_time)
         # if valid:
         #     print(time.perf_counter())

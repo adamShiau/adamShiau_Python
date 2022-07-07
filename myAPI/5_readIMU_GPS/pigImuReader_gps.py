@@ -244,7 +244,7 @@ class pigImuReader(QThread):
 
     def getImuData(self):
         head = getData.alignHeader_4B(self.__Connector, HEADER_KVH)
-        dataPacket = getData.getdataPacket(self.__Connector, head, 46)
+        dataPacket = getData.getdataPacket(self.__Connector, head, 48)
         NANO_WX, NANO_WY, NANO_WZ, \
         NANO_AX, NANO_AY, NANO_AZ = cmn.readNANO33(dataPacket, EN=1, PRINT=0, POS_WX=POS_NANO33_WX,
                                                    sf_xlm=SENS_NANO33_AXLM_4G,

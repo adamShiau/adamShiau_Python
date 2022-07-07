@@ -226,7 +226,7 @@ class pigImuReader(QThread):
     def getImuData(self):
         head = getData.alignHeader_4B(self.__Connector, HEADER_KVH)
         dataPacket = getData.getdataPacket(self.__Connector, head, 18)
-
+        # print([hex(i) for i in dataPacket])
         ADXL_AX, ADXL_AY, ADXL_AZ = cmn.readADXL355(dataPacket, EN=0, PRINT=0, POS_AX=POS_ADXL355_AX,
                                                     sf=SENS_ADXL355_8G)
         NANO_WX, NANO_WY, NANO_WZ, \

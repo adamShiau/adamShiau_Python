@@ -57,9 +57,9 @@ class mainWindow(QMainWindow):
         self.act.isCali = True
         self.menu = self.menuBar()
         self.pig_menu = pig_menu_manager(self.menu, self)
-        self.analysis_allan = analysis_Allan.analysis_allan_widget(['fog', 'wx', 'wy', 'wz'])
+        self.analysis_allan = analysis_Allan.analysis_allan_widget(['fog'])
         self.analysis_timing_plot = analysis_TimingPlot.analysis_timing_plot_widget(
-            ['fog', 'wx', 'wy', 'wz', 'ax', 'ay', 'az'])
+            ['fog'])
         self.linkfunction()
         self.act.arrayNum = 10
         self.mainUI()
@@ -172,7 +172,7 @@ class mainWindow(QMainWindow):
         file_name = self.top.save_block.le_filename.text() + self.top.save_block.le_ext.text()
         self.imudata_file.name = file_name
         self.imudata_file.open(self.top.save_block.rb.isChecked())
-        self.imudata_file.write_line('time,fog,wx,wy,wz,ax,ay,az,T')
+        self.imudata_file.write_line('time,fog,T')
 
     def stop(self):
         self.resetFPGATimer()
@@ -224,9 +224,8 @@ class mainWindow(QMainWindow):
                          + str(round((t1 - t0) * 1000, 5)) + ", " + str(round((t2 - t1) * 1000, 5))
             cmn.print_debug(debug_info, self.__debug)
             # print(imudata["PIG_WZ"])
-            datalist = [imudata["TIME"], imudata["PIG_WZ"], imudata["NANO33_WX"], imudata["NANO33_WY"], imudata["NANO33_WZ"]
-                , imudata["ADXL_AX"], imudata["ADXL_AY"], imudata["ADXL_AZ"], imudata["PD_TEMP"]]
-            data_fmt = "%.5f,%.5f,%.5f,%.5f,%.5f,%.5f,%.5f,%.5f,%.1f"
+            datalist = [imudata["TIME"], imudata["PIG_WZ"], imudata["PD_TEMP"]]
+            data_fmt = "%.5f,%.5f,%.1f"
             self.imudata_file.saveData(datalist, data_fmt)
             self.plotdata(self.imudata)
             self.printUpdateRate(self.imudata["TIME"])

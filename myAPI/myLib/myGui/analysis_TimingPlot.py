@@ -111,11 +111,15 @@ class analysis_timing_plot_widget(QWidget):
         try:
             data['fog'] = data['fog'] * 3600
         except KeyError:
-            logger.info('nano33_mode')
+            logger.info('no fog data')
             pass
-        data['wx'] = data['wx'] * 3600
-        data['wy'] = data['wy'] * 3600
-        data['wz'] = data['wz'] * 3600
+        try:
+            data['wx'] = data['wx'] * 3600
+            data['wy'] = data['wy'] * 3600
+            data['wz'] = data['wz'] * 3600
+        except KeyError:
+            logger.info('no mems gyro data')
+            pass
         self.datahub.store_df_data(data)
 
     def plot(self):

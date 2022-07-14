@@ -76,10 +76,12 @@ class pigImuReader(QThread):
     def __init__(self, portName: str = "None", boolCaliw=False, boolCalia=False, baudRate: int = 230400,
                  debug_en: bool = 0):
         super(pigImuReader, self).__init__()
+        self.__carry = 0
         self.nano33_wz_kal = filter.kalman_1D()
         # self.pig_wz_kal = filter.kalman_1D()
         self.__isCali_a = boolCalia
         self.__isCali_w = boolCaliw
+        self.dataRate = 100.0
         self.sf_a = 1
         self.sf_b = 0
         self.isKal = False
@@ -125,6 +127,14 @@ class pigImuReader(QThread):
     def sf_b(self, value):
         self.__sf_b = value
         # print("act.sf_b: ", self.__sf_b)
+
+    @property
+    def dataRate(self):
+        return self.__dataRate
+
+    @dataRate.setter
+    def dataRate(self, val):
+        self.__dataRate = val
 
     @property
     def isKal(self):
@@ -266,6 +276,7 @@ class pigImuReader(QThread):
         self.__datacnt += 1
         if bool(gps_still_alive):
             self.__datacnt = 0
+            self.__carry = 0
         # print(self.__gpstime_old, GPS_TIME, is_gpstime_renew, valid, gps_still_alive)
         self.__gpstime_old = GPS_TIME
         gps_yy = int(GPS_DATE % 100 + 2000)
@@ -274,6 +285,11 @@ class pigImuReader(QThread):
         gps_hh = int(GPS_TIME * 1e-6)
         gps_mm = int((GPS_TIME * 1e-4) % 100)
         gps_ss = int((GPS_TIME * 1e-2) % 100)
+        gps_ss_ext = round(self.__datacnt / self.dataRate, 2)
+        if gps_ss_ext > 60:
+            self.__carry += 1
+            gps_ss_ext -= 60 * self.__carry
+        gps_ss += gps_ss_ext
         # print(gps_yy, gps_MM, gps_dd, gps_hh, gps_mm, gps_ss, self.__datacnt)
 
         imudata = {"NANO33_WX": NANO_WX, "NANO33_WY": NANO_WY, "NANO33_WZ": NANO_WZ,
@@ -282,6 +298,7 @@ class pigImuReader(QThread):
                    'GPS_YEAR': gps_yy, 'GPS_MON': gps_MM, 'GPS_DAY': gps_dd, 'GPS_HOUR': gps_hh,
                    'GPS_MIN': gps_mm, 'GPS_SEC': gps_ss, 'DATA_CNT': self.__datacnt, 'GPS_ALIVE': gps_still_alive
                    }
+        # print(gps_ss)
         # print('valid: ', bool(valid))
 
         return dataPacket, imudata
@@ -372,7 +389,7 @@ class pigImuReader(QThread):
 
             # end of for loop
 
-            imudataArray["TIME"] = imudataArray["TIME"] - t0
+            # imudataArray["TIME"] = imudataArray["TIME"] - t0
 
             self.offset_setting(self.__imuoffset)
             imudataArray = cmn.dictOperation(imudataArray, self.__imuoffset, "SUB", IMU_DATA_STRUCTURE)

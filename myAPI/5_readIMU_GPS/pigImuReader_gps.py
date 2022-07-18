@@ -76,7 +76,8 @@ class pigImuReader(QThread):
     def __init__(self, portName: str = "None", boolCaliw=False, boolCalia=False, baudRate: int = 230400,
                  debug_en: bool = 0):
         super(pigImuReader, self).__init__()
-        self.__carry = 0
+        self.__carry_ss = 0
+        self.__carry_mm = 0
         self.nano33_wz_kal = filter.kalman_1D()
         # self.pig_wz_kal = filter.kalman_1D()
         self.__isCali_a = boolCalia
@@ -276,7 +277,9 @@ class pigImuReader(QThread):
         self.__datacnt += 1
         if bool(gps_still_alive):
             self.__datacnt = 0
-            self.__carry = 0
+            self.__carry_ss = 0
+            self.__carry_mm = 0
+
         # print(self.__gpstime_old, GPS_TIME, is_gpstime_renew, valid, gps_still_alive)
         self.__gpstime_old = GPS_TIME
         gps_yy = int(GPS_DATE % 100 + 2000)
@@ -285,11 +288,16 @@ class pigImuReader(QThread):
         gps_hh = int(GPS_TIME * 1e-6)
         gps_mm = int((GPS_TIME * 1e-4) % 100)
         gps_ss = int((GPS_TIME * 1e-2) % 100)
-        gps_ss_ext = round(self.__datacnt / self.dataRate, 2)
+        gps_ss_ext = round(self.__datacnt / self.dataRate, 2) - 60 * self.__carry_ss
+        # print(gps_ss_ext, self.__datacnt, self.__carry_ss)
         if gps_ss_ext > 60:
-            self.__carry += 1
-            gps_ss_ext -= 60 * self.__carry
+            self.__carry_ss += 1
+        if gps_mm > 60:
+            self.__carry_mm += 1
+
         gps_ss += gps_ss_ext
+        gps_mm += self.__carry_ss
+        gps_hh += self.__carry_mm
         # print(gps_yy, gps_MM, gps_dd, gps_hh, gps_mm, gps_ss, self.__datacnt)
 
         imudata = {"NANO33_WX": NANO_WX, "NANO33_WY": NANO_WY, "NANO33_WZ": NANO_WZ,

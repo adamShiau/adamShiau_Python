@@ -8,7 +8,8 @@ else:
 logger = logging.getLogger(logger_name + '.' + __name__)
 logger.info(__name__ + ' logger start')
 """ ####### end of log stuff creation ########  """
-
+import sys
+sys.path.append("../")
 from PyQt5.QtWidgets import *
 import sys
 from myLib.myGui.graph import *

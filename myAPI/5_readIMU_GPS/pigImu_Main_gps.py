@@ -48,7 +48,7 @@ class mainWindow(QMainWindow):
         self.__portName = None
         self.__skipcnt = 0
         self.__skiptime = 0
-        self.setWindowTitle("pigImuPlot")
+        self.setWindowTitle("AegiverseIMU_SP11")
         self.__connector = Connector()
         self.__isFileOpen = False
         self.top = TOP()
@@ -56,8 +56,10 @@ class mainWindow(QMainWindow):
         self.imudata_file = cmn.data_manager(fnum=0)
         self.pig_cali_menu = calibrationBlock()
         self.analysis_allan = analysis_Allan.analysis_allan_widget(['fog'])
+        # self.analysis_timing_plot = analysis_TimingPlot.analysis_timing_plot_widget(
+        #     ['fog', 'ax', 'ay', 'az', 'T', 'yy', 'MM', 'dd', 'hh', 'mm', 'ss'])
         self.analysis_timing_plot = analysis_TimingPlot.analysis_timing_plot_widget(
-            ['fog', 'ax', 'ay', 'az', 'T', 'yy', 'MM', 'dd', 'hh', 'mm', 'ss'])
+            ['fog', 'T', 'yy', 'MM', 'dd', 'hh', 'mm', 'ss'])
         self.act.isCali = True
         self.menu = self.menuBar()
         self.pig_menu = pig_menu_manager(self.menu, self)
@@ -232,12 +234,18 @@ class mainWindow(QMainWindow):
                          + str(round((t1 - t0) * 1000, 5)) + ", " + str(round((t2 - t1) * 1000, 5))
             cmn.print_debug(debug_info, self.__debug)
 
+            # datalist = [imudata["TIME"], imudata["PIG_WZ"]
+            #     , imudata["ADXL_AX"], imudata["ADXL_AY"], imudata["ADXL_AZ"], imudata["PD_TEMP"]
+            #     , imudata['GPS_YEAR'], imudata['GPS_MON'], imudata['GPS_DAY'], imudata['GPS_HOUR']
+            #     , imudata['GPS_MIN'], imudata['GPS_SEC']
+            #             ]
+            # data_fmt = "%.4f,%.5f,%.5f,%.5f,%.5f,%.1f,%d,%d,%d,%d,%d,%.2f"
             datalist = [imudata["TIME"], imudata["PIG_WZ"]
-                , imudata["ADXL_AX"], imudata["ADXL_AY"], imudata["ADXL_AZ"], imudata["PD_TEMP"]
+                , imudata["PD_TEMP"]
                 , imudata['GPS_YEAR'], imudata['GPS_MON'], imudata['GPS_DAY'], imudata['GPS_HOUR']
                 , imudata['GPS_MIN'], imudata['GPS_SEC']
                         ]
-            data_fmt = "%.4f,%.5f,%.5f,%.5f,%.5f,%.1f,%d,%d,%d,%d,%d,%.2f"
+            data_fmt = "%.4f,%.5f,%.1f,%d,%d,%d,%d,%d,%.2f"
             # print('UTC %d/%d/%d %d:%d:%.2f' % (imudata['GPS_YEAR'][0], imudata['GPS_MON'][0], imudata['GPS_DAY'][0],
             #                                  imudata['GPS_HOUR'][0], imudata['GPS_MIN'][0], gps_secExt[0]))
             gps_time = '%d/%d/%d %d:%d:%.1f' % (imudata['GPS_YEAR'][0], imudata['GPS_MON'][0], imudata['GPS_DAY'][0],
@@ -257,17 +265,17 @@ class mainWindow(QMainWindow):
             self.top.plot1.ax1.setData(imudata["TIME"], imudata["PIG_WZ"] * factor)
         else:
             self.top.plot1.ax1.clear()
-        if self.top.plot1_showWz_cb.cb_2.isChecked():
-            self.top.plot1.ax2.setData(imudata["TIME"], imudata["NANO33_WZ"] * factor)
-        else:
-            self.top.plot1.ax2.clear()
+        # if self.top.plot1_showWz_cb.cb_2.isChecked():
+        #     self.top.plot1.ax2.setData(imudata["TIME"], imudata["NANO33_WZ"] * factor)
+        # else:
+        #     self.top.plot1.ax2.clear()
 
-        self.top.plot2.ax.setData(imudata["ADXL_AX"])
-        self.top.plot2.title = 'NANO33_AX'
-        self.top.plot3.ax.setData(imudata["ADXL_AY"])
-        self.top.plot4.ax.setData(imudata["ADXL_AZ"])
-        self.top.plot5.ax.setData(imudata["NANO33_WX"])
-        self.top.plot6.ax.setData(imudata["NANO33_WY"])
+        # self.top.plot2.ax.setData(imudata["ADXL_AX"])
+        # self.top.plot2.title = 'NANO33_AX'
+        # self.top.plot3.ax.setData(imudata["ADXL_AY"])
+        # self.top.plot4.ax.setData(imudata["ADXL_AZ"])
+        # self.top.plot5.ax.setData(imudata["NANO33_WX"])
+        # self.top.plot6.ax.setData(imudata["NANO33_WY"])
 
 
 if __name__ == "__main__":

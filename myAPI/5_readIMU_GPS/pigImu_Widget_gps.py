@@ -34,7 +34,7 @@ class pigImuWidget(QWidget):
         self.stop_bt = QPushButton("stop")
         self.stop_bt.setEnabled(False)
         self.save_block = dataSaveBlock("save data")
-        self.para_block = lineEditBlock('parameter configuration file', le_name='parameters_SP9')
+        self.para_block = lineEditBlock('parameter configuration file', le_name='parameters_SP11')
         self.gpstime_lb = displayOneBlock('GPS TIME UTC')
         self.buffer_lb = displayOneBlock('Buffer Size')
         self.pd_temp_lb = displayOneBlock('PD Temp.')
@@ -60,7 +60,8 @@ class pigImuWidget(QWidget):
         layout.addWidget(self.pd_temp_lb, 1, 5, 1, 1)
         layout.addWidget(self.data_rate_lb, 1, 6, 1, 2)
         layout.addWidget(self.logo_lb, 0, 13, 2, 7)
-        layout.addWidget(self.kal_filter_rb, 0, 4, 1, 1)
+        # layout.addWidget(self.para_block, 0, 4, 1, 1)
+        # layout.addWidget(self.kal_filter_rb, 0, 4, 1, 1)
         layout.addWidget(self.plot1, 2, 0, 10, 10)
         layout.addWidget(self.plot1_showWz_cb, 1, 2, 1, 2)
         layout.addWidget(self.plot1_unit_rb, 1, 0, 1, 2)
@@ -80,7 +81,7 @@ class pigImuWidget(QWidget):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    w = memsImuWidget()
+    w = pigImuWidget()
 
     w.show()
     app.exec_()

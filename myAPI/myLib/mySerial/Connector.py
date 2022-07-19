@@ -125,6 +125,9 @@ class Connector:
 
     # End of Connector::readBinaryList
 
+    def read(self):
+        return self.__ser.read()
+
     def readInputBuffer(self):
         # print("input buffer: %d" % self.__ser.in_waiting)
         return self.__ser.in_waiting
@@ -158,7 +161,7 @@ if __name__ == "__main__":
     ser = Connector("COM5", 230400)
     ser.connect()
     ser.flushInputBuffer()
-
+    ser.write([5, 0, 0, 0, 1])
     '''for sparrow test
     ser.write([6, 0, 0, 0, 3])
     time.sleep(1)
@@ -166,18 +169,21 @@ if __name__ == "__main__":
     '''
 
     try:
-        while 1:
-            # if ser.readInputBuffer() > 0:
-            new = time.perf_counter_ns()
+        while True:
             print("buf: ", ser.readInputBuffer())
-            print(ser.readBinaryList(73))
-            # print(ser.readBinaryList(16))
-            print("%.1f\n" % ((new - old_time) * 1e-3))
-            old_time = new
-            # time.sleep(0.001)
+            if ser.readInputBuffer() > 0:
+                print('rd: ', ser.read())
+            # new = time.perf_counter_ns()
+            # print("buf: ", ser.readInputBuffer())
+            # if ser.readInputBuffer() > 29:
+            #     print(ser.readBinaryList(29))
+            # else:
+            #     print('wait buf: ', ser.readInputBuffer())
+            # print("%.1f\n" % ((new - old_time) * 1e-3))
+            # old_time = new
 
     except KeyboardInterrupt:
-        # ser.write([5, 0, 0, 0, 4])
+        ser.write([5, 0, 0, 0, 4])
         # ser.write([6, 0, 0, 0, 4])
         ser.disconnect()
     pass

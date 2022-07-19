@@ -184,6 +184,7 @@ class mainWindow(QMainWindow):
         self.imudata["NANO33_AX"] = np.append(self.imudata["NANO33_AX"], imudata["NANO33_AX"])
         self.imudata["NANO33_AY"] = np.append(self.imudata["NANO33_AY"], imudata["NANO33_AY"])
         self.imudata["NANO33_AZ"] = np.append(self.imudata["NANO33_AZ"], imudata["NANO33_AZ"])
+        # print(len(self.imudata["TIME"]))
         if len(self.imudata["TIME"]) > 1000:
             self.imudata["TIME"] = self.imudata["TIME"][self.act.arrayNum:self.act.arrayNum + 1000]
             self.imudata["ADXL_AX"] = self.imudata["ADXL_AX"][self.act.arrayNum:self.act.arrayNum + 1000]

@@ -163,6 +163,7 @@ class mainWindow(QMainWindow):
         self.imudata_file.name = file_name
         self.imudata_file.open(self.top.save_block.rb.isChecked())
         self.imudata_file.write_line('time,wx,wy,wz,ax,ay,az')
+        time.sleep(2)
 
     def stop(self):
         self.act.isRun = False

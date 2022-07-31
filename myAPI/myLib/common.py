@@ -322,7 +322,7 @@ class data_manager:
 
     def open(self, status):
         self.__isopen, self.__fd = file_manager(name=self.__name__, isopen=status, mode="w", fnum=self.__fnum__)
-        # print("in open:", self.__fd)
+        print("in open:", self.__fd)
         if self.__isopen:
             date_now = datetime.now().strftime("%Y/%m/%d %H:%M:%S")
             self.__fd.writelines('#' + date_now + '\n')

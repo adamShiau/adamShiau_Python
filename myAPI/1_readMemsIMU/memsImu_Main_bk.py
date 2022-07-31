@@ -28,7 +28,6 @@ from myLib.mySerial.Connector import Connector
 from myLib.myGui.pig_parameters_widget import pig_parameters_widget
 from myLib.myGui.pig_menu_manager import pig_menu_manager
 from myLib.myGui import analysis_Allan, analysis_TimingPlot
-from myLib.myGui import autoSave
 from PyQt5.QtWidgets import *
 from memsImu_Widget import memsImuWidget as TOP
 from memsImuReader import memsImuReader as ACTION
@@ -49,8 +48,7 @@ class mainWindow(QMainWindow):
         self.__isFileOpen = False
         self.top = TOP()
         self.act = ACTION()
-        # self.imudata_file = cmn.data_manager(fnum=0)
-        self.imudata_file_auto = autoSave.atSave_PC(fnum=0)
+        self.imudata_file = cmn.data_manager(fnum=0)
         self.pig_cali_menu = calibrationBlock()
         self.analysis_allan = analysis_Allan.analysis_allan_widget(['wx', 'wy', 'wz'])
         self.analysis_timing_plot = analysis_TimingPlot.analysis_timing_plot_widget(['wx', 'wy', 'wz', 'ax', 'ay', 'az'])
@@ -161,23 +159,16 @@ class mainWindow(QMainWindow):
         self.act.readIMU()
         self.act.isRun = True
         self.act.start()
-        file_name = self.top.save_block.le_filename.text()
-        # self.imudata_file.name = file_name
-        # self.imudata_file.open(self.top.save_block.rb.isChecked())
-        # self.imudata_file.write_line('time,wx,wy,wz,ax,ay,az')
-        self.imudata_file_auto.data_path = file_name
-        # self.imudata_file_auto.delete_hour_file(self.top.save_block.rb.isChecked())
-        self.imudata_file_auto.start = True
-        self.imudata_file_auto.create_data_folder(self.top.save_block.rb.isChecked())
-        self.imudata_file_auto.auto_create_folder(self.top.save_block.rb.isChecked())
-        self.imudata_file_auto.write_line('time,wx,wy,wz,ax,ay,az')
+        file_name = self.top.save_block.le_filename.text() + self.top.save_block.le_ext.text()
+        self.imudata_file.name = file_name
+        self.imudata_file.open(self.top.save_block.rb.isChecked())
+        self.imudata_file.write_line('time,wx,wy,wz,ax,ay,az')
         time.sleep(2)
 
     def stop(self):
         self.act.isRun = False
         self.top.save_block.rb.setChecked(False)
-        # self.imudata_file.close()
-        self.imudata_file_auto.close_hour_folder()
+        self.imudata_file.close()
 
     def collectData(self, imudata):
         input_buf = self.act.readInputBuffer()
@@ -214,12 +205,9 @@ class mainWindow(QMainWindow):
         datalist = [imudata["TIME"], imudata["NANO33_WX"], imudata["NANO33_WY"], imudata["NANO33_WZ"]
             , imudata["NANO33_AX"], imudata["NANO33_AY"], imudata["NANO33_AZ"]]
         data_fmt = "%.4f,%.5f,%.5f,%.5f,%.5f,%.5f,%.5f"
-        # self.imudata_file.saveData(datalist, data_fmt)
-        self.imudata_file_auto.saveData(datalist, data_fmt)
-        self.imudata_file_auto.auto_create_folder(self.top.save_block.rb.isChecked())
+        self.imudata_file.saveData(datalist, data_fmt)
         self.plotdata(self.imudata)
         self.printUpdateRate(self.imudata["TIME"])
-
         # print(len(self.imudata["TIME"]))
 
     def plotdata(self, imudata):

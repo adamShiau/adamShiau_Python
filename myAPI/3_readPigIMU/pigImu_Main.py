@@ -207,6 +207,7 @@ class mainWindow(QMainWindow):
             self.imudata["NANO33_WY"] = np.append(self.imudata["NANO33_WY"], imudata["NANO33_WY"])
             self.imudata["NANO33_WZ"] = np.append(self.imudata["NANO33_WZ"], imudata["NANO33_WZ"])
             self.imudata["PIG_WZ"] = np.append(self.imudata["PIG_WZ"], imudata["PIG_WZ"])
+            self.imudata["PIG_ERR"] = np.append(self.imudata["PIG_ERR"], imudata["PIG_ERR"])
             self.imudata["PD_TEMP"] = np.append(self.imudata["PD_TEMP"], imudata["PD_TEMP"])
             # print(len(self.imudata["TIME"]), end=", ")
             if len(self.imudata["TIME"]) > 1000:
@@ -218,6 +219,7 @@ class mainWindow(QMainWindow):
                 self.imudata["NANO33_WY"] = self.imudata["NANO33_WY"][self.act.arrayNum:self.act.arrayNum + 1000]
                 self.imudata["NANO33_WZ"] = self.imudata["NANO33_WZ"][self.act.arrayNum:self.act.arrayNum + 1000]
                 self.imudata["PIG_WZ"] = self.imudata["PIG_WZ"][self.act.arrayNum:self.act.arrayNum + 1000]
+                self.imudata["PIG_ERR"] = self.imudata["PIG_ERR"][self.act.arrayNum:self.act.arrayNum + 1000]
                 self.imudata["PD_TEMP"] = self.imudata["PD_TEMP"][self.act.arrayNum:self.act.arrayNum + 1000]
             t2 = time.perf_counter()
             debug_info = "MAIN: ," + str(input_buf) + ", " + str(round((t2 - t0) * 1000, 5)) + ", " \
@@ -241,6 +243,7 @@ class mainWindow(QMainWindow):
 
         if self.top.plot1_showWz_cb.cb_1.isChecked():
             self.top.plot1.ax1.setData(imudata["TIME"], imudata["PIG_WZ"] * factor)
+            # self.top.plot1.ax1.setData(imudata["TIME"], imudata["PIG_ERR"])
         else:
             self.top.plot1.ax1.clear()
         if self.top.plot1_showWz_cb.cb_2.isChecked():

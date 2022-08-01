@@ -168,19 +168,16 @@ if __name__ == "__main__":
     ser.write([6, 0, 0, 0, 1])
     '''
 
+    old_time = 0
     try:
         while True:
-            print("buf: ", ser.readInputBuffer())
-            if ser.readInputBuffer() > 0:
-                print('rd: ', ser.read())
-            # new = time.perf_counter_ns()
-            # print("buf: ", ser.readInputBuffer())
-            # if ser.readInputBuffer() > 29:
-            #     print(ser.readBinaryList(29))
-            # else:
-            #     print('wait buf: ', ser.readInputBuffer())
-            # print("%.1f\n" % ((new - old_time) * 1e-3))
-            # old_time = new
+            if ser.readInputBuffer() > 29:
+                print("buf: ", ser.readInputBuffer())
+                new = time.perf_counter_ns()
+                print(ser.readBinaryList(29))
+                print("%.1f\n" % ((new - old_time) * 1e-3))
+                old_time = new
+                cmn.wait_ms(4)
 
     except KeyboardInterrupt:
         ser.write([5, 0, 0, 0, 4])

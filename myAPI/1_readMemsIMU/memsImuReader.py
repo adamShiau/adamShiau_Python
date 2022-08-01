@@ -282,17 +282,16 @@ class memsImuReader(QThread):
                 self.buffer_qt.emit(input_buf)
                 # while self.__Connector.readInputBuffer() < self.arrayNum * 10:
                 taa = time.perf_counter_ns()
-                print('buf_0: ', self.readInputBuffer())
+                # print('buf: ', self.readInputBuffer())
                 while not (self.readInputBuffer() > self.arrayNum):
                     # print(self.__Connector.readInputBuffer())
-                    cmn.wait_ms(100)
-                    print('No input data!: ', self.readInputBuffer())
+                    # cmn.wait_ms(100)
+                    # print('No input data!: ', self.readInputBuffer())
                     pass
-                if self.readInputBuffer() < self.arrayNum*10:
-                    print('wait')
-                    # self.__Connector.flushInputBuffer()
-                    # cmn.wait_ms(50)
-                    print('buf_wait: ', self.readInputBuffer())
+                # if self.readInputBuffer() < self.arrayNum*10:
+                #     print('wait')
+                #     print('buf_wait: ', self.readInputBuffer())
+                # cmn.wait_ms(4)
                 t1 = time.perf_counter()
 
                 dataPacket, imudata = self.getImuData()
@@ -320,8 +319,8 @@ class memsImuReader(QThread):
                              + str(round((t2 - t1) * 1000, 5)) + ", " + str(round((t3 - t2) * 1000, 5)) + ", " \
                              + str(round((t4 - t3) * 1000, 5)) + ", " + str(round((t5 - t4) * 1000, 5))
                 cmn.print_debug(debug_info, self.__debug)
-                print('buf_1: ', self.readInputBuffer(), (time.perf_counter_ns()-taa)*1e-6)
-                print()
+                # print('buf_1: ', self.readInputBuffer(), (time.perf_counter_ns()-taa)*1e-6)
+                # print()
 
             # end of for loop
 

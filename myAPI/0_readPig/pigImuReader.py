@@ -370,8 +370,8 @@ if __name__ == "__main__":
     myImu = pigImuReader(debug_en=False)
     myImu.arrayNum = 2
     myImu.setCallback(myCallBack)
-    myImu.isCali = True
-    myImu.connect(ser, "COM6", 230400)
+    myImu.isCali = False
+    myImu.connect(ser, "COM20", 230400)
     myImu.readIMU()
     myImu.isRun = True
     myImu.start()

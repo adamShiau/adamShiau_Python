@@ -1,92 +1,141 @@
-""" ####### log stuff creation, always on the top ########  """
-import builtins
-import logging
-if hasattr(builtins, 'LOGGER_NAME'):
-    logger_name = builtins.LOGGER_NAME
-else:
-    logger_name = __name__
-logger = logging.getLogger(logger_name + '.' + __name__)
-logger.info(__name__ + ' logger start')
-""" ####### end of log stuff creation ########  """
-
 import sys
-import logging
+import serial
 
 sys.path.append("../")
-from myLib.mySerial.Connector import Connector
-from myLib.mySerial import getData
-from myLib.crcCalculator import crcLib
-from myLib.myFilter import filter
 import time
-from PyQt5.QtCore import QThread, pyqtSignal
 from threading import Thread
-from myLib import common as cmn
 import numpy as np
-import logging
 
-# from pig_parameters import *
+# global variable defined for error correction
+err_correction_data = 0
+crcFailCnt = 0
 
 IMU_DATA_STRUCTURE = {
-    "NANO33_WX": np.zeros(1),
-    "NANO33_WY": np.zeros(1),
-    "NANO33_WZ": np.zeros(1),
-    "ADXL_AX": np.zeros(1),
-    "ADXL_AY": np.zeros(1),
-    "ADXL_AZ": np.zeros(1),
-    "PIG_ERR": np.zeros(1),
+    "RES1": np.zeros(1),
     "PIG_WZ": np.zeros(1),
     "PD_TEMP": np.zeros(1),
-    "TIME": np.zeros(1)
+    "RES2": np.zeros(1)
 }
 
 HEADER_KVH = [0xFE, 0x81, 0xFF, 0x55]
-SENS_ADXL355_8G = 0.0000156
-SENS_NANO33_GYRO_250 = 0.00875
-SENS_NANO33_AXLM_4G = 0.000122
-POS_ADXL355_AX = None
-POS_NANO33_WX = None
 POS_PIG = 4
-old = time.perf_counter_ns()
+
+
+def convert2Unsign_4B(datain):
+    shift_data = (datain[0] << 24 | datain[1] << 16 | datain[2] << 8 | datain[3])
+    return shift_data
+
+
+def convert2Sign_4B(datain):
+    shift_data = (datain[0] << 24 | datain[1] << 16 | datain[2] << 8 | datain[3])
+    if (datain[0] >> 7) == 1:
+        return shift_data - (1 << 32)
+    else:
+        return shift_data
+
+
+def convert2Temperature(datain):
+    temp = datain[0] + (datain[1] >> 7) * 0.5
+    return temp
+
+
+def readPIG(dataPacket, EN=1, POS_TIME=25, sf_a=1.0, sf_b=0, PRINT=0):
+    if EN:
+        temp_time = dataPacket[POS_TIME:POS_TIME + 4]
+        temp_err = dataPacket[POS_TIME + 4:POS_TIME + 8]
+        temp_fog = dataPacket[POS_TIME + 8:POS_TIME + 12]
+        temp_PD_temperature = dataPacket[POS_TIME + 12:POS_TIME + 14]
+        fpga_time = convert2Unsign_4B(temp_time) * 1e-4
+        err_mv = convert2Sign_4B(temp_err) * (4000 / 8192)
+        step_dps = convert2Sign_4B(temp_fog) * sf_a + sf_b
+        PD_temperature = convert2Temperature(temp_PD_temperature)
+    else:
+        fpga_time = 0
+        err_mv = 0
+        step_dps = 0
+        PD_temperature = 0
+    # End of if-condition
+
+    if PRINT:
+        # print()
+        # print(sf_a, sf_b)
+        print(round(fpga_time, 4), end='\t\t')
+        print(round(err_mv, 3), end='\t\t')
+        print(round(step_dps, 3), end='\t\t')
+        print(round(step_dps * 3600, 3), end='\t\t')
+        print(round(PD_temperature, 1))
+    # End of if-condition
+
+    return fpga_time, err_mv, step_dps, PD_temperature
+
+
+def alignHeader_4B(comportObj, header):
+    data = comportObj.read(4)
+    datain = [i for i in data]
+    while 1:
+        if datain == header:
+            return datain
+        else:
+            try:
+                datain[0] = datain[1]
+                datain[1] = datain[2]
+                datain[2] = datain[3]
+                datain[3] = comportObj.readB(1)[0]
+            except IndexError:
+                sys.exit()
+                break
+
+
+def crc_32(message, nBytes):
+    WIDTH = 32
+    TOPBIT = (1 << (WIDTH - 1))
+    POLYNOMIAL = 0x04C11DB7
+    remainder = 0xFFFFFFFF
+    for byte in range(0, nBytes):
+        remainder = remainder ^ (message[byte] << (WIDTH - 8))
+        for bit in range(8, 0, -1):
+            if remainder & TOPBIT:
+                remainder = ((remainder << 1) & 0xFFFFFFFF) ^ POLYNOMIAL
+            else:
+                remainder = (remainder << 1)
+
+    return [remainder >> 24 & 0xFF, remainder >> 16 & 0xFF, remainder >> 8 & 0xFF, remainder & 0xFF]
+
+
+def isCrc32Fail(message, nBytes):
+    return crc_32(message, nBytes) != [0, 0, 0, 0]
+
+
+def errCorrection(isCrcFail, imudata):
+    global err_correction_data, crcFailCnt
+
+    if not isCrcFail:
+        err_correction_data = imudata
+    else:
+        imudata = err_correction_data
+        crcFailCnt += 1
+    return imudata
 
 
 class pigImuReader(Thread):
-    # if not __name__ == "__main__":
-        # imudata_qt = pyqtSignal(object)
-        # imuThreadStop_qt = pyqtSignal()
-        # buffer_qt = pyqtSignal(int)
-
-    def __init__(self, portName: str = "None", boolCaliw=False, boolCalia=False, baudRate: int = 230400,
-                 debug_en: bool = 0):
+    def __init__(self, portName: str = "None", boolCaliw=False, boolCalia=False, baudRate: int = 230400):
         super(pigImuReader, self).__init__()
-        # self.nano33_wz_kal = filter.kalman_1D()
-        # self.pig_wz_kal = filter.kalman_1D()
         self.__isCali_a = boolCalia
         self.__isCali_w = boolCaliw
         self.sf_a = 1
         self.sf_b = 0
-        # self.isKal = False
-        # self.kal_Q = 1
-        # self.kal_R = 1
-        self.isCali = (self.isCali_w or self.isCali_a)
         self.__Connector = None
         self.__portName = portName
         self.__baudRate = baudRate
         self.__isRun = True
-        # self.__isCali = False
         self.__callBack = None
         self.__crcFail = 0
         self.arrayNum = 10
-        # self.__debug = debug_en
         self.__old_imudata = {k: (-1,) * len(IMU_DATA_STRUCTURE.get(k)) for k in set(IMU_DATA_STRUCTURE)}
         self.__imuoffset = {k: np.zeros(1) for k in set(IMU_DATA_STRUCTURE)}
-        # print(not __name__ == "__main__")
-
-    # class constructor
 
     def __del__(self):
-        logger.info("class memsImuReader's destructor called!")
-
-    # End of destructor
+        print("class memsImuReader's destructor called!")
 
     @property
     def sf_a(self):
@@ -95,7 +144,6 @@ class pigImuReader(Thread):
     @sf_a.setter
     def sf_a(self, value):
         self.__sf_a = value
-        print("act.sf_a: ", self.sf_a)
 
     @property
     def sf_b(self):
@@ -104,87 +152,14 @@ class pigImuReader(Thread):
     @sf_b.setter
     def sf_b(self, value):
         self.__sf_b = value
-        # print("act.sf_b: ", self.__sf_b)
-
-    @property
-    def isKal(self):
-        return self.__isKal
-
-    @isKal.setter
-    def isKal(self, en):
-        self.__isKal = en
-        # logger.info("act.isKal: ", self.isKal)
-
-    @property
-    def kal_Q(self):
-        return self.__kal_Q
-
-    @kal_Q.setter
-    def kal_Q(self, Q):
-        self.__kal_Q = Q
-        self.nano33_wz_kal.kal_Q = self.kal_Q
-        self.pig_wz_kal.kal_Q = self.kal_Q
-
-    @property
-    def kal_R(self):
-        return self.__kal_R
-
-    @kal_R.setter
-    def kal_R(self, R):
-        self.__kal_R = R
-        self.nano33_wz_kal.kal_R = self.kal_R
-        self.pig_wz_kal.kal_R = self.kal_R
 
     @property
     def isRun(self):
         return self.__isRun
 
-    # End of memsImuReader::isRun(getter)
-
     @isRun.setter
     def isRun(self, isFlag):
         self.__isRun = isFlag
-
-    # End of ImuReader::isRun(setter)
-
-    @property
-    def isCali(self):
-        return self.__isCali
-
-    # End of memsImuReader::isCali(getter)
-
-    @isCali.setter
-    def isCali(self, isFlag):
-        self.__isCali = isFlag
-        # print("self.__isCali: ", self.__isCali)
-
-    # End of ImuReader::isCali(setter)
-
-    @property
-    def isCali_w(self):
-        return self.__isCali_w
-
-    # End of memsImuReader::isCali_w(getter)
-
-    @isCali_w.setter
-    def isCali_w(self, isFlag):
-        self.__isCali_w = bool(int(isFlag))
-        self.isCali = (self.isCali_w or self.isCali_a)
-
-    # End of ImuReader::isCali_w(setter)
-
-    @property
-    def isCali_a(self):
-        return self.__isCali_a
-
-    # End of memsImuReader::isCali_a(getter)
-
-    @isCali_a.setter
-    def isCali_a(self, isFlag):
-        self.__isCali_a = bool(int(isFlag))
-        self.isCali = (self.isCali_w or self.isCali_a)
-
-    # End of ImuReader::isCali_a(setter)
 
     def writeImuCmd(self, cmd, value):
         if value < 0:
@@ -194,24 +169,20 @@ class pigImuReader(Thread):
         print(cmd, end=', ')
         print([i for i in data])
         self.__Connector.write(data)
-        cmn.wait_ms(150)
-
-    # End of memsImuReader::writeImuCmd
+        time.sleep(0.15)
 
     def connect(self, port, portName, baudRate):
         self.__Connector = port
-        port.portName = portName
-        port.baudRate = baudRate
-        is_open = self.__Connector.connect()
+        self.__Connector.baudrate = baudRate
+        self.__Connector.port = portName
+        self.__Connector.open()
+        is_open = self.__Connector.is_open
         return is_open
-
-    # End of memsImuReader::connectIMU
 
     def disconnect(self):
-        is_open = self.__Connector.disconnect()
+        self.__Connector.close()
+        is_open = self.__Connector.is_open
         return is_open
-
-    # End of memsImuReader::disconnectIMU
 
     def readIMU(self):
         self.writeImuCmd(1, 1)
@@ -222,159 +193,76 @@ class pigImuReader(Thread):
     def setCallback(self, callback):
         self.__callBack = callback
 
-    # End of memsImuReader::setCallback
-
     def getImuData(self):
-        head = getData.alignHeader_4B(self.__Connector, HEADER_KVH)
-        dataPacket = getData.getdataPacket(self.__Connector, head, 18)
-        # print([hex(i) for i in dataPacket])
-        # ADXL_AX, ADXL_AY, ADXL_AZ = cmn.readADXL355(dataPacket, EN=0, PRINT=0, POS_AX=POS_ADXL355_AX,
-        #                                             sf=SENS_ADXL355_8G)
-        NANO_WX, NANO_WY, NANO_WZ, \
-        # NANO_AX, NANO_AY, NANO_AZ = cmn.readNANO33(dataPacket, EN=0, PRINT=0, POS_WX=POS_NANO33_WX,
-        #                                            sf_xlm=SENS_NANO33_AXLM_4G,
-        #                                            sf_gyro=SENS_NANO33_GYRO_250)
-
-        FPGA_TIME, ERR, STEP, PD_TEMP = cmn.readPIG(dataPacket, EN=1, PRINT=0, sf_a=self.sf_a, sf_b=self.sf_b,
-                                                    POS_TIME=POS_PIG)
-        # if not self.isCali:
-        #     if self.isKal:
-        #         NANO_WZ = self.nano33_wz_kal.update(NANO_WZ)
-        #         STEP = self.pig_wz_kal.update(STEP)
-        # t = time.perf_counter()
+        head = alignHeader_4B(self.__Connector, HEADER_KVH)
+        rdata = self.__Connector.read(18)
+        dataPacket = head + [i for i in rdata]
+        FPGA_TIME, ERR, STEP, PD_TEMP = readPIG(dataPacket, EN=1, PRINT=0, sf_a=0.00151990104803339, sf_b=0,
+                                                POS_TIME=POS_PIG)
         t = FPGA_TIME
-        # imudata = {"NANO33_WX": NANO_WX, "NANO33_WY": NANO_WY, "NANO33_WZ": NANO_WZ,
-        #            "ADXL_AX": NANO_AX, "ADXL_AY": ADXL_AY, "ADXL_AZ": ADXL_AZ, "TIME": t,
-        #            "PIG_ERR": ERR, "PIG_WZ": STEP, "PD_TEMP": PD_TEMP
-        #            }
-        imudata = {"TIME": t, "PIG_ERR": ERR, "PIG_WZ": STEP, "PD_TEMP": PD_TEMP}
+        imudata = {"RES1": t, "RES2": ERR, "PIG_WZ": STEP, "PD_TEMP": PD_TEMP}
         return dataPacket, imudata
 
     def readInputBuffer(self):
-        return self.__Connector.readInputBuffer()
-
-    def do_cali(self, dictContainer, cali_times):
-        if self.isCali:
-            temp = {k: np.zeros(1) for k in set(IMU_DATA_STRUCTURE)}
-            print("---calibrating offset start-----")
-            for i in range(cali_times):
-                dataPacket, imudata = self.getImuData()
-                temp = cmn.dictOperation(temp, imudata, "ADD", IMU_DATA_STRUCTURE)
-            temp = {k: temp.get(k) / cali_times for k in set(self.__imuoffset)}
-            print("---calibrating offset stop-----")
-            self.isCali = False
-            return temp
-        else:
-            return dictContainer
+        return self.__Connector.in_waiting
 
     def run(self):
-        logging.basicConfig(level=100)
-        t0 = time.perf_counter()
         while True:
             if not self.isRun:
                 self.stopIMU()
-                # self.imuThreadStop_qt.emit()
                 break
             # End of if-condition
-
-            self.__imuoffset = self.do_cali(self.__imuoffset, 100)
 
             imudataArray = {k: np.empty(0) for k in set(IMU_DATA_STRUCTURE)}
 
             for i in range(self.arrayNum):
-                input_buf = self.readInputBuffer()
-                # self.buffer_qt.emit(input_buf)
-                # while self.__Connector.readInputBuffer() < self.arrayNum * 10:
-                while not self.__Connector.readInputBuffer():
-                    # print(self.__Connector.readInputBuffer())
-                    # print("No input data!")
-                    # cmn.wait_ms(500)
+                while not self.readInputBuffer():
                     pass
-                # t1 = time.perf_counter()
 
                 dataPacket, imudata = self.getImuData()
-                # t2 = time.perf_counter()
-                isCrcFail = crcLib.isCrc32Fail(dataPacket, len(dataPacket))
-                # t3 = time.perf_counter()
-                # err correction
-                imudata = crcLib.errCorrection(isCrcFail, imudata)
-                # end of err correction
-                # t4 = time.perf_counter()
-                # imudataArray = cmn.dictOperation(imudataArray, imudata, "APPEND", IMU_DATA_STRUCTURE)
-                # print('act.loop: ', imudataArray["TIME"], imudata["TIME"])
-                imudataArray["TIME"] = np.append(imudataArray["TIME"], imudata["TIME"])
-                # imudataArray["ADXL_AX"] = np.append(imudataArray["ADXL_AX"], imudata["ADXL_AX"])
-                # imudataArray["ADXL_AY"] = np.append(imudataArray["ADXL_AY"], imudata["ADXL_AY"])
-                # imudataArray["ADXL_AZ"] = np.append(imudataArray["ADXL_AZ"], imudata["ADXL_AZ"])
-                # imudataArray["NANO33_WX"] = np.append(imudataArray["NANO33_WX"], imudata["NANO33_WX"])
-                # imudataArray["NANO33_WY"] = np.append(imudataArray["NANO33_WY"], imudata["NANO33_WY"])
-                # imudataArray["NANO33_WZ"] = np.append(imudataArray["NANO33_WZ"], imudata["NANO33_WZ"])
-                imudataArray["PIG_ERR"] = np.append(imudataArray["PIG_ERR"], imudata["PIG_ERR"])
+                isCrcFail = isCrc32Fail(dataPacket, len(dataPacket))
+                imudata = errCorrection(isCrcFail, imudata)
+                imudataArray["RES1"] = np.append(imudataArray["RES1"], imudata["RES1"])
+                imudataArray["RES2"] = np.append(imudataArray["RES2"], imudata["RES2"])
                 imudataArray["PIG_WZ"] = np.append(imudataArray["PIG_WZ"], imudata["PIG_WZ"])
                 imudataArray["PD_TEMP"] = np.append(imudataArray["PD_TEMP"], imudata["PD_TEMP"])
-                t5 = time.perf_counter()
-
-                # debug_info = "ACT: ," + str(input_buf) + ", " + str(round((t5 - t1) * 1000, 5)) + ", " \
-                #              + str(round((t2 - t1) * 1000, 5)) + ", " + str(round((t3 - t2) * 1000, 5)) + ", " \
-                #              + str(round((t4 - t3) * 1000, 5)) + ", " + str(round((t5 - t4) * 1000, 5))
-                # cmn.print_debug(debug_info, self.__debug)
-
             # end of for loop
-
-            # imudataArray["TIME"] = imudataArray["TIME"] - t0
-
-            self.offset_setting(self.__imuoffset)
-            imudataArray = cmn.dictOperation(imudataArray, self.__imuoffset, "SUB", IMU_DATA_STRUCTURE)
             if self.__callBack is not None:
                 self.__callBack(imudataArray)
-
-            # if not __name__ == "__main__":
-            #     self.imudata_qt.emit(imudataArray)
-            # print(imudataArray)
-
         # end of while loop
 
     # End of memsImuReader::run
 
-    def offset_setting(self, imuoffset):
-        imuoffset["TIME"] = [0]
-        imuoffset["PD_TEMP"] = [0]
-        if not self.isCali_w:
-            imuoffset["NANO33_WX"] = [0]
-            imuoffset["NANO33_WY"] = [0]
-            imuoffset["NANO33_WZ"] = [0]
-            imuoffset["PIG_ERR"] = [0]
-            imuoffset["PIG_WZ"] = [0]
-        if not self.isCali_a:
-            imuoffset["ADXL_AX"] = [0]
-            imuoffset["ADXL_AY"] = [0]
-            imuoffset["ADXL_AZ"] = [0]
+    def send_init_value(self):
+        self.writeImuCmd(8, 135)  # freq
+        self.writeImuCmd(13, 65)  # wait cnt
+        self.writeImuCmd(15, 6)  # avg
+        self.writeImuCmd(9, 4200)  # mod_H
+        self.writeImuCmd(10, -4200)  # mod_L
+        self.writeImuCmd(14, 0)  # err_th
+        self.writeImuCmd(11, 0)  # err_offset
+        self.writeImuCmd(12, 1)  # pol
+        self.writeImuCmd(20, 0)  # cons_step
+        self.writeImuCmd(17, 6)  # g1
+        self.writeImuCmd(18, 5)  # g2
+        self.writeImuCmd(19, 1)  # fb_on
+        self.writeImuCmd(23, 300)  # dac_g
+        self.writeImuCmd(24, 2000)  # data rate
 
 
 def myCallBack(imudata):
-    # global old
-    # new = time.perf_counter_ns()
-    print(imudata)
-    # wx = imudata["NANO33_W"][0]
-    # wy = imudata["NANO33_W"][1]
-    # wz = imudata["NANO33_W"][2]
-    # ax = imudata["ADXL_A"][0]
-    # ay = imudata["ADXL_A"][1]
-    # az = imudata["ADXL_A"][2]
-    # t = imudata["TIME"][0]
-    # print("%.5f %.5f  %.5f  %.5f  %.5f  %.5f  %.5f" % (t, wx, wy, wz, ax, ay, az))
-    # print(imudata["TIME"], imudata["NANO33_W"], imudata["ADXL_A"])
-    # old = new
+    print('%3.1f' % imudata['PD_TEMP'], end=', ')
+    print('%f\n' % imudata['PIG_WZ'])
+    pass
 
 
 if __name__ == "__main__":
-    ser = Connector()
-    myImu = pigImuReader(debug_en=False)
+    ser = serial.Serial()
+    myImu = pigImuReader()
     myImu.setCallback(myCallBack)
-    myImu.arrayNum = 2
-    myImu.setCallback(myCallBack)
-    myImu.isCali = True
-    myImu.connect(ser, "COM6", 230400)
+    myImu.arrayNum = 1
+    myImu.connect(ser, "COM20", 230400)
+    myImu.send_init_value()
     myImu.readIMU()
     myImu.isRun = True
     myImu.start()
@@ -385,5 +273,5 @@ if __name__ == "__main__":
         myImu.isRun = False
         myImu.stopIMU()
         myImu.disconnect()
-        myImu.wait()
+        myImu.join()
         print('KeyboardInterrupt success')

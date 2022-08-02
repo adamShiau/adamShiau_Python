@@ -1,7 +1,7 @@
 import sys
 import serial
 
-sys.path.append("../")
+# sys.path.append("../")
 import time
 from threading import Thread
 import numpy as np
@@ -11,19 +11,17 @@ err_correction_data = 0
 crcFailCnt = 0
 
 IMU_DATA_STRUCTURE = {
-    "RES1": np.zeros(1),
     "PIG_WZ": np.zeros(1),
-    "PD_TEMP": np.zeros(1),
-    "RES2": np.zeros(1)
+    "PD_TEMP": np.zeros(1)
 }
 
 HEADER_KVH = [0xFE, 0x81, 0xFF, 0x55]
 POS_PIG = 4
 
 
-def convert2Unsign_4B(datain):
-    shift_data = (datain[0] << 24 | datain[1] << 16 | datain[2] << 8 | datain[3])
-    return shift_data
+# def convert2Unsign_4B(datain):
+#     shift_data = (datain[0] << 24 | datain[1] << 16 | datain[2] << 8 | datain[3])
+#     return shift_data
 
 
 def convert2Sign_4B(datain):
@@ -41,17 +39,17 @@ def convert2Temperature(datain):
 
 def readPIG(dataPacket, EN=1, POS_TIME=25, sf_a=1.0, sf_b=0, PRINT=0):
     if EN:
-        temp_time = dataPacket[POS_TIME:POS_TIME + 4]
-        temp_err = dataPacket[POS_TIME + 4:POS_TIME + 8]
+        # temp_time = dataPacket[POS_TIME:POS_TIME + 4]
+        # temp_err = dataPacket[POS_TIME + 4:POS_TIME + 8]
         temp_fog = dataPacket[POS_TIME + 8:POS_TIME + 12]
         temp_PD_temperature = dataPacket[POS_TIME + 12:POS_TIME + 14]
-        fpga_time = convert2Unsign_4B(temp_time) * 1e-4
-        err_mv = convert2Sign_4B(temp_err) * (4000 / 8192)
+        # fpga_time = convert2Unsign_4B(temp_time) * 1e-4
+        # err_mv = convert2Sign_4B(temp_err) * (4000 / 8192)
         step_dps = convert2Sign_4B(temp_fog) * sf_a + sf_b
         PD_temperature = convert2Temperature(temp_PD_temperature)
     else:
-        fpga_time = 0
-        err_mv = 0
+        # fpga_time = 0
+        # err_mv = 0
         step_dps = 0
         PD_temperature = 0
     # End of if-condition
@@ -59,14 +57,14 @@ def readPIG(dataPacket, EN=1, POS_TIME=25, sf_a=1.0, sf_b=0, PRINT=0):
     if PRINT:
         # print()
         # print(sf_a, sf_b)
-        print(round(fpga_time, 4), end='\t\t')
-        print(round(err_mv, 3), end='\t\t')
+        # print(round(fpga_time, 4), end='\t\t')
+        # print(round(err_mv, 3), end='\t\t')
         print(round(step_dps, 3), end='\t\t')
         print(round(step_dps * 3600, 3), end='\t\t')
         print(round(PD_temperature, 1))
     # End of if-condition
 
-    return fpga_time, err_mv, step_dps, PD_temperature
+    return step_dps, PD_temperature
 
 
 def alignHeader_4B(comportObj, header):
@@ -82,7 +80,7 @@ def alignHeader_4B(comportObj, header):
                 datain[2] = datain[3]
                 datain[3] = comportObj.readB(1)[0]
             except IndexError:
-                sys.exit()
+                # sys.exit()
                 break
 
 
@@ -118,21 +116,21 @@ def errCorrection(isCrcFail, imudata):
 
 
 class pigImuReader(Thread):
-    def __init__(self, portName: str = "None", boolCaliw=False, boolCalia=False, baudRate: int = 230400):
+    def __init__(self, portName: str = "None", baudRate: int = 230400):
         super(pigImuReader, self).__init__()
-        self.__isCali_a = boolCalia
-        self.__isCali_w = boolCaliw
+        # self.__isCali_a = boolCalia
+        # self.__isCali_w = boolCaliw
         self.sf_a = 1
         self.sf_b = 0
         self.__Connector = None
-        self.__portName = portName
-        self.__baudRate = baudRate
+        # self.__portName = portName
+        # self.__baudRate = baudRate
         self.__isRun = True
         self.__callBack = None
         self.__crcFail = 0
         self.arrayNum = 10
-        self.__old_imudata = {k: (-1,) * len(IMU_DATA_STRUCTURE.get(k)) for k in set(IMU_DATA_STRUCTURE)}
-        self.__imuoffset = {k: np.zeros(1) for k in set(IMU_DATA_STRUCTURE)}
+        # self.__old_imudata = {k: (-1,) * len(IMU_DATA_STRUCTURE.get(k)) for k in set(IMU_DATA_STRUCTURE)}
+        # self.__imuoffset = {k: np.zeros(1) for k in set(IMU_DATA_STRUCTURE)}
 
     def __del__(self):
         print("class memsImuReader's destructor called!")
@@ -197,10 +195,10 @@ class pigImuReader(Thread):
         head = alignHeader_4B(self.__Connector, HEADER_KVH)
         rdata = self.__Connector.read(18)
         dataPacket = head + [i for i in rdata]
-        FPGA_TIME, ERR, STEP, PD_TEMP = readPIG(dataPacket, EN=1, PRINT=0, sf_a=0.00151990104803339, sf_b=0,
+        STEP, PD_TEMP = readPIG(dataPacket, EN=1, PRINT=0, sf_a=0.00151990104803339, sf_b=0,
                                                 POS_TIME=POS_PIG)
-        t = FPGA_TIME
-        imudata = {"RES1": t, "RES2": ERR, "PIG_WZ": STEP, "PD_TEMP": PD_TEMP}
+        # t = FPGA_TIME
+        imudata = {"PIG_WZ": STEP, "PD_TEMP": PD_TEMP}
         return dataPacket, imudata
 
     def readInputBuffer(self):
@@ -222,8 +220,6 @@ class pigImuReader(Thread):
                 dataPacket, imudata = self.getImuData()
                 isCrcFail = isCrc32Fail(dataPacket, len(dataPacket))
                 imudata = errCorrection(isCrcFail, imudata)
-                imudataArray["RES1"] = np.append(imudataArray["RES1"], imudata["RES1"])
-                imudataArray["RES2"] = np.append(imudataArray["RES2"], imudata["RES2"])
                 imudataArray["PIG_WZ"] = np.append(imudataArray["PIG_WZ"], imudata["PIG_WZ"])
                 imudataArray["PD_TEMP"] = np.append(imudataArray["PD_TEMP"], imudata["PD_TEMP"])
             # end of for loop

@@ -17,15 +17,6 @@ import os
 sys.path.append("../../")
 import numpy as np
 import pandas as pd
-import time
-from myLib.myGui import graph
-from myLib.myGui import myLabel
-from myLib.myGui import myComboBox
-from myLib.myGui import myProgressBar
-import myLib.common as cmn
-from PyQt5.QtWidgets import *
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
 
 import matplotlib.pyplot as plt
 
@@ -56,9 +47,13 @@ print('len(wa2): ', len(wa2))
 diff_wa = np.abs(wa2 - wa)
 # plt.figure(3)
 # plt.plot(diff_wa)
+# plt.show()
+
 diff_wa2 = np.abs(wa2 - wa) > 5
 idx1 = np.where(diff_wa2)[0]
 idx_group = np.empty(0)
+
+# breakpoint()
 
 diff_wt = np.abs(wt2 - wt)
 diff_wt2 = np.abs(wt2 - wt) > 5

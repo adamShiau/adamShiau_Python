@@ -18,43 +18,33 @@ class SF:
         self.kal = filter.kalman_1D()
 
     def load_data(self):
-        filename = 'SP10_K_fast' + '.txt'
-        filename2 = 'SP10_K_fast_ixblue' + '.txt'
+        filename = '20220808_sp10_sf' + '.txt'
+        filename2 = '20220808_sp10_sf_ixblue' + '.txt'
         filename3 = 'SP10_K_slow' + '.txt'
         filename4 = 'SP10_K_slow_ixblue' + '.txt'
 
         data_fog = pd.read_csv(filename, comment='#', skiprows=0, chunksize=None)
         data_ixblue = pd.read_csv(filename2, comment='#', skiprows=0, chunksize=None, sep='\t')
         data_fog_slow = pd.read_csv(filename3, comment='#', skiprows=0, chunksize=None)
-        data_ixblue_slow = pd.read_csv(filename4, comment='#', skiprows=0, chunksize=None, sep='\t')
+        # data_ixblue_slow = pd.read_csv(filename4, comment='#', skiprows=0, chunksize=None, sep='\t')
         key1 = data_ixblue.keys()[1]
         key2 = data_ixblue.keys()[2]
         self.ixblue_actual_rate = np.array(data_ixblue[key1])
         self.ixblue_setting_rate = np.array(data_ixblue[key2])
         self.fog_raw = np.array(data_fog['fog'])
 
-        # self.ixblue_actual_rate_slow = np.array(data_ixblue_slow[key1])
-        # self.ixblue_setting_rate_slow = np.array(data_ixblue_slow[key2])
         self.fog_raw_slow = np.array(data_fog_slow['fog'])
         self.fog_raw_slow_x, self.fog_raw_slow = self.filter_data(5000, self.fog_raw_slow[0:-1500])
 
-        # idx_ixblue_set_slow = self.get_data_idx(self.ixblue_setting_rate_slow, EN=False, vth=0.0001)
-        # avg_ixblue_set_slow = self.get_avg(self.ixblue_setting_rate_slow, idx_ixblue_set_slow, EN=False)
 
-        # idx_fog_raw_slow = self.get_data_idx_filter(self.fog_raw_slow, self.fog_raw_slow_x, vth=2.0, EN=True, pts=10)
-        # avg_fog_raw_slow = self.get_avg(self.fog_raw_slow, idx_fog_raw_slow, EN=False)
-
-        # idx_ixblue_act_slow = self.get_data_idx(self.ixblue_actual_rate_slow, EN=True)
-        # avg_ixblue_act_slow = self.get_avg(self.ixblue_actual_rate_slow, idx_ixblue_act_slow, EN=True)
-
-        idx_ixblue_act = self.get_data_idx(self.ixblue_actual_rate)
-        avg_ixblue_act = self.get_avg(self.ixblue_actual_rate, idx_ixblue_act)
+        idx_ixblue_act = self.get_data_idx(self.ixblue_actual_rate, EN=False)
+        avg_ixblue_act = self.get_avg(self.ixblue_actual_rate, idx_ixblue_act, EN=False)
 
         idx_ixblue_set = self.get_data_idx(self.ixblue_setting_rate)
         avg_ixblue_set = self.get_avg(self.ixblue_setting_rate, idx_ixblue_set)
 
-        idx_fog_raw = self.get_data_idx(self.fog_raw, vth=14000, EN=False)
-        avg_fog_raw = self.get_avg(self.fog_raw, idx_fog_raw)
+        idx_fog_raw = self.get_data_idx(self.fog_raw, vth=50, EN=True, pts=5)
+        avg_fog_raw = self.get_avg(self.fog_raw, idx_fog_raw, EN=True)
 
         self.sf_fitting(avg_ixblue_act[0:14], avg_ixblue_set[0:14])
         # a, b = self.sf_fitting(avg_fog_raw[0:14], avg_ixblue_act[0:14])
@@ -91,9 +81,11 @@ class SF:
         # print('sf_a: ', sf_a)
         fog = fog_raw * a + b
         fog_slow = (fog_slow_raw * a + b) * 3600
+        rate_max = np.max(ixblue)
+        print('rotation rate max [dps]: ', rate_max)
         for i in range(0, len(ixblue)):
             # print(i)
-            deviation = np.append(deviation, ((fog[i] - ixblue[i]) / ixblue[i]) * 1e6)
+            deviation = np.append(deviation, ((fog[i] - ixblue[i]) / rate_max) * 1e6)
         # print(deviation)
         plt.subplot(221)
         # fig, ax1 = plt.subplots()
@@ -150,6 +142,12 @@ class SF:
         diff_data_bool = diff_data > vth
         idx = np.where(diff_data_bool)[0]
         idx_group = np.empty(0)
+        if EN:
+            plt.subplot(121)
+            plt.plot(data, '*-')
+            plt.subplot(122)
+            plt.plot(diff_data)
+            plt.show()
 
         for i in range(0, len(diff_data_bool) - 1):
             if (diff_data_bool[i]) and (not diff_data_bool[i + 1]):
@@ -161,13 +159,13 @@ class SF:
             print(idx_group)
             print(idx_group2)
             print(len(idx_group2))
-        if EN:
-            plt.subplot(121)
-            plt.plot(data, '*-')
-            plt.subplot(122)
-            plt.plot(diff_data)
-            plt.plot(idx_group, np.ones(len(idx_group)), '*-')
-            plt.show()
+        # if EN:
+            # plt.subplot(121)
+            # plt.plot(data, '*-')
+            # plt.subplot(122)
+            # plt.plot(diff_data)
+            # plt.plot(idx_group, np.ones(len(idx_group)), '*-')
+            # plt.show()
         return idx_group2
 
     def get_avg(self, data, idx_group, EN=False):

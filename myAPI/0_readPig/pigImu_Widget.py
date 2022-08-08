@@ -62,11 +62,11 @@ class pigImuWidget(QWidget):
         layout.addWidget(self.plot1, 2, 0, 10, 10)
         layout.addWidget(self.plot1_showWz_cb, 1, 2, 1, 2)
         layout.addWidget(self.plot1_unit_rb, 1, 0, 1, 2)
-        layout.addWidget(self.plot2, 2, 10, 2, 10)
-        layout.addWidget(self.plot3, 4, 10, 2, 10)
-        layout.addWidget(self.plot4, 6, 10, 2, 10)
-        layout.addWidget(self.plot5, 8, 10, 2, 10)
-        layout.addWidget(self.plot6, 10, 10, 2, 10)
+        layout.addWidget(self.plot2, 2, 10, 10, 10)
+        # layout.addWidget(self.plot3, 4, 10, 2, 10)
+        # layout.addWidget(self.plot4, 6, 10, 2, 10)
+        # layout.addWidget(self.plot5, 8, 10, 2, 10)
+        # layout.addWidget(self.plot6, 10, 10, 2, 10)
 
         self.setLayout(layout)
 

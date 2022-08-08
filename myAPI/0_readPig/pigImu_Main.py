@@ -198,6 +198,7 @@ class mainWindow(QMainWindow):
             # imudata = cmn.dictOperation(imudata, imuoffset, "SUB", IMU_DATA_STRUCTURE)
             self.printPdTemperature(imudata["PD_TEMP"][0])
             t1 = time.perf_counter()
+            sample = 1000
             # self.imudata = cmn.dictOperation(self.imudata, imudata, "APPEND", IMU_DATA_STRUCTURE)
             self.imudata["TIME"] = np.append(self.imudata["TIME"], imudata["TIME"])
             self.imudata["ADXL_AX"] = np.append(self.imudata["ADXL_AX"], imudata["ADXL_AX"])
@@ -208,22 +209,24 @@ class mainWindow(QMainWindow):
             self.imudata["NANO33_WZ"] = np.append(self.imudata["NANO33_WZ"], imudata["NANO33_WZ"])
             self.imudata["PIG_WZ"] = np.append(self.imudata["PIG_WZ"], imudata["PIG_WZ"])
             self.imudata["PD_TEMP"] = np.append(self.imudata["PD_TEMP"], imudata["PD_TEMP"])
+            self.imudata["PIG_ERR"] = np.append(self.imudata["PIG_ERR"], imudata["PIG_ERR"])
             # print(len(self.imudata["TIME"]), end=", ")
-            if len(self.imudata["TIME"]) > 1000:
-                self.imudata["TIME"] = self.imudata["TIME"][self.act.arrayNum:self.act.arrayNum + 1000]
-                self.imudata["ADXL_AX"] = self.imudata["ADXL_AX"][self.act.arrayNum:self.act.arrayNum + 1000]
-                self.imudata["ADXL_AY"] = self.imudata["ADXL_AY"][self.act.arrayNum:self.act.arrayNum + 1000]
-                self.imudata["ADXL_AZ"] = self.imudata["ADXL_AZ"][self.act.arrayNum:self.act.arrayNum + 1000]
-                self.imudata["NANO33_WX"] = self.imudata["NANO33_WX"][self.act.arrayNum:self.act.arrayNum + 1000]
-                self.imudata["NANO33_WY"] = self.imudata["NANO33_WY"][self.act.arrayNum:self.act.arrayNum + 1000]
-                self.imudata["NANO33_WZ"] = self.imudata["NANO33_WZ"][self.act.arrayNum:self.act.arrayNum + 1000]
-                self.imudata["PIG_WZ"] = self.imudata["PIG_WZ"][self.act.arrayNum:self.act.arrayNum + 1000]
-                self.imudata["PD_TEMP"] = self.imudata["PD_TEMP"][self.act.arrayNum:self.act.arrayNum + 1000]
+            if len(self.imudata["TIME"]) > sample:
+                self.imudata["TIME"] = self.imudata["TIME"][self.act.arrayNum:self.act.arrayNum + sample]
+                self.imudata["ADXL_AX"] = self.imudata["ADXL_AX"][self.act.arrayNum:self.act.arrayNum + sample]
+                self.imudata["ADXL_AY"] = self.imudata["ADXL_AY"][self.act.arrayNum:self.act.arrayNum + sample]
+                self.imudata["ADXL_AZ"] = self.imudata["ADXL_AZ"][self.act.arrayNum:self.act.arrayNum + sample]
+                self.imudata["NANO33_WX"] = self.imudata["NANO33_WX"][self.act.arrayNum:self.act.arrayNum + sample]
+                self.imudata["NANO33_WY"] = self.imudata["NANO33_WY"][self.act.arrayNum:self.act.arrayNum + sample]
+                self.imudata["NANO33_WZ"] = self.imudata["NANO33_WZ"][self.act.arrayNum:self.act.arrayNum + sample]
+                self.imudata["PIG_WZ"] = self.imudata["PIG_WZ"][self.act.arrayNum:self.act.arrayNum + sample]
+                self.imudata["PIG_ERR"] = self.imudata["PIG_ERR"][self.act.arrayNum:self.act.arrayNum + sample]
+                self.imudata["PD_TEMP"] = self.imudata["PD_TEMP"][self.act.arrayNum:self.act.arrayNum + sample]
             t2 = time.perf_counter()
             debug_info = "MAIN: ," + str(input_buf) + ", " + str(round((t2 - t0) * 1000, 5)) + ", " \
                          + str(round((t1 - t0) * 1000, 5)) + ", " + str(round((t2 - t1) * 1000, 5))
             cmn.print_debug(debug_info, self.__debug)
-            # print(imudata["PIG_WZ"])
+            print(imudata["PIG_WZ"])
             datalist = [imudata["TIME"], imudata["PIG_WZ"], imudata["PD_TEMP"]]
             data_fmt = "%.5f,%.5f,%.1f"
             self.imudata_file.saveData(datalist, data_fmt)
@@ -247,11 +250,11 @@ class mainWindow(QMainWindow):
         else:
             self.top.plot1.ax2.clear()
 
-        self.top.plot2.ax.setData(imudata["ADXL_AX"])
-        self.top.plot3.ax.setData(imudata["ADXL_AY"])
-        self.top.plot4.ax.setData(imudata["ADXL_AZ"])
-        self.top.plot5.ax.setData(imudata["NANO33_WX"])
-        self.top.plot6.ax.setData(imudata["NANO33_WY"])
+        self.top.plot2.ax.setData(imudata["PIG_ERR"])
+        # self.top.plot3.ax.setData(imudata["ADXL_AY"])
+        # self.top.plot4.ax.setData(imudata["ADXL_AZ"])
+        # self.top.plot5.ax.setData(imudata["NANO33_WX"])
+        # self.top.plot6.ax.setData(imudata["NANO33_WY"])
 
 
 if __name__ == "__main__":

@@ -18,8 +18,8 @@ class SF:
         self.kal = filter.kalman_1D()
 
     def load_data(self):
-        filename = '20220808_sp10_sf' + '.txt'
-        filename2 = '20220808_sp10_sf_ixblue' + '.txt'
+        filename = 'SP10_K_fast' + '.txt'
+        filename2 = 'SP10_K_fast_ixblue' + '.txt'
         filename3 = 'SP10_K_slow' + '.txt'
         filename4 = 'SP10_K_slow_ixblue' + '.txt'
 
@@ -43,8 +43,8 @@ class SF:
         idx_ixblue_set = self.get_data_idx(self.ixblue_setting_rate)
         avg_ixblue_set = self.get_avg(self.ixblue_setting_rate, idx_ixblue_set)
 
-        idx_fog_raw = self.get_data_idx(self.fog_raw, vth=50, EN=True, pts=5)
-        avg_fog_raw = self.get_avg(self.fog_raw, idx_fog_raw, EN=True)
+        idx_fog_raw = self.get_data_idx(self.fog_raw, vth=14000, EN=False, pts=5)
+        avg_fog_raw = self.get_avg(self.fog_raw, idx_fog_raw, EN=False)
 
         self.sf_fitting(avg_ixblue_act[0:14], avg_ixblue_set[0:14])
         # a, b = self.sf_fitting(avg_fog_raw[0:14], avg_ixblue_act[0:14])

@@ -196,8 +196,8 @@ class pig_parameters_widget(QGroupBox):
 
     def send_FREQ_CMD(self):
         # dt_fpga = 1e3/90.909091e6
-        dt_fpga = 1e3 / 90e6
-        # dt_fpga = 1e3 / 100e6
+        # dt_fpga = 1e3 / 90e6
+        dt_fpga = 1e3 / 100e6
         value = self.freq.spin.value()
         logger.info('set freq: %d', value)
         self.freq.lb.setText(str(round(1 / (2 * (value + 1) * dt_fpga), 2)) + ' KHz')

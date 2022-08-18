@@ -24,8 +24,12 @@ def alignHeader_4B(comportObj, header):
                 datain[1] = datain[2]
                 datain[2] = datain[3]
                 datain[3] = comportObj.readBinaryList(1)[0]
-            except IndexError:
-                logger.error('IndexError: alignHeader_4B')
+            # except IndexError:
+            #     logger.error('IndexError: alignHeader_4B')
+            #     sys.exit()
+            #     break
+            except:
+                logger.error('alignHeader_4B Error')
                 sys.exit()
                 break
 

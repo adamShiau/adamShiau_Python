@@ -59,7 +59,7 @@ class mainWindow(QMainWindow):
         self.pig_menu = pig_menu_manager(self.menu, self)
         self.analysis_allan = analysis_Allan.analysis_allan_widget(['fog'])
         self.analysis_timing_plot = analysis_TimingPlot.analysis_timing_plot_widget(
-            ['fog'])
+            ['fog', 'T'])
         self.linkfunction()
         self.act.arrayNum = 10
         self.mainUI()
@@ -226,7 +226,7 @@ class mainWindow(QMainWindow):
             debug_info = "MAIN: ," + str(input_buf) + ", " + str(round((t2 - t0) * 1000, 5)) + ", " \
                          + str(round((t1 - t0) * 1000, 5)) + ", " + str(round((t2 - t1) * 1000, 5))
             cmn.print_debug(debug_info, self.__debug)
-            print(imudata["PIG_WZ"])
+            # print(imudata["PIG_WZ"])
             datalist = [imudata["TIME"], imudata["PIG_WZ"], imudata["PD_TEMP"]]
             data_fmt = "%.5f,%.5f,%.1f"
             self.imudata_file.saveData(datalist, data_fmt)

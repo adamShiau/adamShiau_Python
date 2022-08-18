@@ -1,6 +1,5 @@
 import sys
 sys.path.append('../../../')
-# from EncoderConnector import myEncoderConnector
 from myLib.EncoderConnector.EncoderConnector import myEncoderConnector
 from PyQt5.QtCore import QThread, pyqtSignal
 

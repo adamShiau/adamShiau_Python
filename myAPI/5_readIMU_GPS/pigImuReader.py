@@ -57,7 +57,7 @@ class pigImuReader(QThread):
         self.__isCali_w = boolCaliw
         self.sf_a = 1
         self.sf_b = 0
-        self.isKal = False
+        self.isKal = True
         self.kal_Q = 1
         self.kal_R = 1
         self.isCali = (self.isCali_w or self.isCali_a)

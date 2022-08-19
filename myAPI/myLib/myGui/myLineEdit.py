@@ -36,6 +36,23 @@ class dataSaveBlock(QGroupBox):
         self.setLayout(layout)
 
 
+class dataSaveBlock_noExt(QGroupBox):
+    def __init__(self, title="", path='.'):
+        super(dataSaveBlock_noExt, self).__init__()
+        self.setTitle(title)
+        self.setFont(QFont('Arial', 10))
+        self.rb = QRadioButton("save")
+        self.le_filename = QLineEdit(path)
+        self.le_filename.setFixedWidth(210)
+        self.rb.setChecked(False)
+
+        layout = QGridLayout()
+        layout.addWidget(self.rb, 0, 0, 1, 1)
+        layout.addWidget(self.le_filename, 0, 1, 1, 1)
+        # layout.addWidget(self.le_ext, 0, 4, 1, 1)
+        self.setLayout(layout)
+
+
 class btnLineEditBlock(QGroupBox):
     def __init__(self, title='', bt_name='', le_name=''):
         super(btnLineEditBlock, self).__init__()

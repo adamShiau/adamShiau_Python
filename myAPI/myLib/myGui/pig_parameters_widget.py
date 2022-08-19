@@ -101,6 +101,7 @@ class pig_parameters_widget(QGroupBox):
 
         self.initUI()
         initPara = self.__par_manager.check_file_exist()
+        print(fileName)
         self.set_init_value(initPara)
         self.linkfunction()
 

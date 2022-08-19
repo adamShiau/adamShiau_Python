@@ -59,6 +59,7 @@ class Connector:
 
         for i in range(portNum):
             portlist = np.append(portlist, portlistInfo[i])
+            # print(portlistInfo[i].device)
 
         return portNum, portlist
 

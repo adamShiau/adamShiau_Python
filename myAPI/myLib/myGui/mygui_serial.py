@@ -19,6 +19,7 @@ from myLib import common as cmn
 
 PRINT_DEBUG = 0
 
+
 class usbConnect():
     def __init__(self, group_name='Connect COM port'):
 
@@ -49,20 +50,102 @@ class usbConnect():
         self.__portList = ports
         self.cb.clear()
         logger.debug('port_num: %d' % num)
-        logger.debug('ports: %s' % ports[0])
-        logger.debug(dir(ports[0]))
-        logger.debug('ports.description: %s' % ports[0].description)
-        logger.debug('ports.device: %s' % ports[0].device)
-        logger.debug('ports.name: %s' % ports[0].name)
+        # logger.debug('ports: %s' % ports[0])
+        # logger.debug(dir(ports[0]))
+        # logger.debug('ports.description: %s' % ports[0].description)
+        # logger.debug('ports.device: %s' % ports[0].device)
+        # logger.debug('ports.name: %s' % ports[0].name)
         if num > 0:
             for i in range(num):
                 self.cb.addItem(ports[i].device)
                 logger.debug('port_name: %s' % ports[i].device)
+                logger.debug('ports.description: %s' % ports[i].description)
+                logger.debug('ports.hwid: %s' % ports[i].hwid)
+                logger.debug('ports.serial_number: %s' % ports[i].serial_number)
+                logger.debug('ports.product: %s' % ports[i].product)
+                logger.debug('ports.manufacturer: %s' % ports[i].manufacturer)
+                logger.debug('ports.location: %s\n' % ports[i].location)
 
     def selectPort(self):
         idx = self.cb.currentIndex()
         self.lb_comDisp.setText(self.__portList[idx].description)
         return self.__portList[idx].device
+
+    def updateStatusLabel(self, is_open):
+        self.bt_connect.setEnabled(not is_open)
+        self.bt_disconnect.setEnabled(is_open)
+
+        if is_open:
+            self.SetConnectText(Qt.blue, "is connected")
+            # self.lb_status.setText("is connected")
+        else:
+            self.SetConnectText(Qt.red, "is disconnected")
+            # self.lb_status.setText("is disconnected")
+
+    def show(self):
+        QB = self.layout()
+        QB.show()
+
+    def SetConnectText(self, color, text):
+        pe = QPalette()
+        pe.setColor(QPalette.WindowText, color)
+        self.lb_status.setPalette(pe)
+        self.lb_status.setFont(QFont("Arial", 12))
+        self.lb_status.setText(text)
+        # self.lb_status.setAlignment(Qt.AlignCenter)
+        # self.lb_comDisp.show()
+
+
+class usbConnect_auto():
+    def __init__(self, group_name='Connect COM port', key1='SP9', key2='SP10', key3='SP11'):
+
+        self.__portList = None
+        self.__groupBox = QGroupBox(group_name)
+        self.__groupBox.setFont(QFont('Arial', 10))
+        self.__key1 = key1
+        self.__key2 = key2
+        self.__key3 = key3
+        self.__port = {key1: '', key2: '', key3: ''}
+        # self.__groupBox.setCheckable(True)
+        self.bt_update = QPushButton("update")
+        self.bt_connect = QPushButton('connect')
+        self.bt_disconnect = QPushButton('disconnect')
+        self.bt_disconnect.setEnabled(False)
+        # self.cb = QComboBox()
+        self.lb_status = QLabel(" ")
+        self.lb_comDisp = QLabel(" ")
+
+    def layout(self):
+        layout = QGridLayout()
+        layout.addWidget(self.bt_update, 0, 0, 1, 1)
+        # layout.addWidget(self.cb, 0, 1, 1, 1)
+        layout.addWidget(self.bt_connect, 0, 1, 1, 1)
+        layout.addWidget(self.bt_disconnect, 0, 2, 1, 1)
+        layout.addWidget(self.lb_comDisp, 1, 0, 1, 2)
+        layout.addWidget(self.lb_status, 1, 2, 1, 2)
+        self.__groupBox.setLayout(layout)
+        return self.__groupBox
+
+    def autoComport(self, num, ports):
+        self.__portList = ports
+        # self.cb.clear()
+        logger.debug('port_num: %d' % num)
+        # port = dict()
+        if num > 0:
+            for i in range(num):
+                if ports[i].serial_number == 'AQ6YNJG3A':  # SP9
+                    self.__port[self.__key1] = ports[i].device
+                elif ports[i].serial_number == 'AG0K5XWMA':  # SP10
+                    self.__port[self.__key2] = ports[i].device
+        logger.debug('autoComport: %s\n' % self.__port)
+        self.showPortName(self.__port)
+        return self.__port
+
+    def showPortName(self, port):
+        # idx = self.cb.currentIndex()
+        self.lb_comDisp.setText(self.__key1 + ':' + port[self.__key1] + ', ' + self.__key2 + ':' + port[self.__key2] +
+                                ', ' + self.__key3 + ':' + port[self.__key3])
+        # return self.__portList[idx].device
 
     def updateStatusLabel(self, is_open):
         self.bt_connect.setEnabled(not is_open)

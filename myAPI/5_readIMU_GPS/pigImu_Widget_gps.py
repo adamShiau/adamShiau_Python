@@ -1,6 +1,7 @@
 """ ####### log stuff creation, always on the top ########  """
 import builtins
 import logging
+
 if hasattr(builtins, 'LOGGER_NAME'):
     logger_name = builtins.LOGGER_NAME
 else:
@@ -9,6 +10,7 @@ logger = logging.getLogger(logger_name + '.' + __name__)
 logger.info(__name__ + ' logger start')
 """ ####### end of log stuff creation ########  """
 import sys
+
 sys.path.append("../")
 from PyQt5.QtWidgets import *
 import sys
@@ -28,13 +30,13 @@ class pigImuWidget(QWidget):
         self.initUI()
 
     def initUI(self):
-        self.usb = usbConnect()
+        self.usb = usbConnect_auto()
         self.read_bt = QPushButton("read")
         self.read_bt.setEnabled(False)
         self.stop_bt = QPushButton("stop")
         self.stop_bt.setEnabled(False)
-        self.save_block = dataSaveBlock("save data")
-        self.para_block = lineEditBlock('parameter configuration file', le_name='parameters_SP11')
+        self.save_block = dataSaveBlock_noExt('Enter File Path')
+        self.para_block = lineEditBlock('parameter configuration file', le_name='parameters_SP10')
         self.gpstime_lb = displayOneBlock('GPS TIME UTC')
         self.buffer_lb = displayOneBlock('Buffer Size')
         self.pd_temp_lb = displayOneBlock('PD Temp.')
@@ -76,7 +78,6 @@ class pigImuWidget(QWidget):
     def setBtnEnable(self, en):
         self.read_bt.setEnabled(en)
         self.stop_bt.setEnabled(en)
-
 
 
 if __name__ == "__main__":

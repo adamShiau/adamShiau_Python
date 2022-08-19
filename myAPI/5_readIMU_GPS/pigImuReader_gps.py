@@ -78,14 +78,14 @@ class pigImuReader(QThread):
         super(pigImuReader, self).__init__()
         self.__carry_ss = 0
         self.__carry_mm = 0
-        self.nano33_wz_kal = filter.kalman_1D()
-        # self.pig_wz_kal = filter.kalman_1D()
+        # self.nano33_wz_kal = filter.kalman_1D()
+        self.pig_wz_kal = filter.kalman_1D()
         self.__isCali_a = boolCalia
         self.__isCali_w = boolCaliw
         self.dataRate = 100.0
         self.sf_a = 1
         self.sf_b = 0
-        self.isKal = False
+        self.isKal = True
         self.kal_Q = 1
         self.kal_R = 1
         self.isCali = (self.isCali_w or self.isCali_a)
@@ -153,8 +153,8 @@ class pigImuReader(QThread):
     @kal_Q.setter
     def kal_Q(self, Q):
         self.__kal_Q = Q
-        self.nano33_wz_kal.kal_Q = self.kal_Q
-        # self.pig_wz_kal.kal_Q = self.kal_Q
+        # self.nano33_wz_kal.kal_Q = self.kal_Q
+        self.pig_wz_kal.kal_Q = self.kal_Q
 
     @property
     def kal_R(self):
@@ -163,8 +163,8 @@ class pigImuReader(QThread):
     @kal_R.setter
     def kal_R(self, R):
         self.__kal_R = R
-        self.nano33_wz_kal.kal_R = self.kal_R
-        # self.pig_wz_kal.kal_R = self.kal_R
+        # self.nano33_wz_kal.kal_R = self.kal_R
+        self.pig_wz_kal.kal_R = self.kal_R
 
     @property
     def isRun(self):
@@ -267,7 +267,7 @@ class pigImuReader(QThread):
         GPS_DATE, GPS_TIME, valid = cmn.readGPS(dataPacket, EN=1, PRINT=0, POS_data=POS_GPS)
         if not self.isCali:
             if self.isKal:
-                NANO_WZ = self.nano33_wz_kal.update(NANO_WZ)
+                STEP = self.pig_wz_kal.update(STEP)
         is_gpstime_renew = (GPS_TIME != self.__gpstime_old)
 
         # t = time.perf_counter()

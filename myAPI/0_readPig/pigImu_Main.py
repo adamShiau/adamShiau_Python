@@ -193,32 +193,19 @@ class mainWindow(QMainWindow):
     def collectData(self, imudata):
         if not self.press_stop:
             # print('collectData: ', imudata['TIME'])
+            # print(imudata)
             input_buf = self.act.readInputBuffer()
             t0 = time.perf_counter()
             # imudata = cmn.dictOperation(imudata, imuoffset, "SUB", IMU_DATA_STRUCTURE)
             self.printPdTemperature(imudata["PD_TEMP"][0])
             t1 = time.perf_counter()
             sample = 1000
-            # self.imudata = cmn.dictOperation(self.imudata, imudata, "APPEND", IMU_DATA_STRUCTURE)
             self.imudata["TIME"] = np.append(self.imudata["TIME"], imudata["TIME"])
-            self.imudata["ADXL_AX"] = np.append(self.imudata["ADXL_AX"], imudata["ADXL_AX"])
-            self.imudata["ADXL_AY"] = np.append(self.imudata["ADXL_AY"], imudata["ADXL_AY"])
-            self.imudata["ADXL_AZ"] = np.append(self.imudata["ADXL_AZ"], imudata["ADXL_AZ"])
-            self.imudata["NANO33_WX"] = np.append(self.imudata["NANO33_WX"], imudata["NANO33_WX"])
-            self.imudata["NANO33_WY"] = np.append(self.imudata["NANO33_WY"], imudata["NANO33_WY"])
-            self.imudata["NANO33_WZ"] = np.append(self.imudata["NANO33_WZ"], imudata["NANO33_WZ"])
             self.imudata["PIG_WZ"] = np.append(self.imudata["PIG_WZ"], imudata["PIG_WZ"])
             self.imudata["PD_TEMP"] = np.append(self.imudata["PD_TEMP"], imudata["PD_TEMP"])
             self.imudata["PIG_ERR"] = np.append(self.imudata["PIG_ERR"], imudata["PIG_ERR"])
-            # print(len(self.imudata["TIME"]), end=", ")
             if len(self.imudata["TIME"]) > sample:
                 self.imudata["TIME"] = self.imudata["TIME"][self.act.arrayNum:self.act.arrayNum + sample]
-                self.imudata["ADXL_AX"] = self.imudata["ADXL_AX"][self.act.arrayNum:self.act.arrayNum + sample]
-                self.imudata["ADXL_AY"] = self.imudata["ADXL_AY"][self.act.arrayNum:self.act.arrayNum + sample]
-                self.imudata["ADXL_AZ"] = self.imudata["ADXL_AZ"][self.act.arrayNum:self.act.arrayNum + sample]
-                self.imudata["NANO33_WX"] = self.imudata["NANO33_WX"][self.act.arrayNum:self.act.arrayNum + sample]
-                self.imudata["NANO33_WY"] = self.imudata["NANO33_WY"][self.act.arrayNum:self.act.arrayNum + sample]
-                self.imudata["NANO33_WZ"] = self.imudata["NANO33_WZ"][self.act.arrayNum:self.act.arrayNum + sample]
                 self.imudata["PIG_WZ"] = self.imudata["PIG_WZ"][self.act.arrayNum:self.act.arrayNum + sample]
                 self.imudata["PIG_ERR"] = self.imudata["PIG_ERR"][self.act.arrayNum:self.act.arrayNum + sample]
                 self.imudata["PD_TEMP"] = self.imudata["PD_TEMP"][self.act.arrayNum:self.act.arrayNum + sample]
@@ -250,11 +237,7 @@ class mainWindow(QMainWindow):
         else:
             self.top.plot1.ax2.clear()
 
-        self.top.plot2.ax.setData(imudata["PIG_ERR"])
-        # self.top.plot3.ax.setData(imudata["ADXL_AY"])
-        # self.top.plot4.ax.setData(imudata["ADXL_AZ"])
-        # self.top.plot5.ax.setData(imudata["NANO33_WX"])
-        # self.top.plot6.ax.setData(imudata["NANO33_WY"])
+        self.top.plot2.ax.setData(imudata["TIME"], imudata["PIG_ERR"])
 
 
 if __name__ == "__main__":

@@ -223,6 +223,7 @@ class mainWindow(QMainWindow):
         # print(len(self.imudata["TIME"]))
 
     def plotdata(self, imudata):
+        nano33_wz = imudata['NANO33_WZ']
 
         if self.top.plot1_unit_rb.btn_status == 'dph':
             factor = 3600
@@ -233,8 +234,12 @@ class mainWindow(QMainWindow):
         #     self.top.plot1.ax1.setData(imudata["TIME"], imudata["PIG_WZ"] * factor)
         # else:
         #     self.top.plot1.ax1.clear()
+        if abs(np.max(nano33_wz)) < 0.5:
+            self.top.plot1.p.setLimits(minYRange=10)
+            # https://stackoverflow.com/questions/66172876/how-do-the-scaling-paramters-of-viewbox-setlimits-work
+
         if self.top.plot1_showWz_cb.cb_2.isChecked():
-            self.top.plot1.ax2.setData(imudata["TIME"], imudata["NANO33_WZ"] * factor)
+            self.top.plot1.ax2.setData(imudata["TIME"], nano33_wz * factor)
         else:
             self.top.plot1.ax2.clear()
 

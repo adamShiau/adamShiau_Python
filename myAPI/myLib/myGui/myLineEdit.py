@@ -43,7 +43,7 @@ class dataSaveBlock_noExt(QGroupBox):
         self.setFont(QFont('Arial', 10))
         self.rb = QRadioButton("save")
         self.le_filename = QLineEdit(path)
-        self.le_filename.setFixedWidth(210)
+        self.le_filename.setFixedWidth(410)
         self.rb.setChecked(False)
 
         layout = QGridLayout()

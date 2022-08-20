@@ -26,16 +26,16 @@ class logo(QLabel):
 
 
 class displayOneBlock(QGroupBox):
-    def __init__(self, name='name'):
+    def __init__(self, name='name', title_size=10, label_size=10):
         super(displayOneBlock, self).__init__()
         self.setTitle(name)
-        self.setFont(QFont('', 10))
+        self.setFont(QFont('', title_size))
         pe = QPalette()
         pe.setColor(QPalette.WindowText, Qt.yellow)
         pe.setColor(QPalette.Window, Qt.black)
         self.lb = QLabel()
         self.lb.setPalette(pe)
-        self.lb.setFont(QFont('Arial', 20))
+        self.lb.setFont(QFont('Arial', label_size))
         self.lb.setAutoFillBackground(True)
         self.lb.setText('buffer')
 

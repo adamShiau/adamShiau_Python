@@ -234,9 +234,8 @@ class mainWindow(QMainWindow):
         #     self.top.plot1.ax1.setData(imudata["TIME"], imudata["PIG_WZ"] * factor)
         # else:
         #     self.top.plot1.ax1.clear()
-        if abs(np.max(nano33_wz)) < 0.5:
-            self.top.plot1.p.setLimits(minYRange=10)
-            # https://stackoverflow.com/questions/66172876/how-do-the-scaling-paramters-of-viewbox-setlimits-work
+        self.top.plot1.p.setLimits(minYRange=10)
+        # https://stackoverflow.com/questions/66172876/how-do-the-scaling-paramters-of-viewbox-setlimits-work
 
         if self.top.plot1_showWz_cb.cb_2.isChecked():
             self.top.plot1.ax2.setData(imudata["TIME"], nano33_wz * factor)

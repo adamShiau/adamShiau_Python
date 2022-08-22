@@ -9,15 +9,14 @@ for i in range(100):
     dd = currentDateAndTime.day
     hh = currentDateAndTime.hour
     mm = currentDateAndTime.minute
-    ss = currentDateAndTime.second
-    us = currentDateAndTime.microsecond
+    ss = currentDateAndTime.second + currentDateAndTime.microsecond*1e-6
     print(currentDateAndTime)
-    print(yy)
+    print(yy, type(yy))
     print(MM)
     print(dd)
     print(hh)
     print(mm)
-    print(ss + us*1e-6)
+    print(ss, type(ss))
     # print(ss2)
     print(time.time())
 

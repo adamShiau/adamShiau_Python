@@ -19,6 +19,7 @@ logger.info('process start')
 """ ####### end of log stuff creation ########  """
 
 import sys
+from datetime import datetime
 
 sys.path.append("../")
 from myLib import common as cmn
@@ -308,13 +309,13 @@ class mainWindow(QMainWindow):
             self.imudata["NANO33_WZ"] = np.append(self.imudata["NANO33_WZ"], imudata["NANO33_WZ"])
             if len(self.imudata["TIME"]) > sample:
                 self.imudata_sp11["TIME"] = self.imudata_sp11["TIME"][
-                                           self.act_sp11.arrayNum:self.act_sp11.arrayNum + sample]
+                                            self.act_sp11.arrayNum:self.act_sp11.arrayNum + sample]
                 self.imudata_sp11["PIG_WZ"] = self.imudata_sp11["PIG_WZ"][
-                                             self.act_sp11.arrayNum:self.act_sp11.arrayNum + sample]
+                                              self.act_sp11.arrayNum:self.act_sp11.arrayNum + sample]
                 self.imudata_sp11["PIG_ERR"] = self.imudata_sp11["PIG_ERR"][
-                                              self.act_sp11.arrayNum:self.act_sp11.arrayNum + sample]
+                                               self.act_sp11.arrayNum:self.act_sp11.arrayNum + sample]
                 self.imudata_sp11["PD_TEMP"] = self.imudata_sp11["PD_TEMP"][
-                                              self.act_sp11.arrayNum:self.act_sp11.arrayNum + sample]
+                                               self.act_sp11.arrayNum:self.act_sp11.arrayNum + sample]
                 self.imudata_sp13["TIME"] = self.imudata_sp13["TIME"][
                                             self.act_sp13.arrayNum:self.act_sp13.arrayNum + sample]
                 self.imudata_sp13["PIG_WZ"] = self.imudata_sp13["PIG_WZ"][
@@ -345,10 +346,24 @@ class mainWindow(QMainWindow):
                          + str(round((t1 - t0) * 1000, 5)) + ", " + str(round((t2 - t1) * 1000, 5))
             cmn.print_debug(debug_info, self.__debug)
 
+            if self.top.date_rb.btn_status == 'PC':
+                currentDateAndTime = datetime.now()
+                yy = currentDateAndTime.year
+                MM = currentDateAndTime.month
+                dd = currentDateAndTime.day
+                hh = currentDateAndTime.hour
+                mm = currentDateAndTime.minute
+                ss = currentDateAndTime.second + currentDateAndTime.microsecond * 1e-6
+            else:
+                yy = imudata['GPS_YEAR']
+                MM = imudata['GPS_MON']
+                dd = imudata['GPS_DAY']
+                hh = imudata['GPS_HOUR']
+                mm = imudata['GPS_MIN']
+                ss = imudata['GPS_SEC']
+
             datalist = [imudata["TIME"], imudata["PIG_WZ"], self.sp11_data["PIG_WZ"], self.sp13_data["PIG_WZ"]
-                , imudata['GPS_YEAR'], imudata['GPS_MON'], imudata['GPS_DAY'], imudata['GPS_HOUR']
-                , imudata['GPS_MIN'], imudata['GPS_SEC']
-                        ]
+                        , yy, MM, dd, hh, mm, ss]
             data_fmt = "%.4f,%.5f,%.5f,%.5f,%d,%d,%d,%d,%d,%.2f"
             gps_time = '%d/%d/%d %d:%d:%.1f' % (imudata['GPS_YEAR'][0], imudata['GPS_MON'][0], imudata['GPS_DAY'][0],
                                                 imudata['GPS_HOUR'][0], imudata['GPS_MIN'][0], imudata['GPS_SEC'][0])
@@ -359,9 +374,9 @@ class mainWindow(QMainWindow):
 
     def plotdata(self, imudata, pig_sp11, pig_sp13):
         self.plotControl()
-        self.top.plot1.ax.setData(imudata["TIME"], imudata["PIG_WZ"])
+        self.top.plot1.ax.setData(imudata["TIME"], pig_sp13)
         self.top.plot2.ax.setData(imudata["TIME"], pig_sp11)
-        self.top.plot3.ax.setData(imudata["TIME"], pig_sp13)
+        self.top.plot3.ax.setData(imudata["TIME"], imudata["PIG_WZ"])
         self.top.plot4.ax.setData(imudata["TIME"], imudata["ADXL_AX"])
         self.top.plot5.ax.setData(imudata["TIME"], imudata["ADXL_AY"])
         self.top.plot6.ax.setData(imudata["TIME"], imudata["ADXL_AZ"])

@@ -19,7 +19,7 @@ logger.info('process start')
 """ ####### end of log stuff creation ########  """
 
 import sys
-
+from datetime import datetime
 sys.path.append("../")
 from myLib import common as cmn
 from myLib.myGui.mygui_serial import *

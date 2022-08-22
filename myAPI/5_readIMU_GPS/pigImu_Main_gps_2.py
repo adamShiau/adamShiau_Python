@@ -49,17 +49,20 @@ class mainWindow(QMainWindow):
         self.press_stop = False
         self.resize(1450, 800)
         self.pig_parameter_widget = None
-        self.pig_parameter_widget_sp9 = None
+        self.pig_parameter_widget_sp11 = None
+        self.pig_parameter_widget_sp13 = None
         self.__portName = None
         self.__skipcnt = 0
         self.__skiptime = 0
         self.setWindowTitle("AegiverseIMU")
         self.__connector = Connector()
-        self.__connector_sp9 = Connector()
+        self.__connector_sp11 = Connector()
+        self.__connector_sp13 = Connector()
         self.__isFileOpen = False
         self.top = TOP()
         self.act = ACTION()
-        self.act_sp9 = ACTION_PIG()
+        self.act_sp11 = ACTION_PIG()
+        self.act_sp13 = ACTION_PIG()
         # self.imudata_file = cmn.data_manager(fnum=0)
         self.imudata_file_auto = autoSave.atSave_PC(fnum=0)
         self.pig_cali_menu = calibrationBlock()
@@ -67,18 +70,22 @@ class mainWindow(QMainWindow):
         # self.analysis_timing_plot = analysis_TimingPlot.analysis_timing_plot_widget(
         #     ['fog', 'ax', 'ay', 'az', 'T', 'yy', 'MM', 'dd', 'hh', 'mm', 'ss'])
         self.analysis_timing_plot = analysis_TimingPlot.analysis_timing_plot_widget(
-            ['fog', 'T', 'yy', 'MM', 'dd', 'hh', 'mm', 'ss'])
+            ['wx', 'wy', 'wz', 'ax', 'ay', 'az', 'yy', 'MM', 'dd', 'hh', 'mm', 'ss'])
         self.act.isCali = True
-        self.act_sp9.isCali = True
+        self.act_sp11.isCali = True
+        self.act_sp13.isCali = True
         self.menu = self.menuBar()
         self.pig_menu = pig_menu_manager(self.menu, self)
         self.linkfunction()
         self.act.arrayNum = 10
-        self.act_sp9.arrayNum = 10
+        self.act_sp11.arrayNum = 10
+        self.act_sp13.arrayNum = 10
         self.mainUI()
         self.imudata = self.resetDataContainer()
-        self.sp9_data = self.resetDataContainer_sp9()
-        self.imudata_sp9 = self.resetDataContainer_sp9()
+        self.sp11_data = self.resetDataContainer_sp11()
+        self.imudata_sp11 = self.resetDataContainer_sp11()
+        self.sp13_data = self.resetDataContainer_sp13()
+        self.imudata_sp13 = self.resetDataContainer_sp13()
 
         self.__debug = debug_en
         self.t_start = time.perf_counter()
@@ -99,9 +106,11 @@ class mainWindow(QMainWindow):
         # self.top.kal_filter_rb.toggled.connect(lambda: self.update_kalFilter_en(self.top.kal_filter_rb))
         # pyqtSignal connection
         self.act.imudata_qt.connect(self.collectData)
-        self.act_sp9.imudata_qt.connect(self.collectData_sp9)
+        self.act_sp11.imudata_qt.connect(self.collectData_sp11)
+        self.act_sp13.imudata_qt.connect(self.collectData_sp13)
         self.act.imuThreadStop_qt.connect(self.imuThreadStopDetect)
-        self.act_sp9.imuThreadStop_qt.connect(self.imuThreadStopDetect_sp9)
+        self.act_sp11.imuThreadStop_qt.connect(self.imuThreadStopDetect_sp11)
+        self.act_sp13.imuThreadStop_qt.connect(self.imuThreadStopDetect_sp13)
         # self.act.buffer_qt.connect(self.printBuffer)
         self.is_port_open_qt.connect(self.is_port_open_status_manager)
         # menu trigger connection
@@ -174,43 +183,58 @@ class mainWindow(QMainWindow):
     def connect(self):
         print(self.__portName)
         is_port_open = self.act.connect(self.__connector, self.__portName['SP10'], 230400)
-        self.act_sp9.connect(self.__connector_sp9, self.__portName['SP9'], 230400)
+        self.act_sp11.connect(self.__connector_sp11, self.__portName['SP11'], 230400)
+        self.act_sp13.connect(self.__connector_sp13, self.__portName['SP13'], 230400)
         self.is_port_open_qt.emit(is_port_open)
-        self.pig_parameter_widget = pig_parameters_widget(self.act, self.top.para_block.le_filename.text() + '.json')
-        self.pig_parameter_widget_sp9 = pig_parameters_widget(self.act_sp9, 'parameters_SP9' + '.json')
+        # self.pig_parameter_widget = pig_parameters_widget(self.act, self.top.para_block.le_filename.text() + '.json')
+        self.pig_parameter_widget = pig_parameters_widget(self.act, 'parameters_SP10' + '.json')
+        self.pig_parameter_widget_sp11 = pig_parameters_widget(self.act_sp11, 'parameters_SP11' + '.json')
+        self.pig_parameter_widget_sp13 = pig_parameters_widget(self.act_sp13, 'parameters_SP13' + '.json')
         self.act.isCali_w, self.act.isCali_a = self.pig_cali_menu.cali_status()  # update calibration flag to act
-        self.act_sp9.isCali_w = True
+        self.act_sp11.isCali_w = True
+        self.act_sp13.isCali_w = True
 
     def disconnect(self):
         is_port_open = self.act.disconnect()
-        self.act_sp9.disconnect()
+        self.act_sp11.disconnect()
+        self.act_sp13.disconnect()
         self.is_port_open_qt.emit(is_port_open)
 
     def imuThreadStopDetect(self):
         self.imudata = self.resetDataContainer()
 
-    def imuThreadStopDetect_sp9(self):
-        self.imudata_sp9 = self.resetDataContainer_sp9()
+    def imuThreadStopDetect_sp11(self):
+        self.imudata_sp11 = self.resetDataContainer_sp11()
+
+    def imuThreadStopDetect_sp13(self):
+        self.imudata_sp13 = self.resetDataContainer_sp13()
 
     def resetDataContainer(self):
         return {k: np.empty(0) for k in set(IMU_DATA_STRUCTURE)}
 
-    def resetDataContainer_sp9(self):
+    def resetDataContainer_sp11(self):
+        return {k: np.empty(0) for k in set(PIG_DATA_STRUCTURE)}
+
+    def resetDataContainer_sp13(self):
         return {k: np.empty(0) for k in set(PIG_DATA_STRUCTURE)}
 
     def resetFPGATimer(self):
         self.act.writeImuCmd(CMD_FOG_TIMER_RST, 1)
-        self.act_sp9.writeImuCmd(CMD_FOG_TIMER_RST, 1)
+        self.act_sp11.writeImuCmd(CMD_FOG_TIMER_RST, 1)
+        self.act_sp13.writeImuCmd(CMD_FOG_TIMER_RST, 1)
 
     def start(self):
         self.resetFPGATimer()
         self.act.readIMU()
-        self.act_sp9.readIMU()
+        self.act_sp11.readIMU()
+        self.act_sp13.readIMU()
         self.act.isRun = True
-        self.act_sp9.isRun = True
+        self.act_sp11.isRun = True
+        self.act_sp13.isRun = True
         self.press_stop = False
         self.act.start()
-        self.act_sp9.start()
+        self.act_sp11.start()
+        self.act_sp13.start()
         self.__skipcnt = 0
         file_name = self.top.save_block.le_filename.text()
         # self.imudata_file.name = file_name
@@ -226,7 +250,8 @@ class mainWindow(QMainWindow):
     def stop(self):
         self.resetFPGATimer()
         self.act.isRun = False
-        self.act_sp9.isRun = False
+        self.act_sp11.isRun = False
+        self.act_sp13.isRun = False
         self.top.save_block.rb.setChecked(False)
         # self.imudata_file.close()
         self.imudata_file_auto.close_hour_folder()
@@ -240,9 +265,13 @@ class mainWindow(QMainWindow):
     def press_stop(self, stop):
         self.__stop = stop
 
-    def collectData_sp9(self, imudata):
+    def collectData_sp11(self, imudata):
         if not self.press_stop:
-            self.sp9_data = imudata
+            self.sp11_data = imudata
+
+    def collectData_sp13(self, imudata):
+        if not self.press_stop:
+            self.sp13_data = imudata
 
     def collectData(self, imudata):
         # print(len(imudata["TIME"]))
@@ -252,16 +281,22 @@ class mainWindow(QMainWindow):
             self.printBuffer()
             input_buf = self.act.readInputBuffer()
             t0 = time.perf_counter()
-            self.printPdTemperature(imudata["PD_TEMP"][0], self.sp9_data["PD_TEMP"][0], self.sp9_data["PD_TEMP"][0])
+            self.printPdTemperature(imudata["PD_TEMP"][0], self.sp11_data["PD_TEMP"][0], self.sp13_data["PD_TEMP"][0])
             t1 = time.perf_counter()
-            # start of sp9 data
-            if len(self.sp9_data["TIME"]) == 0:  # wait sp9 data coming
+            # start of sp11 data
+            if (len(self.sp11_data["TIME"]) or len(self.sp13_data["TIME"])) == 0:  # wait sp11 data coming
                 return
-            self.imudata_sp9["TIME"] = np.append(self.imudata_sp9["TIME"], self.sp9_data["TIME"])
-            self.imudata_sp9["PIG_WZ"] = np.append(self.imudata_sp9["PIG_WZ"], self.sp9_data["PIG_WZ"])
-            self.imudata_sp9["PD_TEMP"] = np.append(self.imudata_sp9["PD_TEMP"], self.sp9_data["PD_TEMP"])
-            self.imudata_sp9["PIG_ERR"] = np.append(self.imudata_sp9["PIG_ERR"], self.sp9_data["PIG_ERR"])
-            # end of sp9 data
+            self.imudata_sp11["TIME"] = np.append(self.imudata_sp11["TIME"], self.sp11_data["TIME"])
+            self.imudata_sp11["PIG_WZ"] = np.append(self.imudata_sp11["PIG_WZ"], self.sp11_data["PIG_WZ"])
+            self.imudata_sp11["PD_TEMP"] = np.append(self.imudata_sp11["PD_TEMP"], self.sp11_data["PD_TEMP"])
+            self.imudata_sp11["PIG_ERR"] = np.append(self.imudata_sp11["PIG_ERR"], self.sp11_data["PIG_ERR"])
+            # end of sp11 data
+            # start of sp13 data
+            self.imudata_sp13["TIME"] = np.append(self.imudata_sp13["TIME"], self.sp13_data["TIME"])
+            self.imudata_sp13["PIG_WZ"] = np.append(self.imudata_sp13["PIG_WZ"], self.sp13_data["PIG_WZ"])
+            self.imudata_sp13["PD_TEMP"] = np.append(self.imudata_sp13["PD_TEMP"], self.sp13_data["PD_TEMP"])
+            self.imudata_sp13["PIG_ERR"] = np.append(self.imudata_sp13["PIG_ERR"], self.sp13_data["PIG_ERR"])
+            # end of sp13 data
             self.imudata["TIME"] = np.append(self.imudata["TIME"], imudata["TIME"])
             self.imudata["PIG_WZ"] = np.append(self.imudata["PIG_WZ"], imudata["PIG_WZ"])
             self.imudata["PD_TEMP"] = np.append(self.imudata["PD_TEMP"], imudata["PD_TEMP"])
@@ -272,14 +307,22 @@ class mainWindow(QMainWindow):
             self.imudata["NANO33_WY"] = np.append(self.imudata["NANO33_WY"], imudata["NANO33_WY"])
             self.imudata["NANO33_WZ"] = np.append(self.imudata["NANO33_WZ"], imudata["NANO33_WZ"])
             if len(self.imudata["TIME"]) > sample:
-                self.imudata_sp9["TIME"] = self.imudata_sp9["TIME"][
-                                           self.act_sp9.arrayNum:self.act_sp9.arrayNum + sample]
-                self.imudata_sp9["PIG_WZ"] = self.imudata_sp9["PIG_WZ"][
-                                             self.act_sp9.arrayNum:self.act_sp9.arrayNum + sample]
-                self.imudata_sp9["PIG_ERR"] = self.imudata_sp9["PIG_ERR"][
-                                              self.act_sp9.arrayNum:self.act_sp9.arrayNum + sample]
-                self.imudata_sp9["PD_TEMP"] = self.imudata_sp9["PD_TEMP"][
-                                              self.act_sp9.arrayNum:self.act_sp9.arrayNum + sample]
+                self.imudata_sp11["TIME"] = self.imudata_sp11["TIME"][
+                                           self.act_sp11.arrayNum:self.act_sp11.arrayNum + sample]
+                self.imudata_sp11["PIG_WZ"] = self.imudata_sp11["PIG_WZ"][
+                                             self.act_sp11.arrayNum:self.act_sp11.arrayNum + sample]
+                self.imudata_sp11["PIG_ERR"] = self.imudata_sp11["PIG_ERR"][
+                                              self.act_sp11.arrayNum:self.act_sp11.arrayNum + sample]
+                self.imudata_sp11["PD_TEMP"] = self.imudata_sp11["PD_TEMP"][
+                                              self.act_sp11.arrayNum:self.act_sp11.arrayNum + sample]
+                self.imudata_sp13["TIME"] = self.imudata_sp13["TIME"][
+                                            self.act_sp13.arrayNum:self.act_sp13.arrayNum + sample]
+                self.imudata_sp13["PIG_WZ"] = self.imudata_sp13["PIG_WZ"][
+                                              self.act_sp13.arrayNum:self.act_sp13.arrayNum + sample]
+                self.imudata_sp13["PIG_ERR"] = self.imudata_sp13["PIG_ERR"][
+                                               self.act_sp13.arrayNum:self.act_sp13.arrayNum + sample]
+                self.imudata_sp13["PD_TEMP"] = self.imudata_sp13["PD_TEMP"][
+                                               self.act_sp13.arrayNum:self.act_sp13.arrayNum + sample]
                 self.imudata["TIME"] = self.imudata["TIME"][self.act.arrayNum:self.act.arrayNum + sample]
                 self.imudata["PIG_WZ"] = self.imudata["PIG_WZ"][self.act.arrayNum:self.act.arrayNum + sample]
                 self.imudata["PD_TEMP"] = self.imudata["PD_TEMP"][self.act.arrayNum:self.act.arrayNum + sample]
@@ -290,7 +333,7 @@ class mainWindow(QMainWindow):
                 self.imudata["NANO33_WY"] = self.imudata["NANO33_WY"][self.act.arrayNum:self.act.arrayNum + sample]
                 self.imudata["NANO33_WZ"] = self.imudata["NANO33_WZ"][self.act.arrayNum:self.act.arrayNum + sample]
             t2 = time.perf_counter()
-            self.printUpdateRate(self.imudata["TIME"], self.imudata_sp9["TIME"], self.imudata_sp9["TIME"])
+            self.printUpdateRate(self.imudata["TIME"], self.imudata_sp11["TIME"], self.imudata_sp13["TIME"])
             # print('sp9: ', len(self.imudata_sp9["PD_TEMP"]), self.sp9_data["TIME"])
             # print('sp10: ', len(self.imudata["PD_TEMP"]), imudata['TIME'])
             if self.__skipcnt < 10:
@@ -302,7 +345,7 @@ class mainWindow(QMainWindow):
                          + str(round((t1 - t0) * 1000, 5)) + ", " + str(round((t2 - t1) * 1000, 5))
             cmn.print_debug(debug_info, self.__debug)
 
-            datalist = [imudata["TIME"], imudata["PIG_WZ"], self.sp9_data["PIG_WZ"], self.sp9_data["PIG_WZ"]
+            datalist = [imudata["TIME"], imudata["PIG_WZ"], self.sp11_data["PIG_WZ"], self.sp13_data["PIG_WZ"]
                 , imudata['GPS_YEAR'], imudata['GPS_MON'], imudata['GPS_DAY'], imudata['GPS_HOUR']
                 , imudata['GPS_MIN'], imudata['GPS_SEC']
                         ]
@@ -312,13 +355,13 @@ class mainWindow(QMainWindow):
             self.printGPS_Time(gps_time)
             self.imudata_file_auto.saveData(datalist, data_fmt)
             self.imudata_file_auto.auto_create_folder(self.top.save_block.rb.isChecked())
-            self.plotdata(self.imudata, self.imudata_sp9["PIG_WZ"])
+            self.plotdata(self.imudata, self.imudata_sp11["PIG_WZ"], self.imudata_sp13["PIG_WZ"])
 
-    def plotdata(self, imudata, pig_sp9):
+    def plotdata(self, imudata, pig_sp11, pig_sp13):
         self.plotControl()
         self.top.plot1.ax.setData(imudata["TIME"], imudata["PIG_WZ"])
-        self.top.plot2.ax.setData(imudata["TIME"], pig_sp9)
-        self.top.plot3.ax.setData(imudata["TIME"], pig_sp9)
+        self.top.plot2.ax.setData(imudata["TIME"], pig_sp11)
+        self.top.plot3.ax.setData(imudata["TIME"], pig_sp13)
         self.top.plot4.ax.setData(imudata["TIME"], imudata["ADXL_AX"])
         self.top.plot5.ax.setData(imudata["TIME"], imudata["ADXL_AY"])
         self.top.plot6.ax.setData(imudata["TIME"], imudata["ADXL_AZ"])

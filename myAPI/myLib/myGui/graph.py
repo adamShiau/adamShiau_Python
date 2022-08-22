@@ -52,8 +52,8 @@ class pgGraph_1(QMainWindow):
         win = pg.GraphicsWindow()
         win.setBackground('k')
         pen = pg.mkPen(color=color, width=1)
-        p = win.addPlot(title=title)
-        self.ax = p.plot(pen=pen)
+        self.p = win.addPlot(title=title)
+        self.ax = self.p.plot(pen=pen)
         self.setCentralWidget(win)
 
 

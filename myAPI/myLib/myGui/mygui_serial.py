@@ -97,7 +97,7 @@ class usbConnect():
 
 
 class usbConnect_auto():
-    def __init__(self, group_name='Connect COM port', key1='SP9', key2='SP10', key3='SP11'):
+    def __init__(self, group_name='Connect COM port', key1='SP10', key2='SP11', key3='SP13'):
 
         self.__portList = None
         self.__groupBox = QGroupBox(group_name)
@@ -133,10 +133,15 @@ class usbConnect_auto():
         # port = dict()
         if num > 0:
             for i in range(num):
-                if ports[i].serial_number == 'AQ6YNJG3A':  # SP9
+                # print(ports[i].serial_number)
+                # if ports[i].serial_number == 'AQ6YNJG3A':  # SP9
+                #     self.__port[self.__key1] = ports[i].device
+                if ports[i].serial_number == 'AG0K5XWMA':  # SP10
                     self.__port[self.__key1] = ports[i].device
-                elif ports[i].serial_number == 'AG0K5XWMA':  # SP10
+                elif ports[i].serial_number == 'AQ00D86ZA':  # SP11
                     self.__port[self.__key2] = ports[i].device
+                elif ports[i].serial_number == 'AQ00DQ0HA':  # SP13
+                    self.__port[self.__key3] = ports[i].device
         logger.debug('autoComport: %s\n' % self.__port)
         self.showPortName(self.__port)
         return self.__port

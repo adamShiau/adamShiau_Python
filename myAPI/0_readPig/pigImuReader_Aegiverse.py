@@ -232,7 +232,7 @@ if __name__ == "__main__":
     myImu = pigImuReader()
     myImu.setCallback(myCallBack)
     myImu.arrayNum = 1
-    myImu.connect(ser, "COM20", 230400)
+    myImu.connect(ser, "COM19", 230400)
     myImu.send_init_value()
     myImu.readIMU()
     myImu.isRun = True

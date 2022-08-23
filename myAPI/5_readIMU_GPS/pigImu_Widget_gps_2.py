@@ -39,7 +39,7 @@ class pigImuWidget(QWidget):
         self.stop_bt.setFont(QFont('Arial', 15))
         self.save_block = dataSaveBlock_noExt('Enter File Path')
         # self.para_block = lineEditBlock('parameter configuration file', le_name='parameters_SP10')
-        self.gpstime_lb = displayOneBlock('GPS TIME UTC', label_size=20)
+        self.gpstime_lb = displayOneBlock('Date (GPS Date in UTC)', label_size=20)
         self.buffer_lb = displayOneBlock('Buffer Size_SP10')
         self.buffer_lb_2 = displayOneBlock('Buffer Size_SP11')
         self.buffer_lb_3 = displayOneBlock('Buffer Size_SP13')

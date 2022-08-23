@@ -13,6 +13,7 @@ logger.info(__name__ + ' logger start')
 import sys
 
 sys.path.append("../")
+from datetime import datetime
 from myLib.mySerial.Connector import Connector
 from myLib.mySerial import getData
 from myLib.crcCalculator import crcLib
@@ -38,12 +39,12 @@ IMU_DATA_STRUCTURE = {
     "PIG_ERR": np.zeros(1),
     "PIG_WZ": np.zeros(1),
     "PD_TEMP": np.zeros(1),
-    'GPS_YEAR': np.zeros(1),
-    'GPS_MON': np.zeros(1),
-    'GPS_DAY': np.zeros(1),
-    'GPS_HOUR': np.zeros(1),
-    'GPS_MIN': np.zeros(1),
-    'GPS_SEC': np.zeros(1),
+    'YEAR': np.zeros(1),
+    'MON': np.zeros(1),
+    'DAY': np.zeros(1),
+    'HOUR': np.zeros(1),
+    'MIN': np.zeros(1),
+    'SEC': np.zeros(1),
     'DATA_CNT': np.zeros(1),
     'GPS_ALIVE': np.zeros(1)
 }
@@ -63,7 +64,6 @@ POS_NANO33_WX = 13
 POS_PIG = 25
 POS_GPS = 39
 
-
 old = time.perf_counter_ns()
 
 
@@ -76,6 +76,7 @@ class pigImuReader(QThread):
     def __init__(self, portName: str = "None", boolCaliw=False, boolCalia=False, baudRate: int = 230400,
                  debug_en: bool = 0):
         super(pigImuReader, self).__init__()
+        self.date_type = 'PC'
         self.__carry_ss = 0
         self.__carry_mm = 0
         # self.nano33_wz_kal = filter.kalman_1D()
@@ -136,6 +137,14 @@ class pigImuReader(QThread):
     @dataRate.setter
     def dataRate(self, val):
         self.__dataRate = val
+
+    @property
+    def date_type(self):
+        return self.__date_type
+
+    @date_type.setter
+    def date_type(self, type):
+        self.__date_type = type
 
     @property
     def isKal(self):
@@ -298,13 +307,12 @@ class pigImuReader(QThread):
         gps_ss += gps_ss_ext
         gps_mm += self.__carry_ss
         gps_hh += self.__carry_mm
-        # print(gps_yy, gps_MM, gps_dd, gps_hh, gps_mm, gps_ss, self.__datacnt)
 
         imudata = {"NANO33_WX": NANO_WX, "NANO33_WY": NANO_WY, "NANO33_WZ": NANO_WZ,
                    "ADXL_AX": NANO_AX, "ADXL_AY": ADXL_AY, "ADXL_AZ": ADXL_AZ,
                    "TIME": t, "PIG_ERR": ERR, "PIG_WZ": STEP, "PD_TEMP": PD_TEMP,
-                   'GPS_YEAR': gps_yy, 'GPS_MON': gps_MM, 'GPS_DAY': gps_dd, 'GPS_HOUR': gps_hh,
-                   'GPS_MIN': gps_mm, 'GPS_SEC': gps_ss, 'DATA_CNT': self.__datacnt, 'GPS_ALIVE': gps_still_alive
+                   'YEAR': gps_yy, 'MON': gps_MM, 'DAY': gps_dd, 'HOUR': gps_hh,
+                   'MIN': gps_mm, 'SEC': gps_ss, 'DATA_CNT': self.__datacnt, 'GPS_ALIVE': gps_still_alive
                    }
         # print(gps_ss)
         # print('valid: ', bool(valid))
@@ -361,6 +369,7 @@ class pigImuReader(QThread):
                 t1 = time.perf_counter()
 
                 dataPacket, imudata = self.getImuData()
+
                 t2 = time.perf_counter()
                 isCrcFail = crcLib.isCrc32Fail(dataPacket, len(dataPacket))
                 t3 = time.perf_counter()
@@ -370,6 +379,29 @@ class pigImuReader(QThread):
                 t4 = time.perf_counter()
                 # imudataArray = cmn.dictOperation(imudataArray, imudata, "APPEND", IMU_DATA_STRUCTURE)
                 # print(imudata)
+
+                ''' PC time'''
+                currentDateAndTime = datetime.now()
+                yy = currentDateAndTime.year
+                MM = currentDateAndTime.month
+                dd = currentDateAndTime.day
+                hh = currentDateAndTime.hour
+                mm = currentDateAndTime.minute
+                ss = currentDateAndTime.second + currentDateAndTime.microsecond * 1e-6
+                if self.date_type == 'PC':
+                    imudata['YEAR'] = yy
+                    imudata['MON'] = MM
+                    imudata['DAY'] = dd
+                    imudata['HOUR'] = hh
+                    imudata['MIN'] = mm
+                    imudata['SEC'] = ss
+                ''' end of PC time'''
+                # print('act.imudata[YEAR]: ', imudata['YEAR'])
+                # print('act.imudata[MON]: ', imudata['MON'])
+                # print('act.imudata[DAY]: ', imudata['DAY'])
+                # print('act.imudata[HOUR]: ', imudata['HOUR'])
+                # print('act.imudata[MIN]: ', imudata['MIN'])
+                # print('act.imudata[SEC]: ', imudata['SEC'])
                 imudataArray["TIME"] = np.append(imudataArray["TIME"], imudata["TIME"])
                 imudataArray["ADXL_AX"] = np.append(imudataArray["ADXL_AX"], imudata["ADXL_AX"])
                 imudataArray["ADXL_AY"] = np.append(imudataArray["ADXL_AY"], imudata["ADXL_AY"])
@@ -380,12 +412,12 @@ class pigImuReader(QThread):
                 imudataArray["PIG_ERR"] = np.append(imudataArray["PIG_ERR"], imudata["PIG_ERR"])
                 imudataArray["PIG_WZ"] = np.append(imudataArray["PIG_WZ"], imudata["PIG_WZ"])
                 imudataArray["PD_TEMP"] = np.append(imudataArray["PD_TEMP"], imudata["PD_TEMP"])
-                imudataArray["GPS_YEAR"] = np.append(imudataArray["GPS_YEAR"], imudata["GPS_YEAR"])
-                imudataArray["GPS_MON"] = np.append(imudataArray["GPS_MON"], imudata["GPS_MON"])
-                imudataArray["GPS_DAY"] = np.append(imudataArray["GPS_DAY"], imudata["GPS_DAY"])
-                imudataArray["GPS_HOUR"] = np.append(imudataArray["GPS_HOUR"], imudata["GPS_HOUR"])
-                imudataArray["GPS_MIN"] = np.append(imudataArray["GPS_MIN"], imudata["GPS_MIN"])
-                imudataArray["GPS_SEC"] = np.append(imudataArray["GPS_SEC"], imudata["GPS_SEC"])
+                imudataArray["YEAR"] = np.append(imudataArray["YEAR"], imudata["YEAR"])
+                imudataArray["MON"] = np.append(imudataArray["MON"], imudata["MON"])
+                imudataArray["DAY"] = np.append(imudataArray["DAY"], imudata["DAY"])
+                imudataArray["HOUR"] = np.append(imudataArray["HOUR"], imudata["HOUR"])
+                imudataArray["MIN"] = np.append(imudataArray["MIN"], imudata["MIN"])
+                imudataArray["SEC"] = np.append(imudataArray["SEC"], imudata["SEC"])
                 imudataArray["DATA_CNT"] = np.append(imudataArray["DATA_CNT"], imudata["DATA_CNT"])
                 imudataArray["GPS_ALIVE"] = np.append(imudataArray["GPS_ALIVE"], imudata["GPS_ALIVE"])
                 t5 = time.perf_counter()

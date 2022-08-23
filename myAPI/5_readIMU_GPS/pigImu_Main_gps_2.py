@@ -90,6 +90,7 @@ class mainWindow(QMainWindow):
 
         self.__debug = debug_en
         self.t_start = time.perf_counter()
+        self.autoComport()
 
     def mainUI(self):
         self.setCentralWidget(self.top)
@@ -282,11 +283,14 @@ class mainWindow(QMainWindow):
             self.printBuffer()
             input_buf = self.act.readInputBuffer()
             t0 = time.perf_counter()
-            self.printPdTemperature(imudata["PD_TEMP"][0], self.sp11_data["PD_TEMP"][0], self.sp13_data["PD_TEMP"][0])
+
             t1 = time.perf_counter()
             # start of sp11 data
-            if (len(self.sp11_data["TIME"]) or len(self.sp13_data["TIME"])) == 0:  # wait sp11 data coming
+            if (len(self.sp11_data["TIME"]) or len(self.sp13_data["TIME"]) or len(imudata["TIME"])) == 0:  # wait sp11 data coming
+                print(len(imudata["TIME"]), len(self.sp11_data["TIME"]), len(self.sp11_data["TIME"]))
+                print('wait!!!!!!!!!!!!!!!!')
                 return
+
             self.imudata_sp11["TIME"] = np.append(self.imudata_sp11["TIME"], self.sp11_data["TIME"])
             self.imudata_sp11["PIG_WZ"] = np.append(self.imudata_sp11["PIG_WZ"], self.sp11_data["PIG_WZ"])
             self.imudata_sp11["PD_TEMP"] = np.append(self.imudata_sp11["PD_TEMP"], self.sp11_data["PD_TEMP"])
@@ -341,32 +345,21 @@ class mainWindow(QMainWindow):
                 self.__skipcnt += 1
                 # print('self.__skipcnt: ', self.__skipcnt)
                 return
-
+            self.printPdTemperature(imudata["PD_TEMP"][0], self.sp11_data["PD_TEMP"][0], self.sp13_data["PD_TEMP"][0])
             debug_info = "MAIN: ," + str(input_buf) + ", " + str(round((t2 - t0) * 1000, 5)) + ", " \
                          + str(round((t1 - t0) * 1000, 5)) + ", " + str(round((t2 - t1) * 1000, 5))
             cmn.print_debug(debug_info, self.__debug)
-
-            if self.top.date_rb.btn_status == 'PC':
-                currentDateAndTime = datetime.now()
-                yy = currentDateAndTime.year
-                MM = currentDateAndTime.month
-                dd = currentDateAndTime.day
-                hh = currentDateAndTime.hour
-                mm = currentDateAndTime.minute
-                ss = currentDateAndTime.second + currentDateAndTime.microsecond * 1e-6
-            else:
-                yy = imudata['GPS_YEAR']
-                MM = imudata['GPS_MON']
-                dd = imudata['GPS_DAY']
-                hh = imudata['GPS_HOUR']
-                mm = imudata['GPS_MIN']
-                ss = imudata['GPS_SEC']
+            # print(self.top.date_rb.btn_status)
+            self.act.date_type = self.top.date_rb.btn_status
 
             datalist = [imudata["TIME"], imudata["PIG_WZ"], self.sp11_data["PIG_WZ"], self.sp13_data["PIG_WZ"]
-                        , yy, MM, dd, hh, mm, ss]
+                        , imudata['YEAR'], imudata['MON'], imudata['DAY'], imudata['HOUR']
+                        , imudata['MIN'], imudata['SEC']]
+            # print('main:', imudata['YEAR'], imudata['MON'], imudata['DAY'], imudata['HOUR'], imudata['MIN'],
+            #       imudata['SEC'])
             data_fmt = "%.4f,%.5f,%.5f,%.5f,%d,%d,%d,%d,%d,%.2f"
-            gps_time = '%d/%d/%d %d:%d:%.1f' % (imudata['GPS_YEAR'][0], imudata['GPS_MON'][0], imudata['GPS_DAY'][0],
-                                                imudata['GPS_HOUR'][0], imudata['GPS_MIN'][0], imudata['GPS_SEC'][0])
+            gps_time = '%d/%d/%d %d:%d:%.1f' % (imudata['YEAR'][0], imudata['MON'][0], imudata['DAY'][0],
+                                                imudata['HOUR'][0], imudata['MIN'][0], imudata['SEC'][0])
             self.printGPS_Time(gps_time)
             self.imudata_file_auto.saveData(datalist, data_fmt)
             self.imudata_file_auto.auto_create_folder(self.top.save_block.rb.isChecked())

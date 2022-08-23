@@ -286,7 +286,7 @@ class mainWindow(QMainWindow):
 
             t1 = time.perf_counter()
             # start of sp11 data
-            if (len(self.sp11_data["TIME"]) or len(self.sp13_data["TIME"]) or len(imudata["TIME"])) == 0:  # wait sp11 data coming
+            if len(self.sp11_data["TIME"]) == 0 or len(self.sp13_data["TIME"]) == 0 or len(imudata['TIME']) == 0:  # wait sp11 data coming
                 print(len(imudata["TIME"]), len(self.sp11_data["TIME"]), len(self.sp11_data["TIME"]))
                 print('wait!!!!!!!!!!!!!!!!')
                 return

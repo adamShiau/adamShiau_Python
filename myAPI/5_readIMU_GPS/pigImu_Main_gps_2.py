@@ -287,8 +287,8 @@ class mainWindow(QMainWindow):
             t1 = time.perf_counter()
             # start of sp11 data
             if len(self.sp11_data["TIME"]) == 0 or len(self.sp13_data["TIME"]) == 0 or len(imudata['TIME']) == 0:  # wait sp11 data coming
-                print(len(imudata["TIME"]), len(self.sp11_data["TIME"]), len(self.sp11_data["TIME"]))
-                print('wait!!!!!!!!!!!!!!!!')
+                # print(len(imudata["TIME"]), len(self.sp11_data["TIME"]), len(self.sp11_data["TIME"]))
+                # print('wait!!!!!!!!!!!!!!!!')
                 return
 
             self.imudata_sp11["TIME"] = np.append(self.imudata_sp11["TIME"], self.sp11_data["TIME"])
@@ -338,13 +338,13 @@ class mainWindow(QMainWindow):
                 self.imudata["NANO33_WY"] = self.imudata["NANO33_WY"][self.act.arrayNum:self.act.arrayNum + sample]
                 self.imudata["NANO33_WZ"] = self.imudata["NANO33_WZ"][self.act.arrayNum:self.act.arrayNum + sample]
             t2 = time.perf_counter()
-            self.printUpdateRate(self.imudata["TIME"], self.imudata_sp11["TIME"], self.imudata_sp13["TIME"])
-            # print('sp9: ', len(self.imudata_sp9["PD_TEMP"]), self.sp9_data["TIME"])
-            # print('sp10: ', len(self.imudata["PD_TEMP"]), imudata['TIME'])
+
             if self.__skipcnt < 10:
                 self.__skipcnt += 1
                 # print('self.__skipcnt: ', self.__skipcnt)
                 return
+            # self.printUpdateRate(self.imudata["TIME"], self.imudata_sp11["TIME"], self.imudata_sp13["TIME"])
+            self.printUpdateRate(imudata["TIME"], self.sp11_data["TIME"], self.sp13_data["TIME"])
             self.printPdTemperature(imudata["PD_TEMP"][0], self.sp11_data["PD_TEMP"][0], self.sp13_data["PD_TEMP"][0])
             debug_info = "MAIN: ," + str(input_buf) + ", " + str(round((t2 - t0) * 1000, 5)) + ", " \
                          + str(round((t1 - t0) * 1000, 5)) + ", " + str(round((t2 - t1) * 1000, 5))

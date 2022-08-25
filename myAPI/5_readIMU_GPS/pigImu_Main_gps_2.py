@@ -65,11 +65,9 @@ class mainWindow(QMainWindow):
         self.act_sp11 = ACTION_PIG()
         self.act_sp13 = ACTION_PIG()
         # self.imudata_file = cmn.data_manager(fnum=0)
-        self.imudata_file_auto = autoSave.atSave_PC(fnum=0)
+        self.imudata_file_auto = autoSave.atSave_PC_v2(fnum=0)
         self.pig_cali_menu = calibrationBlock()
         self.analysis_allan = analysis_Allan.analysis_allan_widget(['fog'])
-        # self.analysis_timing_plot = analysis_TimingPlot.analysis_timing_plot_widget(
-        #     ['fog', 'ax', 'ay', 'az', 'T', 'yy', 'MM', 'dd', 'hh', 'mm', 'ss'])
         self.analysis_timing_plot = analysis_TimingPlot.analysis_timing_plot_widget(
             ['wx', 'wy', 'wz', 'ax', 'ay', 'az', 'yy', 'MM', 'dd', 'hh', 'mm', 'ss'])
         self.act.isCali = True
@@ -254,9 +252,10 @@ class mainWindow(QMainWindow):
         self.act.isRun = False
         self.act_sp11.isRun = False
         self.act_sp13.isRun = False
-        self.top.save_block.rb.setChecked(False)
-        # self.imudata_file.close()
-        self.imudata_file_auto.close_hour_folder()
+        if self.top.save_block.rb.isChecked():
+            self.imudata_file_auto.close_hour_folder()
+            self.imudata_file_auto.reset_hh_reg()
+            self.top.save_block.rb.setChecked(False)
         self.press_stop = True
 
     @property
@@ -352,12 +351,17 @@ class mainWindow(QMainWindow):
             # print(self.top.date_rb.btn_status)
             self.act.date_type = self.top.date_rb.btn_status
 
-            datalist = [imudata["TIME"], imudata["PIG_WZ"], self.sp11_data["PIG_WZ"], self.sp13_data["PIG_WZ"]
+            # datalist = [imudata["TIME"], imudata["PIG_WZ"], self.sp11_data["PIG_WZ"], self.sp13_data["PIG_WZ"]
+            #             , imudata['YEAR'], imudata['MON'], imudata['DAY'], imudata['HOUR']
+            #             , imudata['MIN'], imudata['SEC']]
+            datalist = [imudata["TIME"], self.sp13_data["PIG_WZ"], self.sp11_data["PIG_WZ"], imudata["PIG_WZ"]
+                        , imudata["ADXL_AX"], imudata["ADXL_AY"], imudata["ADXL_AZ"]
                         , imudata['YEAR'], imudata['MON'], imudata['DAY'], imudata['HOUR']
                         , imudata['MIN'], imudata['SEC']]
             # print('main:', imudata['YEAR'], imudata['MON'], imudata['DAY'], imudata['HOUR'], imudata['MIN'],
             #       imudata['SEC'])
-            data_fmt = "%.4f,%.5f,%.5f,%.5f,%d,%d,%d,%d,%d,%.2f"
+            # data_fmt = "%.4f,%.5f,%.5f,%.5f,%d,%d,%d,%d,%d,%.2f"
+            data_fmt = "%.4f,%.5f,%.5f,%.5f,%.5f,%.5f,%.5f,%d,%d,%d,%d,%d,%.2f"
             gps_time = '%d/%d/%d %d:%d:%.1f' % (imudata['YEAR'][0], imudata['MON'][0], imudata['DAY'][0],
                                                 imudata['HOUR'][0], imudata['MIN'][0], imudata['SEC'][0])
             self.printGPS_Time(gps_time)
@@ -366,7 +370,7 @@ class mainWindow(QMainWindow):
             self.plotdata(self.imudata, self.imudata_sp11["PIG_WZ"], self.imudata_sp13["PIG_WZ"])
 
     def plotdata(self, imudata, pig_sp11, pig_sp13):
-        self.plotControl()
+        # self.plotControl()
         self.top.plot1.ax.setData(imudata["TIME"], pig_sp13)
         self.top.plot2.ax.setData(imudata["TIME"], pig_sp11)
         self.top.plot3.ax.setData(imudata["TIME"], imudata["PIG_WZ"])

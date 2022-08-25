@@ -50,7 +50,8 @@ class mainWindow(QMainWindow):
         self.top = TOP()
         self.act = ACTION()
         # self.imudata_file = cmn.data_manager(fnum=0)
-        self.imudata_file_auto = autoSave.atSave_PC(fnum=0)
+        # self.imudata_file_auto = autoSave.atSave_PC(fnum=0)
+        self.imudata_file_auto = autoSave.atSave_PC_v2(fnum=0)
         self.pig_cali_menu = calibrationBlock()
         self.analysis_allan = analysis_Allan.analysis_allan_widget(['wx', 'wy', 'wz'])
         self.analysis_timing_plot = analysis_TimingPlot.analysis_timing_plot_widget(['wx', 'wy', 'wz', 'ax', 'ay', 'az'])
@@ -175,9 +176,11 @@ class mainWindow(QMainWindow):
 
     def stop(self):
         self.act.isRun = False
-        self.top.save_block.rb.setChecked(False)
         # self.imudata_file.close()
-        self.imudata_file_auto.close_hour_folder()
+        if self.top.save_block.rb.isChecked():
+            self.imudata_file_auto.close_hour_folder()
+            self.imudata_file_auto.reset_hh_reg()
+            self.top.save_block.rb.setChecked(False)
 
     def collectData(self, imudata):
         input_buf = self.act.readInputBuffer()

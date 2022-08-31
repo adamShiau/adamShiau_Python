@@ -56,3 +56,4 @@
 2022-07-29 15:51:29 - main.myLib.mySerial.Connector - ERROR - serial read timeout: check if the input power is ON, close the GUI and re-excute.
 2022-08-22 17:31:13 - main.myLib.mySerial.Connector - ERROR - serial read timeout: check if the input power is ON, close the GUI and re-excute.
 2022-08-22 17:37:10 - main.myLib.mySerial.Connector - ERROR - serial read timeout: check if the input power is ON, close the GUI and re-excute.
+2022-08-31 16:10:51 - main.myLib.mySerial.Connector - ERROR - IOError, the device: COM5 can not be found or can not be configured!

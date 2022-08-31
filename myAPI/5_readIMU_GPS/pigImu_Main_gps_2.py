@@ -69,7 +69,7 @@ class mainWindow(QMainWindow):
         self.pig_cali_menu = calibrationBlock()
         self.analysis_allan = analysis_Allan.analysis_allan_widget(['fog'])
         self.analysis_timing_plot = analysis_TimingPlot.analysis_timing_plot_widget(
-            ['wx', 'wy', 'wz', 'ax', 'ay', 'az', 'yy', 'MM', 'dd', 'hh', 'mm', 'ss'])
+            ['wx', 'wy', 'wz', 'ax', 'ay', 'az', 'yy', 'MM', 'dd', 'hh', 'mm', 'ss', 'ms'])
         self.act.isCali = True
         self.act_sp11.isCali = True
         self.act_sp13.isCali = True
@@ -88,6 +88,7 @@ class mainWindow(QMainWindow):
 
         self.__debug = debug_en
         self.t_start = time.perf_counter()
+        self.act.date_type = self.top.date_rb.btn_status
         self.autoComport()
 
     def mainUI(self):
@@ -279,13 +280,15 @@ class mainWindow(QMainWindow):
         sample = 1000
         if not self.press_stop:
             # print(imudata)
+            self.act.date_type = self.top.date_rb.btn_status
             self.printBuffer()
             input_buf = self.act.readInputBuffer()
             t0 = time.perf_counter()
 
             t1 = time.perf_counter()
             # start of sp11 data
-            if len(self.sp11_data["TIME"]) == 0 or len(self.sp13_data["TIME"]) == 0 or len(imudata['TIME']) == 0:  # wait sp11 data coming
+            if len(self.sp11_data["TIME"]) == 0 or len(self.sp13_data["TIME"]) == 0 or len(
+                    imudata['TIME']) == 0:  # wait sp11 data coming
                 # print(len(imudata["TIME"]), len(self.sp11_data["TIME"]), len(self.sp11_data["TIME"]))
                 # print('wait!!!!!!!!!!!!!!!!')
                 return
@@ -349,21 +352,22 @@ class mainWindow(QMainWindow):
                          + str(round((t1 - t0) * 1000, 5)) + ", " + str(round((t2 - t1) * 1000, 5))
             cmn.print_debug(debug_info, self.__debug)
             # print(self.top.date_rb.btn_status)
-            self.act.date_type = self.top.date_rb.btn_status
+
 
             # datalist = [imudata["TIME"], imudata["PIG_WZ"], self.sp11_data["PIG_WZ"], self.sp13_data["PIG_WZ"]
             #             , imudata['YEAR'], imudata['MON'], imudata['DAY'], imudata['HOUR']
             #             , imudata['MIN'], imudata['SEC']]
             datalist = [imudata["TIME"], self.sp13_data["PIG_WZ"], self.sp11_data["PIG_WZ"], imudata["PIG_WZ"]
-                        , imudata["ADXL_AX"], imudata["ADXL_AY"], imudata["ADXL_AZ"]
-                        , imudata['YEAR'], imudata['MON'], imudata['DAY'], imudata['HOUR']
-                        , imudata['MIN'], imudata['SEC']]
+                , imudata["ADXL_AX"], imudata["ADXL_AY"], imudata["ADXL_AZ"]
+                , imudata['YEAR'], imudata['MON'], imudata['DAY'], imudata['HOUR']
+                , imudata['MIN'], imudata['SEC'], imudata['mSEC']]
             # print('main:', imudata['YEAR'], imudata['MON'], imudata['DAY'], imudata['HOUR'], imudata['MIN'],
             #       imudata['SEC'])
             # data_fmt = "%.4f,%.5f,%.5f,%.5f,%d,%d,%d,%d,%d,%.2f"
-            data_fmt = "%.4f,%.5f,%.5f,%.5f,%.5f,%.5f,%.5f,%d,%d,%d,%d,%d,%.2f"
-            gps_time = '%d/%d/%d %d:%d:%.1f' % (imudata['YEAR'][0], imudata['MON'][0], imudata['DAY'][0],
-                                                imudata['HOUR'][0], imudata['MIN'][0], imudata['SEC'][0])
+            data_fmt = "%.4f,%.5f,%.5f,%.5f,%.5f,%.5f,%.5f,%d,%d,%d,%d,%d,%d,%d"
+            gps_time = '%d/%d/%d %d:%d:%d.%d' % (imudata['YEAR'][0], imudata['MON'][0], imudata['DAY'][0],
+                                                 imudata['HOUR'][0], imudata['MIN'][0], imudata['SEC'][0],
+                                                 imudata['mSEC'][0])
             self.printGPS_Time(gps_time)
             self.imudata_file_auto.saveData(datalist, data_fmt)
             self.imudata_file_auto.auto_create_folder(self.top.save_block.rb.isChecked())

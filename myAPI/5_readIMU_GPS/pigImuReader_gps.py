@@ -45,6 +45,7 @@ IMU_DATA_STRUCTURE = {
     'HOUR': np.zeros(1),
     'MIN': np.zeros(1),
     'SEC': np.zeros(1),
+    'mSEC': np.zeros(1),
     'DATA_CNT': np.zeros(1),
     'GPS_ALIVE': np.zeros(1)
 }
@@ -76,6 +77,7 @@ class pigImuReader(QThread):
     def __init__(self, portName: str = "None", boolCaliw=False, boolCalia=False, baudRate: int = 230400,
                  debug_en: bool = 0):
         super(pigImuReader, self).__init__()
+        self.__carry_ms = 0
         self.date_type = 'PC'
         self.__carry_ss = 0
         self.__carry_mm = 0
@@ -284,27 +286,45 @@ class pigImuReader(QThread):
         gps_still_alive = is_gpstime_renew & valid
         # print('valid: ', valid)
         self.__datacnt += 1
-        if bool(gps_still_alive):
-            self.__datacnt = 0
-            self.__carry_ss = 0
-            self.__carry_mm = 0
+        # if bool(gps_still_alive):
+        #     self.__datacnt = 0
+        #     self.__carry_ms = 0
+        #     self.__carry_ss = 0
+        #     self.__carry_mm = 0
 
         # print(self.__gpstime_old, GPS_TIME, is_gpstime_renew, valid, gps_still_alive)
-        self.__gpstime_old = GPS_TIME
+        # self.__gpstime_old = GPS_TIME
         gps_yy = int(GPS_DATE % 100 + 2000)
         gps_MM = int((GPS_DATE * 1e-2) % 100)
         gps_dd = int(GPS_DATE * 1e-4)
         gps_hh = int(GPS_TIME * 1e-6)
         gps_mm = int((GPS_TIME * 1e-4) % 100)
         gps_ss = int((GPS_TIME * 1e-2) % 100)
-        gps_ss_ext = round(self.__datacnt / self.dataRate, 2) - 60 * self.__carry_ss
-        # print(gps_ss_ext, self.__datacnt, self.__carry_ss)
-        if gps_ss_ext > 60:
+        gps_ms = int(self.__datacnt * 1e3 / self.dataRate)
+        if gps_ms >= 1000:
+            self.__carry_ms += 1
+            self.__datacnt = 0
+        if self.__carry_ms == 60:
             self.__carry_ss += 1
-        if gps_mm > 60:
+            self.__carry_ms = 0
+        if self.__carry_ss == 60:
             self.__carry_mm += 1
+            self.__carry_ss = 0
+        if bool(gps_still_alive):
+            self.__datacnt = 0
+            self.__carry_ms = 0
+            self.__carry_ss = 0
+            self.__carry_mm = 0
+        self.__gpstime_old = GPS_TIME
+        # gps_ss_ext = round(self.__datacnt / self.dataRate, 2) - 60 * self.__carry_ss
+        # print(gps_ss_ext, self.__datacnt, self.__carry_ss)
+        # if gps_ss_ext > 60:
+        #     self.__carry_ss += 1
+        # if gps_mm > 60:
+        #     self.__carry_mm += 1
 
-        gps_ss += gps_ss_ext
+        # gps_ss += gps_ss_ext
+        gps_ss += self.__carry_ms
         gps_mm += self.__carry_ss
         gps_hh += self.__carry_mm
 
@@ -312,7 +332,8 @@ class pigImuReader(QThread):
                    "ADXL_AX": NANO_AX, "ADXL_AY": ADXL_AY, "ADXL_AZ": ADXL_AZ,
                    "TIME": t, "PIG_ERR": ERR, "PIG_WZ": STEP, "PD_TEMP": PD_TEMP,
                    'YEAR': gps_yy, 'MON': gps_MM, 'DAY': gps_dd, 'HOUR': gps_hh,
-                   'MIN': gps_mm, 'SEC': gps_ss, 'DATA_CNT': self.__datacnt, 'GPS_ALIVE': gps_still_alive
+                   'MIN': gps_mm, 'SEC': gps_ss, 'mSEC': gps_ms,
+                   'DATA_CNT': self.__datacnt, 'GPS_ALIVE': gps_still_alive
                    }
         # print(gps_ss)
         # print('valid: ', bool(valid))
@@ -387,7 +408,8 @@ class pigImuReader(QThread):
                 dd = currentDateAndTime.day
                 hh = currentDateAndTime.hour
                 mm = currentDateAndTime.minute
-                ss = currentDateAndTime.second + currentDateAndTime.microsecond * 1e-6
+                ss = currentDateAndTime.second
+                ms = int(currentDateAndTime.microsecond * 1e-3)
                 if self.date_type == 'PC':
                     imudata['YEAR'] = yy
                     imudata['MON'] = MM
@@ -395,6 +417,7 @@ class pigImuReader(QThread):
                     imudata['HOUR'] = hh
                     imudata['MIN'] = mm
                     imudata['SEC'] = ss
+                    imudata['mSEC'] = ms
                 ''' end of PC time'''
                 # print('act.imudata[YEAR]: ', imudata['YEAR'])
                 # print('act.imudata[MON]: ', imudata['MON'])
@@ -418,6 +441,7 @@ class pigImuReader(QThread):
                 imudataArray["HOUR"] = np.append(imudataArray["HOUR"], imudata["HOUR"])
                 imudataArray["MIN"] = np.append(imudataArray["MIN"], imudata["MIN"])
                 imudataArray["SEC"] = np.append(imudataArray["SEC"], imudata["SEC"])
+                imudataArray["mSEC"] = np.append(imudataArray["mSEC"], imudata["mSEC"])
                 imudataArray["DATA_CNT"] = np.append(imudataArray["DATA_CNT"], imudata["DATA_CNT"])
                 imudataArray["GPS_ALIVE"] = np.append(imudataArray["GPS_ALIVE"], imudata["GPS_ALIVE"])
                 t5 = time.perf_counter()
@@ -448,12 +472,13 @@ class pigImuReader(QThread):
     def offset_setting(self, imuoffset):
         imuoffset["TIME"] = [0]
         imuoffset["PD_TEMP"] = [0]
-        imuoffset["GPS_YEAR"] = [0]
-        imuoffset["GPS_MON"] = [0]
-        imuoffset["GPS_DAY"] = [0]
-        imuoffset["GPS_HOUR"] = [0]
-        imuoffset["GPS_MIN"] = [0]
-        imuoffset["GPS_SEC"] = [0]
+        imuoffset["YEAR"] = [0]
+        imuoffset["MON"] = [0]
+        imuoffset["DAY"] = [0]
+        imuoffset["HOUR"] = [0]
+        imuoffset["MIN"] = [0]
+        imuoffset["SEC"] = [0]
+        imuoffset["mSEC"] = [0]
         imuoffset["GPS_ALIVE"] = [0]
         imuoffset["DATA_CNT"] = [0]
         if not self.isCali_w:

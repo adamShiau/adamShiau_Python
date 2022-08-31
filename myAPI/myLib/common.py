@@ -331,6 +331,7 @@ class data_manager:
         if self.__isopen:
             date_now = datetime.now().strftime("%Y/%m/%d %H:%M:%S")
             self.__fd.writelines('#' + date_now + '\n')
+            # print('close !!')
         self.__isopen, fd = file_manager(name=self.__name__, isopen=False, mode="w", fnum=self.__fnum__)
 
     def write_line(self, comment):
@@ -388,8 +389,10 @@ class data_hub_manager:
 
     def store_df_data(self, df_data):
         self.df_data = df_data
+        # print('data_hub_manager.store_df_data: ', self.df_data)
 
     def switch_df_data(self):
+        # print('data_hub_manager.switch_df_data: ', self.key)
         return self.df_data[self.key]
 
     def manual_access_data(self, key):

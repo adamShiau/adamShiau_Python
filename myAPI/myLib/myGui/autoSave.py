@@ -196,9 +196,11 @@ class atSave_PC_v2:
     def open_hour_file(self):
         data = datetime.now()
         self.hh = data.hour
-        mm = data.minute
+        MM = data.minute
         ss = data.second
-        file_name = self.dd_path + '/' + str(self.hh).zfill(2) + str(mm).zfill(2) + str(ss).zfill(2)
+        # file_name = self.dd_path + '/' + str(self.hh).zfill(2) + str(MM).zfill(2) + str(ss).zfill(2)
+        file_name = self.dd_path + '/' + str(self.yy) + str(self.mm).zfill(2) + str(self.dd).zfill(2) + '_' + \
+                    str(self.hh).zfill(2) + str(MM).zfill(2) + str(ss).zfill(2)
         file_exist = (self.hh == self.hh_reg)
         if not file_exist:
             if self.start:
@@ -208,6 +210,7 @@ class atSave_PC_v2:
             self.hh_path = file_name + '.txt'
             self.__data_manager.name = self.hh_path
             self.__data_manager.open(True)
+            self.write_line('time,wx,wy,wz,ax,ay,az,yy,MM,dd,hh,mm,ss,ms')
             print('     create hour file %s done.' % self.__data_manager.name)
         self.hh_reg = self.hh
 

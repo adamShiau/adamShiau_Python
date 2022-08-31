@@ -11,7 +11,7 @@ logger.info(__name__ + ' logger start')
 """ ####### end of log stuff creation ########  """
 
 import sys
-
+from datetime import datetime
 sys.path.append("../")
 from myLib.mySerial.Connector import Connector
 from myLib.mySerial import getData
@@ -38,12 +38,13 @@ IMU_DATA_STRUCTURE = {
     "ADXL_AY": np.zeros(1),
     "ADXL_AZ": np.zeros(1),
     "TIME": np.zeros(1),
-    'GPS_YEAR': np.zeros(1),
-    'GPS_MON': np.zeros(1),
-    'GPS_DAY': np.zeros(1),
-    'GPS_HOUR': np.zeros(1),
-    'GPS_MIN': np.zeros(1),
-    'GPS_SEC': np.zeros(1),
+    'YEAR': np.zeros(1),
+    'MON': np.zeros(1),
+    'DAY': np.zeros(1),
+    'HOUR': np.zeros(1),
+    'MIN': np.zeros(1),
+    'SEC': np.zeros(1),
+    'mSEC': np.zeros(1),
     'DATA_CNT': np.zeros(1),
     'GPS_ALIVE': np.zeros(1)
 }
@@ -75,6 +76,11 @@ class memsImuReader(QThread):
     def __init__(self, portName: str = "None", boolCaliw=False, boolCalia=False, baudRate: int = 230400,
                  debug_en: bool = 0):
         super(memsImuReader, self).__init__()
+        self.__carry_ms = 0
+        self.date_type = 'PC'
+        self.__carry_mm = 0
+        self.__carry_ss = 0
+        self.__dataRate = 250
         self.nano33_wz_kal = filter.kalman_1D()
         # self.pig_wz_kal = filter.kalman_1D()
         self.__isCali_a = boolCalia
@@ -153,6 +159,22 @@ class memsImuReader(QThread):
         self.__kal_R = R
         self.nano33_wz_kal.kal_R = self.kal_R
         # self.pig_wz_kal.kal_R = self.kal_R
+
+    @property
+    def dataRate(self):
+        return self.__dataRate
+
+    @dataRate.setter
+    def dataRate(self, val):
+        self.__dataRate = val
+
+    @property
+    def date_type(self):
+        return self.__date_type
+
+    @date_type.setter
+    def date_type(self, type):
+        self.__date_type = type
 
     @property
     def isRun(self):
@@ -260,23 +282,47 @@ class memsImuReader(QThread):
         gps_still_alive = is_gpstime_renew & valid
         # print('valid: ', valid)
         self.__datacnt += 1
-        if bool(gps_still_alive):
-            self.__datacnt = 0
+        # if bool(gps_still_alive):
+        #     self.__datacnt = 0
+        #     self.__carry_ms = 0
+        #     self.__carry_ss = 0
+        #     self.__carry_mm = 0
         # print(self.__gpstime_old, GPS_TIME, is_gpstime_renew, valid, gps_still_alive)
-        self.__gpstime_old = GPS_TIME
+        # self.__gpstime_old = GPS_TIME
         gps_yy = int(GPS_DATE % 100 + 2000)
         gps_MM = int((GPS_DATE * 1e-2) % 100)
         gps_dd = int(GPS_DATE * 1e-4)
         gps_hh = int(GPS_TIME * 1e-6)
         gps_mm = int((GPS_TIME * 1e-4) % 100)
         gps_ss = int((GPS_TIME * 1e-2) % 100)
+        gps_ms = int(self.__datacnt * 1e3 / self.dataRate)
+        # print(gps_ms)
+        if gps_ms >= 1000:
+            self.__carry_ms += 1
+            self.__datacnt = 0
+        if self.__carry_ms == 60:
+            self.__carry_ss += 1
+            self.__carry_ms = 0
+        if self.__carry_ss == 60:
+            self.__carry_mm += 1
+            self.__carry_ss = 0
+        if bool(gps_still_alive):
+            self.__datacnt = 0
+            self.__carry_ms = 0
+            self.__carry_ss = 0
+            self.__carry_mm = 0
+        self.__gpstime_old = GPS_TIME
         # print(gps_yy, gps_MM, gps_dd, gps_hh, gps_mm, gps_ss, self.__datacnt)
-
+        gps_ss += self.__carry_ms
+        # gps_ms = (gps_ss - int(gps_ss))*1e3
+        gps_mm += self.__carry_ss
+        gps_hh += self.__carry_mm
         imudata = {"NANO33_WX": NANO_WX, "NANO33_WY": NANO_WY, "NANO33_WZ": NANO_WZ,
                    "ADXL_AX": NANO_AX, "ADXL_AY": ADXL_AY, "ADXL_AZ": ADXL_AZ, "TIME": t,
                    "NANO33_AX": NANO_AX, "NANO33_AY": NANO_AY, "NANO33_AZ": NANO_AZ,
-                   'GPS_YEAR': gps_yy, 'GPS_MON': gps_MM, 'GPS_DAY': gps_dd, 'GPS_HOUR': gps_hh,
-                   'GPS_MIN': gps_mm, 'GPS_SEC': gps_ss, 'DATA_CNT': self.__datacnt, 'GPS_ALIVE': gps_still_alive
+                   'YEAR': gps_yy, 'MON': gps_MM, 'DAY': gps_dd, 'HOUR': gps_hh,
+                   'MIN': gps_mm, 'SEC': gps_ss, 'mSEC': gps_ms,
+                   'DATA_CNT': self.__datacnt, 'GPS_ALIVE': gps_still_alive
                    }
         # print('valid: ', bool(valid))
 
@@ -341,6 +387,24 @@ class memsImuReader(QThread):
                 t4 = time.perf_counter()
                 # imudataArray = cmn.dictOperation(imudataArray, imudata, "APPEND", IMU_DATA_STRUCTURE)
                 # print(imudata)
+                ''' PC time'''
+                currentDateAndTime = datetime.now()
+                yy = currentDateAndTime.year
+                MM = currentDateAndTime.month
+                dd = currentDateAndTime.day
+                hh = currentDateAndTime.hour
+                mm = currentDateAndTime.minute
+                ss = currentDateAndTime.second
+                ms = int(currentDateAndTime.microsecond * 1e-3)
+                if self.date_type == 'PC':
+                    imudata['YEAR'] = yy
+                    imudata['MON'] = MM
+                    imudata['DAY'] = dd
+                    imudata['HOUR'] = hh
+                    imudata['MIN'] = mm
+                    imudata['SEC'] = ss
+                    imudata['mSEC'] = ms
+                ''' end of PC time'''
                 imudataArray["TIME"] = np.append(imudataArray["TIME"], imudata["TIME"])
                 imudataArray["ADXL_AX"] = np.append(imudataArray["ADXL_AX"], imudata["ADXL_AX"])
                 imudataArray["ADXL_AY"] = np.append(imudataArray["ADXL_AY"], imudata["ADXL_AY"])
@@ -351,12 +415,13 @@ class memsImuReader(QThread):
                 imudataArray["NANO33_AX"] = np.append(imudataArray["NANO33_AX"], imudata["NANO33_AX"])
                 imudataArray["NANO33_AY"] = np.append(imudataArray["NANO33_AY"], imudata["NANO33_AY"])
                 imudataArray["NANO33_AZ"] = np.append(imudataArray["NANO33_AZ"], imudata["NANO33_AZ"])
-                imudataArray["GPS_YEAR"] = np.append(imudataArray["GPS_YEAR"], imudata["GPS_YEAR"])
-                imudataArray["GPS_MON"] = np.append(imudataArray["GPS_MON"], imudata["GPS_MON"])
-                imudataArray["GPS_DAY"] = np.append(imudataArray["GPS_DAY"], imudata["GPS_DAY"])
-                imudataArray["GPS_HOUR"] = np.append(imudataArray["GPS_HOUR"], imudata["GPS_HOUR"])
-                imudataArray["GPS_MIN"] = np.append(imudataArray["GPS_MIN"], imudata["GPS_MIN"])
-                imudataArray["GPS_SEC"] = np.append(imudataArray["GPS_SEC"], imudata["GPS_SEC"])
+                imudataArray["YEAR"] = np.append(imudataArray["YEAR"], imudata["YEAR"])
+                imudataArray["MON"] = np.append(imudataArray["MON"], imudata["MON"])
+                imudataArray["DAY"] = np.append(imudataArray["DAY"], imudata["DAY"])
+                imudataArray["HOUR"] = np.append(imudataArray["HOUR"], imudata["HOUR"])
+                imudataArray["MIN"] = np.append(imudataArray["MIN"], imudata["MIN"])
+                imudataArray["SEC"] = np.append(imudataArray["SEC"], imudata["SEC"])
+                imudataArray["mSEC"] = np.append(imudataArray["mSEC"], imudata["mSEC"])
                 imudataArray["DATA_CNT"] = np.append(imudataArray["DATA_CNT"], imudata["DATA_CNT"])
                 imudataArray["GPS_ALIVE"] = np.append(imudataArray["GPS_ALIVE"], imudata["GPS_ALIVE"])
                 # print(imudata["GPS_YEAR"], imudata["GPS_MON"], imudata["GPS_DAY"], imudata["GPS_HOUR"],
@@ -388,12 +453,13 @@ class memsImuReader(QThread):
 
     def offset_setting(self, imuoffset):
         imuoffset["TIME"] = [0]
-        imuoffset["GPS_YEAR"] = [0]
-        imuoffset["GPS_MON"] = [0]
-        imuoffset["GPS_DAY"] = [0]
-        imuoffset["GPS_HOUR"] = [0]
-        imuoffset["GPS_MIN"] = [0]
-        imuoffset["GPS_SEC"] = [0]
+        imuoffset["YEAR"] = [0]
+        imuoffset["MON"] = [0]
+        imuoffset["DAY"] = [0]
+        imuoffset["HOUR"] = [0]
+        imuoffset["MIN"] = [0]
+        imuoffset["SEC"] = [0]
+        imuoffset["mSEC"] = [0]
         imuoffset["GPS_ALIVE"] = [0]
         imuoffset["DATA_CNT"] = [0]
         if not self.isCali_w:

@@ -23,6 +23,7 @@ import sys
 sys.path.append("../")
 from myLib import common as cmn
 from myLib.myGui.mygui_serial import *
+from myLib.myGui import autoSave
 import time
 from myLib.mySerial.Connector import Connector
 from myLib.myGui.pig_parameters_widget import pig_parameters_widget
@@ -51,11 +52,11 @@ class mainWindow(QMainWindow):
         self.__isFileOpen = False
         self.top = TOP()
         self.act = ACTION()
-        self.imudata_file = cmn.data_manager(fnum=0)
+        self.imudata_file_auto = autoSave.atSave_PC_v2(fnum=0)
         self.pig_cali_menu = calibrationBlock()
         self.analysis_allan = analysis_Allan.analysis_allan_widget(['wx', 'wy', 'wz'])
         self.analysis_timing_plot = analysis_TimingPlot.analysis_timing_plot_widget(
-            ['wx', 'wy', 'wz', 'ax', 'ay', 'az'])
+            ['wx', 'wy', 'wz', 'ax', 'ay', 'az', 'yy', 'MM', 'dd', 'mm', 'hh', 'ss', 'ms'])
         self.act.isCali = True
         self.menu = self.menuBar()
         self.pig_menu = pig_menu_manager(self.menu, self)
@@ -100,6 +101,7 @@ class mainWindow(QMainWindow):
         cmn.print_debug('file name: %s' % obj.text(), PRINT_DEBUG)
         filename = obj.text() + self.top.save_block.le_ext.text()
         self.analysis_timing_plot.pbar.set_filename_ext(filename)
+        print(filename)
         self.analysis_allan.pbar.set_filename_ext(filename)
 
     def show_parameters(self):
@@ -129,8 +131,9 @@ class mainWindow(QMainWindow):
             self.t_start = time.perf_counter()
 
     def printUpdateRate(self, t_list):
-        self.update_rate = round(((t_list[-1] - t_list[0]) / (len(t_list) - 1)) ** -1, 1)
-        self.top.data_rate_lb.lb.setText(str(self.update_rate))
+        update_rate = round(((t_list[-1] - t_list[0]) / (len(t_list) - 1)) ** -1, 1)
+        self.top.data_rate_lb.lb.setText(str(update_rate))
+        self.act.dataRate = update_rate
 
     def updateComPort(self):
         portNum, portList = self.__connector.portList()
@@ -167,15 +170,19 @@ class mainWindow(QMainWindow):
         self.act.isRun = True
         self.act.start()
         self.__skipcnt = 0
-        file_name = self.top.save_block.le_filename.text() + self.top.save_block.le_ext.text()
-        self.imudata_file.name = file_name
-        self.imudata_file.open(self.top.save_block.rb.isChecked())
-        self.imudata_file.write_line('time,wx,wy,wz,ax,ay,az')
+        file_name = self.top.save_block.le_filename.text()
+        self.imudata_file_auto.data_path = file_name
+        self.imudata_file_auto.start = True
+        self.imudata_file_auto.create_data_folder(self.top.save_block.rb.isChecked())
+        self.imudata_file_auto.auto_create_folder(self.top.save_block.rb.isChecked())
+        # self.imudata_file_auto.write_line('time,wx,wy,wz,ax,ay,az,yy,MM,dd,hh,mm,ss,ms')
 
     def stop(self):
         self.act.isRun = False
-        self.top.save_block.rb.setChecked(False)
-        self.imudata_file.close()
+        if self.top.save_block.rb.isChecked():
+            self.imudata_file_auto.close_hour_folder()
+            self.imudata_file_auto.reset_hh_reg()
+            self.top.save_block.rb.setChecked(False)
 
     def collectData(self, imudata):
         # print(imudata)
@@ -209,32 +216,30 @@ class mainWindow(QMainWindow):
             self.imudata["NANO33_AY"] = self.imudata["NANO33_AY"][self.act.arrayNum:self.act.arrayNum + 1000]
             self.imudata["NANO33_AZ"] = self.imudata["NANO33_AZ"][self.act.arrayNum:self.act.arrayNum + 1000]
         t2 = time.perf_counter()
-        self.printUpdateRate(self.imudata["TIME"])
+        # self.printUpdateRate(self.imudata["TIME"])
         if self.__skipcnt < 10:
             self.__skipcnt += 1
             # print('self.__skipcnt: ', self.__skipcnt)
             return
-        gps_secExt = imudata['GPS_SEC'] + imudata['DATA_CNT'] / self.update_rate
-        # print(imudata['GPS_YEAR'], imudata['GPS_MON'], imudata['GPS_DAY'], imudata['GPS_HOUR'], imudata['GPS_MIN'],
-        #       imudata['GPS_SEC'], gps_secExt)
-        # print(imudata['GPS_SEC'], imudata['DATA_CNT'], gps_secExt)
+        self.printUpdateRate(self.imudata["TIME"])
         debug_info = "MAIN: ," + str(input_buf) + ", " + str(round((t2 - t0) * 1000, 5)) + ", " \
                      + str(round((t1 - t0) * 1000, 5)) + ", " + str(round((t2 - t1) * 1000, 5))
         cmn.print_debug(debug_info, self.__debug)
-
+        self.act.date_type = self.top.date_rb.btn_status
         datalist = [imudata["TIME"], imudata["NANO33_WX"], imudata["NANO33_WY"], imudata["NANO33_WZ"]
-            , imudata["NANO33_AX"], imudata["NANO33_AY"], imudata["NANO33_AZ"], imudata['GPS_YEAR']
-            , imudata['GPS_MON'], imudata['GPS_DAY'], imudata['GPS_HOUR'], imudata['GPS_MIN']
-            , imudata['GPS_SEC'], gps_secExt
-                    ]
-        data_fmt = "%.4f,%.5f,%.5f,%.5f,%.5f,%.5f,%.5f,%d/%d/%d %d:%d:%d,%.2f"
+            , imudata["NANO33_AX"], imudata["NANO33_AY"], imudata["NANO33_AZ"], imudata['YEAR']
+            , imudata['MON'], imudata['DAY'], imudata['HOUR'], imudata['MIN']
+            , imudata['SEC'], imudata['mSEC']]
+        data_fmt = "%.4f,%.5f,%.5f,%.5f,%.5f,%.5f,%.5f,%d,%d,%d,%d,%d,%d,%d"
         # print('UTC %d/%d/%d %d:%d:%.2f' % (imudata['GPS_YEAR'][0], imudata['GPS_MON'][0], imudata['GPS_DAY'][0],
         #                                  imudata['GPS_HOUR'][0], imudata['GPS_MIN'][0], gps_secExt[0]))
-        gps_time = '%d/%d/%d %d:%d:%.1f' % (imudata['GPS_YEAR'][0], imudata['GPS_MON'][0], imudata['GPS_DAY'][0],
-                                         imudata['GPS_HOUR'][0], imudata['GPS_MIN'][0], gps_secExt[0])
+        gps_time = '%d/%d/%d %d:%d:%d.%d' % (imudata['YEAR'][0], imudata['MON'][0], imudata['DAY'][0]
+                                             , imudata['HOUR'][0], imudata['MIN'][0], imudata['SEC'][0],
+                                             imudata['mSEC'][0])
         # print(gps_utc)
         self.printGPS_Time(gps_time)
-        self.imudata_file.saveData(datalist, data_fmt)
+        self.imudata_file_auto.saveData(datalist, data_fmt)
+        self.imudata_file_auto.auto_create_folder(self.top.save_block.rb.isChecked())
         self.plotdata(self.imudata)
 
         # print(len(self.imudata["TIME"]))

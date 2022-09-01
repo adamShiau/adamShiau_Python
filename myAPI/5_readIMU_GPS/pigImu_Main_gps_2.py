@@ -246,7 +246,7 @@ class mainWindow(QMainWindow):
         self.imudata_file_auto.start = True
         self.imudata_file_auto.create_data_folder(self.top.save_block.rb.isChecked())
         self.imudata_file_auto.auto_create_folder(self.top.save_block.rb.isChecked())
-        self.imudata_file_auto.write_line('time,wx,wy,wz,ax,ay,az,yy,MM,dd,hh,mm,ss')
+        # self.imudata_file_auto.write_line('time,wx,wy,wz,ax,ay,az,yy,MM,dd,hh,mm,ss')
 
     def stop(self):
         self.resetFPGATimer()

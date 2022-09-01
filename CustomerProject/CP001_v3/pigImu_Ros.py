@@ -53,7 +53,7 @@ def myCallBack(imudata):
     ax = imudata["ADXL_AX"]
     ay = imudata["ADXL_AY"]
     az = imudata["ADXL_AZ"]
-    ros_Imu_publish(mems_wx, mems_wz, fog_wz, ax, ay, az)
+    ros_Imu_publish(mems_wx, mems_wy, fog_wz, ax, ay, az)
     # print(imudata["TIME"], imudata["NANO33_WZ"], imudata["ADXL_AZ"], imudata["PD_TEMP"])
 
 
@@ -122,7 +122,7 @@ if __name__ == "__main__":
     try:
         logger.info("running myImu.py")
         ser = Connector()
-        unit = DPH
+        unit = RPS
         myImu = pigImuReader()
         myImu.isCali_w = sys.argv[2]
         myImu.isCali_a = sys.argv[3]

@@ -281,7 +281,7 @@ class memsImuReader(QThread):
         t = time.perf_counter()
         gps_still_alive = is_gpstime_renew & valid
         # print('valid: ', valid)
-        self.__datacnt += 1
+        # self.__datacnt += 1
         # if bool(gps_still_alive):
         #     self.__datacnt = 0
         #     self.__carry_ms = 0
@@ -311,6 +311,7 @@ class memsImuReader(QThread):
             self.__carry_ms = 0
             self.__carry_ss = 0
             self.__carry_mm = 0
+        self.__datacnt += 1
         self.__gpstime_old = GPS_TIME
         # print(gps_yy, gps_MM, gps_dd, gps_hh, gps_mm, gps_ss, self.__datacnt)
         gps_ss += self.__carry_ms

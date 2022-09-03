@@ -11,7 +11,7 @@
     - [動態繪圖](#動態繪圖)
   - [pytgraph](#pytgraph)
   - [USB 下拉式選單使用方法](#usb-下拉式選單使用方法)
-  - [pig_menu_widget](#pig_menu_widget)
+  - [pig_menu_manager](#pig_menu_manager)
 
 ## Tutorial
 https://build-system.fman.io/pyqt5-tutorial
@@ -165,7 +165,7 @@ def disconnect(self):
 ```
 
 
-## pig_menu_widget
+## pig_menu_manager
 
 此 class 用來產生 readPig 所要用到的 meanu, 定義:
 

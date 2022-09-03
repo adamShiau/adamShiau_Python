@@ -12,8 +12,9 @@
   - [saveData2File](#savedata2file)
     - [使用](#使用-1)
   - [data_manager](#data_manager)
-  - [parameters_manager](#parameters_manager)
     - [使用](#使用-2)
+  - [parameters_manager](#parameters_manager)
+    - [使用](#使用-3)
 
 ## dictOperation
 
@@ -322,6 +323,32 @@ def close(self)
 def saveData(self, datalist, fmt)
 
 同等於 saveData2File()
+```
+
+### 使用
+
+```python
+#宣告類別物件
+def __init__(self):
+self.imudata_file = cmn.data_manager(fnum=0)
+
+# 在檔案開始寫之前打開檔案，status 與 name 由 gui 按鈕來控制
+def start(self):
+    file_name = self.top.save_block.le_filename.text() + self.top.save_block.le_ext.text()
+    self.imudata_file.name = file_name
+    self.imudata_file.open(self.top.save_block.rb.isChecked())
+
+# 在檔案結束時關掉檔案
+def stop(self):
+    self.imudata_file.close()
+
+# 在主程式運行中將datalist寫入檔案
+def collectData(self):
+    datalist = [imudata["TIME"], imudata["NANO33_WX"], imudata["NANO33_WY"], imudata["NANO33_WZ"]
+            , imudata["ADXL_AX"], imudata["ADXL_AY"], imudata["ADXL_AZ"]]
+        data_fmt = "%.5f, %.5f, %.5f, %.5f, %.5f, %.5f, %.5f"
+        self.imudata_file.saveData(datalist, data_fmt)
+
 ```
 
 ## parameters_manager

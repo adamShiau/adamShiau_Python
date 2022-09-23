@@ -212,7 +212,7 @@ class pigImuReader(QThread):
     # End of memsImuReader::disconnectIMU
 
     def readIMU(self):
-        self.writeImuCmd(2, 1)
+        self.writeImuCmd(2, 2)
 
     def stopIMU(self):
         self.writeImuCmd(2, 4)

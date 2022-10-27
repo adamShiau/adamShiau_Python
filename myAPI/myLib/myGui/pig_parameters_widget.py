@@ -60,8 +60,8 @@ INIT_PARAMETERS = {"MOD_H": 6850,
                    "CONST_STEP": 0,
                    "KF_Q": 1,
                    "KF_R": 6,
-                   "HD_Q": 10,
-                   "HD_R": 1,
+                   # "HD_Q": 1,
+                   # "HD_R": 1,
                    "SF_A": 0.00295210451588764 * 1.02 / 2,
                    "SF_B": -0.00137052112589694,
                    "DATA_RATE": 2000
@@ -123,8 +123,8 @@ class pig_parameters_widget(QGroupBox):
         mainLayout.addWidget(self.err_th, 6, 10, 1, 2)
         mainLayout.addWidget(self.freq, 7, 10, 1, 4)
 
-        mainLayout.addWidget(self.HD_Q, 8, 10, 1, 2)
-        mainLayout.addWidget(self.HD_R, 8, 12, 1, 2)
+        # mainLayout.addWidget(self.HD_Q, 8, 10, 1, 2)
+        # mainLayout.addWidget(self.HD_R, 8, 12, 1, 2)
         mainLayout.addWidget(self.KF_Q, 9, 10, 1, 2)
         mainLayout.addWidget(self.KF_R, 9, 12, 1, 2)
         mainLayout.addWidget(self.sf_a, 10, 10, 1, 2)

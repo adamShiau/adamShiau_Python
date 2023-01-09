@@ -207,7 +207,7 @@ class pigImuReader(QThread):
     # End of memsImuReader::disconnectIMU
 
     def readIMU(self):
-        self.writeImuCmd(1, 1)
+        self.writeImuCmd(1, 2)
 
     def stopIMU(self):
         self.writeImuCmd(1, 4)
@@ -254,6 +254,7 @@ class pigImuReader(QThread):
         t0 = time.perf_counter()
         while True:
             if not self.isRun:
+                print('run flag is false')
                 self.stopIMU()
                 self.imuThreadStop_qt.emit()
                 break

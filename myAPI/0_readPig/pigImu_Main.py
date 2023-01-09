@@ -43,6 +43,7 @@ class mainWindow(QMainWindow):
 
     def __init__(self, debug_en: bool = False):
         super(mainWindow, self).__init__()
+        self.__first_run_flag = True
         self.press_stop = False
         self.resize(1450, 800)
         self.pig_parameter_widget = None
@@ -96,7 +97,6 @@ class mainWindow(QMainWindow):
         # file name le
         self.top.save_block.le_filename.editingFinished.connect(
             lambda: self.file_name_le_connect(self.top.save_block.le_filename))
-
 
     def file_name_le_connect(self, obj):
         cmn.print_debug('file name: %s' % obj.text(), PRINT_DEBUG)
@@ -175,11 +175,12 @@ class mainWindow(QMainWindow):
         self.imudata_file.write_line('time,fog,T')
 
     def stop(self):
-        self.resetFPGATimer()
+        # self.resetFPGATimer()
         self.act.isRun = False
         self.top.save_block.rb.setChecked(False)
         self.imudata_file.close()
         self.press_stop = True
+        self.first_run_flag = True
         print('press stop')
 
     @property
@@ -190,16 +191,29 @@ class mainWindow(QMainWindow):
     def press_stop(self, stop):
         self.__stop = stop
 
+    @property
+    def first_run_flag(self):
+        return self.__first_run_flag
+
+    @first_run_flag.setter
+    def first_run_flag(self, flag):
+        self.__first_run_flag = flag
+
     def collectData(self, imudata):
         if not self.press_stop:
-            # print('collectData: ', imudata['TIME'])
-            # print(imudata)
+            # Add self.first_run_flag to make sure that TIME data starts from nearing Zero after pressing Read button,
+            # if the first element of imudata['TIME'] is greater than some arbitrary small value (two here), neglect
+            # this imudata['TIME'] data!
+            if self.first_run_flag and (int(imudata['TIME'][0]) > 2):
+                return
+            self.first_run_flag = False
             input_buf = self.act.readInputBuffer()
             t0 = time.perf_counter()
             # imudata = cmn.dictOperation(imudata, imuoffset, "SUB", IMU_DATA_STRUCTURE)
             self.printPdTemperature(imudata["PD_TEMP"][0])
             t1 = time.perf_counter()
             sample = 1000
+            # print(imudata["TIME"])
             self.imudata["TIME"] = np.append(self.imudata["TIME"], imudata["TIME"])
             self.imudata["PIG_WZ"] = np.append(self.imudata["PIG_WZ"], imudata["PIG_WZ"])
             self.imudata["PD_TEMP"] = np.append(self.imudata["PD_TEMP"], imudata["PD_TEMP"])
@@ -220,6 +234,8 @@ class mainWindow(QMainWindow):
             self.plotdata(self.imudata)
             self.printUpdateRate(self.imudata["TIME"])
             # print(len(self.imudata["TIME"]))
+            # print('first_run_flag')
+
 
     def plotdata(self, imudata):
         # print('plotdata: ', imudata['TIME'])

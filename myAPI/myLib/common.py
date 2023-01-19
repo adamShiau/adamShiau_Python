@@ -104,11 +104,11 @@ def readNANO33(dataPacket, EN, dataLen=2, POS_WX=13, sf_xlm=1.0, sf_gyro=1.0, PR
         nano33_az = 10
 
     if PRINT:
-        print(nano33_wx, end='\t\t')
-        print(nano33_wy, end='\t\t')
-        print(nano33_wz, end='\t\t')
-        print(nano33_ax, end='\t\t')
-        print(nano33_ay, end='\t\t')
+        # print(nano33_wx, end='\t\t')
+        # print(nano33_wy, end='\t\t')
+        # print(nano33_wz, end='\t\t')
+        # print(nano33_ax, end='\t\t')
+        # print(nano33_ay, end='\t\t')
         print(nano33_az)
 
     return nano33_wx, nano33_wy, nano33_wz, nano33_ax, nano33_ay, nano33_az

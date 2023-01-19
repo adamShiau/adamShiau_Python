@@ -212,7 +212,7 @@ class pigImuReader(QThread):
     # End of memsImuReader::disconnectIMU
 
     def readIMU(self):
-        self.writeImuCmd(2, 1)
+        self.writeImuCmd(2, 2)
 
     def stopIMU(self):
         self.writeImuCmd(2, 4)
@@ -241,8 +241,9 @@ class pigImuReader(QThread):
         # t = time.perf_counter()
         t = FPGA_TIME
         imudata = {"NANO33_WX": NANO_WX, "NANO33_WY": NANO_WY, "NANO33_WZ": NANO_WZ,
-                   "ADXL_AX": NANO_AX, "ADXL_AY": ADXL_AY, "ADXL_AZ": ADXL_AZ, "TIME": t,
-                   "PIG_ERR": ERR, "PIG_WZ": STEP, "PD_TEMP": PD_TEMP
+                   # "ADXL_AX": NANO_AX, "ADXL_AY": ADXL_AY, "ADXL_AZ": ADXL_AZ,
+                   "ADXL_AX": NANO_AX, "ADXL_AY": NANO_AY, "ADXL_AZ": NANO_AZ,
+                   "PIG_ERR": ERR, "PIG_WZ": STEP, "PD_TEMP": PD_TEMP, "TIME": t
                    }
         return dataPacket, imudata
 

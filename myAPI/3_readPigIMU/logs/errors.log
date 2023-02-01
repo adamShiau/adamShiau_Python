@@ -94,3 +94,7 @@
 2023-01-12 17:16:45 - main.myLib.mySerial.Connector - ERROR - serial read timeout: check if the input power is ON, close the GUI and re-excute.
 2023-01-17 17:34:02 - main.myLib.mySerial.Connector - ERROR - serial read timeout: check if the input power is ON, close the GUI and re-excute.
 2023-01-17 17:56:21 - main.myLib.mySerial.Connector - ERROR - serial read timeout: check if the input power is ON, close the GUI and re-excute.
+2023-01-30 12:20:25 - main.myLib.mySerial.Connector - ERROR - serial read timeout: check if the input power is ON, close the GUI and re-excute.
+2023-01-30 12:21:42 - main.myLib.mySerial.Connector - ERROR - serial read timeout: check if the input power is ON, close the GUI and re-excute.
+2023-01-30 12:22:15 - main.myLib.mySerial.Connector - ERROR - serial read timeout: check if the input power is ON, close the GUI and re-excute.
+2023-02-01 13:59:15 - main.myLib.mySerial.Connector - ERROR - serial read timeout: check if the input power is ON, close the GUI and re-excute.

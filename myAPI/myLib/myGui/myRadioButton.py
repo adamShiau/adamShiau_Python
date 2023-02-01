@@ -16,16 +16,21 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 import sys
 
+
 class radioButtonBlock_2(QGroupBox):
-    def __init__(self, title='', name1='', name2=''):
+    def __init__(self, title='', name1='', name2='', rb1Set=True):
         super(radioButtonBlock_2, self).__init__()
         self.setFont(QFont('Arial', 10))
         self.setTitle(title)
         self.__btn_status = None
         self.rb1 = QRadioButton(name1)
         self.rb2 = QRadioButton(name2)
-        self.rb1.setChecked(True)
-        self.btn_status = name1
+        self.rb1.setChecked(rb1Set)
+        self.rb2.setChecked(not rb1Set)
+        if rb1Set:
+            self.btn_status = name1
+        else:
+            self.btn_status = name2
         self.rb1.toggled.connect(lambda: self.btnstate_connect(self.rb1))
         self.rb2.toggled.connect(lambda: self.btnstate_connect(self.rb2))
         # pe = QPalette()
@@ -74,8 +79,9 @@ class filter_rb(QGroupBox):
         layout.addWidget(rb)
         self.setLayout(layout)
 
+
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    w = filter_rb('test')
+    w = radioButtonBlock_2('Sync Mode', 'INT', 'EXT')
     w.show()
     app.exec_()

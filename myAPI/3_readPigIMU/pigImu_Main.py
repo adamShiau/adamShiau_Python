@@ -28,7 +28,7 @@ from myLib.mySerial.Connector import Connector
 from myLib.myGui.pig_parameters_widget import pig_parameters_widget
 from myLib.myGui.pig_parameters_widget import CMD_FOG_TIMER_RST
 from myLib.myGui.pig_menu_manager import pig_menu_manager
-from myLib.myGui import analysis_Allan, analysis_TimingPlot
+from myLib.myGui import analysis_Allan, analysis_TimingPlot, myRadioButton
 from PyQt5.QtWidgets import *
 from pigImu_Widget import pigImuWidget as TOP
 from pigImuReader import pigImuReader as ACTION
@@ -46,7 +46,6 @@ class mainWindow(QMainWindow):
         self.__first_run_flag = True
         self.press_stop = False
         self.resize(1450, 800)
-        self.pig_parameter_widget = None
         self.__portName = None
         self.setWindowTitle("Aegiverse IMU GUI")
         self.__connector = Connector()
@@ -54,13 +53,18 @@ class mainWindow(QMainWindow):
         self.top = TOP()
         self.act = ACTION()
         self.imudata_file = cmn.data_manager(fnum=0)
-        self.pig_cali_menu = calibrationBlock()
         self.act.isCali = True
         self.menu = self.menuBar()
         self.pig_menu = pig_menu_manager(self.menu, self)
+        # -------menu obj------#
+        self.pig_parameter_widget = None
+        self.pig_cali_menu = calibrationBlock()
+        self.pig_initial_setting_menu = myRadioButton.radioButtonBlock_2('SYNC MODE', 'OFF', 'ON', True)  # True
+        # means setting 'OFF' state value to True
         self.analysis_allan = analysis_Allan.analysis_allan_widget(['fog', 'wx', 'wy', 'wz'])
         self.analysis_timing_plot = analysis_TimingPlot.analysis_timing_plot_widget(
             ['fog', 'wx', 'wy', 'wz', 'ax', 'ay', 'az', 'T'])
+        # -------end of menu obj------#
         self.linkfunction()
         self.act.arrayNum = 10
         self.mainUI()
@@ -92,12 +96,12 @@ class mainWindow(QMainWindow):
         self.pig_menu.action_trigger_connect([self.show_parameters,
                                               self.show_calibration_menu,
                                               self.show_plot_data_menu,
-                                              self.show_cal_allan_menu
+                                              self.show_cal_allan_menu,
+                                              self.show_initial_setting_menu
                                               ])
         # file name le
         self.top.save_block.le_filename.editingFinished.connect(
             lambda: self.file_name_le_connect(self.top.save_block.le_filename))
-
 
     def file_name_le_connect(self, obj):
         cmn.print_debug('file name: %s' % obj.text(), PRINT_DEBUG)
@@ -110,6 +114,9 @@ class mainWindow(QMainWindow):
 
     def show_calibration_menu(self):
         self.pig_cali_menu.show()
+
+    def show_initial_setting_menu(self):
+        self.pig_initial_setting_menu.show()
 
     def show_plot_data_menu(self):
         self.analysis_timing_plot.show()
@@ -150,6 +157,8 @@ class mainWindow(QMainWindow):
         self.is_port_open_qt.emit(is_port_open)
         self.pig_parameter_widget = pig_parameters_widget(self.act, self.top.para_block.le_filename.text() + '.json')
         self.act.isCali_w, self.act.isCali_a = self.pig_cali_menu.cali_status()  # update calibration flag to act
+        self.act.isExtMode = self.pig_initial_setting_menu.btn_status
+        # print(self.act.isExtMode)
 
     def disconnect(self):
         is_port_open = self.act.disconnect()
@@ -239,7 +248,8 @@ class mainWindow(QMainWindow):
                          + str(round((t1 - t0) * 1000, 5)) + ", " + str(round((t2 - t1) * 1000, 5))
             cmn.print_debug(debug_info, self.__debug)
             # print(imudata["PIG_WZ"])
-            datalist = [imudata["TIME"], imudata["PIG_WZ"], imudata["NANO33_WX"], imudata["NANO33_WY"], imudata["NANO33_WZ"]
+            datalist = [imudata["TIME"], imudata["PIG_WZ"], imudata["NANO33_WX"], imudata["NANO33_WY"],
+                        imudata["NANO33_WZ"]
                 , imudata["ADXL_AX"], imudata["ADXL_AY"], imudata["ADXL_AZ"], imudata["PD_TEMP"]]
             data_fmt = "%.5f,%.5f,%.5f,%.5f,%.5f,%.5f,%.5f,%.5f,%.1f"
             self.imudata_file.saveData(datalist, data_fmt)

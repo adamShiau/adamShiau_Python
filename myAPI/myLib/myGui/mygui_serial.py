@@ -305,6 +305,11 @@ class editBlock(QGroupBox):
 #         layout.addWidget(self.cb_2)
 #         self.setLayout(layout)
 
+class initialSettingBlock(QGroupBox):
+    def __init__(self):
+        super(initialSettingBlock, self).__init__()
+        self.__isExtSync = False
+        self.cb_
 
 class calibrationBlock(QGroupBox):
     def __init__(self):

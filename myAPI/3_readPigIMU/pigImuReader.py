@@ -1,6 +1,7 @@
 """ ####### log stuff creation, always on the top ########  """
 import builtins
 import logging
+
 if hasattr(builtins, 'LOGGER_NAME'):
     logger_name = builtins.LOGGER_NAME
 else:
@@ -58,6 +59,7 @@ class pigImuReader(QThread):
     def __init__(self, portName: str = "None", boolCaliw=False, boolCalia=False, baudRate: int = 230400,
                  debug_en: bool = 0):
         super(pigImuReader, self).__init__()
+        self.__isExtMode = False
         self.nano33_wz_kal = filter.kalman_1D()
         self.pig_wz_kal = filter.kalman_1D()
         self.__isCali_a = boolCalia
@@ -186,6 +188,18 @@ class pigImuReader(QThread):
 
     # End of ImuReader::isCali_a(setter)
 
+    @property
+    def isExtMode(self):
+        return self.__isExtMode
+
+    # End of memsImuReader::isCali_a(getter)
+
+    @isExtMode.setter
+    def isExtMode(self, setValue):
+        self.__isExtMode = setValue
+
+    # End of ImuReader::isCali_a(setter)
+
     def writeImuCmd(self, cmd, value):
         if value < 0:
             value = (1 << 32) + value
@@ -212,7 +226,13 @@ class pigImuReader(QThread):
     # End of memsImuReader::disconnectIMU
 
     def readIMU(self):
-        self.writeImuCmd(2, 2)
+        # print(self.isExtMode + ' MODE')
+        if self.isExtMode == 'ON':
+            self.writeImuCmd(2, 2)  # External Mode
+        elif self.isExtMode == 'OFF':
+            self.writeImuCmd(2, 1)  # Internal Mode
+        else:
+            self.writeImuCmd(2, 1)  # Internal Mode
 
     def stopIMU(self):
         self.writeImuCmd(2, 4)
@@ -233,7 +253,8 @@ class pigImuReader(QThread):
                                                    sf_xlm=SENS_NANO33_AXLM_4G,
                                                    sf_gyro=SENS_NANO33_GYRO_250)
 
-        FPGA_TIME, ERR, STEP, PD_TEMP = cmn.readPIG(dataPacket, EN=1, PRINT=0, sf_a=self.sf_a, sf_b=self.sf_b, POS_TIME=POS_PIG)
+        FPGA_TIME, ERR, STEP, PD_TEMP = cmn.readPIG(dataPacket, EN=1, PRINT=0, sf_a=self.sf_a, sf_b=self.sf_b,
+                                                    POS_TIME=POS_PIG)
         if not self.isCali:
             if self.isKal:
                 NANO_WZ = self.nano33_wz_kal.update(NANO_WZ)

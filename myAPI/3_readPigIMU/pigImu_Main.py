@@ -59,7 +59,7 @@ class mainWindow(QMainWindow):
         # -------menu obj------#
         self.pig_parameter_widget = None
         self.pig_cali_menu = calibrationBlock()
-        self.pig_initial_setting_menu = myRadioButton.radioButtonBlock_2('SYNC MODE', 'OFF', 'ON', True)  # True
+        self.pig_initial_setting_menu = myRadioButton.radioButtonBlock_2('SYNC MODE', 'OFF', 'ON', False)  # True
         # means setting 'OFF' state value to True
         self.analysis_allan = analysis_Allan.analysis_allan_widget(['fog', 'wx', 'wy', 'wz'])
         self.analysis_timing_plot = analysis_TimingPlot.analysis_timing_plot_widget(

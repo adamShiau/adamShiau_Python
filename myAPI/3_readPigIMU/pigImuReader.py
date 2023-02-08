@@ -273,6 +273,7 @@ class pigImuReader(QThread):
 
     def do_cali(self, dictContainer, cali_times):
         if self.isCali:
+            print('do_cali')
             temp = {k: np.zeros(1) for k in set(IMU_DATA_STRUCTURE)}
             print("---calibrating offset start-----")
             for i in range(cali_times):

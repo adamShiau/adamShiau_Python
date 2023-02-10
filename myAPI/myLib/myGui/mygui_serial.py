@@ -322,8 +322,8 @@ class calibrationBlock(QGroupBox):
         # self.setCheckable(True)
         self.cb_cali_w = QCheckBox('calibrate gyro')
         self.cb_cali_a = QCheckBox('calibrate accelerometer')
-        self.cb_cali_w.setChecked(True)
-        self.isCali_w = True
+        # self.cb_cali_w.setChecked(True)
+        # self.isCali_w = True
         self.cb_cali_a.stateChanged.connect(lambda: self.cbstate_connect(self.cb_cali_a))
         self.cb_cali_w.stateChanged.connect(lambda: self.cbstate_connect(self.cb_cali_w))
 

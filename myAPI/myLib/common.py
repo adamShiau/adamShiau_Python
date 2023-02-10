@@ -38,8 +38,9 @@ def readPIG(dataPacket, EN=1, POS_TIME=25, sf_a=1, sf_b=0, PRINT=0):
     # End of if-condition
 
     if PRINT:
-        print()
-        print(sf_a, sf_b)
+        # print()
+        print('\nPIG: ', end=', ')
+        # print(sf_a, sf_b)
         print(round(fpga_time, 4), end='\t\t')
         print(round(err_mv, 3), end='\t\t')
         print(round(step_dps, 3), end='\t\t')
@@ -104,11 +105,12 @@ def readNANO33(dataPacket, EN, dataLen=2, POS_WX=13, sf_xlm=1.0, sf_gyro=1.0, PR
         nano33_az = 10
 
     if PRINT:
-        # print(nano33_wx, end='\t\t')
-        # print(nano33_wy, end='\t\t')
-        # print(nano33_wz, end='\t\t')
-        # print(nano33_ax, end='\t\t')
-        # print(nano33_ay, end='\t\t')
+        print('\nNANO: ', end=', ')
+        print(nano33_wx, end='\t\t')
+        print(nano33_wy, end='\t\t')
+        print(nano33_wz, end='\t\t')
+        print(nano33_ax, end='\t\t')
+        print(nano33_ay, end='\t\t')
         print(nano33_az)
 
     return nano33_wx, nano33_wy, nano33_wz, nano33_ax, nano33_ay, nano33_az
@@ -132,6 +134,7 @@ def readADXL355(dataPacket, dataLen=3, POS_AX=4, EN=1, sf=1.0, PRINT=0):
     # End of if-condition
 
     if PRINT:
+        print('\nADXL355: ', end=', ')
         print(adxl355_x, end='\t\t')
         print(adxl355_y, end='\t\t')
         print(adxl355_z)

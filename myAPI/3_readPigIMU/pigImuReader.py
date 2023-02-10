@@ -18,6 +18,7 @@ from myLib.mySerial.Connector import Connector
 from myLib.mySerial import getData
 from myLib.crcCalculator import crcLib
 from myLib.myFilter import filter
+from myLib.myGui.pig_parameters_widget import CMD_FOG_TIMER_RST
 import time
 from PyQt5.QtCore import QThread, pyqtSignal
 from myLib import common as cmn
@@ -59,7 +60,12 @@ class pigImuReader(QThread):
     def __init__(self, portName: str = "None", boolCaliw=False, boolCalia=False, baudRate: int = 230400,
                  debug_en: bool = 0):
         super(pigImuReader, self).__init__()
+        # self.__first_run_flag = False
+        self.time_pass_flag = False
         self.__isExtMode = False
+        self.time_pass_cnt = 5
+        self.first_run_flag = True
+        self.pass_flag = False
         self.nano33_wz_kal = filter.kalman_1D()
         self.pig_wz_kal = filter.kalman_1D()
         self.__isCali_a = boolCalia
@@ -200,6 +206,30 @@ class pigImuReader(QThread):
 
     # End of ImuReader::isCali_a(setter)
 
+    @property
+    def first_run_flag(self):
+        return self.__first_run_flag
+
+    @first_run_flag.setter
+    def first_run_flag(self, flag):
+        self.__first_run_flag = flag
+
+    @property
+    def time_pass_flag(self):
+        return self.__time_pass_flag
+
+    @time_pass_flag.setter
+    def time_pass_flag(self, flag):
+        self.__time_pass_flag = flag
+
+    @property
+    def time_pass_cnt(self):
+        return self.__time_pass_cnt
+
+    @time_pass_cnt.setter
+    def time_pass_cnt(self, cnt):
+        self.__time_pass_cnt = cnt
+
     def writeImuCmd(self, cmd, value):
         if value < 0:
             value = (1 << 32) + value
@@ -233,6 +263,11 @@ class pigImuReader(QThread):
             self.writeImuCmd(2, 1)  # Internal Mode
         else:
             self.writeImuCmd(2, 1)  # Internal Mode
+        # self.first_run_flag = True
+        self.time_pass_cnt = 5
+        self.time_pass_flag = False
+        self.writeImuCmd(CMD_FOG_TIMER_RST, 1) # reset FPGA time
+        print('reset FPGA time')
 
     def stopIMU(self):
         self.writeImuCmd(2, 4)
@@ -286,6 +321,11 @@ class pigImuReader(QThread):
         else:
             return dictContainer
 
+    def time_pass_check(self, isPass, time_in):
+        if not isPass:
+            if time_in < 0.8:
+                self.time_pass_flag = True
+
     def run(self):
         logging.basicConfig(level=100)
         t0 = time.perf_counter()
@@ -293,6 +333,7 @@ class pigImuReader(QThread):
             if not self.isRun:
                 self.stopIMU()
                 self.imuThreadStop_qt.emit()
+                # self.first_run_flag = True
                 break
             # End of if-condition
 
@@ -312,6 +353,23 @@ class pigImuReader(QThread):
                 t1 = time.perf_counter()
 
                 dataPacket, imudata = self.getImuData()
+
+                # if self.first_run_flag and (imudata['TIME'] > 2):
+                #     print('\n in act: first_run_flag is ', self.first_run_flag)
+                # print('imudata[TIME]: ', round(imudata['TIME'], 5), end=', ')
+                # print('self.time_pass_cnt: ', self.time_pass_cnt, end='\n\n')
+                #     print('reset timer!\n')
+                #     # self.time_pass_cnt = 5
+                #     self.first_run_flag = False
+                #     self.writeImuCmd(CMD_FOG_TIMER_RST, 1)
+                # else:
+                #     self.first_run_flag = False
+                #     print('\n in act: first_run_flag is ', self.first_run_flag)
+                #     print('imudata[TIME]: ', imudata['TIME'])
+                #     print('pass\n')
+
+
+                # self.first_run_flag = False
                 t2 = time.perf_counter()
                 isCrcFail = crcLib.isCrc32Fail(dataPacket, len(dataPacket))
                 t3 = time.perf_counter()
@@ -321,22 +379,47 @@ class pigImuReader(QThread):
                 t4 = time.perf_counter()
                 # imudataArray = cmn.dictOperation(imudataArray, imudata, "APPEND", IMU_DATA_STRUCTURE)
                 # print('act.loop: ', imudataArray["TIME"], imudata["TIME"])
-                imudataArray["TIME"] = np.append(imudataArray["TIME"], imudata["TIME"])
-                imudataArray["ADXL_AX"] = np.append(imudataArray["ADXL_AX"], imudata["ADXL_AX"])
-                imudataArray["ADXL_AY"] = np.append(imudataArray["ADXL_AY"], imudata["ADXL_AY"])
-                imudataArray["ADXL_AZ"] = np.append(imudataArray["ADXL_AZ"], imudata["ADXL_AZ"])
-                imudataArray["NANO33_WX"] = np.append(imudataArray["NANO33_WX"], imudata["NANO33_WX"])
-                imudataArray["NANO33_WY"] = np.append(imudataArray["NANO33_WY"], imudata["NANO33_WY"])
-                imudataArray["NANO33_WZ"] = np.append(imudataArray["NANO33_WZ"], imudata["NANO33_WZ"])
-                imudataArray["PIG_ERR"] = np.append(imudataArray["PIG_ERR"], imudata["PIG_ERR"])
-                imudataArray["PIG_WZ"] = np.append(imudataArray["PIG_WZ"], imudata["PIG_WZ"])
-                imudataArray["PD_TEMP"] = np.append(imudataArray["PD_TEMP"], imudata["PD_TEMP"])
+                # print('\n self.time_pass_cnt: ', self.time_pass_cnt)
+
+                self.time_pass_check(self.time_pass_flag, imudata["TIME"])
+
+                if self.time_pass_flag:
+                    imudataArray["TIME"] = np.append(imudataArray["TIME"], imudata["TIME"])
+                    imudataArray["ADXL_AX"] = np.append(imudataArray["ADXL_AX"], imudata["ADXL_AX"])
+                    imudataArray["ADXL_AY"] = np.append(imudataArray["ADXL_AY"], imudata["ADXL_AY"])
+                    imudataArray["ADXL_AZ"] = np.append(imudataArray["ADXL_AZ"], imudata["ADXL_AZ"])
+                    imudataArray["NANO33_WX"] = np.append(imudataArray["NANO33_WX"], imudata["NANO33_WX"])
+                    imudataArray["NANO33_WY"] = np.append(imudataArray["NANO33_WY"], imudata["NANO33_WY"])
+                    imudataArray["NANO33_WZ"] = np.append(imudataArray["NANO33_WZ"], imudata["NANO33_WZ"])
+                    imudataArray["PIG_ERR"] = np.append(imudataArray["PIG_ERR"], imudata["PIG_ERR"])
+                    imudataArray["PIG_WZ"] = np.append(imudataArray["PIG_WZ"], imudata["PIG_WZ"])
+                    imudataArray["PD_TEMP"] = np.append(imudataArray["PD_TEMP"], imudata["PD_TEMP"])
+
+                print('imudata[TIME]: ', round(imudata['TIME'], 5), end=', ')
+                print('self.time_pass_flag: ', self.time_pass_flag, end='\n\n')
+
+                # if self.time_pass_cnt == 0:
+                #     imudataArray["TIME"] = np.append(imudataArray["TIME"], imudata["TIME"])
+                #     imudataArray["ADXL_AX"] = np.append(imudataArray["ADXL_AX"], imudata["ADXL_AX"])
+                #     imudataArray["ADXL_AY"] = np.append(imudataArray["ADXL_AY"], imudata["ADXL_AY"])
+                #     imudataArray["ADXL_AZ"] = np.append(imudataArray["ADXL_AZ"], imudata["ADXL_AZ"])
+                #     imudataArray["NANO33_WX"] = np.append(imudataArray["NANO33_WX"], imudata["NANO33_WX"])
+                #     imudataArray["NANO33_WY"] = np.append(imudataArray["NANO33_WY"], imudata["NANO33_WY"])
+                #     imudataArray["NANO33_WZ"] = np.append(imudataArray["NANO33_WZ"], imudata["NANO33_WZ"])
+                #     imudataArray["PIG_ERR"] = np.append(imudataArray["PIG_ERR"], imudata["PIG_ERR"])
+                #     imudataArray["PIG_WZ"] = np.append(imudataArray["PIG_WZ"], imudata["PIG_WZ"])
+                #     imudataArray["PD_TEMP"] = np.append(imudataArray["PD_TEMP"], imudata["PD_TEMP"])
+                # if not (self.time_pass_cnt == 0):
+                #     self.time_pass_cnt = self.time_pass_cnt - 1
+
                 t5 = time.perf_counter()
 
                 debug_info = "ACT: ," + str(input_buf) + ", " + str(round((t5 - t1) * 1000, 5)) + ", " \
                              + str(round((t2 - t1) * 1000, 5)) + ", " + str(round((t3 - t2) * 1000, 5)) + ", " \
                              + str(round((t4 - t3) * 1000, 5)) + ", " + str(round((t5 - t4) * 1000, 5))
                 cmn.print_debug(debug_info, self.__debug)
+
+                # print('ACT imudataArray["TIME"]: ', imudataArray["TIME"], end='\n\n')
 
             # end of for loop
 
@@ -349,6 +432,16 @@ class pigImuReader(QThread):
 
             if not __name__ == "__main__":
                 self.imudata_qt.emit(imudataArray)
+
+                # if self.first_run_flag or (imudata['TIME'] > 2):
+                #     print('in act reset timer!')
+                #     self.writeImuCmd(CMD_FOG_TIMER_RST, 1)
+                # else:
+                #     print('in act pass!')
+                #     self.imudata_qt.emit(imudataArray)
+                # elif (not self.first_run_flag) or (not (imudata['TIME'] > 2)):
+                #     self.imudata_qt.emit(imudataArray)
+
             # print(imudataArray)
 
         # end of while loop

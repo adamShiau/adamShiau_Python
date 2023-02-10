@@ -29,6 +29,7 @@ from myLib.myGui.pig_parameters_widget import pig_parameters_widget
 from myLib.myGui.pig_parameters_widget import CMD_FOG_TIMER_RST
 from myLib.myGui.pig_menu_manager import pig_menu_manager
 from myLib.myGui import analysis_Allan, analysis_TimingPlot
+from myLib.myGui import analysis_Allan, analysis_TimingPlot, myRadioButton
 from PyQt5.QtWidgets import *
 from pigImu_Widget import pigImuWidget as TOP
 from pigImuReader import pigImuReader as ACTION
@@ -55,6 +56,7 @@ class mainWindow(QMainWindow):
         self.act = ACTION()
         self.imudata_file = cmn.data_manager(fnum=0)
         self.pig_cali_menu = calibrationBlock()
+        self.pig_initial_setting_menu = myRadioButton.radioButtonBlock_2('SYNC MODE', 'OFF', 'ON', False)  # True
         self.act.isCali = True
         self.menu = self.menuBar()
         self.pig_menu = pig_menu_manager(self.menu, self)
@@ -92,7 +94,8 @@ class mainWindow(QMainWindow):
         self.pig_menu.action_trigger_connect([self.show_parameters,
                                               self.show_calibration_menu,
                                               self.show_plot_data_menu,
-                                              self.show_cal_allan_menu
+                                              self.show_cal_allan_menu,
+                                              self.show_initial_setting_menu
                                               ])
         # file name le
         self.top.save_block.le_filename.editingFinished.connect(
@@ -109,6 +112,9 @@ class mainWindow(QMainWindow):
 
     def show_calibration_menu(self):
         self.pig_cali_menu.show()
+
+    def show_initial_setting_menu(self):
+        self.pig_initial_setting_menu.show()
 
     def show_plot_data_menu(self):
         self.analysis_timing_plot.show()

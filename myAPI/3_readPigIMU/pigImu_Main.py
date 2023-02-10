@@ -43,7 +43,6 @@ class mainWindow(QMainWindow):
 
     def __init__(self, debug_en: bool = False):
         super(mainWindow, self).__init__()
-        self.__first_run_flag = True
         self.press_stop = False
         self.resize(1450, 800)
         self.__portName = None
@@ -52,6 +51,7 @@ class mainWindow(QMainWindow):
         self.__isFileOpen = False
         self.top = TOP()
         self.act = ACTION()
+        self.first_run_flag = True
         self.imudata_file = cmn.data_manager(fnum=0)
         self.act.isCali = True
         self.menu = self.menuBar()
@@ -172,9 +172,10 @@ class mainWindow(QMainWindow):
 
     def resetFPGATimer(self):
         self.act.writeImuCmd(CMD_FOG_TIMER_RST, 1)
+        print('main: reset FPGA time')
 
     def start(self):
-        self.resetFPGATimer()
+        # self.resetFPGATimer()
         self.act.readIMU()
         self.act.isRun = True
         self.press_stop = False
@@ -208,13 +209,16 @@ class mainWindow(QMainWindow):
     @first_run_flag.setter
     def first_run_flag(self, flag):
         self.__first_run_flag = flag
+        # self.act.first_run_flag = flag
 
     def collectData(self, imudata):
         if not self.press_stop:
-            # print('collectData: ', imudata['TIME'])
-            if self.first_run_flag and (int(imudata['TIME'][0]) > 2):
-                return
-            self.first_run_flag = False
+            # print('collectData pre: ', len(imudata['TIME']), end=', ')
+            # print(imudata['TIME'])
+            #
+            # print('collectData after: ', len(imudata['TIME']), end=', ')
+            # print(imudata['TIME'])
+            # self.first_run_flag = False
             input_buf = self.act.readInputBuffer()
             t0 = time.perf_counter()
             # imudata = cmn.dictOperation(imudata, imuoffset, "SUB", IMU_DATA_STRUCTURE)

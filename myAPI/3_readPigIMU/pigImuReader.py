@@ -395,8 +395,8 @@ class pigImuReader(QThread):
                     imudataArray["PIG_WZ"] = np.append(imudataArray["PIG_WZ"], imudata["PIG_WZ"])
                     imudataArray["PD_TEMP"] = np.append(imudataArray["PD_TEMP"], imudata["PD_TEMP"])
 
-                print('imudata[TIME]: ', round(imudata['TIME'], 5), end=', ')
-                print('self.time_pass_flag: ', self.time_pass_flag, end='\n\n')
+                # print('imudata[TIME]: ', round(imudata['TIME'], 5), end=', ')
+                # print('self.time_pass_flag: ', self.time_pass_flag, end='\n\n')
 
                 # if self.time_pass_cnt == 0:
                 #     imudataArray["TIME"] = np.append(imudataArray["TIME"], imudata["TIME"])

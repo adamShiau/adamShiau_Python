@@ -36,6 +36,7 @@ from pigImuReader import IMU_DATA_STRUCTURE
 import numpy as np
 
 PRINT_DEBUG = 0
+OUTPUT_ONE_AXIS = True
 
 
 class mainWindow(QMainWindow):
@@ -59,7 +60,7 @@ class mainWindow(QMainWindow):
         # -------menu obj------#
         self.pig_parameter_widget = None
         self.pig_cali_menu = calibrationBlock()
-        self.pig_initial_setting_menu = myRadioButton.radioButtonBlock_2('SYNC MODE', 'OFF', 'ON', False)  # True
+        self.pig_initial_setting_menu = myRadioButton.radioButtonBlock_2('SYNC MODE', 'OFF', 'ON', True)  # True
         # means setting 'OFF' state value to True
         self.analysis_allan = analysis_Allan.analysis_allan_widget(['fog', 'wx', 'wy', 'wz'])
         self.analysis_timing_plot = analysis_TimingPlot.analysis_timing_plot_widget(
@@ -183,7 +184,10 @@ class mainWindow(QMainWindow):
         file_name = self.top.save_block.le_filename.text() + self.top.save_block.le_ext.text()
         self.imudata_file.name = file_name
         self.imudata_file.open(self.top.save_block.rb.isChecked())
-        self.imudata_file.write_line('time,fog,wx,wy,wz,ax,ay,az,T')
+        if OUTPUT_ONE_AXIS:
+            self.imudata_file.write_line('time,wx,wy,fog,ax,ay,az,T')
+        else:
+            self.imudata_file.write_line('time,fog,wx,wy,wz,ax,ay,az,T')
 
     def stop(self):
         # self.resetFPGATimer()
@@ -252,10 +256,17 @@ class mainWindow(QMainWindow):
                          + str(round((t1 - t0) * 1000, 5)) + ", " + str(round((t2 - t1) * 1000, 5))
             cmn.print_debug(debug_info, self.__debug)
             # print(imudata["PIG_WZ"])
-            datalist = [imudata["TIME"], imudata["PIG_WZ"], imudata["NANO33_WX"], imudata["NANO33_WY"],
-                        imudata["NANO33_WZ"]
-                , imudata["ADXL_AX"], imudata["ADXL_AY"], imudata["ADXL_AZ"], imudata["PD_TEMP"]]
-            data_fmt = "%.5f,%.5f,%.5f,%.5f,%.5f,%.5f,%.5f,%.5f,%.1f"
+
+            if OUTPUT_ONE_AXIS:
+                datalist = [imudata["TIME"], imudata["NANO33_WX"], imudata["NANO33_WY"], imudata["PIG_WZ"]
+                    , imudata["ADXL_AX"], imudata["ADXL_AY"], imudata["ADXL_AZ"], imudata["PD_TEMP"]]
+                data_fmt = "%.5f,%.5f,%.5f,%.5f,%.5f,%.5f,%.5f,%.1f"
+            else:
+                datalist = [imudata["TIME"], imudata["PIG_WZ"], imudata["NANO33_WX"], imudata["NANO33_WY"],
+                            imudata["NANO33_WZ"]
+                    , imudata["ADXL_AX"], imudata["ADXL_AY"], imudata["ADXL_AZ"], imudata["PD_TEMP"]]
+                data_fmt = "%.5f,%.5f,%.5f,%.5f,%.5f,%.5f,%.5f,%.5f,%.1f"
+
             self.imudata_file.saveData(datalist, data_fmt)
             self.plotdata(self.imudata)
             self.printUpdateRate(self.imudata["TIME"])

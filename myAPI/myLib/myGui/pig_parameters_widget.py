@@ -60,8 +60,8 @@ INIT_PARAMETERS = {"MOD_H": 6850,
                    "CONST_STEP": 0,
                    "KF_Q": 1,
                    "KF_R": 6,
-                   # "HD_Q": 1,
-                   # "HD_R": 1,
+                   "HD_Q": 1,
+                   "HD_R": 1,
                    "SF_A": 0.00295210451588764 * 1.02 / 2,
                    "SF_B": -0.00137052112589694,
                    "DATA_RATE": 2000
@@ -92,9 +92,9 @@ class pig_parameters_widget(QGroupBox):
         self.KF_Q = spinBlock(title='SW_Q', minValue=1, maxValue=100000, double=False, step=1)
         self.KF_R = spinBlock(title='SW_R', minValue=0, maxValue=100000, double=False, step=1)
         self.HD_Q = spinBlock(title='FPGA_Q', minValue=1, maxValue=100000, double=False, step=1)
-        self.HD_Q.setEnabled(False)
+        # self.HD_Q.setEnabled(False)
         self.HD_R = spinBlock(title='FPGA_R', minValue=0, maxValue=100000, double=False, step=1)
-        self.HD_R.setEnabled(False)
+        # self.HD_R.setEnabled(False)
         '''slider'''
         self.dataRate_sd = sliderBlock(title='DATE RATE', minValue=400, maxValue=2500, curValue=2135, interval=100)
         ''' edit line '''
@@ -123,8 +123,8 @@ class pig_parameters_widget(QGroupBox):
         mainLayout.addWidget(self.err_th, 6, 10, 1, 2)
         mainLayout.addWidget(self.freq, 7, 10, 1, 4)
 
-        # mainLayout.addWidget(self.HD_Q, 8, 10, 1, 2)
-        # mainLayout.addWidget(self.HD_R, 8, 12, 1, 2)
+        mainLayout.addWidget(self.HD_Q, 8, 10, 1, 2)
+        mainLayout.addWidget(self.HD_R, 8, 12, 1, 2)
         mainLayout.addWidget(self.KF_Q, 9, 10, 1, 2)
         mainLayout.addWidget(self.KF_R, 9, 12, 1, 2)
         mainLayout.addWidget(self.sf_a, 10, 10, 1, 2)
@@ -145,8 +145,8 @@ class pig_parameters_widget(QGroupBox):
         self.const_step.spin.valueChanged.connect(self.send_CONST_STEP_CMD)
         self.KF_Q.spin.valueChanged.connect(self.update_KF_Q)
         self.KF_R.spin.valueChanged.connect(self.update_KF_R)
-        # self.HD_Q.spin.valueChanged.connect(self.update_FPGA_Q)
-        # self.HD_R.spin.valueChanged.connect(self.update_FPGA_R)
+        self.HD_Q.spin.valueChanged.connect(self.update_FPGA_Q)
+        self.HD_R.spin.valueChanged.connect(self.update_FPGA_R)
         self.gain1.spin.valueChanged.connect(self.send_GAIN1_CMD)
         self.gain2.spin.valueChanged.connect(self.send_GAIN2_CMD)
         self.fb_on.spin.valueChanged.connect(self.send_FB_ON_CMD)
@@ -169,8 +169,8 @@ class pig_parameters_widget(QGroupBox):
         self.const_step.spin.setValue(para["CONST_STEP"])
         self.KF_Q.spin.setValue(para["KF_Q"])
         self.KF_R.spin.setValue(para["KF_R"])
-        # self.HD_Q.spin.setValue(para["HD_Q"])
-        # self.HD_R.spin.setValue(para["HD_R"])
+        self.HD_Q.spin.setValue(para["HD_Q"])
+        self.HD_R.spin.setValue(para["HD_R"])
         self.gain1.spin.setValue(para["GAIN1"])
         self.gain2.spin.setValue(para["GAIN2"])
         self.fb_on.spin.setValue(para["FB_ON"])

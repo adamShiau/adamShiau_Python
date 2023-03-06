@@ -23,11 +23,11 @@ PRINT_DEBUG = 0
 def readPIG(dataPacket, EN=1, POS_TIME=25, sf_a=1, sf_b=0, PRINT=0):
     if EN:
         temp_time = dataPacket[POS_TIME:POS_TIME + 4]
-        temp_err = dataPacket[POS_TIME+ 4 :POS_TIME + 8]
+        temp_err = dataPacket[POS_TIME + 4:POS_TIME + 8]
         temp_fog = dataPacket[POS_TIME + 8:POS_TIME + 12]
         temp_PD_temperature = dataPacket[POS_TIME + 12:POS_TIME + 14]
         fpga_time = convert2Unsign_4B(temp_time) * 1e-4
-        err_mv = convert2Sign_4B(temp_err) * (1000 / 8192)
+        err_mv = convert2Sign_4B(temp_err) * (4000 / 8192)
         step_dps = convert2Sign_4B(temp_fog) * sf_a + sf_b
         PD_temperature = convert2Temperature(temp_PD_temperature)
     else:
@@ -171,6 +171,7 @@ def readGPS(dataPacket, POS_data, EN=1, PRINT=0):
     # End of if-condition
 
     return gps_data, gps_time, valid
+
 
 # def convert2GpsData(data):
 

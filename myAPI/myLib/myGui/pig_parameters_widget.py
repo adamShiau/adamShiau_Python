@@ -204,9 +204,10 @@ class pig_parameters_widget(QGroupBox):
         self.__act.writeImuCmd(cmd, value)
 
     def send_FREQ_CMD(self):
-        # dt_fpga = 1e3/90.909091e6
+        # dt_fpga = 1e3/90.909091e6 # for PLL set to 91MHz
         # dt_fpga = 1e3 / 90e6
         dt_fpga = 1e3 / 100e6
+        # dt_fpga = 1e3/ 109.090909e6 # for PLL set to 109MHz
         value = self.freq.spin.value()
         logger.info('set freq: %d', value)
         self.freq.lb.setText(str(round(1 / (2 * (value + 1) * dt_fpga), 2)) + ' KHz')

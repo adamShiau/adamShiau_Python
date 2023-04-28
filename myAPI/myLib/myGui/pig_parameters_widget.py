@@ -192,8 +192,10 @@ class pig_parameters_widget(QGroupBox):
             self.send_CONST_STEP_CMD()
             self.update_KF_Q()
             self.update_KF_R()
+            """
             # self.update_FPGA_Q()
             # self.update_FPGA_R()
+            """
             self.send_GAIN1_CMD()
             self.send_GAIN2_CMD()
             self.send_FB_ON_CMD()
@@ -202,8 +204,8 @@ class pig_parameters_widget(QGroupBox):
             self.SF_A_EDIT()
             self.SF_B_EDIT()
 
-    def writeImuCmd(self, cmd, value):
-        self.__act.writeImuCmd(cmd, value)
+    def writeImuCmd(self, cmd, value, fog_ch):
+        self.__act.writeImuCmd(cmd, value, fog_ch)
 
     def send_FREQ_CMD(self):
         # dt_fpga = 1e3 / 91e6  # for PLL set to 91MHz

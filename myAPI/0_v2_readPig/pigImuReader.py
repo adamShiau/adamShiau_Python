@@ -179,14 +179,16 @@ class pigImuReader(QThread):
 
     # End of ImuReader::isCali_a(setter)
 
-    def writeImuCmd(self, cmd, value):
+    def writeImuCmd(self, cmd, value, fog_ch=3):
         if value < 0:
             value = (1 << 32) + value
         # End of if-condition
-        data = bytearray([cmd, (value >> 24 & 0xFF), (value >> 16 & 0xFF), (value >> 8 & 0xFF), (value & 0xFF)])
+        data = bytearray([cmd, (value >> 24 & 0xFF), (value >> 16 & 0xFF), (value >> 8 & 0xFF), (value & 0xFF), fog_ch])
         # print(cmd, end=', ')
         # print([i for i in data])
+        self.__Connector.write(bytearray([0xAB, 0xBA]))
         self.__Connector.write(data)
+        self.__Connector.write(bytearray([0x55, 0x56]))
         cmn.wait_ms(150)
 
     # End of memsImuReader::writeImuCmd

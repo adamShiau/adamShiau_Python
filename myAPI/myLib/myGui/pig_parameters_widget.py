@@ -78,7 +78,7 @@ class pig_parameters_widget(QGroupBox):
         self.__par_manager = cmn.parameters_manager(fileName, INIT_PARAMETERS, fnum=1)
         self.setWindowTitle("PIG parameters")
         # self.setTitle("PIG parameters")
-        self.wait_cnt = spinBlock(title='Wait cnt', minValue=0, maxValue=100, double=False, step=1)
+        self.wait_cnt = spinBlock(title='Wait cnt', minValue=0, maxValue=300, double=False, step=1)
         self.avg = spinBlock(title='avg', minValue=0, maxValue=6, double=False, step=1)
         self.err_offset = spinBlock(title='Err offset', minValue=-10000, maxValue=10000, double=False, step=1)
         self.polarity = spinBlock(title='polarity', minValue=0, maxValue=1, double=False, step=1)
@@ -87,7 +87,7 @@ class pig_parameters_widget(QGroupBox):
         self.gain1 = spinBlock(title='GAIN1', minValue=0, maxValue=14, double=False, step=1)
         self.gain2 = spinBlock(title='GAIN2', minValue=0, maxValue=20, double=False, step=1)
         self.const_step = spinBlock(title='const_step', minValue=-32768, maxValue=65000, double=False, step=100)
-        self.dac_gain = spinBlock(title='DAC_GAIN', minValue=0, maxValue=1023, double=False, step=10)
+        self.dac_gain = spinBlock(title='DAC_GAIN', minValue=0, maxValue=1023, double=False, step=1)
         self.fb_on = spinBlock(title='mode(0:OPEN)', minValue=0, maxValue=2, double=False, step=1)
         self.err_th = spinBlock(title='ERR_TH', minValue=0, maxValue=16384, double=False, step=1)
         self.freq = spinBlockOneLabel(title='frequency', minValue=10, maxValue=1500, double=False, step=1)
@@ -98,7 +98,7 @@ class pig_parameters_widget(QGroupBox):
         self.HD_R = spinBlock(title='FPGA_R', minValue=0, maxValue=100000, double=False, step=1)
         # self.HD_R.setEnabled(False)
         '''slider'''
-        self.dataRate_sd = sliderBlock(title='DATE RATE', minValue=400, maxValue=2500, curValue=2135, interval=100)
+        self.dataRate_sd = sliderBlock(title='DATE RATE', minValue=2500, maxValue=5000, curValue=2500, interval=100)
         ''' edit line '''
         self.sf_a = editBlock('SF_a')
         self.sf_b = editBlock('SF_b')

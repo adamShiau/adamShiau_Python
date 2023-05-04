@@ -57,7 +57,7 @@ class pigImuReader(QThread):
         self.__isCali_w = boolCaliw
         self.sf_a = 1
         self.sf_b = 0
-        self.isKal = False
+        self.isKal = True
         self.kal_Q = 1
         self.kal_R = 1
         self.isCali = (self.isCali_w or self.isCali_a)
@@ -179,16 +179,14 @@ class pigImuReader(QThread):
 
     # End of ImuReader::isCali_a(setter)
 
-    def writeImuCmd(self, cmd, value, fog_ch=2):
+    def writeImuCmd(self, cmd, value):
         if value < 0:
             value = (1 << 32) + value
         # End of if-condition
-        data = bytearray([cmd, (value >> 24 & 0xFF), (value >> 16 & 0xFF), (value >> 8 & 0xFF), (value & 0xFF), fog_ch])
+        data = bytearray([cmd, (value >> 24 & 0xFF), (value >> 16 & 0xFF), (value >> 8 & 0xFF), (value & 0xFF)])
         # print(cmd, end=', ')
         # print([i for i in data])
-        self.__Connector.write(bytearray([0xAB, 0xBA]))
         self.__Connector.write(data)
-        self.__Connector.write(bytearray([0x55, 0x56]))
         cmn.wait_ms(150)
 
     # End of memsImuReader::writeImuCmd
@@ -209,7 +207,7 @@ class pigImuReader(QThread):
     # End of memsImuReader::disconnectIMU
 
     def readIMU(self):
-        self.writeImuCmd(1, 2)
+        self.writeImuCmd(1, 1)
 
     def stopIMU(self):
         self.writeImuCmd(1, 4)
@@ -256,7 +254,6 @@ class pigImuReader(QThread):
         t0 = time.perf_counter()
         while True:
             if not self.isRun:
-                print('run flag is false')
                 self.stopIMU()
                 self.imuThreadStop_qt.emit()
                 break

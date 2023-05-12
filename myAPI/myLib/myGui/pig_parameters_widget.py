@@ -98,7 +98,7 @@ class pig_parameters_widget(QGroupBox):
         self.HD_R = spinBlock(title='FPGA_R', minValue=0, maxValue=100000, double=False, step=1)
         # self.HD_R.setEnabled(False)
         '''slider'''
-        self.dataRate_sd = sliderBlock(title='DATE RATE', minValue=2500, maxValue=5000, curValue=2500, interval=100)
+        self.dataRate_sd = sliderBlock(title='DATE RATE', minValue=1500, maxValue=5000, curValue=2500, interval=100)
         ''' edit line '''
         self.sf_a = editBlock('SF_a')
         self.sf_b = editBlock('SF_b')

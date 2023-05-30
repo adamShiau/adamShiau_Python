@@ -62,7 +62,7 @@ class mainWindow(QMainWindow):
         self.pig_cali_menu = calibrationBlock()
         self.pig_initial_setting_menu = myRadioButton.radioButtonBlock_2('SYNC MODE', 'OFF', 'ON', True)  # True
         # means setting 'OFF' state value to True
-        self.analysis_allan = analysis_Allan.analysis_allan_widget(['fog', 'wx', 'wy', 'wz'])
+        self.analysis_allan = analysis_Allan.analysis_allan_widget(['fog', 'wx', 'wy', 'wz', 'ax', 'ay', 'az'])
         self.analysis_timing_plot = analysis_TimingPlot.analysis_timing_plot_widget(
             ['fog', 'wx', 'wy', 'wz', 'ax', 'ay', 'az', 'T'])
         # -------end of menu obj------#
@@ -226,7 +226,9 @@ class mainWindow(QMainWindow):
             input_buf = self.act.readInputBuffer()
             t0 = time.perf_counter()
             # imudata = cmn.dictOperation(imudata, imuoffset, "SUB", IMU_DATA_STRUCTURE)
+            # print(len(imudata["PD_TEMP"]))
             self.printPdTemperature(imudata["PD_TEMP"][0])
+            # self.printPdTemperature(0)
             t1 = time.perf_counter()
             # self.imudata = cmn.dictOperation(self.imudata, imudata, "APPEND", IMU_DATA_STRUCTURE)
             self.imudata["TIME"] = np.append(self.imudata["TIME"], imudata["TIME"])
@@ -259,6 +261,7 @@ class mainWindow(QMainWindow):
 
             if OUTPUT_ONE_AXIS:
                 datalist = [imudata["TIME"], imudata["NANO33_WX"], imudata["NANO33_WY"], imudata["PIG_WZ"]
+                # datalist = [imudata["TIME"], imudata["NANO33_WX"], imudata["NANO33_WY"], imudata["NANO33_WZ"]
                     , imudata["ADXL_AX"], imudata["ADXL_AY"], imudata["ADXL_AZ"], imudata["PD_TEMP"]]
                 data_fmt = "%.5f,%.5f,%.5f,%.5f,%.5f,%.5f,%.5f,%.1f"
             else:

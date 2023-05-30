@@ -49,7 +49,7 @@ class mainWindow(QMainWindow):
         self.resize(1450, 800)
         self.pig_parameter_widget = None
         self.__portName = None
-        self.setWindowTitle("Aegiverse IMU GUI")
+        self.setWindowTitle("Aegiverse FOG GUI")
         self.__connector = Connector()
         self.__isFileOpen = False
         self.top = TOP()
@@ -219,6 +219,8 @@ class mainWindow(QMainWindow):
             t0 = time.perf_counter()
             # imudata = cmn.dictOperation(imudata, imuoffset, "SUB", IMU_DATA_STRUCTURE)
             self.printPdTemperature(imudata["PD_TEMP"][0])
+            # print(imudata['PIG_WZ'])
+            imudata['PIG_WZ'] = np.clip(imudata['PIG_WZ'], -900, 900)
             t1 = time.perf_counter()
             sample = 1000
             # print(imudata["TIME"])
@@ -245,13 +247,15 @@ class mainWindow(QMainWindow):
             # print('first_run_flag')
 
 
+
     def plotdata(self, imudata):
         # print('plotdata: ', imudata['TIME'])
         if self.top.plot1_unit_rb.btn_status == 'dph':
             factor = 3600
         else:
             factor = 1
-
+        # print(imudata["PIG_WZ"], end=', ')
+        # print(factor)
         if self.top.plot1_showWz_cb.cb_1.isChecked():
             self.top.plot1.ax1.setData(imudata["TIME"], imudata["PIG_WZ"] * factor)
         else:

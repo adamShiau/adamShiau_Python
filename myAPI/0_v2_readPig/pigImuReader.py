@@ -179,7 +179,7 @@ class pigImuReader(QThread):
 
     # End of ImuReader::isCali_a(setter)
 
-    def writeImuCmd(self, cmd, value, fog_ch=2):
+    def writeImuCmd(self, cmd, value, fog_ch=2): #GP1Z use 2, SP use 3
         if value < 0:
             value = (1 << 32) + value
         # End of if-condition
@@ -229,6 +229,7 @@ class pigImuReader(QThread):
             if self.isKal:
                 ERR = self.pig_err_kal.update(ERR)
                 STEP = self.pig_wz_kal.update(STEP)
+
         # t = time.perf_counter()
         t = FPGA_TIME
         imudata = {"TIME": t, "PIG_ERR": ERR, "PIG_WZ": STEP, "PD_TEMP": PD_TEMP}

@@ -43,6 +43,7 @@ IMU_DATA_STRUCTURE = {
 HEADER_KVH = [0xFE, 0x81, 0xFF, 0x55]
 SENS_ADXL355_8G = 0.0000156
 SENS_NANO33_GYRO_250 = 0.00875
+SENS_NANO33_GYRO_500 = 0.01750
 SENS_NANO33_AXLM_4G = 0.000122
 POS_ADXL355_AX = 4
 POS_NANO33_WX = 13
@@ -230,12 +231,16 @@ class pigImuReader(QThread):
     def time_pass_cnt(self, cnt):
         self.__time_pass_cnt = cnt
 
-    def writeImuCmd(self, cmd, value):
+    def writeImuCmd(self, cmd, value, fog_ch=2):
         if value < 0:
             value = (1 << 32) + value
         # End of if-condition
-        data = bytearray([cmd, (value >> 24 & 0xFF), (value >> 16 & 0xFF), (value >> 8 & 0xFF), (value & 0xFF)])
+        data = bytearray([cmd, (value >> 24 & 0xFF), (value >> 16 & 0xFF), (value >> 8 & 0xFF), (value & 0xFF), fog_ch])
+        # print(cmd, end=', ')
+        # print([i for i in data])
+        self.__Connector.write(bytearray([0xAB, 0xBA]))
         self.__Connector.write(data)
+        self.__Connector.write(bytearray([0x55, 0x56]))
         cmn.wait_ms(150)
 
     # End of memsImuReader::writeImuCmd
@@ -280,13 +285,14 @@ class pigImuReader(QThread):
     def getImuData(self):
         head = getData.alignHeader_4B(self.__Connector, HEADER_KVH)
         dataPacket = getData.getdataPacket(self.__Connector, head, 39)
+        # print([hex(x) for x in dataPacket])
 
         ADXL_AX, ADXL_AY, ADXL_AZ = cmn.readADXL355(dataPacket, EN=1, PRINT=0, POS_AX=POS_ADXL355_AX,
                                                     sf=SENS_ADXL355_8G)
         NANO_WX, NANO_WY, NANO_WZ, \
         NANO_AX, NANO_AY, NANO_AZ = cmn.readNANO33(dataPacket, EN=1, PRINT=0, POS_WX=POS_NANO33_WX,
                                                    sf_xlm=SENS_NANO33_AXLM_4G,
-                                                   sf_gyro=SENS_NANO33_GYRO_250)
+                                                   sf_gyro=SENS_NANO33_GYRO_500)
 
         FPGA_TIME, ERR, STEP, PD_TEMP = cmn.readPIG(dataPacket, EN=1, PRINT=0, sf_a=self.sf_a, sf_b=self.sf_b,
                                                     POS_TIME=POS_PIG)
@@ -297,7 +303,7 @@ class pigImuReader(QThread):
         # t = time.perf_counter()
         t = FPGA_TIME
         imudata = {"NANO33_WX": NANO_WX, "NANO33_WY": NANO_WY, "NANO33_WZ": NANO_WZ,
-                   # "ADXL_AX": NANO_AX, "ADXL_AY": ADXL_AY, "ADXL_AZ": ADXL_AZ,
+                   # "ADXL_AX": ADXL_AX, "ADXL_AY": ADXL_AY, "ADXL_AZ": ADXL_AZ,
                    "ADXL_AX": NANO_AX, "ADXL_AY": NANO_AY, "ADXL_AZ": NANO_AZ,
                    "PIG_ERR": ERR, "PIG_WZ": STEP, "PD_TEMP": PD_TEMP, "TIME": t
                    }
@@ -356,17 +362,17 @@ class pigImuReader(QThread):
 
                 # if self.first_run_flag and (imudata['TIME'] > 2):
                 #     print('\n in act: first_run_flag is ', self.first_run_flag)
-                # print('imudata[TIME]: ', round(imudata['TIME'], 5), end=', ')
-                # print('self.time_pass_cnt: ', self.time_pass_cnt, end='\n\n')
-                #     print('reset timer!\n')
-                #     # self.time_pass_cnt = 5
-                #     self.first_run_flag = False
-                #     self.writeImuCmd(CMD_FOG_TIMER_RST, 1)
+                    # print('imudata[TIME]: ', round(imudata['TIME'], 5), end=', ')
+                    # print('self.time_pass_cnt: ', self.time_pass_cnt, end='\n\n')
+                    # print('reset timer!\n')
+                    # self.time_pass_cnt = 5
+                    # self.first_run_flag = False
+                    # self.writeImuCmd(CMD_FOG_TIMER_RST, 1)
                 # else:
                 #     self.first_run_flag = False
-                #     print('\n in act: first_run_flag is ', self.first_run_flag)
-                #     print('imudata[TIME]: ', imudata['TIME'])
-                #     print('pass\n')
+                    # print('\n in act: first_run_flag is ', self.first_run_flag)
+                    # print('imudata[TIME]: ', imudata['TIME'])
+                    # print('pass\n')
 
 
                 # self.first_run_flag = False
@@ -383,17 +389,18 @@ class pigImuReader(QThread):
 
                 self.time_pass_check(self.time_pass_flag, imudata["TIME"])
 
-                if self.time_pass_flag:
-                    imudataArray["TIME"] = np.append(imudataArray["TIME"], imudata["TIME"])
-                    imudataArray["ADXL_AX"] = np.append(imudataArray["ADXL_AX"], imudata["ADXL_AX"])
-                    imudataArray["ADXL_AY"] = np.append(imudataArray["ADXL_AY"], imudata["ADXL_AY"])
-                    imudataArray["ADXL_AZ"] = np.append(imudataArray["ADXL_AZ"], imudata["ADXL_AZ"])
-                    imudataArray["NANO33_WX"] = np.append(imudataArray["NANO33_WX"], imudata["NANO33_WX"])
-                    imudataArray["NANO33_WY"] = np.append(imudataArray["NANO33_WY"], imudata["NANO33_WY"])
-                    imudataArray["NANO33_WZ"] = np.append(imudataArray["NANO33_WZ"], imudata["NANO33_WZ"])
-                    imudataArray["PIG_ERR"] = np.append(imudataArray["PIG_ERR"], imudata["PIG_ERR"])
-                    imudataArray["PIG_WZ"] = np.append(imudataArray["PIG_WZ"], imudata["PIG_WZ"])
-                    imudataArray["PD_TEMP"] = np.append(imudataArray["PD_TEMP"], imudata["PD_TEMP"])
+                # if self.time_pass_flag:
+                imudataArray["TIME"] = np.append(imudataArray["TIME"], imudata["TIME"])
+                imudataArray["ADXL_AX"] = np.append(imudataArray["ADXL_AX"], imudata["ADXL_AX"])
+                imudataArray["ADXL_AY"] = np.append(imudataArray["ADXL_AY"], imudata["ADXL_AY"])
+                imudataArray["ADXL_AZ"] = np.append(imudataArray["ADXL_AZ"], imudata["ADXL_AZ"])
+                imudataArray["NANO33_WX"] = np.append(imudataArray["NANO33_WX"], imudata["NANO33_WX"])
+                imudataArray["NANO33_WY"] = np.append(imudataArray["NANO33_WY"], imudata["NANO33_WY"])
+                imudataArray["NANO33_WZ"] = np.append(imudataArray["NANO33_WZ"], imudata["NANO33_WZ"])
+                imudataArray["PIG_ERR"] = np.append(imudataArray["PIG_ERR"], imudata["PIG_ERR"])
+                imudataArray["PIG_WZ"] = np.append(imudataArray["PIG_WZ"], imudata["PIG_WZ"])
+                imudataArray["PD_TEMP"] = np.append(imudataArray["PD_TEMP"], imudata["PD_TEMP"])
+
 
                 # print('imudata[TIME]: ', round(imudata['TIME'], 5), end=', ')
                 # print('self.time_pass_flag: ', self.time_pass_flag, end='\n\n')
@@ -432,10 +439,12 @@ class pigImuReader(QThread):
 
             if not __name__ == "__main__":
                 self.imudata_qt.emit(imudataArray)
+                # print(imudataArray["PIG_WZ"])
+
 
                 # if self.first_run_flag or (imudata['TIME'] > 2):
-                #     print('in act reset timer!')
-                #     self.writeImuCmd(CMD_FOG_TIMER_RST, 1)
+                #         print('in act reset timer!')
+                #         self.writeImuCmd(CMD_FOG_TIMER_RST, 1)
                 # else:
                 #     print('in act pass!')
                 #     self.imudata_qt.emit(imudataArray)

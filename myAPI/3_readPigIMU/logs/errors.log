@@ -125,3 +125,18 @@
 2023-02-09 18:29:34 - main.myLib.mySerial.getData - ERROR - alignHeader_4B Error
 2023-02-09 18:35:30 - main.myLib.mySerial.getData - ERROR - alignHeader_4B Error
 2023-02-10 10:13:59 - main.myLib.mySerial.Connector - ERROR - IOError, the device: COM6 can not be found or can not be configured!
+2023-05-17 13:55:40 - main.myLib.mySerial.Connector - ERROR - serial read timeout: check if the input power is ON, close the GUI and re-excute.
+2023-05-17 20:49:40 - main.myLib.mySerial.Connector - ERROR - serial read timeout: check if the input power is ON, close the GUI and re-excute.
+2023-05-17 20:50:21 - main.myLib.mySerial.getData - ERROR - alignHeader_4B Error
+2023-05-18 18:47:41 - main.myLib.mySerial.Connector - ERROR - IOError, the device: COM18 can not be found or can not be configured!
+2023-05-18 19:33:38 - main.myLib.mySerial.getData - ERROR - alignHeader_4B Error
+2023-05-18 19:53:56 - main.myLib.mySerial.Connector - ERROR - serial read timeout: check if the input power is ON, close the GUI and re-excute.
+2023-05-18 19:54:16 - main.myLib.mySerial.Connector - ERROR - serial read timeout: check if the input power is ON, close the GUI and re-excute.
+2023-05-18 19:57:12 - main.myLib.mySerial.Connector - ERROR - serial read timeout: check if the input power is ON, close the GUI and re-excute.
+2023-05-18 19:57:30 - main.myLib.mySerial.Connector - ERROR - serial read timeout: check if the input power is ON, close the GUI and re-excute.
+2023-05-19 13:42:40 - main.myLib.mySerial.Connector - ERROR - IOError, the device: COM15 can not be found or can not be configured!
+2023-05-23 14:09:06 - main.myLib.mySerial.Connector - ERROR - serial read timeout: check if the input power is ON, close the GUI and re-excute.
+2023-05-24 20:15:20 - main.myLib.mySerial.Connector - ERROR - serial read timeout: check if the input power is ON, close the GUI and re-excute.
+2023-05-24 20:15:50 - main.myLib.mySerial.Connector - ERROR - serial read timeout: check if the input power is ON, close the GUI and re-excute.
+2023-05-25 15:21:56 - main.myLib.mySerial.Connector - ERROR - IOError, the device: COM20 can not be found or can not be configured!
+2023-05-25 15:22:13 - main.myLib.mySerial.Connector - ERROR - serial read timeout: check if the input power is ON, close the GUI and re-excute.

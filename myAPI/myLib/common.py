@@ -466,8 +466,12 @@ def convert2Sign_3B(datain):
 
 
 def convert2Unsign_4B(datain):
-    shift_data = (datain[0] << 24 | datain[1] << 16 | datain[2] << 8 | datain[3])
-    return shift_data
+    if len(datain) == 4:
+        shift_data = (datain[0] << 24 | datain[1] << 16 | datain[2] << 8 | datain[3])
+        return shift_data
+    else:
+        return -1
+
 
 
 # End of convert2Unsign_4B

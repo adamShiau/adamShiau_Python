@@ -66,7 +66,7 @@ class Connector:
     def connect(self):
         self.__ser.baudrate = self.__baudRate
         self.__ser.port = self.__portName
-        self.__ser.timeout = 3
+        self.__ser.timeout = 10
         # self.__ser.writeTimeout = 5
         self.__ser.parity = serial.PARITY_NONE
         self.__ser.stopbits = serial.STOPBITS_ONE
@@ -76,7 +76,7 @@ class Connector:
             self.__ser.open()
         except IOError:
             logger.error("IOError, the device: " + self.__ser.port + " can not be found or can not be configured!")
-            sys.exit(0)
+            # sys.exit(0)
         # End of try-catch
         logger.info(self.__ser.port + " is connected")
         self.__is_open = self.__ser.is_open

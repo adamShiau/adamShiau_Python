@@ -30,7 +30,7 @@ def alignHeader_4B(comportObj, header):
             #     break
             except:
                 logger.error('alignHeader_4B Error')
-                sys.exit()
+                # sys.exit()
                 break
 
             # print(datain)

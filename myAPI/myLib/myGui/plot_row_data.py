@@ -3,12 +3,12 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 
-filename1 = '0923-3.txt'
+filename1 = '5.txt'
 filename2 = '0923.txt'
 
 Var1 = pd.read_csv(filename1, comment='#', skiprows=0, chunksize=None)
 # Var2 = pd.read_csv(filename2, comment='#', skiprows=0, chunksize=None)
-time1 = np.array(Var1['time'][9:-1])
+time1 = np.array(Var1['time'])
 # time2 = np.array(Var2['time'][9:-1])
 size1 = len(time1)
 # size2 = len(time2)

@@ -231,7 +231,7 @@ class pigImuReader(QThread):
     def time_pass_cnt(self, cnt):
         self.__time_pass_cnt = cnt
 
-    def writeImuCmd(self, cmd, value, fog_ch=2):
+    def writeImuCmd(self, cmd, value, fog_ch=3):
         if value < 0:
             value = (1 << 32) + value
         # End of if-condition

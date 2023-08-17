@@ -98,7 +98,7 @@ class pig_parameters_widget(QGroupBox):
         self.HD_R = spinBlock(title='FPGA_R', minValue=0, maxValue=100000, double=False, step=1)
         # self.HD_R.setEnabled(False)
         '''slider'''
-        self.dataRate_sd = sliderBlock(title='DATE RATE', minValue=1500, maxValue=5000, curValue=2500, interval=100)
+        self.dataRate_sd = sliderBlock(title='DATE RATE', minValue=300, maxValue=5000, curValue=2500, interval=100)
         ''' edit line '''
         self.sf_a = editBlock('SF_a')
         self.sf_b = editBlock('SF_b')
@@ -181,27 +181,27 @@ class pig_parameters_widget(QGroupBox):
         self.sf_a.le.setText(str(para["SF_A"]))
         self.sf_b.le.setText(str(para["SF_B"]))
         if not __name__ == "__main__":
-            # self.send_FREQ_CMD()
-            # self.send_WAIT_CNT_CMD()
-            # self.send_AVG_CMD()
-            # self.send_MOD_H_CMD()
-            # self.send_MOD_L_CMD()
-            # self.send_ERR_TH_CMD()
-            # self.send_ERR_OFFSET_CMD()
-            # self.send_POLARITY_CMD()
-            # self.send_CONST_STEP_CMD()
-            # self.update_FPGA_Q()
-            # self.update_FPGA_R()
-            # self.send_GAIN1_CMD()
-            # self.send_GAIN2_CMD()
-            # self.send_FB_ON_CMD()
-            # self.send_DAC_GAIN_CMD()
-            # self.send_DATA_RATE_CMD()
-            #
-            # self.update_KF_Q()
-            # self.update_KF_R()
-            # self.SF_A_EDIT()
-            # self.SF_B_EDIT()
+            self.send_FREQ_CMD()
+            self.send_WAIT_CNT_CMD()
+            self.send_AVG_CMD()
+            self.send_MOD_H_CMD()
+            self.send_MOD_L_CMD()
+            self.send_ERR_TH_CMD()
+            self.send_ERR_OFFSET_CMD()
+            self.send_POLARITY_CMD()
+            self.send_CONST_STEP_CMD()
+            self.update_FPGA_Q()
+            self.update_FPGA_R()
+            self.send_GAIN1_CMD()
+            self.send_GAIN2_CMD()
+            self.send_FB_ON_CMD()
+            self.send_DAC_GAIN_CMD()
+            self.send_DATA_RATE_CMD()
+
+            self.update_KF_Q()
+            self.update_KF_R()
+            self.SF_A_EDIT()
+            self.SF_B_EDIT()
             pass
 
     def writeImuCmd(self, cmd, value, fog_ch):
@@ -210,12 +210,13 @@ class pig_parameters_widget(QGroupBox):
     def send_FREQ_CMD(self):
         # dt_fpga = 1e3 / 91e6  # for PLL set to 91MHz
         # dt_fpga = 1e3 / 90e6
-        dt_fpga = 1e3 / 100e6
+        # dt_fpga = 1e3 / 100e6
         # dt_fpga = 1e3/ 105e6 # for PLL set to 105MHz
         # dt_fpga = 1e3/ 107e6 # for PLL set to 107MHz
-        # dt_fpga = 1e3/ 109.166667e6 # for PLL set to 109MHz
+        dt_fpga = 1e3/116.666667e6
         value = self.freq.spin.value()
         logger.info('set freq: %d', value)
+        print("set freq")
         self.freq.lb.setText(str(round(1 / (2 * (value + 1) * dt_fpga), 2)) + ' KHz')
         self.__act.writeImuCmd(CMD_FOG_MOD_FREQ, value)
         self.__par_manager.update_parameters("FREQ", value)

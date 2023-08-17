@@ -33,7 +33,7 @@ class pigImuWidget(QWidget):
         self.stop_bt = QPushButton("stop")
         self.stop_bt.setEnabled(False)
         self.save_block = dataSaveBlock("save data")
-        self.para_block = lineEditBlock(name='parameter configuration file', le_name="parameters_G03-2")
+        self.para_block = lineEditBlock(name='parameter configuration file', le_name="parameters_DVT_TEST")
         self.buffer_lb = displayOneBlock('Buffer Size')
         self.pd_temp_lb = displayOneBlock('PD Temp.')
         self.data_rate_lb = displayOneBlock('Data Rate')

@@ -296,8 +296,8 @@ class mainWindow(QMainWindow):
         self.top.plot2.ax.setData(imudata["ADXL_AX"])
         self.top.plot3.ax.setData(imudata["ADXL_AY"])
         self.top.plot4.ax.setData(imudata["ADXL_AZ"])
-        self.top.plot5.ax.setData(imudata["NANO33_WX"])
-        self.top.plot6.ax.setData(imudata["NANO33_WY"])
+        self.top.plot5.ax.setData(imudata["NANO33_WX"]* factor)
+        self.top.plot6.ax.setData(imudata["NANO33_WY"]* factor)
 
 
 if __name__ == "__main__":

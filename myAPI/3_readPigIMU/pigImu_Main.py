@@ -42,6 +42,7 @@ OUTPUT_ONE_AXIS = True
 class mainWindow(QMainWindow):
     is_port_open_qt = pyqtSignal(bool)
 
+
     def __init__(self, debug_en: bool = False):
         super(mainWindow, self).__init__()
         self.press_stop = False
@@ -60,7 +61,7 @@ class mainWindow(QMainWindow):
         # -------menu obj------#
         self.pig_parameter_widget = None
         self.pig_cali_menu = calibrationBlock()
-        self.pig_initial_setting_menu = myRadioButton.radioButtonBlock_2('SYNC MODE', 'OFF', 'ON', True)  # True
+        self.pig_initial_setting_menu = myRadioButton.radioButtonBlock_2('SYNC MODE', 'OFF', 'ON', False)  # True
         # means setting 'OFF' state value to True
         self.analysis_allan = analysis_Allan.analysis_allan_widget(['fog', 'wx', 'wy', 'wz', 'ax', 'ay', 'az'])
         self.analysis_timing_plot = analysis_TimingPlot.analysis_timing_plot_widget(

@@ -213,3 +213,11 @@
 2023-06-05 19:17:43 - main.myLib.mySerial.Connector - ERROR - serial read timeout: check if the input power is ON, close the GUI and re-excute.
 2023-06-06 19:09:58 - main.myLib.mySerial.Connector - ERROR - serial read timeout: check if the input power is ON, close the GUI and re-excute.
 2023-06-12 11:35:01 - main.myLib.mySerial.getData - ERROR - alignHeader_4B Error
+2023-06-20 12:24:53 - main.myLib.mySerial.Connector - ERROR - serial read timeout: check if the input power is ON, close the GUI and re-excute.
+2023-06-20 15:38:23 - main.myLib.mySerial.Connector - ERROR - serial read timeout: check if the input power is ON, close the GUI and re-excute.
+2023-06-28 14:39:00 - main.myLib.mySerial.Connector - ERROR - serial read timeout: check if the input power is ON, close the GUI and re-excute.
+2023-06-28 17:12:11 - main.myLib.mySerial.Connector - ERROR - IOError, the device: COM21 can not be found or can not be configured!
+2023-07-13 15:48:39 - main.myLib.mySerial.Connector - ERROR - serial read timeout: check if the input power is ON, close the GUI and re-excute.
+2023-07-17 17:07:32 - main.myLib.mySerial.Connector - ERROR - serial read timeout: check if the input power is ON, close the GUI and re-excute.
+2023-07-19 10:49:46 - main.myLib.mySerial.getData - ERROR - alignHeader_4B Error
+2023-07-27 14:14:43 - main.myLib.mySerial.Connector - ERROR - serial read timeout: check if the input power is ON, close the GUI and re-excute.

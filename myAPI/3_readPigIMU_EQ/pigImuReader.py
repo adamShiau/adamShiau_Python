@@ -296,11 +296,11 @@ class pigImuReader(QThread):
                                                    sf_xlm=SENS_NANO33_AXLM_4G,
                                                    sf_gyro=SENS_NANO33_GYRO_500)
 
-        FPGA_TIME_SP13, ERR_SP13, STEP_SP13, PD_TEMP_SP13 = cmn.readPIG(dataPacket, EN=1, PRINT=0, sf_a=self.sf_a, sf_b=self.sf_b,
+        FPGA_TIME_SP13, ERR_SP13, STEP_SP13, PD_TEMP_SP13 = cmn.readPIG(dataPacket, EN=1, PRINT=0, sf_a=0.001, sf_b=-0.004,
                                                     POS_TIME=POS_PIG_SP13)
-        FPGA_TIME_SP14, ERR_SP14, STEP_SP14, PD_TEMP_SP14 = cmn.readPIG(dataPacket, EN=1, PRINT=0, sf_a=self.sf_a, sf_b=self.sf_b,
+        FPGA_TIME_SP14, ERR_SP14, STEP_SP14, PD_TEMP_SP14 = cmn.readPIG(dataPacket, EN=1, PRINT=0, sf_a=0.001, sf_b=-0.0001,
                                                     POS_TIME=POS_PIG_SP14)
-        FPGA_TIME_SP9, ERR_SP9, STEP_SP9, PD_TEMP_SP9 = cmn.readPIG(dataPacket, EN=1, PRINT=0, sf_a=self.sf_a, sf_b=self.sf_b,
+        FPGA_TIME_SP9, ERR_SP9, STEP_SP9, PD_TEMP_SP9 = cmn.readPIG(dataPacket, EN=1, PRINT=0, sf_a=0.0015169, sf_b=-0.002,
                                                     POS_TIME=POS_PIG_SP9)
 
         if not self.isCali:

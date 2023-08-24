@@ -221,3 +221,5 @@
 2023-07-17 17:07:32 - main.myLib.mySerial.Connector - ERROR - serial read timeout: check if the input power is ON, close the GUI and re-excute.
 2023-07-19 10:49:46 - main.myLib.mySerial.getData - ERROR - alignHeader_4B Error
 2023-07-27 14:14:43 - main.myLib.mySerial.Connector - ERROR - serial read timeout: check if the input power is ON, close the GUI and re-excute.
+2023-08-18 17:11:28 - main.myLib.mySerial.Connector - ERROR - serial read timeout: check if the input power is ON, close the GUI and re-excute.
+2023-08-21 20:33:24 - main.myLib.mySerial.Connector - ERROR - serial read timeout: check if the input power is ON, close the GUI and re-excute.

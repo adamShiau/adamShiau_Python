@@ -121,32 +121,3 @@ class planarNav:
     @t0.setter
     def t0(self, t0):
         self.__t0 = t0
-
-
-if __name__ == "__main__":
-    import matplotlib.pyplot as plt
-    import random
-
-    myNav = planarNav()
-    # set_init(self, lat0, lon0, hei0, head0):
-    myNav.set_init(23.2, 120.3, 20, 0)
-    t = 0
-    ll = np.empty(0)
-    bb = np.empty(0)
-
-    num_samples = 10000
-    mean = 0
-    stddev = 1
-
-    for i in range(num_samples):
-        random_integer = random.randint(-1, 10)
-
-        # track(self, t, wz, speed, hei):
-        l, b = myNav.track(t, random_integer, 1, 20)
-        ll = np.append(ll, l)
-        bb = np.append(bb, b)
-        t = t + 0.01
-    plt.plot(ll, bb)
-    plt.show()
-
-

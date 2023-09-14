@@ -2,7 +2,6 @@
 """ ####### log stuff creation, always on the top ########  """
 import builtins
 import logging
-import struct
 
 if hasattr(builtins, 'LOGGER_NAME'):
     logger_name = builtins.LOGGER_NAME
@@ -17,6 +16,7 @@ import numpy as np
 from datetime import datetime
 import logging
 import json
+import struct
 
 PRINT_DEBUG = 0
 
@@ -27,9 +27,10 @@ def readPIG(dataPacket, EN=1, POS_TIME=25, sf_a=1, sf_b=0, PRINT=0):
         temp_err = dataPacket[POS_TIME + 4:POS_TIME + 8]
         temp_fog = dataPacket[POS_TIME + 8:POS_TIME + 12]
         temp_PD_temperature = dataPacket[POS_TIME + 12:POS_TIME + 14]
-        fpga_time = convert2Unsign_4B(temp_time) * 1e-4
+        fpga_time = IEEE_754_INT2F(temp_time)
         err_mv = convert2Sign_4B(temp_err)# * (4000 / 8192)
-        step_dps = convert2Sign_4B(temp_fog) * sf_a + sf_b
+        step_dps = IEEE_754_INT2F(temp_fog)
+        # step_dps = convert2Sign_4B(temp_fog) * sf_a + sf_b
         PD_temperature = convert2Temperature(temp_PD_temperature)
     else:
         fpga_time = 0
@@ -40,12 +41,15 @@ def readPIG(dataPacket, EN=1, POS_TIME=25, sf_a=1, sf_b=0, PRINT=0):
 
     if PRINT:
         # print()
-        print('\nPIG: ', end=', ')
+        print('\nPIG: ', end='\t')
         # print(sf_a, sf_b)
-        print(round(fpga_time, 4), end='\t\t')
-        print(round(err_mv, 3), end='\t\t')
-        print(round(step_dps, 3), end='\t\t')
+        print('%f, ' % fpga_time, end=', ')
+        print('%d, ' % err_mv, end=', ')
+        print('%f, ' % step_dps, end=', ')
         print(round(PD_temperature, 1))
+        # print(round(err_mv, 3), end='\t\t')
+        # print(round(step_dps, 3), end='\t\t')
+        # print(round(PD_temperature, 1))
     # End of if-condition
 
     return fpga_time, err_mv, step_dps, PD_temperature
@@ -467,23 +471,31 @@ def convert2Sign_3B(datain):
 
 
 def convert2Unsign_4B(datain):
+    shift_data = (datain[0] << 24 | datain[1] << 16 | datain[2] << 8 | datain[3])
+    return shift_data
+
+
+def IEEE_754_INT2F(datain):
     if len(datain) == 4:
         shift_data = (datain[0] << 24 | datain[1] << 16 | datain[2] << 8 | datain[3])
-        return shift_data
+        f = struct.unpack('<f', struct.pack('<I', shift_data))
+        # print('%.3f' % f[0])
+        return f[0]
     else:
         return -1
 
 
 
-# End of convert2Unsign_4B
-
 
 def convert2Sign_4B(datain):
-    shift_data = (datain[0] << 24 | datain[1] << 16 | datain[2] << 8 | datain[3])
-    if (datain[0] >> 7) == 1:
-        return shift_data - (1 << 32)
+    if len(datain) == 4:
+        shift_data = (datain[0] << 24 | datain[1] << 16 | datain[2] << 8 | datain[3])
+        if (datain[0] >> 7) == 1:
+            return shift_data - (1 << 32)
+        else:
+            return shift_data
     else:
-        return shift_data
+        return -1
 
 
 # End of convert2Sign_4B
@@ -571,13 +583,9 @@ if __name__ == "__main__":
     # import sys
     #
     # sys.path.append("../")
-    from myLib.mySerial.Connector import Connector
-    from myLib.mySerial import getData
-    import time
-    import numpy as np
+    # import time
+    # import numpy as np
+    import struct
 
-    # x = "0x41abe148"
-    # int_x = int(x, 16)
-    # print(int_x)
     f_ = struct.unpack('<f', struct.pack('<I', 0xc2f6e979))
     print('%.3f' % f_[0])

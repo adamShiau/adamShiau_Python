@@ -41,6 +41,10 @@ class planarNav:
         self.theta_w = 0
         self.x_w = 0
         self.y_w = 0
+        self.x_w_old = 0
+        self.y_w_old = 0
+        self.tempx = np.empty(0)
+        self.tempy = np.empty(0)
 
         RN = radius_a / (1 - (eccen ** 2) * ((sin(self.lat0 * np.pi / 180)) ** 2)) ** 0.5
         ecef_x0 = (RN + hei0) * cos(lat0 * np.pi / 180) * cos(lon0 * np.pi / 180)
@@ -69,8 +73,9 @@ class planarNav:
             wz = self.kal.update(wz)
         self.wz_array = np.append(self.wz_array, wz)
         self.theta_w = self.theta_w - wz * dt  # accumulate theta in w-frame
-        self.x_w = self.x_w + speed * np.sin(self.theta_w * np.pi / 180) * dt  # x in w-frame
-        self.y_w = self.y_w + speed * np.cos(self.theta_w * np.pi / 180) * dt  # y in w-frame
+        self.x_w = self.x_w + speed * (np.sin(self.theta_w * np.pi / 180)) * dt  # x in w-frame
+        self.y_w = self.y_w + speed * (np.cos(self.theta_w * np.pi / 180)) * dt  # y in w-frame
+        # print(dt, self.x_w, self.y_w)
         x_l = self.x_w * np.cos(self.head0 * np.pi / 180) - self.y_w * np.sin(self.head0 * np.pi / 180)  # x in l-frame
         y_l = self.x_w * np.sin(self.head0 * np.pi / 180) + self.y_w * np.cos(self.head0 * np.pi / 180)  # y in l-frame
         enu_xyz = np.array([[x_l], [y_l], [hei - self.hei0]])  # l-frame ENU coordinate
@@ -128,7 +133,7 @@ if __name__ == "__main__":
     import random
 
     myNav = planarNav()
-    # set_init(self, lat0, lon0, hei0, head0):
+    # set_init(lat0, lon0, hei0, head0):
     myNav.set_init(23.2, 120.3, 20, 0)
     t = 0
     ll = np.empty(0)
@@ -141,12 +146,15 @@ if __name__ == "__main__":
     for i in range(num_samples):
         random_integer = random.randint(-1, 10)
 
-        # track(self, t, wz, speed, hei):
-        l, b = myNav.track(t, random_integer, 1, 20)
+        # track(t, wz, speed, hei):
+        l, b = myNav.track(t, random_integer, 100, 20)
+        # l, b = myNav.track(t, 10, 100, 20)
         ll = np.append(ll, l)
         bb = np.append(bb, b)
         t = t + 0.01
+    # print(ll, bb)
     plt.plot(ll, bb)
+
     plt.show()
 
 

@@ -12,6 +12,7 @@ logger.info(__name__ + ' logger start')
 """ ####### end of log stuff creation ########  """
 
 import sys
+import struct
 
 sys.path.append("../../")
 print(__name__)
@@ -45,6 +46,18 @@ CMD_FOG_FPGA_R = 22
 CMD_FOG_DAC_GAIN = 23
 CMD_FOG_INT_DELAY = 24
 CMD_FOG_OUT_START = 25
+CMD_FOG_SF0 = 26
+CMD_FOG_SF1 = 27
+CMD_FOG_SF2 = 28
+CMD_FOG_SF3 = 29
+CMD_FOG_SF4 = 30
+CMD_FOG_SF5 = 31
+CMD_FOG_SF6 = 32
+CMD_FOG_SF7 = 33
+CMD_FOG_SF8 = 34
+CMD_FOG_SF9 = 35
+CMD_FOG_TMIN = 36
+CMD_FOG_TMAX = 37
 
 ''' FOG PARAMETERS'''
 INIT_PARAMETERS = {"MOD_H": 6850,
@@ -97,11 +110,15 @@ class pig_parameters_widget(QGroupBox):
         # self.HD_Q.setEnabled(False)
         self.HD_R = spinBlock(title='FPGA_R', minValue=0, maxValue=100000, double=False, step=1)
         # self.HD_R.setEnabled(False)
+        self.Tmin = spinBlock(title='Tmin', minValue=-30, maxValue=30, double=False, step=5)
+        self.Tmax = spinBlock(title='Tmax', minValue=30, maxValue=150, double=False, step=5)
         '''slider'''
         self.dataRate_sd = sliderBlock(title='DATE RATE', minValue=1500, maxValue=5000, curValue=2500, interval=100)
         ''' edit line '''
         self.sf_a = editBlock('SF_a')
         self.sf_b = editBlock('SF_b')
+        self.sf_all = editBlock('SF_all')
+
 
         self.initUI()
         initPara = self.__par_manager.check_file_exist()
@@ -132,6 +149,10 @@ class pig_parameters_widget(QGroupBox):
         mainLayout.addWidget(self.sf_a, 10, 10, 1, 2)
         mainLayout.addWidget(self.sf_b, 10, 12, 1, 2)
         mainLayout.addWidget(self.dataRate_sd, 11, 10, 1, 4)
+        mainLayout.addWidget(self.sf_all, 12, 10, 1, 4)
+        mainLayout.addWidget(self.Tmin, 13, 10, 1, 2)
+        mainLayout.addWidget(self.Tmax, 13, 12, 1, 2)
+
         self.setLayout(mainLayout)
 
     def linkfunction(self):
@@ -153,57 +174,62 @@ class pig_parameters_widget(QGroupBox):
         self.gain2.spin.valueChanged.connect(self.send_GAIN2_CMD)
         self.fb_on.spin.valueChanged.connect(self.send_FB_ON_CMD)
         self.dac_gain.spin.valueChanged.connect(self.send_DAC_GAIN_CMD)
+        self.Tmin.spin.valueChanged.connect(self.send_TMIN_CMD)
+        self.Tmax.spin.valueChanged.connect(self.send_TMAX_CMD)
         ''' slider '''
         self.dataRate_sd.sd.valueChanged.connect(self.send_DATA_RATE_CMD)
         ''' line edit '''
         self.sf_a.le.editingFinished.connect(self.SF_A_EDIT)
         self.sf_b.le.editingFinished.connect(self.SF_B_EDIT)
+        self.sf_all.le.editingFinished.connect(self.send_SF_ALL_CMD)
 
     def set_init_value(self, para):
-        self.freq.spin.setValue(para["FREQ"])
-        self.wait_cnt.spin.setValue(para["WAIT_CNT"])
-        self.avg.spin.setValue(para["ERR_AVG"])
-        self.mod_H.spin.setValue(para["MOD_H"])
-        self.mod_L.spin.setValue(para["MOD_L"])
-        self.err_th.spin.setValue(para["ERR_TH"])
-        self.err_offset.spin.setValue(para["ERR_OFFSET"])
-        self.polarity.spin.setValue(para["POLARITY"])
-        self.const_step.spin.setValue(para["CONST_STEP"])
-        self.KF_Q.spin.setValue(para["KF_Q"])
-        self.KF_R.spin.setValue(para["KF_R"])
-        self.HD_Q.spin.setValue(para["HD_Q"])
-        self.HD_R.spin.setValue(para["HD_R"])
-        self.gain1.spin.setValue(para["GAIN1"])
-        self.gain2.spin.setValue(para["GAIN2"])
-        self.fb_on.spin.setValue(para["FB_ON"])
-        self.dac_gain.spin.setValue(para["DAC_GAIN"])
-        self.dataRate_sd.sd.setValue(para["DATA_RATE"])
-        self.sf_a.le.setText(str(para["SF_A"]))
-        self.sf_b.le.setText(str(para["SF_B"]))
-        if not __name__ == "__main__":
-            self.send_FREQ_CMD()
-            self.send_WAIT_CNT_CMD()
-            self.send_AVG_CMD()
-            self.send_MOD_H_CMD()
-            self.send_MOD_L_CMD()
-            self.send_ERR_TH_CMD()
-            self.send_ERR_OFFSET_CMD()
-            self.send_POLARITY_CMD()
-            self.send_CONST_STEP_CMD()
-            # """
-            self.update_FPGA_Q()
-            self.update_FPGA_R()
-            # """
-            self.send_GAIN1_CMD()
-            self.send_GAIN2_CMD()
-            self.send_FB_ON_CMD()
-            self.send_DAC_GAIN_CMD()
-            self.send_DATA_RATE_CMD()
-
-            self.update_KF_Q()
-            self.update_KF_R()
-            self.SF_A_EDIT()
-            self.SF_B_EDIT()
+        # self.freq.spin.setValue(para["FREQ"])
+        # self.wait_cnt.spin.setValue(para["WAIT_CNT"])
+        # self.avg.spin.setValue(para["ERR_AVG"])
+        # self.mod_H.spin.setValue(para["MOD_H"])
+        # self.mod_L.spin.setValue(para["MOD_L"])
+        # self.err_th.spin.setValue(para["ERR_TH"])
+        # self.err_offset.spin.setValue(para["ERR_OFFSET"])
+        # self.polarity.spin.setValue(para["POLARITY"])
+        # self.const_step.spin.setValue(para["CONST_STEP"])
+        # self.KF_Q.spin.setValue(para["KF_Q"])
+        # self.KF_R.spin.setValue(para["KF_R"])
+        # self.HD_Q.spin.setValue(para["HD_Q"])
+        # self.HD_R.spin.setValue(para["HD_R"])
+        # self.gain1.spin.setValue(para["GAIN1"])
+        # self.gain2.spin.setValue(para["GAIN2"])
+        # self.fb_on.spin.setValue(para["FB_ON"])
+        # self.dac_gain.spin.setValue(para["DAC_GAIN"])
+        # self.dataRate_sd.sd.setValue(para["DATA_RATE"])
+        # self.sf_a.le.setText(str(para["SF_A"]))
+        # self.sf_b.le.setText(str(para["SF_B"]))
+        self.Tmin.spin.setValue(-30)
+        self.Tmax.spin.setValue(80)
+        # if not __name__ == "__main__":
+        #     self.send_FREQ_CMD()
+        #     self.send_WAIT_CNT_CMD()
+        #     self.send_AVG_CMD()
+        #     self.send_MOD_H_CMD()
+        #     self.send_MOD_L_CMD()
+        #     self.send_ERR_TH_CMD()
+        #     self.send_ERR_OFFSET_CMD()
+        #     self.send_POLARITY_CMD()
+        #     self.send_CONST_STEP_CMD()
+        #     # """
+        #     self.update_FPGA_Q()
+        #     self.update_FPGA_R()
+        #     # """
+        #     self.send_GAIN1_CMD()
+        #     self.send_GAIN2_CMD()
+        #     self.send_FB_ON_CMD()
+        #     self.send_DAC_GAIN_CMD()
+        #     self.send_DATA_RATE_CMD()
+        #
+        #     self.update_KF_Q()
+        #     self.update_KF_R()
+        #     self.SF_A_EDIT()
+        #     self.SF_B_EDIT()
 
     def writeImuCmd(self, cmd, value, fog_ch):
         self.__act.writeImuCmd(cmd, value, fog_ch)
@@ -288,6 +314,39 @@ class pig_parameters_widget(QGroupBox):
         logger.info('set DAC gain: %d', value)
         self.__act.writeImuCmd(CMD_FOG_DAC_GAIN, value)
         self.__par_manager.update_parameters("DAC_GAIN", value)
+
+    def send_TMIN_CMD(self):
+        value = self.Tmin.spin.value()
+        value2 = struct.unpack('<I', struct.pack('<f', value))
+        # logger.info('set DAC gain: %d', value)
+        self.__act.writeImuCmd(CMD_FOG_TMIN, value2[0])
+        # self.__par_manager.update_parameters("DAC_GAIN", value)
+        print("%x" % value2[0])
+
+    def send_TMAX_CMD(self):
+        value = self.Tmax.spin.value()
+        value2 = struct.unpack('<I', struct.pack('<f', value))
+        # logger.info('set DAC gain: %d', value)
+        self.__act.writeImuCmd(CMD_FOG_TMAX, value2[0])
+        # self.__par_manager.update_parameters("DAC_GAIN", value)
+        print("%x" % value2[0])
+
+    def send_SF_ALL_CMD(self):
+        value = float(self.sf_all.le.text())
+        value2 = struct.unpack('<I', struct.pack('<f', value))
+        # logger.info('set DAC gain: %d', value)
+        self.__act.writeImuCmd(CMD_FOG_SF0, value2[0])
+        self.__act.writeImuCmd(CMD_FOG_SF1, value2[0])
+        self.__act.writeImuCmd(CMD_FOG_SF2, value2[0])
+        self.__act.writeImuCmd(CMD_FOG_SF3, value2[0])
+        self.__act.writeImuCmd(CMD_FOG_SF4, value2[0])
+        self.__act.writeImuCmd(CMD_FOG_SF5, value2[0])
+        self.__act.writeImuCmd(CMD_FOG_SF6, value2[0])
+        self.__act.writeImuCmd(CMD_FOG_SF7, value2[0])
+        self.__act.writeImuCmd(CMD_FOG_SF8, value2[0])
+        self.__act.writeImuCmd(CMD_FOG_SF9, value2[0])
+        # self.__par_manager.update_parameters("DAC_GAIN", value)
+        # print("%x" % value2[0])
 
     def send_CONST_STEP_CMD(self):
         value = self.const_step.spin.value()

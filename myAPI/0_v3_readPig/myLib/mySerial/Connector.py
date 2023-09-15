@@ -155,6 +155,11 @@ class Connector:
         for i in range(self.portNum):
             self.comPort = np.append(self.comPort, portlist[i])
 
+    # def dumpFogParameter(self):
+    #     self.writeImuCmd(66, 5)
+    #     s = self.__Connector.readline()
+    #     print(s)
+
 
 if __name__ == "__main__":
     print("running Connector.py")
@@ -163,30 +168,33 @@ if __name__ == "__main__":
     ser.connect()
     ser.flushInputBuffer()
     ser.write(bytearray([0xAB, 0xBA]))
-    ser.write([1, 0, 0, 0, 2, 2])
+    ser.write([0x66, 0, 0, 0, 0x05, 0x02])
     ser.write(bytearray([0x55, 0x56]))
+    for i in range(200):
+        data = ser.read()
+        print(data.decode('utf-8'), end='')
     '''for sparrow test
     ser.write([6, 0, 0, 0, 3])
     time.sleep(1)
     ser.write([6, 0, 0, 0, 1])
     '''
 
-    old_time = 0
-    try:
-        while True:
-            if ser.readInputBuffer() > 22:
-                print("buf: ", ser.readInputBuffer())
-                new = time.perf_counter_ns()
-                print(ser.readBinaryList(22))
-                print("%.1f\n" % ((new - old_time) * 1e-3))
-                old_time = new
-                cmn.wait_ms(4)
-
-    except KeyboardInterrupt:
-        ser.write(bytearray([0xAB, 0xBA]))
-        ser.write([1, 0, 0, 0, 4, 2])
-        ser.write(bytearray([0x55, 0x56]))
-        # ser.write([6, 0, 0, 0, 4])
-        ser.disconnect()
-    pass
+    # old_time = 0
+    # try:
+    #     while True:
+    #         if ser.readInputBuffer() > 22:
+    #             print("buf: ", ser.readInputBuffer())
+    #             new = time.perf_counter_ns()
+    #             print(ser.readBinaryList(22))
+    #             print("%.1f\n" % ((new - old_time) * 1e-3))
+    #             old_time = new
+    #             cmn.wait_ms(4)
+    #
+    # except KeyboardInterrupt:
+    #     ser.write(bytearray([0xAB, 0xBA]))
+    #     ser.write([1, 0, 0, 0, 4, 2])
+    #     ser.write(bytearray([0x55, 0x56]))
+    #     # ser.write([6, 0, 0, 0, 4])
+    #     ser.disconnect()
+    # pass
 

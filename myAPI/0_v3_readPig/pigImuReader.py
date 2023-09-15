@@ -209,7 +209,7 @@ class pigImuReader(QThread):
     # End of memsImuReader::disconnectIMU
 
     def readIMU(self):
-        self.writeImuCmd(1, 1)
+        self.writeImuCmd(1, 2)
 
     def stopIMU(self):
         self.writeImuCmd(1, 4)
@@ -223,7 +223,7 @@ class pigImuReader(QThread):
         head = getData.alignHeader_4B(self.__Connector, HEADER_KVH)
         dataPacket = getData.getdataPacket(self.__Connector, head, 18)
 
-        FPGA_TIME, ERR, STEP, PD_TEMP = cmn.readPIG(dataPacket, EN=1, PRINT=1, sf_a=self.sf_a, sf_b=self.sf_b,
+        FPGA_TIME, ERR, STEP, PD_TEMP = cmn.readPIG(dataPacket, EN=1, PRINT=0, sf_a=self.sf_a, sf_b=self.sf_b,
                                                     POS_TIME=POS_PIG)
         if not self.isCali:
             if self.isKal:
@@ -324,6 +324,8 @@ class pigImuReader(QThread):
             pass
 
 
+
+
 def myCallBack(imudata):
     global old
     new = time.perf_counter_ns()
@@ -336,16 +338,16 @@ if __name__ == "__main__":
     myImu.arrayNum = 2
     myImu.setCallback(myCallBack)
     myImu.isCali = False
-    myImu.connect(ser, "COM20", 230400)
-    myImu.readIMU()
-    myImu.isRun = True
-    myImu.start()
-    try:
-        while True:
-            time.sleep(.1)
-    except KeyboardInterrupt:
-        myImu.isRun = False
-        myImu.stopIMU()
-        myImu.disconnect()
-        myImu.wait()
-        print('KeyboardInterrupt success')
+    myImu.connect(ser, "COM18", 230400)
+    # myImu.readIMU()
+    # myImu.isRun = True
+    # myImu.start()
+    # try:
+    #     while True:
+    #         time.sleep(.1)
+    # except KeyboardInterrupt:
+    #     myImu.isRun = False
+    #     myImu.stopIMU()
+    #     myImu.disconnect()
+    #     myImu.wait()
+    #     print('KeyboardInterrupt success')

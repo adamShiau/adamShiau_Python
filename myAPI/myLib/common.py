@@ -580,4 +580,6 @@ if __name__ == "__main__":
     # int_x = int(x, 16)
     # print(int_x)
     f_ = struct.unpack('<f', struct.pack('<I', 0xc2f6e979))
+    I_ = struct.unpack('<I', struct.pack('<f', -123.456))
     print('%.3f' % f_[0])
+    print('%x' % I_[0])

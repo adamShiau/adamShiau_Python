@@ -1,6 +1,7 @@
 # -*- coding:UTF-8 -*-
 """ ####### log stuff creation, always on the top ########  """
 import builtins
+import json
 import logging
 if hasattr(builtins, 'LOGGER_NAME'):
     logger_name = builtins.LOGGER_NAME
@@ -155,6 +156,13 @@ class Connector:
         for i in range(self.portNum):
             self.comPort = np.append(self.comPort, portlist[i])
 
+    def dump_fog_parameters(self):
+        self.__ser.write(bytearray([0xAB, 0xBA]))
+        self.__ser.write([0x66, 0, 0, 0, 0x05, 0x02])
+        self.__ser.write(bytearray([0x55, 0x56]))
+        self.__ser.write(bytearray([0x55, 0x56]))
+        return json.loads(self.__ser.readline())
+
     # def dumpFogParameter(self):
     #     self.writeImuCmd(66, 5)
     #     s = self.__Connector.readline()
@@ -170,9 +178,15 @@ if __name__ == "__main__":
     ser.write(bytearray([0xAB, 0xBA]))
     ser.write([0x66, 0, 0, 0, 0x05, 0x02])
     ser.write(bytearray([0x55, 0x56]))
-    for i in range(200):
-        data = ser.read()
-        print(data.decode('utf-8'), end='')
+    # para = ser.readline().decode('utf-8')
+    para = ser.dump_fog_parameters()
+    print(para)
+    print(para["FREQ"])
+    print(para["SF0"])
+    # print(line.decode('utf-8'))
+    # for i in range(200):
+    #     data = ser.read()
+    #     print(data.decode('utf-8'), end='')
     '''for sparrow test
     ser.write([6, 0, 0, 0, 3])
     time.sleep(1)

@@ -214,6 +214,10 @@ class pigImuReader(QThread):
     def stopIMU(self):
         self.writeImuCmd(1, 4)
 
+    def dump_fog_parameters(self):
+        # self.writeImuCmd(0x66, 2)
+        return self.__Connector.dump_fog_parameters()
+
     def setCallback(self, callback):
         self.__callBack = callback
 
@@ -339,6 +343,10 @@ if __name__ == "__main__":
     myImu.setCallback(myCallBack)
     myImu.isCali = False
     myImu.connect(ser, "COM18", 230400)
+    para = myImu.dump_fog_parameters()
+    print(para)
+    print(para["FREQ"])
+    print(para["SF0"])
     # myImu.readIMU()
     # myImu.isRun = True
     # myImu.start()

@@ -231,3 +231,4 @@
 2023-09-14 23:47:40 - main.myLib.mySerial.Connector - ERROR - IOError, the device: COM18 can not be found or can not be configured!
 2023-09-15 13:03:58 - main.myLib.mySerial.Connector - ERROR - IOError, the device: COM18 can not be found or can not be configured!
 2023-09-15 22:09:42 - main.myLib.mySerial.Connector - ERROR - IOError, the device: COM18 can not be found or can not be configured!
+2023-09-17 17:52:19 - main.myLib.mySerial.Connector - ERROR - IOError, the device: COM18 can not be found or can not be configured!

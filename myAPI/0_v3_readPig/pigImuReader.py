@@ -321,6 +321,8 @@ class pigImuReader(QThread):
     def offset_setting(self, imuoffset):
         imuoffset["TIME"] = [0]
         imuoffset["PD_TEMP"] = [0]
+        imuoffset["PIG_ERR"] = [0]
+        imuoffset["PIG_WZ"] = [0]
         if not self.isCali_w:
             imuoffset["PIG_ERR"] = [0]
             imuoffset["PIG_WZ"] = [0]

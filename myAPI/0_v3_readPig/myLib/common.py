@@ -28,9 +28,8 @@ def readPIG(dataPacket, EN=1, POS_TIME=25, sf_a=1, sf_b=0, PRINT=0):
         temp_fog = dataPacket[POS_TIME + 8:POS_TIME + 12]
         temp_PD_temperature = dataPacket[POS_TIME + 12:POS_TIME + 14]
         fpga_time = IEEE_754_INT2F(temp_time)
-        err_mv = convert2Sign_4B(temp_err)# * (4000 / 8192)
+        err_mv = convert2Sign_4B(temp_err)
         step_dps = IEEE_754_INT2F(temp_fog)
-        # step_dps = convert2Sign_4B(temp_fog) * sf_a + sf_b
         PD_temperature = convert2Temperature(temp_PD_temperature)
     else:
         fpga_time = 0

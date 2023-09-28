@@ -156,9 +156,9 @@ class Connector:
         for i in range(self.portNum):
             self.comPort = np.append(self.comPort, portlist[i])
 
-    def dump_fog_parameters(self, ch=2):
+    def dump_fog_parameters(self):
         self.__ser.write(bytearray([0xAB, 0xBA]))
-        self.__ser.write([0x66, 0, 0, 0, 0x05, ch])
+        self.__ser.write([0x66, 0, 0, 0, 0x05, 0x02])
         self.__ser.write(bytearray([0x55, 0x56]))
         self.__ser.write(bytearray([0x55, 0x56]))
         return json.loads(self.__ser.readline())

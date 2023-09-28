@@ -148,7 +148,7 @@ class pig_parameters_widget(QGroupBox):
         self.initUI()
         # initPara = self.__par_manager.check_file_exist()
         # print(fileName)
-        initPara = self.__act.dump_fog_parameters(3)
+        initPara = self.__act.dump_fog_parameters()
         self.set_init_value(initPara)
         self.linkfunction()
 
@@ -326,13 +326,13 @@ class pig_parameters_widget(QGroupBox):
         value = self.freq.spin.value()
         logger.info('set freq: %d', value)
         self.freq.lb.setText(str(round(1 / (2 * (value + 1) * dt_fpga), 2)) + ' KHz')
-        self.writeImuCmd(CMD_FOG_MOD_FREQ, value)
+        self.__act.writeImuCmd(CMD_FOG_MOD_FREQ, value)
         self.__par_manager.update_parameters("FREQ", value)
 
     def send_MOD_H_CMD(self):
         value = self.mod_H.spin.value()
         logger.info('set mod_H: %d', value)
-        self.writeImuCmd(CMD_FOG_MOD_AMP_H, value)
+        self.__act.writeImuCmd(CMD_FOG_MOD_AMP_H, value)
         self.__par_manager.update_parameters("MOD_H", value)
 
     def send_MOD_L_CMD(self):
@@ -401,7 +401,8 @@ class pig_parameters_widget(QGroupBox):
         value = self.Tmin.spin.value()
         value2 = struct.unpack('<I', struct.pack('<f', value))
         # logger.info('set DAC gain: %d', value)
-        self.__act.writeImuCmd(CMD_FOG_TMIN, value2[0])
+        # self.__act.writeImuCmd(CMD_FOG_TMIN, value2[0])
+        self.writeImuCmd(CMD_FOG_TMIN, value2[0], 2)
         # self.__par_manager.update_parameters("DAC_GAIN", value)
         print("%x" % value2[0])
 
@@ -486,7 +487,10 @@ class pig_parameters_widget(QGroupBox):
     def send_DATA_RATE_CMD(self):
         value = self.dataRate_sd.sd.value()
         logger.info('set dataRate: %d', value)
-        self.__act.writeImuCmd(CMD_FOG_INT_DELAY, value)
+        # self.__act.writeImuCmd(CMD_FOG_INT_DELAY, value)
+        for i in range(3):
+            print(i)
+            self.writeImuCmd(CMD_FOG_INT_DELAY, value, i+1)
         self.__par_manager.update_parameters("DATA_RATE", value)
 
     def SF_A_EDIT(self):

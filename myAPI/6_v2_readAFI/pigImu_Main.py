@@ -62,7 +62,7 @@ class mainWindow(QMainWindow):
         self.pig_menu = pig_menu_manager(self.menu, self)
         self.analysis_allan = analysis_Allan.analysis_allan_widget(['fog'])
         self.analysis_timing_plot = analysis_TimingPlot.analysis_timing_plot_widget(
-            ['fog', 'T'])
+            ['fog', 'T', 'ax', 'ay', 'az', 'a_T'])
         self.linkfunction()
         self.act.arrayNum = 10
         self.mainUI()
@@ -70,6 +70,7 @@ class mainWindow(QMainWindow):
 
         self.__debug = debug_en
         self.t_start = time.perf_counter()
+        self.t_start_xlm = time.perf_counter()
 
     def mainUI(self):
         self.setCentralWidget(self.top)
@@ -133,6 +134,11 @@ class mainWindow(QMainWindow):
             self.top.pd_temp_lb.lb.setText(str(val))
             self.t_start = time.perf_counter()
 
+    def printXlmTemperature(self, val):
+        if (time.perf_counter() - self.t_start_xlm) > 0.5:
+            self.top.xlm_temp_lb.lb.setText(str(val))
+            self.t_start_xlm = time.perf_counter()
+
     def printUpdateRate(self, t_list):
         update_rate = round(((t_list[-1] - t_list[0]) / (len(t_list) - 1)) ** -1, 1)
         self.top.data_rate_lb.lb.setText(str(update_rate))
@@ -168,11 +174,11 @@ class mainWindow(QMainWindow):
     def resetDataContainer(self):
         return {k: np.empty(0) for k in set(IMU_DATA_STRUCTURE)}
 
-    def resetFPGATimer(self, ch):
-        self.act.writeImuCmd(CMD_FOG_TIMER_RST, 1, ch)
+    def resetFPGATimer(self):
+        self.act.writeImuCmd(CMD_FOG_TIMER_RST, 1)
 
     def start(self):
-        self.resetFPGATimer(3)
+        self.resetFPGATimer()
         self.act.readIMU()
         self.act.isRun = True
         self.press_stop = False
@@ -180,7 +186,7 @@ class mainWindow(QMainWindow):
         file_name = self.top.save_block.le_filename.text() + self.top.save_block.le_ext.text()
         self.imudata_file.name = file_name
         self.imudata_file.open(self.top.save_block.rb.isChecked())
-        self.imudata_file.write_line('time,fog,T')
+        self.imudata_file.write_line('time,fog,T,ax,ay,az,a_T')
 
     def stop(self):
         # self.resetFPGATimer()
@@ -215,38 +221,52 @@ class mainWindow(QMainWindow):
             if self.first_run_flag and (int(imudata['TIME'][0]) > 2):
                 return
             self.first_run_flag = False
+
             input_buf = self.act.readInputBuffer()
             t0 = time.perf_counter()
+            # print(imudata)
             # imudata = cmn.dictOperation(imudata, imuoffset, "SUB", IMU_DATA_STRUCTURE)
             self.printPdTemperature(imudata["PD_TEMP"][0])
+            self.printXlmTemperature(imudata["XLM_TEMP"][0])
             # print(imudata['PIG_WZ'])
             # imudata['PIG_WZ'] = np.clip(imudata['PIG_WZ'], -900, 900)
             t1 = time.perf_counter()
             sample = 1000
-            # print(imudata["TIME"])
+
             self.imudata["TIME"] = np.append(self.imudata["TIME"], imudata["TIME"])
             self.imudata["PIG_WZ"] = np.append(self.imudata["PIG_WZ"], imudata["PIG_WZ"])
+            self.imudata["PIG_WZ_2"] = np.append(self.imudata["PIG_WZ_2"], imudata["PIG_WZ_2"])
+            self.imudata["PIG_WZ_3"] = np.append(self.imudata["PIG_WZ_3"], imudata["PIG_WZ_3"])
             self.imudata["PD_TEMP"] = np.append(self.imudata["PD_TEMP"], imudata["PD_TEMP"])
             self.imudata["PIG_ERR"] = np.append(self.imudata["PIG_ERR"], imudata["PIG_ERR"])
+            self.imudata["ADXL_AX"] = np.append(self.imudata["ADXL_AX"], imudata["ADXL_AX"])
+            self.imudata["ADXL_AY"] = np.append(self.imudata["ADXL_AY"], imudata["ADXL_AY"])
+            self.imudata["ADXL_AZ"] = np.append(self.imudata["ADXL_AZ"], imudata["ADXL_AZ"])
+            self.imudata["XLM_TEMP"] = np.append(self.imudata["XLM_TEMP"], imudata["XLM_TEMP"])
             if len(self.imudata["TIME"]) > sample:
                 self.imudata["TIME"] = self.imudata["TIME"][self.act.arrayNum:self.act.arrayNum + sample]
                 self.imudata["PIG_WZ"] = self.imudata["PIG_WZ"][self.act.arrayNum:self.act.arrayNum + sample]
+                self.imudata["PIG_WZ_2"] = self.imudata["PIG_WZ_2"][self.act.arrayNum:self.act.arrayNum + sample]
+                self.imudata["PIG_WZ_3"] = self.imudata["PIG_WZ_3"][self.act.arrayNum:self.act.arrayNum + sample]
                 self.imudata["PIG_ERR"] = self.imudata["PIG_ERR"][self.act.arrayNum:self.act.arrayNum + sample]
                 self.imudata["PD_TEMP"] = self.imudata["PD_TEMP"][self.act.arrayNum:self.act.arrayNum + sample]
+                self.imudata["ADXL_AX"] = self.imudata["ADXL_AX"][self.act.arrayNum:self.act.arrayNum + sample]
+                self.imudata["ADXL_AY"] = self.imudata["ADXL_AY"][self.act.arrayNum:self.act.arrayNum + sample]
+                self.imudata["ADXL_AZ"] = self.imudata["ADXL_AZ"][self.act.arrayNum:self.act.arrayNum + sample]
+                self.imudata["XLM_TEMP"] = self.imudata["XLM_TEMP"][self.act.arrayNum:self.act.arrayNum + sample]
             t2 = time.perf_counter()
             debug_info = "MAIN: ," + str(input_buf) + ", " + str(round((t2 - t0) * 1000, 5)) + ", " \
                          + str(round((t1 - t0) * 1000, 5)) + ", " + str(round((t2 - t1) * 1000, 5))
             cmn.print_debug(debug_info, self.__debug)
             # print(imudata["PIG_WZ"])
-            datalist = [imudata["TIME"], imudata["PIG_WZ"], imudata["PD_TEMP"]]
-            data_fmt = "%.5f,%.5f,%.1f"
+            datalist = [imudata["TIME"], imudata["PIG_WZ"], imudata["PD_TEMP"], imudata["ADXL_AX"], imudata["ADXL_AY"],
+                        imudata["ADXL_AZ"], imudata["XLM_TEMP"]]
+            data_fmt = "%.5f,%.5f,%.1f,%.5f,%.5f,%.5f,%d"
             self.imudata_file.saveData(datalist, data_fmt)
             self.plotdata(self.imudata)
             self.printUpdateRate(self.imudata["TIME"])
             # print(len(self.imudata["TIME"]))
             # print('first_run_flag')
-
-
 
     def plotdata(self, imudata):
         # print('plotdata: ', imudata['TIME'])
@@ -256,16 +276,21 @@ class mainWindow(QMainWindow):
             factor = 1
         # print(imudata["PIG_WZ"], end=', ')
         # print(factor)
-        if self.top.plot1_showWz_cb.cb_1.isChecked():
-            self.top.plot1.ax1.setData(imudata["TIME"], imudata["PIG_WZ"] * factor)
-        else:
-            self.top.plot1.ax1.clear()
-        if self.top.plot1_showWz_cb.cb_2.isChecked():
-            self.top.plot1.ax2.setData(imudata["TIME"], imudata["NANO33_WZ"] * factor)
-        else:
-            self.top.plot1.ax2.clear()
-
-        self.top.plot2.ax.setData(imudata["TIME"], imudata["PIG_ERR"])
+        # print(imudata)
+        # if self.top.plot1_showWz_cb.cb_1.isChecked():
+        #     self.top.plot1.ax1.setData(imudata["TIME"], imudata["PIG_WZ"] * factor)
+        # else:
+        #     self.top.plot1.ax1.clear()
+        # if self.top.plot1_showWz_cb.cb_2.isChecked():
+        #     self.top.plot1.ax2.setData(imudata["TIME"], imudata["NANO33_WZ"] * factor)
+        # else:
+        #     self.top.plot1.ax2.clear()
+        self.top.plot1.ax.setData(imudata["TIME"], imudata["PIG_WZ"])
+        self.top.plot2.ax.setData(imudata["TIME"], imudata["PIG_WZ_2"])
+        self.top.plot6.ax.setData(imudata["TIME"], imudata["PIG_WZ_3"])
+        self.top.plot3.ax.setData(imudata["ADXL_AX"])
+        self.top.plot4.ax.setData(imudata["ADXL_AY"])
+        self.top.plot5.ax.setData(imudata["ADXL_AZ"])
 
 
 if __name__ == "__main__":

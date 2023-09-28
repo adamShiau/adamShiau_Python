@@ -26,8 +26,14 @@ import logging
 # from pig_parameters import *
 
 IMU_DATA_STRUCTURE = {
+    "XLM_TEMP": np.zeros(1),
+    "ADXL_AX": np.zeros(1),
+    "ADXL_AY": np.zeros(1),
+    "ADXL_AZ": np.zeros(1),
     "PIG_ERR": np.zeros(1),
     "PIG_WZ": np.zeros(1),
+    "PIG_WZ_2": np.zeros(1),
+    "PIG_WZ_3": np.zeros(1),
     "PD_TEMP": np.zeros(1),
     "TIME": np.zeros(1)
 }
@@ -38,7 +44,10 @@ SENS_NANO33_GYRO_250 = 0.00875
 SENS_NANO33_AXLM_4G = 0.000122
 POS_ADXL355_AX = None
 POS_NANO33_WX = None
-POS_PIG = 4
+POS_PIG1 = 17
+POS_PIG2 = POS_PIG1 + 14
+POS_PIG3 = POS_PIG2 + 14
+POS_ADXL357 = 4
 old = time.perf_counter_ns()
 
 
@@ -179,6 +188,20 @@ class pigImuReader(QThread):
 
     # End of ImuReader::isCali_a(setter)
 
+    def writeImuCmd(self, cmd, value, fog_ch=2): #GP1Z use 2, SP use 3
+        if value < 0:
+            value = (1 << 32) + value
+        # End of if-condition
+        data = bytearray([cmd, (value >> 24 & 0xFF), (value >> 16 & 0xFF), (value >> 8 & 0xFF), (value & 0xFF), fog_ch])
+        # print(cmd, end=', ')
+        # print([i for i in data])
+        self.__Connector.write(bytearray([0xAB, 0xBA]))
+        self.__Connector.write(data)
+        self.__Connector.write(bytearray([0x55, 0x56]))
+        cmn.wait_ms(150)
+
+    # End of memsImuReader::writeImuCmd
+
     def connect(self, port, portName, baudRate):
         self.__Connector = port
         port.portName = portName
@@ -194,29 +217,15 @@ class pigImuReader(QThread):
 
     # End of memsImuReader::disconnectIMU
 
-    def writeImuCmd(self, cmd, value, fog_ch=3): #GP1Z use 2, SP use 3
-        if value < 0:
-            value = (1 << 32) + value
-        # End of if-condition
-        data = bytearray([cmd, (value >> 24 & 0xFF), (value >> 16 & 0xFF), (value >> 8 & 0xFF), (value & 0xFF), fog_ch])
-        # print(cmd, end=', ')
-        # print([i for i in data])
-        self.__Connector.write(bytearray([0xAB, 0xBA]))
-        self.__Connector.write(data)
-        self.__Connector.write(bytearray([0x55, 0x56]))
-        cmn.wait_ms(150)
-
-    # End of memsImuReader::writeImuCmd
-
     def readIMU(self):
-        self.writeImuCmd(1, 2, 3)
+        self.writeImuCmd(2, 2)
 
     def stopIMU(self):
-        self.writeImuCmd(1, 4, 3)
+        self.writeImuCmd(2, 4)
 
-    def dump_fog_parameters(self, ch):
+    def dump_fog_parameters(self):
         # self.writeImuCmd(0x66, 2)
-        return self.__Connector.dump_fog_parameters(ch)
+        return self.__Connector.dump_fog_parameters()
 
     def setCallback(self, callback):
         self.__callBack = callback
@@ -225,10 +234,16 @@ class pigImuReader(QThread):
 
     def getImuData(self):
         head = getData.alignHeader_4B(self.__Connector, HEADER_KVH)
-        dataPacket = getData.getdataPacket(self.__Connector, head, 18)
+        dataPacket = getData.getdataPacket(self.__Connector, head, 59)
+        FPGA_TIME, ERR, STEP, PD_TEMP = cmn.readPIG(dataPacket, EN=1, PRINT=0, sf_a=self.sf_a, sf_b=self.sf_b,
+                                                    POS_TIME=POS_PIG1)
+        FPGA_TIME_2, ERR_2, STEP_2, PD_TEMP_2 = cmn.readPIG(dataPacket, EN=1, PRINT=0, sf_a=self.sf_a, sf_b=self.sf_b,
+                                                    POS_TIME=POS_PIG2)
+        FPGA_TIME_3, ERR_3, STEP_3, PD_TEMP_3 = cmn.readPIG(dataPacket, EN=1, PRINT=0, sf_a=self.sf_a, sf_b=self.sf_b,
+                                                    POS_TIME=POS_PIG3)
 
-        FPGA_TIME, ERR, STEP, PD_TEMP = cmn.readPIG(dataPacket, EN=1, PRINT=1, sf_a=self.sf_a, sf_b=self.sf_b,
-                                                    POS_TIME=POS_PIG)
+        ADXL_AX, ADXL_AY, ADXL_AZ, XLM_TEMP = cmn.readADXL357(dataPacket, dataLen=4, POS_AX=POS_ADXL357, EN=1, PRINT=0)
+
         if not self.isCali:
             if self.isKal:
                 ERR = self.pig_err_kal.update(ERR)
@@ -236,7 +251,10 @@ class pigImuReader(QThread):
 
         # t = time.perf_counter()
         t = FPGA_TIME
-        imudata = {"TIME": t, "PIG_ERR": ERR, "PIG_WZ": STEP, "PD_TEMP": PD_TEMP}
+        imudata = {"TIME": t, "PIG_ERR": ERR, "PIG_WZ": STEP, "PD_TEMP": PD_TEMP,
+                   "PIG_WZ_2": STEP_2, "PIG_WZ_3": STEP_3,
+                   "ADXL_AX": ADXL_AX, "ADXL_AY": ADXL_AY, "ADXL_AZ": ADXL_AZ, "XLM_TEMP": XLM_TEMP
+                   }
         return dataPacket, imudata
 
     def readInputBuffer(self):
@@ -293,7 +311,13 @@ class pigImuReader(QThread):
                 imudataArray["TIME"] = np.append(imudataArray["TIME"], imudata["TIME"])
                 imudataArray["PIG_ERR"] = np.append(imudataArray["PIG_ERR"], imudata["PIG_ERR"])
                 imudataArray["PIG_WZ"] = np.append(imudataArray["PIG_WZ"], imudata["PIG_WZ"])
+                imudataArray["PIG_WZ_2"] = np.append(imudataArray["PIG_WZ_2"], imudata["PIG_WZ_2"])
+                imudataArray["PIG_WZ_3"] = np.append(imudataArray["PIG_WZ_3"], imudata["PIG_WZ_3"])
                 imudataArray["PD_TEMP"] = np.append(imudataArray["PD_TEMP"], imudata["PD_TEMP"])
+                imudataArray["ADXL_AX"] = np.append(imudataArray["ADXL_AX"], imudata["ADXL_AX"])
+                imudataArray["ADXL_AY"] = np.append(imudataArray["ADXL_AY"], imudata["ADXL_AY"])
+                imudataArray["ADXL_AZ"] = np.append(imudataArray["ADXL_AZ"], imudata["ADXL_AZ"])
+                imudataArray["XLM_TEMP"] = np.append(imudataArray["XLM_TEMP"], imudata["XLM_TEMP"])
                 t5 = time.perf_counter()
 
                 debug_info = "ACT: ," + str(input_buf) + ", " + str(round((t5 - t1) * 1000, 5)) + ", " \
@@ -306,7 +330,7 @@ class pigImuReader(QThread):
             # imudataArray["TIME"] = imudataArray["TIME"] - t0
 
             self.offset_setting(self.__imuoffset)
-            imudataArray = cmn.dictOperation(imudataArray, self.__imuoffset, "SUB", IMU_DATA_STRUCTURE)
+            # imudataArray = cmn.dictOperation(imudataArray, self.__imuoffset, "SUB", IMU_DATA_STRUCTURE)
             if self.__callBack is not None:
                 self.__callBack(imudataArray)
 
@@ -345,7 +369,7 @@ if __name__ == "__main__":
     myImu.setCallback(myCallBack)
     myImu.isCali = False
     myImu.connect(ser, "COM18", 230400)
-    para = myImu.dump_fog_parameters(1)
+    para = myImu.dump_fog_parameters()
     print(para)
     print(para["FREQ"])
     print(para["SF0"])

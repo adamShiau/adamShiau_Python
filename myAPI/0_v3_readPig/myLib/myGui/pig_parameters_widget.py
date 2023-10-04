@@ -148,7 +148,7 @@ class pig_parameters_widget(QGroupBox):
         self.initUI()
         # initPara = self.__par_manager.check_file_exist()
         # print(fileName)
-        initPara = self.__act.dump_fog_parameters(3)
+        initPara = self.__act.dump_fog_parameters(2)
         self.set_init_value(initPara)
         self.linkfunction()
 
@@ -326,13 +326,13 @@ class pig_parameters_widget(QGroupBox):
         value = self.freq.spin.value()
         logger.info('set freq: %d', value)
         self.freq.lb.setText(str(round(1 / (2 * (value + 1) * dt_fpga), 2)) + ' KHz')
-        self.writeImuCmd(CMD_FOG_MOD_FREQ, value)
+        self.__act.writeImuCmd(CMD_FOG_MOD_AMP_L, value)
         self.__par_manager.update_parameters("FREQ", value)
 
     def send_MOD_H_CMD(self):
         value = self.mod_H.spin.value()
         logger.info('set mod_H: %d', value)
-        self.writeImuCmd(CMD_FOG_MOD_AMP_H, value)
+        self.__act.writeImuCmd(CMD_FOG_MOD_AMP_L, value)
         self.__par_manager.update_parameters("MOD_H", value)
 
     def send_MOD_L_CMD(self):

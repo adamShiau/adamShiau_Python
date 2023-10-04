@@ -1,1 +1,0 @@
-{"MOD_H": 4200, "MOD_L": -4200, "FREQ": 135, "DAC_GAIN": 306, "ERR_OFFSET": 0, "POLARITY": 1, "WAIT_CNT": 60, "HD_Q": 1, "HD_R": 0, "ERR_TH": 0, "ERR_AVG": 6, "GAIN1": 0, "GAIN2": 9, "FB_ON": 0, "CONST_STEP": 8400, "KF_Q": 1, "KF_R": 300, "SF_A": 4.74e-05, "SF_B": 0.0, "DATA_RATE": 2177}

@@ -149,6 +149,7 @@ class pig_parameters_widget(QGroupBox):
         # initPara = self.__par_manager.check_file_exist()
         # print(fileName)
         initPara = self.__act.dump_fog_parameters()
+        print(initPara)
         self.set_init_value(initPara)
         self.linkfunction()
 

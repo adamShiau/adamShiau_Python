@@ -56,6 +56,25 @@ def readPIG(dataPacket, EN=1, POS_TIME=25, sf_a=1, sf_b=0, PRINT=0):
 
 # End of ImuConnector::readPIG
 
+def readTime(dataPacket, EN=1, POS_TIME=18, PRINT=0):
+    if EN:
+        temp_time = dataPacket[POS_TIME:POS_TIME + 4]
+        mcu_time = convert2Unsign_4B_R(temp_time) / 1000.0
+        # mcu_time = temp_time / 1000.0
+
+    else:
+        temp_time = 0
+    # End of if-condition
+
+    if PRINT:
+        # print()
+        print('\nTIME: ', end='\t')
+        # print(sf_a, sf_b)
+        print('%f, ' % mcu_time)
+    # End of if-condition
+
+    return mcu_time,
+
 # def readPIG(dataPacket, dataLen=4, POS_TIME=4, sf_a=1, sf_b=0, EN=True, PRINT=False):
 #     if EN:
 #         temp_time = dataPacket[POS_TIME:POS_TIME + dataLen]
@@ -497,6 +516,11 @@ def convert2Sign_3B(datain):
 
 def convert2Unsign_4B(datain):
     shift_data = (datain[0] << 24 | datain[1] << 16 | datain[2] << 8 | datain[3])
+    return shift_data
+
+
+def convert2Unsign_4B_R(datain):
+    shift_data = (datain[3] << 24 | datain[2] << 16 | datain[1] << 8 | datain[0])
     return shift_data
 
 

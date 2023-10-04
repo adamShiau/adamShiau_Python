@@ -218,9 +218,9 @@ class mainWindow(QMainWindow):
             # Add self.first_run_flag to make sure that TIME data starts from nearing Zero after pressing Read button,
             # if the first element of imudata['TIME'] is greater than some arbitrary small value (two here), neglect
             # this imudata['TIME'] data!
-            if self.first_run_flag and (int(imudata['TIME'][0]) > 2):
-                return
-            self.first_run_flag = False
+            # if self.first_run_flag and (int(imudata['TIME'][0]) > 2):
+            #     return
+            # self.first_run_flag = False
 
             input_buf = self.act.readInputBuffer()
             t0 = time.perf_counter()
@@ -261,7 +261,7 @@ class mainWindow(QMainWindow):
             # print(imudata["PIG_WZ"])
             datalist = [imudata["TIME"], imudata["PIG_WZ"], imudata["PD_TEMP"], imudata["ADXL_AX"], imudata["ADXL_AY"],
                         imudata["ADXL_AZ"], imudata["XLM_TEMP"]]
-            data_fmt = "%.5f,%.5f,%.1f,%.5f,%.5f,%.5f,%d"
+            data_fmt = "%.3f,%.5f,%.1f,%.5f,%.5f,%.5f,%d"
             self.imudata_file.saveData(datalist, data_fmt)
             self.plotdata(self.imudata)
             self.printUpdateRate(self.imudata["TIME"])

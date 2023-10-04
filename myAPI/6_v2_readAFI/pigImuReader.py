@@ -48,6 +48,7 @@ POS_PIG1 = 17
 POS_PIG2 = POS_PIG1 + 14
 POS_PIG3 = POS_PIG2 + 14
 POS_ADXL357 = 4
+POS_TIME = POS_PIG3 + 14
 old = time.perf_counter_ns()
 
 
@@ -234,7 +235,7 @@ class pigImuReader(QThread):
 
     def getImuData(self):
         head = getData.alignHeader_4B(self.__Connector, HEADER_KVH)
-        dataPacket = getData.getdataPacket(self.__Connector, head, 59)
+        dataPacket = getData.getdataPacket(self.__Connector, head, 59+4)
         FPGA_TIME, ERR, STEP, PD_TEMP = cmn.readPIG(dataPacket, EN=1, PRINT=0, sf_a=self.sf_a, sf_b=self.sf_b,
                                                     POS_TIME=POS_PIG1)
         FPGA_TIME_2, ERR_2, STEP_2, PD_TEMP_2 = cmn.readPIG(dataPacket, EN=1, PRINT=0, sf_a=self.sf_a, sf_b=self.sf_b,
@@ -244,6 +245,8 @@ class pigImuReader(QThread):
 
         ADXL_AX, ADXL_AY, ADXL_AZ, XLM_TEMP = cmn.readADXL357(dataPacket, dataLen=4, POS_AX=POS_ADXL357, EN=1, PRINT=0)
 
+        MCU_TIME = cmn.readTime(dataPacket, EN=1, POS_TIME=POS_TIME, PRINT=0)
+
         if not self.isCali:
             if self.isKal:
                 ERR = self.pig_err_kal.update(ERR)
@@ -251,7 +254,7 @@ class pigImuReader(QThread):
 
         # t = time.perf_counter()
         t = FPGA_TIME
-        imudata = {"TIME": t, "PIG_ERR": ERR, "PIG_WZ": STEP, "PD_TEMP": PD_TEMP,
+        imudata = {"TIME": MCU_TIME, "PIG_ERR": ERR, "PIG_WZ": STEP, "PD_TEMP": PD_TEMP,
                    "PIG_WZ_2": STEP_2, "PIG_WZ_3": STEP_3,
                    "ADXL_AX": ADXL_AX, "ADXL_AY": ADXL_AY, "ADXL_AZ": ADXL_AZ, "XLM_TEMP": XLM_TEMP
                    }

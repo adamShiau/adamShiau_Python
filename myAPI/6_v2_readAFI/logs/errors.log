@@ -247,3 +247,4 @@
 2023-09-28 18:17:56 - main.myLib.mySerial.getData - ERROR - alignHeader_4B Error
 2023-09-28 18:27:25 - main.myLib.mySerial.getData - ERROR - alignHeader_4B Error
 2023-09-28 18:35:02 - main.myLib.mySerial.getData - ERROR - alignHeader_4B Error
+2023-10-02 16:22:48 - main.myLib.mySerial.Connector - ERROR - IOError, the device: COM18 can not be found or can not be configured!

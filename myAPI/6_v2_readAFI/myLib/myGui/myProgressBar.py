@@ -97,8 +97,8 @@ class progress_bar_with_read_allan(QGroupBox):
         # print('my progress bar.pbar_text: ', self.pbar_text)
 
     def read_btn(self):
-        self.readData()
-        # self.readData_fast()
+        # self.readData()
+        self.readData_fast()
 
     def readData_fast(self):
         print('read_fast begin: ')
@@ -106,6 +106,7 @@ class progress_bar_with_read_allan(QGroupBox):
         # Var = pd.read_csv(self.filename, comment='#')
         # Var = pd.read_csv(self.filename, sep=r'\s*,\s*', engine='python', comment='#', skiprows=0,
         #                   chunksize=None)
+        print("self.filename: ", self.filename)
         Var = pd.read_csv(self.filename, comment='#', skiprows=0, chunksize=None)
         t2 = time.perf_counter()
         self.data_qt.emit(Var)
@@ -120,6 +121,7 @@ class progress_bar_with_read_allan(QGroupBox):
         total_data_len = self.find_data_length(self.filename, nrows, row_len, skiprows)
         chunksize = int(total_data_len / 100)
         df = []
+        print("self.filename: ", self.filename)
         # for chunk in pd.read_csv(self.filename, sep=r'\s*,\s*', engine='python', comment='#', skiprows=0,
         #                          chunksize=chunksize):
         for chunk in pd.read_csv(self.filename, comment='#', skiprows=0, chunksize=chunksize):

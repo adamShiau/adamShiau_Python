@@ -138,6 +138,12 @@ class mainWindow(QMainWindow):
             self.top.pd_temp_lb.lb.setText(str(val))
             self.t_start = time.perf_counter()
 
+    def printHeading(self, val):
+        self.top.heading_lb.lb.setText(str(val))
+        # if (time.perf_counter() - self.t_start) > 0.5:
+        #     self.top.pd_temp_lb.lb.setText(str(val))
+        #     self.t_start = time.perf_counter()
+
     def printUpdateRate(self, t_list):
         update_rate = round(((t_list[-1] - t_list[0]) / (len(t_list) - 1)) ** -1, 1)
         self.top.data_rate_lb.lb.setText(str(update_rate))
@@ -185,7 +191,7 @@ class mainWindow(QMainWindow):
         file_name = self.top.save_block.le_filename.text() + self.top.save_block.le_ext.text()
         self.imudata_file.name = file_name
         self.imudata_file.open(self.top.save_block.rb.isChecked())
-        self.imudata_file.write_line('time,fog,T')
+        self.imudata_file.write_line('heading')
 
     def stop(self):
         # self.resetFPGATimer()
@@ -224,6 +230,8 @@ class mainWindow(QMainWindow):
             t0 = time.perf_counter()
             # imudata = cmn.dictOperation(imudata, imuoffset, "SUB", IMU_DATA_STRUCTURE)
             # self.printPdTemperature(imudata["PD_TEMP"][0])
+
+            self.printHeading(imudata["HEADING"][-1])
             # print(imudata['PIG_WZ'])
             # imudata['PIG_WZ'] = np.clip(imudata['PIG_WZ'], -900, 900)
             t1 = time.perf_counter()
@@ -243,9 +251,9 @@ class mainWindow(QMainWindow):
                          + str(round((t1 - t0) * 1000, 5)) + ", " + str(round((t2 - t1) * 1000, 5))
             cmn.print_debug(debug_info, self.__debug)
             # print(imudata["HEADING"])
-            # datalist = [imudata["TIME"], imudata["PIG_WZ"], imudata["PD_TEMP"]]
-            # data_fmt = "%.5f,%.5f,%.1f"
-            # self.imudata_file.saveData(datalist, data_fmt)
+            datalist = [imudata["HEADING"]]
+            data_fmt = "%.2f"
+            self.imudata_file.saveData(datalist, data_fmt)
             self.plotdata(self.imudata)
             # self.printUpdateRate(self.imudata["TIME"])
             # print(len(self.imudata["TIME"]))

@@ -26,7 +26,7 @@ class logo(QLabel):
 
 
 class displayOneBlock(QGroupBox):
-    def __init__(self, name='name', title_size=10, label_size=10):
+    def __init__(self, name='name', title_size=10, label_size=20):
         super(displayOneBlock, self).__init__()
         self.setTitle(name)
         self.setFont(QFont('', title_size))

@@ -1,6 +1,7 @@
 """ ####### log stuff creation, always on the top ########  """
 import builtins
 import logging
+
 if hasattr(builtins, 'LOGGER_NAME'):
     logger_name = builtins.LOGGER_NAME
 else:
@@ -196,7 +197,7 @@ class pigImuReader(QThread):
 
     # End of memsImuReader::disconnectIMU
 
-    def writeImuCmd(self, cmd, value, fog_ch=2): #GP1Z use 2, SP use 3
+    def writeImuCmd(self, cmd, value, fog_ch=2):  # GP1Z use 2, SP use 3
         if value < 0:
             value = (1 << 32) + value
         # End of if-condition
@@ -211,7 +212,7 @@ class pigImuReader(QThread):
     # End of memsImuReader::writeImuCmd
 
     def readIMU(self):
-        print('read')
+        self.flushInputBuffer()
         self.writeImuCmd(1, 2, 2)
 
     def stopIMU(self):
@@ -220,6 +221,10 @@ class pigImuReader(QThread):
     def dump_fog_parameters(self, ch):
         # self.writeImuCmd(0x66, 2)
         return self.__Connector.dump_fog_parameters(ch)
+
+    def getVersion(self, ch):
+        # self.writeImuCmd(0x66, 2)
+        return self.__Connector.getVersion(ch)
 
     def setCallback(self, callback):
         self.__callBack = callback
@@ -238,10 +243,17 @@ class pigImuReader(QThread):
         # t = time.perf_counter()
         # t = FPGA_TIME
         imudata = {"HEADING": heading}
+        # print("in getImuData, imudata: ", imudata)
         return dataPacket, imudata, checkSum
 
     def readInputBuffer(self):
         return self.__Connector.readInputBuffer()
+
+    def flushInputBuffer(self):
+        print('buf before:', self.readInputBuffer())
+        self.__Connector.flushInputBuffer()
+        print('buf after:', self.readInputBuffer())
+
 
     def do_cali(self, dictContainer, cali_times):
         if self.isCali:
@@ -291,6 +303,8 @@ class pigImuReader(QThread):
                 t3 = time.perf_counter()
                 # err correction
                 imudata = crcLib.errCorrection(isCrcFail, imudata)
+                if imudata == 0:
+                    imudata = {'HEADING': 0.00}
                 # end of err correction
                 t4 = time.perf_counter()
                 # print(imudata)
@@ -333,8 +347,6 @@ class pigImuReader(QThread):
             imuoffset["PIG_WZ"] = [0]
         if not self.isCali_a:
             pass
-
-
 
 
 def myCallBack(imudata):

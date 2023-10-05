@@ -19,6 +19,7 @@ print(__name__)
 print(sys.path)
 from myLib.myGui.mygui_serial import *
 from myLib import common as cmn
+from myLib.myGui.myLabel import *
 
 '''-------define CMD address map-------'''
 '''0~7 for output mode setting'''
@@ -125,6 +126,7 @@ class pig_parameters_widget(QGroupBox):
         self.sf7 = editBlock('SF7')
         self.sf8 = editBlock('SF8')
         self.sf9 = editBlock('SF9')
+        self.dump_bt = QPushButton("dump")
         # self.sf_all = editBlock('SF_all')
         ''' label '''
         self.Tmin_lb = QLabel()
@@ -143,16 +145,19 @@ class pig_parameters_widget(QGroupBox):
         self.T6l_lb = QLabel()
         self.T7r_lb = QLabel()
         self.T7l_lb = QLabel()
+        self.Firmware_Version_lb = QLabel()
+        self.GUI_Version_lb = QLabel()
 
 
         self.initUI()
-        initPara = self.__act.dump_fog_parameters(2)
-        print(initPara)
-        self.set_init_value(initPara)
+        # initPara = self.__act.dump_fog_parameters(2)
+        # print(initPara)
+        # self.set_init_value(initPara)
         self.linkfunction()
 
     def initUI(self):
         mainLayout = QGridLayout()
+
         mainLayout.addWidget(self.wait_cnt, 0, 0, 1, 2)
         mainLayout.addWidget(self.avg, 0, 2, 1, 2)
         mainLayout.addWidget(self.mod_H, 1, 0, 1, 2)
@@ -171,6 +176,9 @@ class pig_parameters_widget(QGroupBox):
         mainLayout.addWidget(self.KF_Q, 8, 0, 1, 2)
         mainLayout.addWidget(self.KF_R, 8, 2, 1, 2)
         mainLayout.addWidget(self.dataRate_sd, 9, 0, 1, 4)
+        mainLayout.addWidget(self.dump_bt, 10, 0, 1, 2)
+        mainLayout.addWidget(self.Firmware_Version_lb, 11, 0, 1, 4)
+        mainLayout.addWidget(self.GUI_Version_lb, 12, 0, 1, 4)
         mainLayout.addWidget(self.Tmin, 9, 4, 1, 2)
         mainLayout.addWidget(self.Tmax, 0, 4, 1, 2)
         mainLayout.addWidget(self.sf0, 9, 6, 1, 2)
@@ -202,6 +210,7 @@ class pig_parameters_widget(QGroupBox):
         self.setLayout(mainLayout)
 
     def linkfunction(self):
+
         ''' spin box connect'''
         self.wait_cnt.spin.valueChanged.connect(self.send_WAIT_CNT_CMD)
         self.avg.spin.valueChanged.connect(self.send_AVG_CMD)
@@ -238,6 +247,24 @@ class pig_parameters_widget(QGroupBox):
         self.sf7.le.editingFinished.connect(self.send_SF7_CMD)
         self.sf8.le.editingFinished.connect(self.send_SF8_CMD)
         self.sf9.le.editingFinished.connect(self.send_SF9_CMD)
+        ''' bt'''
+        self.dump_bt.clicked.connect(self.getVersion)
+        self.dump_bt.clicked.connect(self.dump_parameter)
+
+
+
+    def dump_parameter(self):
+        self.__act.flushInputBuffer()
+        initPara = self.__act.dump_fog_parameters(2)
+        print(initPara)
+        self.set_init_value(initPara)
+
+    def getVersion(self):
+        self.__act.flushInputBuffer()
+        self.Firmware_Version_lb.setText(self.__act.getVersion(2))
+        self.GUI_Version_lb.setText('GP-13-PD')
+
+
 
     def set_init_value(self, para):
         self.freq.spin.setValue(para["FREQ"])

@@ -97,6 +97,7 @@ def isCrc16_vbox_Fail(message, nBytes):
 def isCrc32Fail(message, nBytes):
     return crc_32(message, nBytes) != [0, 0, 0, 0]
 
+
 def isNmeaCheckSumFail(message, checkSum):
     checksum_cal = 0
     for i in message:
@@ -104,7 +105,16 @@ def isNmeaCheckSumFail(message, checkSum):
     # print('isNmeaCheckSumFail')
     # print(checksum_cal)
     # print(int(checkSum, 16))
-    return checksum_cal != int(checkSum, 16)
+    try:
+        return checksum_cal != int(checkSum, 16)
+    except ValueError:
+        logger.error("ValueError, In isNmeaCheckSumFail()")
+        # logger.error("checksum_cal: ", checksum_cal)
+        # logger.error("checkSum: ", checkSum)
+        print("checksum_cal: ", checksum_cal)
+        print("checkSum: ", checkSum)
+        return True
+
 
 def errCorrection(isCrcFail, imudata):
     global err_correction_data, crcFailCnt
@@ -113,6 +123,7 @@ def errCorrection(isCrcFail, imudata):
         err_correction_data = imudata
     else:
         imudata = err_correction_data
+        print('in errCorrection, imudata: : ', imudata)
         crcFailCnt += 1
         logger.warning("crc fail: ", crcFailCnt)
     return imudata

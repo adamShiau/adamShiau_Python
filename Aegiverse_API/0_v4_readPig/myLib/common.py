@@ -58,19 +58,36 @@ def readNMEA(dataPacket, EN=1, PRINT=0):
     if EN:
         start_index = dataPacket.find("$")
         end_index = dataPacket.find("*")
-        info = dataPacket[start_index + 1:end_index]
-        heading = float(info[4:10])  # heading value
-        checkSum = dataPacket[-4:-2]  # checksum string
+        if start_index == -1 or end_index == -1:
+            heading = [""]
+            info = [""]
+            checkSum = [""]
+        else:
+            if PRINT:
+                print('readNMEA dataPacket: ', dataPacket)
+            info = dataPacket[start_index + 1:end_index]
+
+            if PRINT:
+                print('info: ', info)
+            try:
+                heading = float(info[4:10])  # heading value
+            except ValueError:
+                logger.error("ValueError, In readNMEA() could not convert string to float: '\x00\x00\x00\x00\x00\x00', ")
+                logger.error("set arbitrary heading to 0.00")
+                heading = 0.00
+
+            if PRINT:
+                print('heading: ', heading)
+
+            checkSum = dataPacket[-4:-2]  # checksum string
+            if PRINT:
+                print('checkSum: ', checkSum)
+
+
     else:
         heading = [""]
         info = [""]
         checkSum = [""]
-    if PRINT:
-        print('readNMEA: ')
-        print(dataPacket)
-        print(info, end=', ')
-        print(heading, end=', ')
-        print(checkSum)
 
     return info, heading, checkSum
 

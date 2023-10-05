@@ -160,8 +160,15 @@ class Connector:
         self.__ser.write(bytearray([0xAB, 0xBA]))
         self.__ser.write([0x66, 0, 0, 0, 0x05, ch])
         self.__ser.write(bytearray([0x55, 0x56]))
-        self.__ser.write(bytearray([0x55, 0x56]))
+        # self.__ser.write(bytearray([0x55, 0x56]))
         return json.loads(self.__ser.readline())
+
+    def getVersion(self, ch=2):
+        self.__ser.write(bytearray([0xAB, 0xBA]))
+        self.__ser.write([0x65, 0, 0, 0, 0x05, ch])
+        self.__ser.write(bytearray([0x55, 0x56]))
+        # self.__ser.write(bytearray([0x55, 0x56]))
+        return self.__ser.readline().decode('utf-8')
 
     def readLine(self):
         return self.__ser.readline()
@@ -175,7 +182,7 @@ class Connector:
 if __name__ == "__main__":
     print("running Connector.py")
     old_time = time.perf_counter_ns()
-    ser = Connector("COM8", 115200)
+    ser = Connector("COM17", 115200)
     ser.connect()
     ser.flushInputBuffer()
     ser.write(bytearray([0xAB, 0xBA]))

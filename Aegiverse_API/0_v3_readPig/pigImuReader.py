@@ -210,6 +210,7 @@ class pigImuReader(QThread):
     # End of memsImuReader::writeImuCmd
 
     def readIMU(self):
+        self.flushInputBuffer()
         self.writeImuCmd(1, 2, 2)
 
     def stopIMU(self):
@@ -218,6 +219,10 @@ class pigImuReader(QThread):
     def dump_fog_parameters(self, ch):
         # self.writeImuCmd(0x66, 2)
         return self.__Connector.dump_fog_parameters(ch)
+
+    def getVersion(self, ch):
+        # self.writeImuCmd(0x66, 2)
+        return self.__Connector.getVersion(ch)
 
     def setCallback(self, callback):
         self.__callBack = callback
@@ -244,6 +249,11 @@ class pigImuReader(QThread):
 
     def readInputBuffer(self):
         return self.__Connector.readInputBuffer()
+
+    def flushInputBuffer(self):
+        print('buf before:', self.readInputBuffer())
+        self.__Connector.flushInputBuffer()
+        print('buf after:', self.readInputBuffer())
 
     def do_cali(self, dictContainer, cali_times):
         if self.isCali:

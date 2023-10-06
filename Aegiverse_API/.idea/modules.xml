@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/Aegiverse_API.iml" filepath="$PROJECT_DIR$/.idea/Aegiverse_API.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../.idea/adamShiau_Python.iml" filepath="$PROJECT_DIR$/../.idea/adamShiau_Python.iml" />
     </modules>
   </component>
 </project>

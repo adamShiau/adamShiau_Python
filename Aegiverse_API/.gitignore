@@ -1,0 +1,21 @@
+# pyCharm project
+.idea
+.pyc
+__pycache__
+
+*.txt
+
+# pyinstaller file
+*.toc
+*.zip
+*.pkg
+*.pyz
+*.exe.*
+xref-*
+*.exe
+*.spec
+*.rar
+
+#google earth
+*.kml
+*.qgz

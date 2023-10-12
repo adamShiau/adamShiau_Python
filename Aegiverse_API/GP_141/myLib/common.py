@@ -54,44 +54,6 @@ def readPIG(dataPacket, EN=1, POS_TIME=25, sf_a=1, sf_b=0, PRINT=0):
     return fpga_time, err_mv, step_dps, PD_temperature
 
 
-def readNMEA(dataPacket, EN=1, PRINT=0):
-    if EN:
-        start_index = dataPacket.find("$")
-        end_index = dataPacket.find("*")
-        if start_index == -1 or end_index == -1:
-            heading = [""]
-            info = [""]
-            checkSum = [""]
-        else:
-            if PRINT:
-                print('readNMEA dataPacket: ', dataPacket)
-            info = dataPacket[start_index + 1:end_index]
-
-            if PRINT:
-                print('info: ', info)
-            try:
-                heading = float(info[4:10])  # heading value
-            except ValueError:
-                logger.error("ValueError, In readNMEA() could not convert string to float: '\x00\x00\x00\x00\x00\x00', ")
-                logger.error("set arbitrary heading to 0.00")
-                heading = 0.00
-
-            if PRINT:
-                print('heading: ', heading)
-
-            checkSum = dataPacket[-4:-2]  # checksum string
-            if PRINT:
-                print('checkSum: ', checkSum)
-
-
-    else:
-        heading = [""]
-        info = [""]
-        checkSum = [""]
-
-    return info, heading, checkSum
-
-
 def readTime(dataPacket, EN=1, POS_TIME=18, PRINT=0):
     if EN:
         temp_time = dataPacket[POS_TIME:POS_TIME + 4]
@@ -114,34 +76,35 @@ def readTime(dataPacket, EN=1, POS_TIME=18, PRINT=0):
 
 # End of ImuConnector::readPIG
 
-# def readPIG(dataPacket, dataLen=4, POS_TIME=4, sf_a=1, sf_b=0, EN=True, PRINT=False):
-#     if EN:
-#         temp_time = dataPacket[POS_TIME:POS_TIME + dataLen]
-#         temp_err = dataPacket[POS_TIME + 4:POS_TIME + dataLen]
-#         temp_fog = dataPacket[POS_TIME + 8:POS_TIME + dataLen]
-#         temp_PD_temperature = dataPacket[POS_TIME + 12:POS_TIME + dataLen]
-#         fpga_time = convert2Unsign_4B(temp_time) * 1e-4
-#         err_mv = convert2Sign_4B(temp_err) * (4000 / 8192)
-#         step_dps = convert2Sign_4B(temp_fog) * sf_a + sf_b
-#         PD_temperature = convert2Unsign_4B(temp_PD_temperature) / 2.0
-#     else:
-#         fpga_time = 0
-#         err_mv = 0
-#         step_dps = 0
-#         PD_temperature = 0
-#     # End of if-condition
-#
-#     if PRINT:
-#         print(round(fpga_time, 4), end='\t\t')
-#         print(round(err_mv, 3), end='\t\t')
-#         print(round(step_dps * 3600, 3), end='\t\t')
-#         print(round(PD_temperature, 1))
-#     # End of if-condition
-#
-#     return fpga_time, err_mv, step_dps, PD_temperature
+def readMP_1Z(dataPacket, POS_WX, POS_WY, POS_WZ, POS_AX, POS_AY, POS_AZ, POS_TIME, POS_PDTEMP, dataLen, PRINT=0):
+    temp_wx = dataPacket[POS_WX:POS_WX + dataLen]
+    temp_wy = dataPacket[POS_WY:POS_WY + dataLen]
+    temp_wz = dataPacket[POS_WZ:POS_WZ + dataLen]
+    temp_ax = dataPacket[POS_AX:POS_AX + dataLen]
+    temp_ay = dataPacket[POS_AY:POS_AY + dataLen]
+    temp_az = dataPacket[POS_AZ:POS_AZ + dataLen]
+    temp_pdtemp = dataPacket[POS_PDTEMP:POS_PDTEMP + dataLen]
+    temp_time = dataPacket[POS_TIME:POS_TIME + dataLen]
 
+    wx = IEEE_754_INT2F_R(temp_wx)
+    wy = IEEE_754_INT2F_R(temp_wy)
+    wz = IEEE_754_INT2F(temp_wz)
+    ax = IEEE_754_INT2F_R(temp_ax)
+    ay = IEEE_754_INT2F_R(temp_ay)
+    az = IEEE_754_INT2F_R(temp_az)
+    pd_temp = IEEE_754_INT2F_R(temp_pdtemp)
+    mcu_time = convert2Unsign_4B_R(temp_time) / 1000.0
+    if PRINT:
+        print('\n%f, ' % mcu_time, end=', ')
+        print('%f, ' % wx, end=', ')
+        print('%f, ' % wy, end=', ')
+        print('%f, ' % wz, end=', ')
+        print('%f, ' % ax, end=', ')
+        print('%f, ' % ay, end=', ')
+        print('%f, ' % az, end=', ')
+        print('%f, ' % pd_temp)
 
-# End of ImuConnector::readPIG
+    return mcu_time, wx, wy, wz, ax, ay, az, pd_temp
 
 
 def readNANO33(dataPacket, EN, dataLen=2, POS_WX=13, sf_xlm=1.0, sf_gyro=1.0, PRINT=0):
@@ -335,7 +298,7 @@ def file_manager(isopen=False, name="notitle", mode="w", fnum=0):
     global fd
     if isopen:
         try:
-            fd[fnum] = open(name, mode, encoding='IEEE_754f-8')
+            fd[fnum] = open(name, mode, encoding='utf-8')
             # print("file " + name + " is open")
 
         except FileNotFoundError:
@@ -540,6 +503,18 @@ def convert2Unsign_4B_R(datain):
 def IEEE_754_INT2F(datain):
     if len(datain) == 4:
         shift_data = (datain[0] << 24 | datain[1] << 16 | datain[2] << 8 | datain[3])
+        # shift_data = (datain[3] << 24 | datain[2] << 16 | datain[1] << 8 | datain[0])
+        f = struct.unpack('<f', struct.pack('<I', shift_data))
+        # print('%.3f' % f[0])
+        return f[0]
+    else:
+        return -1
+
+
+def IEEE_754_INT2F_R(datain):
+    if len(datain) == 4:
+        # shift_data = (datain[0] << 24 | datain[1] << 16 | datain[2] << 8 | datain[3])
+        shift_data = (datain[3] << 24 | datain[2] << 16 | datain[1] << 8 | datain[0])
         f = struct.unpack('<f', struct.pack('<I', shift_data))
         # print('%.3f' % f[0])
         return f[0]

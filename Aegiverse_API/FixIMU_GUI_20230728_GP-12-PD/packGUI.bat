@@ -1,1 +1,0 @@
-pyinstaller -p "C:\github\SCH_GUI\FixIMU_GUI_20230728_using\myLib;." -F pigImu_Main.py

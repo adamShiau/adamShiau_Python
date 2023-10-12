@@ -212,8 +212,8 @@ class mainWindow(QMainWindow):
             # Add self.first_run_flag to make sure that TIME data starts from nearing Zero after pressing Read button,
             # if the first element of imudata['TIME'] is greater than some arbitrary small value (two here), neglect
             # this imudata['TIME'] data!
-            if self.first_run_flag and (int(imudata['TIME'][0]) > 2):
-                return
+            # if self.first_run_flag and (int(imudata['TIME'][0]) > 2):
+            #     return
             self.first_run_flag = False
             input_buf = self.act.readInputBuffer()
             t0 = time.perf_counter()

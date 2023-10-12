@@ -43,7 +43,8 @@ import numpy as np
 
 PRINT_DEBUG = 0
 
-# for GP-1Z@heading angle app
+
+# for GP-1Z IMU
 class mainWindow(QMainWindow):
     is_port_open_qt = pyqtSignal(bool)
 
@@ -138,12 +139,6 @@ class mainWindow(QMainWindow):
             self.top.pd_temp_lb.lb.setText(str(val))
             self.t_start = time.perf_counter()
 
-    def printHeading(self, val):
-        self.top.heading_lb.lb.setText(str(val))
-        # if (time.perf_counter() - self.t_start) > 0.5:
-        #     self.top.pd_temp_lb.lb.setText(str(val))
-        #     self.t_start = time.perf_counter()
-
     def printUpdateRate(self, t_list):
         update_rate = round(((t_list[-1] - t_list[0]) / (len(t_list) - 1)) ** -1, 1)
         self.top.data_rate_lb.lb.setText(str(update_rate))
@@ -162,7 +157,7 @@ class mainWindow(QMainWindow):
         self.top.setBtnEnable(open)
 
     def connect(self):
-        is_port_open = self.act.connect(self.__connector, self.__portName, 115200)
+        is_port_open = self.act.connect(self.__connector, self.__portName, 230400)
         self.is_port_open_qt.emit(is_port_open)
 
         # This line instantiate a parameter widget, load the parameter.json from LE block and send to FPGA
@@ -191,7 +186,7 @@ class mainWindow(QMainWindow):
         file_name = self.top.save_block.le_filename.text() + self.top.save_block.le_ext.text()
         self.imudata_file.name = file_name
         self.imudata_file.open(self.top.save_block.rb.isChecked())
-        self.imudata_file.write_line('heading')
+        self.imudata_file.write_line('time,wx,wy,wz,ax,ay,az,T')
 
     def stop(self):
         # self.resetFPGATimer()
@@ -229,37 +224,42 @@ class mainWindow(QMainWindow):
             input_buf = self.act.readInputBuffer()
             t0 = time.perf_counter()
             # imudata = cmn.dictOperation(imudata, imuoffset, "SUB", IMU_DATA_STRUCTURE)
-            # self.printPdTemperature(imudata["PD_TEMP"][0])
-
-            self.printHeading(imudata["HEADING"][-1])
+            self.printPdTemperature(imudata["PD_TEMP"][0])
             # print(imudata['PIG_WZ'])
             # imudata['PIG_WZ'] = np.clip(imudata['PIG_WZ'], -900, 900)
             t1 = time.perf_counter()
             sample = 1000
             # print(imudata["TIME"])
-            self.imudata["HEADING"] = np.append(self.imudata["HEADING"], imudata["HEADING"])
-            # self.imudata["PIG_WZ"] = np.append(self.imudata["PIG_WZ"], imudata["PIG_WZ"])
-            # self.imudata["PD_TEMP"] = np.append(self.imudata["PD_TEMP"], imudata["PD_TEMP"])
-            # self.imudata["PIG_ERR"] = np.append(self.imudata["PIG_ERR"], imudata["PIG_ERR"])
-            if len(self.imudata["HEADING"]) > sample:
-                self.imudata["HEADING"] = self.imudata["HEADING"][self.act.arrayNum:self.act.arrayNum + sample]
-                # self.imudata["PIG_WZ"] = self.imudata["PIG_WZ"][self.act.arrayNum:self.act.arrayNum + sample]
-                # self.imudata["PIG_ERR"] = self.imudata["PIG_ERR"][self.act.arrayNum:self.act.arrayNum + sample]
-                # self.imudata["PD_TEMP"] = self.imudata["PD_TEMP"][self.act.arrayNum:self.act.arrayNum + sample]
+            self.imudata["TIME"] = np.append(self.imudata["TIME"], imudata["TIME"])
+            self.imudata["WX"] = np.append(self.imudata["WX"], imudata["WX"])
+            self.imudata["WY"] = np.append(self.imudata["WY"], imudata["WY"])
+            self.imudata["WZ"] = np.append(self.imudata["WZ"], imudata["WZ"])
+            self.imudata["AX"] = np.append(self.imudata["AX"], imudata["AX"])
+            self.imudata["AY"] = np.append(self.imudata["AY"], imudata["AY"])
+            self.imudata["AZ"] = np.append(self.imudata["AZ"], imudata["AZ"])
+            self.imudata["PD_TEMP"] = np.append(self.imudata["PD_TEMP"], imudata["PD_TEMP"])
+            if len(self.imudata["TIME"]) > sample:
+                self.imudata["TIME"] = self.imudata["TIME"][self.act.arrayNum:self.act.arrayNum + sample]
+                self.imudata["WX"] = self.imudata["WX"][self.act.arrayNum:self.act.arrayNum + sample]
+                self.imudata["WY"] = self.imudata["WY"][self.act.arrayNum:self.act.arrayNum + sample]
+                self.imudata["WZ"] = self.imudata["WZ"][self.act.arrayNum:self.act.arrayNum + sample]
+                self.imudata["AX"] = self.imudata["AX"][self.act.arrayNum:self.act.arrayNum + sample]
+                self.imudata["AY"] = self.imudata["AY"][self.act.arrayNum:self.act.arrayNum + sample]
+                self.imudata["AZ"] = self.imudata["AZ"][self.act.arrayNum:self.act.arrayNum + sample]
+                self.imudata["PD_TEMP"] = self.imudata["PD_TEMP"][self.act.arrayNum:self.act.arrayNum + sample]
             t2 = time.perf_counter()
             debug_info = "MAIN: ," + str(input_buf) + ", " + str(round((t2 - t0) * 1000, 5)) + ", " \
                          + str(round((t1 - t0) * 1000, 5)) + ", " + str(round((t2 - t1) * 1000, 5))
             cmn.print_debug(debug_info, self.__debug)
-            # print(imudata["HEADING"])
-            datalist = [imudata["HEADING"]]
-            data_fmt = "%.2f"
+            # print(imudata["PIG_WZ"])
+            datalist = [imudata["TIME"], imudata["WX"], imudata["WY"], imudata["WZ"],
+                        imudata["AX"], imudata["AY"], imudata["AZ"], imudata["PD_TEMP"]]
+            data_fmt = "%.3f,%.5f,%.5f,%.5f,%.5f,%.5f,%.5f,%.1f"
             self.imudata_file.saveData(datalist, data_fmt)
             self.plotdata(self.imudata)
-            # self.printUpdateRate(self.imudata["TIME"])
+            self.printUpdateRate(self.imudata["TIME"])
             # print(len(self.imudata["TIME"]))
             # print('first_run_flag')
-
-
 
     def plotdata(self, imudata):
         # print('plotdata: ', imudata['TIME'])
@@ -270,15 +270,19 @@ class mainWindow(QMainWindow):
         # print(imudata["PIG_WZ"], end=', ')
         # print(factor)
         # if self.top.plot1_showWz_cb.cb_1.isChecked():
-        #     self.top.plot1.ax1.setData(imudata["TIME"], imudata["PIG_WZ"] * factor)
+        #     self.top.plot1.ax1.setData(imudata["TIME"], imudata["WX"])
         # else:
         #     self.top.plot1.ax1.clear()
         # if self.top.plot1_showWz_cb.cb_2.isChecked():
-        #     self.top.plot1.ax2.setData(imudata["TIME"], imudata["NANO33_WZ"] * factor)
+        #     self.top.plot1.ax2.setData(imudata["TIME"], imudata["WY"])
         # else:
         #     self.top.plot1.ax2.clear()
-
-        self.top.plot2.ax.setData(imudata["HEADING"])
+        self.top.plot1.ax1.setData(imudata["TIME"], imudata["WZ"]*factor)
+        self.top.plot2.ax.setData(imudata["TIME"], imudata["AX"])
+        self.top.plot3.ax.setData(imudata["TIME"], imudata["AY"])
+        self.top.plot4.ax.setData(imudata["TIME"], imudata["AZ"])
+        self.top.plot5.ax.setData(imudata["TIME"], imudata["WX"])
+        self.top.plot6.ax.setData(imudata["TIME"], imudata["WY"])
 
 
 if __name__ == "__main__":

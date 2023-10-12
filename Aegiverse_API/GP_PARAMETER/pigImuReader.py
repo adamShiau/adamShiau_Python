@@ -1,6 +1,7 @@
 """ ####### log stuff creation, always on the top ########  """
 import builtins
 import logging
+
 if hasattr(builtins, 'LOGGER_NAME'):
     logger_name = builtins.LOGGER_NAME
 else:
@@ -39,6 +40,7 @@ SENS_NANO33_AXLM_4G = 0.000122
 POS_ADXL355_AX = None
 POS_NANO33_WX = None
 POS_PIG = 4
+POS_TIME = 18
 old = time.perf_counter_ns()
 
 
@@ -179,20 +181,6 @@ class pigImuReader(QThread):
 
     # End of ImuReader::isCali_a(setter)
 
-    def writeImuCmd(self, cmd, value, fog_ch=2): #GP1Z use 2, SP use 3
-        if value < 0:
-            value = (1 << 32) + value
-        # End of if-condition
-        data = bytearray([cmd, (value >> 24 & 0xFF), (value >> 16 & 0xFF), (value >> 8 & 0xFF), (value & 0xFF), fog_ch])
-        # print(cmd, end=', ')
-        # print([i for i in data])
-        self.__Connector.write(bytearray([0xAB, 0xBA]))
-        self.__Connector.write(data)
-        self.__Connector.write(bytearray([0x55, 0x56]))
-        cmn.wait_ms(150)
-
-    # End of memsImuReader::writeImuCmd
-
     def connect(self, port, portName, baudRate):
         self.__Connector = port
         port.portName = portName
@@ -208,11 +196,34 @@ class pigImuReader(QThread):
 
     # End of memsImuReader::disconnectIMU
 
+    def writeImuCmd(self, cmd, value, fog_ch=2):  # GP1Z use 2, SP use 3
+        if value < 0:
+            value = (1 << 32) + value
+        # End of if-condition
+        data = bytearray([cmd, (value >> 24 & 0xFF), (value >> 16 & 0xFF), (value >> 8 & 0xFF), (value & 0xFF), fog_ch])
+        # print(cmd, end=', ')
+        # print([i for i in data])
+        self.__Connector.write(bytearray([0xAB, 0xBA]))
+        self.__Connector.write(data)
+        self.__Connector.write(bytearray([0x55, 0x56]))
+        cmn.wait_ms(150)
+
+    # End of memsImuReader::writeImuCmd
+
     def readIMU(self):
-        self.writeImuCmd(1, 2)
+        self.flushInputBuffer()
+        self.writeImuCmd(6, 2, 2)
 
     def stopIMU(self):
-        self.writeImuCmd(1, 4)
+        self.writeImuCmd(6, 4, 2)
+
+    def dump_fog_parameters(self, ch):
+        # self.writeImuCmd(0x66, 2)
+        return self.__Connector.dump_fog_parameters(ch)
+
+    def getVersion(self, ch):
+        # self.writeImuCmd(0x66, 2)
+        return self.__Connector.getVersion(ch)
 
     def setCallback(self, callback):
         self.__callBack = callback
@@ -221,10 +232,12 @@ class pigImuReader(QThread):
 
     def getImuData(self):
         head = getData.alignHeader_4B(self.__Connector, HEADER_KVH)
-        dataPacket = getData.getdataPacket(self.__Connector, head, 18)
+        dataPacket = getData.getdataPacket(self.__Connector, head, 22)
 
         FPGA_TIME, ERR, STEP, PD_TEMP = cmn.readPIG(dataPacket, EN=1, PRINT=0, sf_a=self.sf_a, sf_b=self.sf_b,
                                                     POS_TIME=POS_PIG)
+        MCU_TIME = cmn.readTime(dataPacket, EN=1, POS_TIME=POS_TIME, PRINT=0)
+
         if not self.isCali:
             if self.isKal:
                 ERR = self.pig_err_kal.update(ERR)
@@ -232,11 +245,16 @@ class pigImuReader(QThread):
 
         # t = time.perf_counter()
         t = FPGA_TIME
-        imudata = {"TIME": t, "PIG_ERR": ERR, "PIG_WZ": STEP, "PD_TEMP": PD_TEMP}
+        imudata = {"TIME": MCU_TIME, "PIG_ERR": ERR, "PIG_WZ": STEP, "PD_TEMP": PD_TEMP}
         return dataPacket, imudata
 
     def readInputBuffer(self):
         return self.__Connector.readInputBuffer()
+
+    def flushInputBuffer(self):
+        print('buf before:', self.readInputBuffer())
+        self.__Connector.flushInputBuffer()
+        print('buf after:', self.readInputBuffer())
 
     def do_cali(self, dictContainer, cali_times):
         if self.isCali:
@@ -286,6 +304,7 @@ class pigImuReader(QThread):
                 imudata = crcLib.errCorrection(isCrcFail, imudata)
                 # end of err correction
                 t4 = time.perf_counter()
+                # print(imudata)
                 imudataArray["TIME"] = np.append(imudataArray["TIME"], imudata["TIME"])
                 imudataArray["PIG_ERR"] = np.append(imudataArray["PIG_ERR"], imudata["PIG_ERR"])
                 imudataArray["PIG_WZ"] = np.append(imudataArray["PIG_WZ"], imudata["PIG_WZ"])
@@ -302,7 +321,7 @@ class pigImuReader(QThread):
             # imudataArray["TIME"] = imudataArray["TIME"] - t0
 
             self.offset_setting(self.__imuoffset)
-            # imudataArray = cmn.dictOperation(imudataArray, self.__imuoffset, "SUB", IMU_DATA_STRUCTURE)
+            imudataArray = cmn.dictOperation(imudataArray, self.__imuoffset, "SUB", IMU_DATA_STRUCTURE)
             if self.__callBack is not None:
                 self.__callBack(imudataArray)
 
@@ -317,6 +336,8 @@ class pigImuReader(QThread):
     def offset_setting(self, imuoffset):
         imuoffset["TIME"] = [0]
         imuoffset["PD_TEMP"] = [0]
+        imuoffset["PIG_ERR"] = [0]
+        imuoffset["PIG_WZ"] = [0]
         if not self.isCali_w:
             imuoffset["PIG_ERR"] = [0]
             imuoffset["PIG_WZ"] = [0]
@@ -336,16 +357,20 @@ if __name__ == "__main__":
     myImu.arrayNum = 2
     myImu.setCallback(myCallBack)
     myImu.isCali = False
-    myImu.connect(ser, "COM20", 230400)
-    myImu.readIMU()
-    myImu.isRun = True
-    myImu.start()
-    try:
-        while True:
-            time.sleep(.1)
-    except KeyboardInterrupt:
-        myImu.isRun = False
-        myImu.stopIMU()
-        myImu.disconnect()
-        myImu.wait()
-        print('KeyboardInterrupt success')
+    myImu.connect(ser, "COM18", 230400)
+    para = myImu.dump_fog_parameters(1)
+    print(para)
+    print(para["FREQ"])
+    print(para["SF0"])
+    # myImu.readIMU()
+    # myImu.isRun = True
+    # myImu.start()
+    # try:
+    #     while True:
+    #         time.sleep(.1)
+    # except KeyboardInterrupt:
+    #     myImu.isRun = False
+    #     myImu.stopIMU()
+    #     myImu.disconnect()
+    #     myImu.wait()
+    #     print('KeyboardInterrupt success')

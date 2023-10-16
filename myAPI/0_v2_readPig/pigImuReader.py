@@ -302,7 +302,7 @@ class pigImuReader(QThread):
             # imudataArray["TIME"] = imudataArray["TIME"] - t0
 
             self.offset_setting(self.__imuoffset)
-            # imudataArray = cmn.dictOperation(imudataArray, self.__imuoffset, "SUB", IMU_DATA_STRUCTURE)
+            imudataArray = cmn.dictOperation(imudataArray, self.__imuoffset, "SUB", IMU_DATA_STRUCTURE)
             if self.__callBack is not None:
                 self.__callBack(imudataArray)
 

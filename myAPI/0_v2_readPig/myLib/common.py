@@ -434,8 +434,15 @@ def convert2Sign_adxl355(datain):
 # End of convert2Sign_adxl355
 
 
+# def convert2Temperature(datain):
+#     temp = datain[0] + (datain[1] >> 7) * 0.5
+#     return temp
+
 def convert2Temperature(datain):
-    temp = datain[0] + (datain[1] >> 7) * 0.5
+    if (datain[0] >> 7) == 1:
+        temp = (datain[0]-256) + (datain[1] >> 7) * 0.5
+    else:
+        temp = datain[0] + (datain[1] >> 7) * 0.5
     return temp
 
 

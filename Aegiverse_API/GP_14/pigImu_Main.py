@@ -163,6 +163,7 @@ class mainWindow(QMainWindow):
         # This line instantiate a parameter widget, load the parameter.json from LE block and send to FPGA
         self.pig_parameter_widget = pig_parameters_widget(self.act, self.top.para_block.le_filename.text() + '.json')
         self.act.isCali_w, self.act.isCali_a = self.pig_cali_menu.cali_status()  # update calibration flag to act
+        self.act.stopIMU()
 
     def disconnect(self):
         is_port_open = self.act.disconnect()

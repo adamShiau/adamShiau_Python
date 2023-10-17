@@ -1,8 +1,11 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import os
 
-file_name = 'H:/我的雲端硬碟/工作相關/Projects/1_IMU/MP_IMU/data/10-16-2023/MP-1Z-10132023.txt'
+file_name = r'D:\github\adamShiau_Python\Aegiverse_API\GP_141\1016_tt.txt'
+file_name = os.path.normpath(file_name)
+print(file_name)
 Var = pd.read_csv(file_name, comment='#', skiprows=0, chunksize=None)
 
 time = np.array(Var['time'])

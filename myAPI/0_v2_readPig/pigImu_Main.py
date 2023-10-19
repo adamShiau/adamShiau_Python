@@ -212,8 +212,8 @@ class mainWindow(QMainWindow):
             # Add self.first_run_flag to make sure that TIME data starts from nearing Zero after pressing Read button,
             # if the first element of imudata['TIME'] is greater than some arbitrary small value (two here), neglect
             # this imudata['TIME'] data!
-            # if self.first_run_flag and (int(imudata['TIME'][0]) > 2):
-            #     return
+            if self.first_run_flag and (int(imudata['TIME'][0]) > 2):
+                return
             self.first_run_flag = False
             input_buf = self.act.readInputBuffer()
             t0 = time.perf_counter()
@@ -247,7 +247,7 @@ class mainWindow(QMainWindow):
             # print('mean(wz):', np.average(imudata["PIG_WZ"]))
             # print('max(wz):', np.max(imudata["PIG_WZ"]))
             # print('min(wz):', np.min(imudata["PIG_WZ"]))
-            print("%.2f, %.2f, %.2f" % (np.average(imudata["PIG_WZ"]), np.max(imudata["PIG_WZ"]), np.min(imudata["PIG_WZ"])))
+            # print("%.2f, %.2f, %.2f" % (np.average(imudata["PIG_WZ"]), np.max(imudata["PIG_WZ"]), np.min(imudata["PIG_WZ"])))
 
     def plotdata(self, imudata):
         # print('plotdata: ', imudata['TIME'])

@@ -228,7 +228,7 @@ class mainWindow(QMainWindow):
             # print(imudata['PIG_WZ'])
             # imudata['PIG_WZ'] = np.clip(imudata['PIG_WZ'], -900, 900)
             t1 = time.perf_counter()
-            sample = 5000
+            sample = 1000
             # print(imudata["TIME"])
             self.imudata["TIME"] = np.append(self.imudata["TIME"], imudata["TIME"])
             self.imudata["PIG_WZ"] = np.append(self.imudata["PIG_WZ"], imudata["PIG_WZ"])

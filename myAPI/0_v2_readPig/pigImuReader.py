@@ -209,6 +209,7 @@ class pigImuReader(QThread):
     # End of memsImuReader::disconnectIMU
 
     def readIMU(self):
+        self.flushInputBuffer()
         self.writeImuCmd(1, 2)
 
     def stopIMU(self):
@@ -225,10 +226,9 @@ class pigImuReader(QThread):
 
         FPGA_TIME, ERR, STEP, PD_TEMP = cmn.readPIG(dataPacket, EN=1, PRINT=0, sf_a=self.sf_a, sf_b=self.sf_b,
                                                     POS_TIME=POS_PIG)
-        if not self.isCali:
-            if self.isKal:
-                ERR = self.pig_err_kal.update(ERR)
-                STEP = self.pig_wz_kal.update(STEP)
+        if self.isKal:
+            ERR = self.pig_err_kal.update(ERR)
+            STEP = self.pig_wz_kal.update(STEP)
 
         # t = time.perf_counter()
         t = FPGA_TIME
@@ -237,6 +237,11 @@ class pigImuReader(QThread):
 
     def readInputBuffer(self):
         return self.__Connector.readInputBuffer()
+
+    def flushInputBuffer(self):
+        print('buf before:', self.readInputBuffer())
+        self.__Connector.flushInputBuffer()
+        print('buf after:', self.readInputBuffer())
 
     def do_cali(self, dictContainer, cali_times):
         if self.isCali:
@@ -263,7 +268,7 @@ class pigImuReader(QThread):
                 break
             # End of if-condition
 
-            self.__imuoffset = self.do_cali(self.__imuoffset, 100)
+            # self.__imuoffset = self.do_cali(self.__imuoffset, 100)
 
             imudataArray = {k: np.empty(0) for k in set(IMU_DATA_STRUCTURE)}
 
@@ -301,8 +306,8 @@ class pigImuReader(QThread):
 
             # imudataArray["TIME"] = imudataArray["TIME"] - t0
 
-            self.offset_setting(self.__imuoffset)
-            imudataArray = cmn.dictOperation(imudataArray, self.__imuoffset, "SUB", IMU_DATA_STRUCTURE)
+            # self.offset_setting(self.__imuoffset)
+            # imudataArray = cmn.dictOperation(imudataArray, self.__imuoffset, "SUB", IMU_DATA_STRUCTURE)
             if self.__callBack is not None:
                 self.__callBack(imudataArray)
 

@@ -244,9 +244,10 @@ class mainWindow(QMainWindow):
             self.plotdata(self.imudata)
             self.printUpdateRate(self.imudata["TIME"])
             # print(len(self.imudata["TIME"]))
-            # print('first_run_flag')
-
-
+            # print('mean(wz):', np.average(imudata["PIG_WZ"]))
+            # print('max(wz):', np.max(imudata["PIG_WZ"]))
+            # print('min(wz):', np.min(imudata["PIG_WZ"]))
+            print("%.2f, %.2f, %.2f" % (np.average(imudata["PIG_WZ"]), np.max(imudata["PIG_WZ"]), np.min(imudata["PIG_WZ"])))
 
     def plotdata(self, imudata):
         # print('plotdata: ', imudata['TIME'])

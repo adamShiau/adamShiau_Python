@@ -253,13 +253,10 @@ class pigImuReader(QThread):
         head = getData.alignHeader_4B(self.__Connector, HEADER_KVH)
         dataPacket = getData.getdataPacket(self.__Connector, head, 16)
         # print([hex(i) for i in dataPacket])
-        # TIME, WX, WY, WZ, AX, AY, AZ, PD_TEMP = cmn.readMP_1Z(dataPacket, POS_WX, POS_WY, POS_WZ, POS_AX, POS_AY,
-        #                                                       POS_AZ, POS_MCUTIME, POS_PD_TEMP, 4, PRINT=0)
+
         TIME, WZ, PD_TEMP = cmn.readGP_1Z(dataPacket, POS_WZ, POS_MCUTIME, POS_PD_TEMP, 4, PRINT=0)
-        # if not self.isCali:
-        #     if self.isKal:
-        #         ERR = self.pig_err_kal.update(ERR)
-        #         STEP = self.pig_wz_kal.update(STEP)
+        if self.isKal:
+            WZ = self.pig_err_kal.update(WZ)
 
         imudata = {"TIME": TIME,
                    "WX": 0, "WY": 0, "WZ": WZ,
@@ -300,7 +297,7 @@ class pigImuReader(QThread):
                 break
             # End of if-condition
 
-            self.__imuoffset = self.do_cali(self.__imuoffset, 100)
+            # self.__imuoffset = self.do_cali(self.__imuoffset, 100)
 
             imudataArray = {k: np.empty(0) for k in set(IMU_DATA_STRUCTURE)}
 
@@ -343,7 +340,7 @@ class pigImuReader(QThread):
 
             # imudataArray["TIME"] = imudataArray["TIME"] - t0
 
-            self.offset_setting(self.__imuoffset)
+            # self.offset_setting(self.__imuoffset)
             # imudataArray = cmn.dictOperation(imudataArray, self.__imuoffset, "SUB", IMU_DATA_STRUCTURE)
             if self.__callBack is not None:
                 self.__callBack(imudataArray)

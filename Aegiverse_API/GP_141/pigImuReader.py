@@ -255,10 +255,13 @@ class pigImuReader(QThread):
         # print([hex(i) for i in dataPacket])
         TIME, WX, WY, WZ, AX, AY, AZ, PD_TEMP = cmn.readMP_1Z(dataPacket, POS_WX, POS_WY, POS_WZ, POS_AX, POS_AY,
                                                               POS_AZ, POS_MCUTIME, POS_PD_TEMP, 4, PRINT=0)
-        # if not self.isCali:
-        #     if self.isKal:
-        #         ERR = self.pig_err_kal.update(ERR)
-        #         STEP = self.pig_wz_kal.update(STEP)
+        if self.isKal:
+            WX = self.pig_wz_kal.update(WX)
+            WY = self.pig_wz_kal.update(WY)
+            WZ = self.pig_wz_kal.update(WZ)
+            AX = self.pig_wz_kal.update(AX)
+            AY = self.pig_wz_kal.update(AY)
+            AZ = self.pig_wz_kal.update(AZ)
 
         imudata = {"TIME": TIME,
                    "WX": WX, "WY": WY, "WZ": WZ,

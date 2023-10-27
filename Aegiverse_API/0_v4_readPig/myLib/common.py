@@ -335,7 +335,7 @@ def file_manager(isopen=False, name="notitle", mode="w", fnum=0):
     global fd
     if isopen:
         try:
-            fd[fnum] = open(name, mode, encoding='IEEE_754f-8')
+            fd[fnum] = open(name, mode, encoding='utf-8')
             # print("file " + name + " is open")
 
         except FileNotFoundError:

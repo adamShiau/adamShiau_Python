@@ -295,3 +295,23 @@
 2023-10-05 12:47:23 - main.myLib.crcCalculator.crcLib - ERROR - ValueError, In isNmeaCheckSumFail()
 2023-10-05 13:11:40 - main.myLib.mySerial.Connector - ERROR - IOError, the device: COM17 can not be found or can not be configured!
 2023-10-05 13:11:48 - main.myLib.mySerial.Connector - ERROR - IOError, the device: COM17 can not be found or can not be configured!
+2023-10-25 14:31:33 - main.myLib.common - ERROR - ValueError, In readNMEA() could not convert string to float: '      ', 
+2023-10-25 14:31:33 - main.myLib.common - ERROR - set arbitrary heading to 0.00
+2023-10-25 14:31:33 - main.myLib.crcCalculator.crcLib - ERROR - ValueError, In isNmeaCheckSumFail()
+2023-10-25 14:31:33 - main.myLib.common - ERROR - ValueError, In readNMEA() could not convert string to float: '      ', 
+2023-10-25 14:31:33 - main.myLib.common - ERROR - set arbitrary heading to 0.00
+2023-10-25 14:31:33 - main.myLib.crcCalculator.crcLib - ERROR - ValueError, In isNmeaCheckSumFail()
+2023-10-25 14:59:16 - main.myLib.mySerial.Connector - ERROR - IOError, the device: COM17 can not be found or can not be configured!
+2023-10-25 14:59:46 - main.myLib.common - ERROR - ValueError, In readNMEA() could not convert string to float: '      ', 
+2023-10-25 14:59:46 - main.myLib.common - ERROR - set arbitrary heading to 0.00
+2023-10-25 14:59:46 - main.myLib.crcCalculator.crcLib - ERROR - ValueError, In isNmeaCheckSumFail()
+2023-10-25 15:43:16 - main.myLib.common - ERROR - ValueError, In readNMEA() could not convert string to float: '      ', 
+2023-10-25 15:43:16 - main.myLib.common - ERROR - set arbitrary heading to 0.00
+2023-10-25 15:43:16 - main.myLib.crcCalculator.crcLib - ERROR - ValueError, In isNmeaCheckSumFail()
+2023-10-26 10:38:18 - main.myLib.mySerial.Connector - ERROR - IOError, the device: COM22 can not be found or can not be configured!
+2023-10-26 10:39:51 - main.myLib.common - ERROR - ValueError, In readNMEA() could not convert string to float: '      ', 
+2023-10-26 10:39:51 - main.myLib.common - ERROR - set arbitrary heading to 0.00
+2023-10-26 10:39:51 - main.myLib.crcCalculator.crcLib - ERROR - ValueError, In isNmeaCheckSumFail()
+2023-10-26 10:39:51 - main.myLib.common - ERROR - ValueError, In readNMEA() could not convert string to float: '      ', 
+2023-10-26 10:39:51 - main.myLib.common - ERROR - set arbitrary heading to 0.00
+2023-10-26 10:39:51 - main.myLib.crcCalculator.crcLib - ERROR - ValueError, In isNmeaCheckSumFail()

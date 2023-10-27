@@ -281,7 +281,7 @@ class pigImuReader(QThread):
                 break
             # End of if-condition
 
-            self.__imuoffset = self.do_cali(self.__imuoffset, 100)
+            # self.__imuoffset = self.do_cali(self.__imuoffset, 100)
 
             imudataArray = {k: np.empty(0) for k in set(IMU_DATA_STRUCTURE)}
 
@@ -321,7 +321,7 @@ class pigImuReader(QThread):
             # imudataArray["TIME"] = imudataArray["TIME"] - t0
 
             self.offset_setting(self.__imuoffset)
-            imudataArray = cmn.dictOperation(imudataArray, self.__imuoffset, "SUB", IMU_DATA_STRUCTURE)
+            # imudataArray = cmn.dictOperation(imudataArray, self.__imuoffset, "SUB", IMU_DATA_STRUCTURE)
             if self.__callBack is not None:
                 self.__callBack(imudataArray)
 

@@ -302,7 +302,7 @@ class pigImuReader(QThread):
                 break
             # End of if-condition
 
-            self.__imuoffset = self.do_cali(self.__imuoffset, 100)
+            # self.__imuoffset = self.do_cali(self.__imuoffset, 100)
 
             imudataArray = {k: np.empty(0) for k in set(IMU_DATA_STRUCTURE)}
 

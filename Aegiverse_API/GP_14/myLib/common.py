@@ -121,14 +121,14 @@ def readGP_1Z(dataPacket, POS_WZ, POS_TIME, POS_PDTEMP, dataLen, PRINT=0):
     pd_temp = IEEE_754_INT2F_R(temp_pdtemp)
     mcu_time = convert2Unsign_4B_R(temp_time) / 1000.0
     if PRINT:
-        print('\n%f, ' % mcu_time, end=', ')
+        print('\n%f ' % mcu_time, end=', ')
         # print('%f, ' % wx, end=', ')
         # print('%f, ' % wy, end=', ')
-        print('%f, ' % wz, end=', ')
+        print('%f ' % wz, end=', ')
         # print('%f, ' % ax, end=', ')
         # print('%f, ' % ay, end=', ')
         # print('%f, ' % az, end=', ')
-        print('%f, ' % pd_temp)
+        print('%f ' % pd_temp)
 
     return mcu_time, wz, pd_temp
 
@@ -532,6 +532,11 @@ def IEEE_754_INT2F(datain):
         # shift_data = (datain[3] << 24 | datain[2] << 16 | datain[1] << 8 | datain[0])
         f = struct.unpack('<f', struct.pack('<I', shift_data))
         # print('%.3f' % f[0])
+        # print(hex(datain[0]), end=', ')
+        # print(hex(datain[1]), end=', ')
+        # print(hex(datain[2]), end=', ')
+        # print(hex(datain[3]), end=', ')
+        # print(f[0])
         return f[0]
     else:
         return -1

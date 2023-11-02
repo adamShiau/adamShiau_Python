@@ -247,3 +247,4 @@
 2023-10-11 16:59:55 - main.myLib.mySerial.Connector - ERROR - IOError, the device: COM27 can not be found or can not be configured!
 2023-10-12 11:48:05 - main.myLib.mySerial.Connector - ERROR - serial read timeout: check if the input power is ON, close the GUI and re-excute.
 2023-10-12 19:14:54 - main.myLib.mySerial.Connector - ERROR - IOError, the device: COM17 can not be found or can not be configured!
+2023-11-01 11:56:40 - main.myLib.mySerial.Connector - ERROR - IOError, the device: COM33 can not be found or can not be configured!

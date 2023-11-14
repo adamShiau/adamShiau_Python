@@ -260,13 +260,13 @@ class pig_parameters_widget(QGroupBox):
 
     def dump_parameter(self):
         self.__act.flushInputBuffer()
-        initPara = self.__act.dump_fog_parameters(2)
+        initPara = self.__act.dump_fog_parameters(1)
         print(initPara)
         self.set_init_value(initPara)
 
     def getVersion(self):
         self.__act.flushInputBuffer()
-        self.Firmware_Version_lb.setText(self.__act.getVersion(2))
+        self.Firmware_Version_lb.setText(self.__act.getVersion(1))
         self.GUI_Version_lb.setText('GP-13-PD')
 
     def set_init_value(self, para):

@@ -95,7 +95,7 @@ class pig_parameters_widget(QGroupBox):
         self.setWindowTitle("PIG parameters")
         # self.setTitle("PIG parameters")
         self.wait_cnt = spinBlock(title='Wait cnt', minValue=0, maxValue=300, double=False, step=1)
-        self.avg = spinBlock(title='avg', minValue=0, maxValue=6, double=False, step=1)
+        self.avg = spinBlock(title='avg', minValue=0, maxValue=9, double=False, step=1)
         self.err_offset = spinBlock(title='Err offset', minValue=-10000, maxValue=10000, double=False, step=1)
         self.polarity = spinBlock(title='polarity', minValue=0, maxValue=1, double=False, step=1)
         self.mod_H = spinBlock(title='MOD_H', minValue=-32768, maxValue=32767, double=False, step=100)

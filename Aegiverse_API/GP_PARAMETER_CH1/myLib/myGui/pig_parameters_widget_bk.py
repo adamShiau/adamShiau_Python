@@ -19,7 +19,6 @@ print(__name__)
 print(sys.path)
 from myLib.myGui.mygui_serial import *
 from myLib import common as cmn
-from myLib.myGui.myLabel import *
 
 '''-------define CMD address map-------'''
 '''0~7 for output mode setting'''
@@ -59,8 +58,6 @@ CMD_FOG_SF8 = 34
 CMD_FOG_SF9 = 35
 CMD_FOG_TMIN = 36
 CMD_FOG_TMAX = 37
-CMD_FOG_SFB = 38
-CMD_FOG_CUTOFF = 39
 
 ''' FOG PARAMETERS'''
 INIT_PARAMETERS = {"MOD_H": 6850,
@@ -95,7 +92,7 @@ class pig_parameters_widget(QGroupBox):
         self.setWindowTitle("PIG parameters")
         # self.setTitle("PIG parameters")
         self.wait_cnt = spinBlock(title='Wait cnt', minValue=0, maxValue=300, double=False, step=1)
-        self.avg = spinBlock(title='avg', minValue=0, maxValue=9, double=False, step=1)
+        self.avg = spinBlock(title='avg', minValue=0, maxValue=6, double=False, step=1)
         self.err_offset = spinBlock(title='Err offset', minValue=-10000, maxValue=10000, double=False, step=1)
         self.polarity = spinBlock(title='polarity', minValue=0, maxValue=1, double=False, step=1)
         self.mod_H = spinBlock(title='MOD_H', minValue=-32768, maxValue=32767, double=False, step=100)
@@ -115,7 +112,6 @@ class pig_parameters_widget(QGroupBox):
         # self.HD_R.setEnabled(False)
         self.Tmin = spinBlock(title='Tmin', minValue=-30, maxValue=30, double=False, step=5)
         self.Tmax = spinBlock(title='Tmax', minValue=30, maxValue=150, double=False, step=5)
-        self.cutoff = spinBlock(title='CutOff', minValue=50, maxValue=1500, double=False, step=5)
         '''slider'''
         self.dataRate_sd = sliderBlock(title='DATE RATE', minValue=1500, maxValue=5000, curValue=2500, interval=100)
         ''' edit line '''
@@ -129,9 +125,6 @@ class pig_parameters_widget(QGroupBox):
         self.sf7 = editBlock('SF7')
         self.sf8 = editBlock('SF8')
         self.sf9 = editBlock('SF9')
-        self.sfb = editBlock('SFB')
-
-        self.dump_bt = QPushButton("dump")
         # self.sf_all = editBlock('SF_all')
         ''' label '''
         self.Tmin_lb = QLabel()
@@ -150,18 +143,15 @@ class pig_parameters_widget(QGroupBox):
         self.T6l_lb = QLabel()
         self.T7r_lb = QLabel()
         self.T7l_lb = QLabel()
-        self.Firmware_Version_lb = QLabel()
-        self.GUI_Version_lb = QLabel()
+
 
         self.initUI()
-        # initPara = self.__act.dump_fog_parameters(2)
-        # print(initPara)
-        # self.set_init_value(initPara)
+        initPara = self.__act.dump_fog_parameters(2)
+        self.set_init_value(initPara)
         self.linkfunction()
 
     def initUI(self):
         mainLayout = QGridLayout()
-
         mainLayout.addWidget(self.wait_cnt, 0, 0, 1, 2)
         mainLayout.addWidget(self.avg, 0, 2, 1, 2)
         mainLayout.addWidget(self.mod_H, 1, 0, 1, 2)
@@ -180,11 +170,6 @@ class pig_parameters_widget(QGroupBox):
         mainLayout.addWidget(self.KF_Q, 8, 0, 1, 2)
         mainLayout.addWidget(self.KF_R, 8, 2, 1, 2)
         mainLayout.addWidget(self.dataRate_sd, 9, 0, 1, 4)
-        mainLayout.addWidget(self.sfb, 10, 6, 1, 2)
-        mainLayout.addWidget(self.cutoff, 10, 0, 1, 2)
-        mainLayout.addWidget(self.dump_bt, 11, 0, 1, 2)
-        mainLayout.addWidget(self.Firmware_Version_lb, 12, 0, 1, 4)
-        mainLayout.addWidget(self.GUI_Version_lb, 13, 0, 1, 4)
         mainLayout.addWidget(self.Tmin, 9, 4, 1, 2)
         mainLayout.addWidget(self.Tmax, 0, 4, 1, 2)
         mainLayout.addWidget(self.sf0, 9, 6, 1, 2)
@@ -236,7 +221,6 @@ class pig_parameters_widget(QGroupBox):
         self.dac_gain.spin.valueChanged.connect(self.send_DAC_GAIN_CMD)
         self.Tmin.spin.valueChanged.connect(self.send_TMIN_CMD)
         self.Tmax.spin.valueChanged.connect(self.send_TMAX_CMD)
-        self.cutoff.spin.valueChanged.connect(self.send_CUTOFF_CMD)
         ''' slider '''
         self.dataRate_sd.sd.valueChanged.connect(self.send_DATA_RATE_CMD)
         ''' line edit '''
@@ -253,21 +237,6 @@ class pig_parameters_widget(QGroupBox):
         self.sf7.le.editingFinished.connect(self.send_SF7_CMD)
         self.sf8.le.editingFinished.connect(self.send_SF8_CMD)
         self.sf9.le.editingFinished.connect(self.send_SF9_CMD)
-        self.sfb.le.editingFinished.connect(self.send_SFB_CMD)
-        ''' bt'''
-        self.dump_bt.clicked.connect(self.getVersion)
-        self.dump_bt.clicked.connect(self.dump_parameter)
-
-    def dump_parameter(self):
-        self.__act.flushInputBuffer()
-        initPara = self.__act.dump_fog_parameters(2)
-        print(initPara)
-        self.set_init_value(initPara)
-
-    def getVersion(self):
-        self.__act.flushInputBuffer()
-        self.Firmware_Version_lb.setText(self.__act.getVersion(2))
-        self.GUI_Version_lb.setText('GP-13-PD')
 
     def set_init_value(self, para):
         self.freq.spin.setValue(para["FREQ"])
@@ -283,7 +252,6 @@ class pig_parameters_widget(QGroupBox):
         self.HD_R.spin.setValue(para["HD_R"])
         self.gain1.spin.setValue(para["GAIN1"])
         self.gain2.spin.setValue(para["GAIN2"])
-        self.cutoff.spin.setValue(para["CUTOFF"])
         self.fb_on.spin.setValue(para["FB_ON"])
         self.dac_gain.spin.setValue(para["DAC_GAIN"])
         self.dataRate_sd.sd.setValue(para["DATA_RATE"])
@@ -299,7 +267,6 @@ class pig_parameters_widget(QGroupBox):
         self.sf7.le.setText(str(para["SF7"]))
         self.sf8.le.setText(str(para["SF8"]))
         self.sf9.le.setText(str(para["SF9"]))
-        self.sfb.le.setText(str(para["SFB"]))
         self.Tmin_lb.setText(str(para["TMIN"]))
         self.Tmax_lb.setText(str(para["TMAX"]))
         self.T1r_lb.setText(str(para["T1"]))
@@ -317,6 +284,7 @@ class pig_parameters_widget(QGroupBox):
         self.T7r_lb.setText(str(para["T7"]))
         self.T7l_lb.setText(str(para["T7"]))
         pass
+
 
         # if not __name__ == "__main__":
         #     self.send_FREQ_CMD()
@@ -443,15 +411,6 @@ class pig_parameters_widget(QGroupBox):
         # self.__par_manager.update_parameters("DAC_GAIN", value)
         print("%x" % value2[0])
 
-    def send_CUTOFF_CMD(self):
-        value = self.cutoff.spin.value()
-        logger.info('set CUTOFF : %d', value)
-        # value2 = struct.unpack('<I', struct.pack('<f', value))
-        # logger.info('set DAC gain: %d', value)
-        self.__act.writeImuCmd(CMD_FOG_CUTOFF, value)
-        # self.__par_manager.update_parameters("DAC_GAIN", value)
-        # print("%d" % value)
-
     def send_SF0_CMD(self):
         value = struct.unpack('<I', struct.pack('<f', float(self.sf0.le.text())))
         self.__act.writeImuCmd(CMD_FOG_SF0, value[0])
@@ -491,10 +450,6 @@ class pig_parameters_widget(QGroupBox):
     def send_SF9_CMD(self):
         value = struct.unpack('<I', struct.pack('<f', float(self.sf9.le.text())))
         self.__act.writeImuCmd(CMD_FOG_SF9, value[0])
-
-    def send_SFB_CMD(self):
-        value = struct.unpack('<I', struct.pack('<f', float(self.sfb.le.text())))
-        self.__act.writeImuCmd(CMD_FOG_SFB, value[0])
 
     def send_CONST_STEP_CMD(self):
         value = self.const_step.spin.value()

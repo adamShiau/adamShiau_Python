@@ -76,6 +76,9 @@ class mainWindow(QMainWindow):
 
         self.__debug = debug_en
         self.t_start = time.perf_counter()
+        self.act.isKal = True
+        self.act.kal_R = 50
+        self.act.kal_Q = 1
 
     def mainUI(self):
         self.setCentralWidget(self.top)

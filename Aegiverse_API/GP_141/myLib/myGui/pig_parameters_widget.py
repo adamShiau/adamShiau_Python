@@ -157,6 +157,8 @@ class pig_parameters_widget(QGroupBox):
         # initPara = self.__act.dump_fog_parameters(2)
         # print(initPara)
         # self.set_init_value(initPara)
+        self.KF_Q.spin.setValue(1)
+        self.KF_R.spin.setValue(50)
         self.linkfunction()
 
     def initUI(self):
@@ -267,7 +269,7 @@ class pig_parameters_widget(QGroupBox):
     def getVersion(self):
         self.__act.flushInputBuffer()
         self.Firmware_Version_lb.setText(self.__act.getVersion(2))
-        self.GUI_Version_lb.setText('GP-13-PD')
+        self.GUI_Version_lb.setText('MP-12-RD')
 
     def set_init_value(self, para):
         self.freq.spin.setValue(para["FREQ"])

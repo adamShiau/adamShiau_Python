@@ -317,3 +317,4 @@
 2023-10-26 10:39:51 - main.myLib.crcCalculator.crcLib - ERROR - ValueError, In isNmeaCheckSumFail()
 2023-10-31 14:08:33 - main.myLib.mySerial.Connector - ERROR - IOError, the device: COM33 can not be found or can not be configured!
 2023-10-31 16:39:40 - main.myLib.mySerial.Connector - ERROR - IOError, the device: COM33 can not be found or can not be configured!
+2023-11-15 15:44:32 - main.myLib.mySerial.Connector - ERROR - IOError, the device: COM18 can not be found or can not be configured!

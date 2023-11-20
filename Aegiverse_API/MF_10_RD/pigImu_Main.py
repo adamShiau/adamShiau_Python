@@ -287,7 +287,7 @@ class mainWindow(QMainWindow):
         # else:
         #     self.top.plot1.ax2.clear()
         self.top.plot1.ax1.setData(imudata["TIME"], imudata["WZ"]*factor)
-        self.top.plot1.ax2.setData(imudata["TIME"], imudata["WX"] * factor)
+        self.top.plot1.ax2.setData(imudata["TIME"], imudata["WX"]*factor)
         self.top.plot2.ax.setData(imudata["TIME"], imudata["AX"])
         self.top.plot3.ax.setData(imudata["TIME"], imudata["AY"])
         self.top.plot4.ax.setData(imudata["TIME"], imudata["AZ"])

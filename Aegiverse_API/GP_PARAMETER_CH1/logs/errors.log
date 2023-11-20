@@ -251,3 +251,5 @@
 2023-11-13 16:44:41 - main.myLib.mySerial.Connector - ERROR - IOError, the device: COM18 can not be found or can not be configured!
 2023-11-14 10:48:34 - main.myLib.mySerial.Connector - ERROR - IOError, the device: COM18 can not be found or can not be configured!
 2023-11-14 11:04:28 - main.myLib.mySerial.Connector - ERROR - IOError, the device: COM18 can not be found or can not be configured!
+2023-11-20 16:43:59 - main.myLib.mySerial.Connector - ERROR - serial read timeout: check if the input power is ON, close the GUI and re-excute.
+2023-11-20 16:43:59 - main.myLib.mySerial.getData - ERROR - alignHeader_4B Error

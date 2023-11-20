@@ -253,3 +253,12 @@
 2023-11-01 11:35:34 - main.myLib.mySerial.Connector - ERROR - IOError, the device: COM22 can not be found or can not be configured!
 2023-11-02 09:58:00 - main.myLib.mySerial.Connector - ERROR - serial read timeout: check if the input power is ON, close the GUI and re-excute.
 2023-11-02 09:58:00 - main.myLib.mySerial.getData - ERROR - alignHeader_4B Error
+2023-11-20 16:32:52 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2023-11-20 16:32:52 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2023-11-20 16:32:52 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2023-11-20 16:32:52 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2023-11-20 16:32:52 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2023-11-20 16:32:52 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2023-11-20 16:32:53 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2023-11-20 16:32:53 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2023-11-20 16:32:53 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!

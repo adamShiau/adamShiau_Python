@@ -239,7 +239,7 @@ class pigImuReader(QThread):
             heading = 0
             checkSum = 0
         else:
-            dataPacket, heading, checkSum = cmn.readNMEA(dataPacket, EN=1, PRINT=1)
+            dataPacket, heading, checkSum = cmn.readNMEA(dataPacket, EN=1, PRINT=0)
 
         # if not self.isCali:
         #     if self.isKal:

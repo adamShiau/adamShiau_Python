@@ -89,6 +89,26 @@ class pgGraph_1_2(QMainWindow):
         self.setCentralWidget(win)
 
 
+class pgGraph_1_3(QMainWindow):
+    def __init__(self, color1="w", color2="w", color3="w", width1=1, width2=1, title="add title"):
+        super(pgGraph_1_3, self).__init__()
+
+        win = pg.GraphicsLayoutWidget()
+        # win.setBackground((100, 10, 34))
+        win.setBackground('k')
+        pen1 = pg.mkPen(color=color1, width=width1)
+        pen2 = pg.mkPen(color=color2, width=width2)
+        pen3 = pg.mkPen(color=color3, width=width2)
+        self.p = win.addPlot(title=title)
+        # print(type(win))
+        # print(type(self.p))
+        self.ax1 = self.p.plot(pen=pen1)
+        self.ax2 = self.p.plot(pen=pen2)
+        self.ax3 = self.p.plot(pen=pen3)
+        # print(type(self.ax1))
+        self.setCentralWidget(win)
+
+
 class pgGraph_2(QMainWindow):
     def __init__(self):
         super(pgGraph_2, self).__init__()
@@ -139,7 +159,7 @@ class mplGraph_2(QWidget):
 if __name__ == '__main__':
     app = QApplication([])
     fig = mplGraph_1()
-    fig.ax.plot([1,2,3,4,5], [5,5,5,5,10])
+    fig.ax.plot([1, 2, 3, 4, 5], [5, 5, 5, 5, 10])
     fig.ax.clear()
     fig.show()
     app.exec_()

@@ -459,7 +459,10 @@ def convert2Sign_adxl355(datain):
 
 
 def convert2Temperature(datain):
-    temp = datain[0] + (datain[1] >> 7) * 0.5
+    if (datain[0] >> 7) == 1:
+        temp = (datain[0] - 256) + (datain[1] >> 7) * 0.5
+    else:
+        temp = datain[0] + (datain[1] >> 7) * 0.5
     return temp
 
 
@@ -493,6 +496,7 @@ def convert2Unsign_4B(datain):
     shift_data = (datain[0] << 24 | datain[1] << 16 | datain[2] << 8 | datain[3])
     return shift_data
 
+
 def convert2Unsign_4B_R(datain):
     shift_data = (datain[3] << 24 | datain[2] << 16 | datain[1] << 8 | datain[0])
     return shift_data
@@ -506,6 +510,7 @@ def IEEE_754_INT2F(datain):
         return f[0]
     else:
         return -1
+
 
 def IEEE_754_INT2F_R(datain):
     if len(datain) == 4:

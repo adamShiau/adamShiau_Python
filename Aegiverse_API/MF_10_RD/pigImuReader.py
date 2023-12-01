@@ -333,7 +333,8 @@ class pigImuReader(QThread):
 
                 dataPacket, imudata = self.getImuData()
                 # print(len(dataPacket))
-                t2 = time.perf_counter()
+                t2 = time.perf_coun
+                ter()
                 isCrcFail = crcLib.isCrc32Fail(dataPacket, len(dataPacket))
                 t3 = time.perf_counter()
                 # err correction

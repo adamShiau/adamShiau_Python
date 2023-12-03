@@ -82,7 +82,7 @@ if __name__ == "__main__":
     # 產生測試訊號
     sampling_freq = 100
     t = np.linspace(0, 1, sampling_freq, endpoint=False)
-    frequency_of_interest = 2  # 假設要測試的訊號頻率
+    frequency_of_interest = 2.16  # 假設要測試的訊號頻率
     test_signal = np.sin(2 * np.pi * frequency_of_interest * t)
 
     # 設計濾波器

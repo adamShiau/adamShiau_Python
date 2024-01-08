@@ -12,7 +12,7 @@ class myEncoderConnector:
 
     Date:       2022.03.04
     """
-    def __init__(self, strIP:str="192.168.1.178", iPort:int=9000) -> None:
+    def __init__(self, strIP:str="192.168.1.170", iPort:int=9000) -> None:
         """
         Description:
         ==========================================================
@@ -153,3 +153,26 @@ class myEncoderConnector:
         return strSequence, iEncoderStep, fDistance, fEncoderSpeed, fVehicleSpeed, fVehicleAcceleration
     # End of myEncoderConnector::obtainStatus
 # End of class myEncoderConnector
+
+if "__main__" == __name__:
+    import traceback
+    import time
+
+    oEncoderConnector = myEncoderConnector()
+
+    oEncoderConnector.connect()
+
+    fStartTime = time.perf_counter()
+    while True:
+        try:
+            strSequence, iEncoderStep, fDistance, fEncoderSpeed, fVehicleSpeed, fVehicleAcceleration = oEncoderConnector.obtainStatus()
+            print("Obtain Status: %s, %d, %.6f, %.6f, %.6f, %.6f" %(strSequence, iEncoderStep, fDistance, fEncoderSpeed, fVehicleSpeed, fVehicleAcceleration))
+
+            if time.perf_counter() - fStartTime >= 30.0:
+                break
+            # End of if-condition
+        except KeyboardInterrupt:
+            break
+        except:
+            traceback.print_exc()
+        oEncoderConnector.close()

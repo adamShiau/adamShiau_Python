@@ -1,6 +1,9 @@
-from EncoderConnector import myEncoderConnector
+
 import traceback
 import time
+import sys
+sys.path.append('D:/github/adamShiau_Python/myAPI/myLib/EncoderConnector/EncoderConnector')
+from EncoderConnector import myEncoderConnector
 
 def testEncoderConnector():
     """

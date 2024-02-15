@@ -5,7 +5,7 @@ import yaml
 import logging.config
 
 LOG_PATH = './logs/'
-LOGGER_NAME = 'main'+
+LOGGER_NAME = 'main'
 builtins.LOGGER_NAME = LOGGER_NAME
 if not os.path.exists(LOG_PATH):
     os.mkdir(LOG_PATH)

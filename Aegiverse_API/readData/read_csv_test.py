@@ -16,6 +16,25 @@ ax = np.array(Var['ax'])
 ay = np.array(Var['ay'])
 az = np.array(Var['az'])
 pd_temp = np.array(Var['T'])
+
+int_wz = np.cumsum(wz)
+mean_wz = np.mean(wz)
+print(mean_wz)
+wz2 = wz - mean_wz
+int_wz2 = np.cumsum(wz2)
+
+# print(len(wz))
+# print(len(int_wz))
+plt.figure(1)
+plt.plot(time, wz)
+plt.figure(2)
+plt.plot(time, int_wz)
+plt.figure(3)
+plt.plot(time, wz2)
+plt.figure(4)
+plt.plot(time, int_wz2)
+
+'''
 time2 = time[1:]
 time3 = time[0:-1]
 # fog = Var['fog']
@@ -45,6 +64,8 @@ st = 0
 stop = st + 60 * 10 * 100
 mean_wz = np.mean(wz[st:stop])
 print('mean_wz: ', mean_wz)
+'''
+
 # print(dt)
 # plt.figure(1)
 # plt.plot(time, wx)
@@ -53,5 +74,5 @@ print('mean_wz: ', mean_wz)
 # plt.figure(3)
 # plt.plot(time, wz)
 # plt.figure(4)
-plt.plot(time, wz)
+# plt.plot(time, wz)
 plt.show()

@@ -157,7 +157,7 @@ class mainWindow(QMainWindow):
         self.top.setBtnEnable(open)
 
     def connect(self):
-        is_port_open = self.act.connect(self.__connector, self.__portName, 230400)
+        is_port_open = self.act.connect(self.__connector, self.__portName, 115200)
         self.is_port_open_qt.emit(is_port_open)
 
         # This line instantiate a parameter widget, load the parameter.json from LE block and send to FPGA

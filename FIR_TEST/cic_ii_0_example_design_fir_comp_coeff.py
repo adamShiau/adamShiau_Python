@@ -5,43 +5,43 @@ import matplotlib.pyplot as plt
 def cic_ii_0_example_design_fir_comp_coeff(L=None, Fs=None, Fc=None, plot=False, is_fxp=True, B=16):
     try:
         # CIC filter parameters
-        R = 32000  # Decimation factor
+        R = 4  # Decimation factor
         M = 1  # Differential delay
-        N = 12  # Number of stages
+        N = 8  # Number of stages
 
         # User Parameters
         if L is None:
-            L = 31  # Default filter length
+            L = 110  # Default filter length
         if L % 2 == 0:
             print(f"FIR filter length must be an odd number. {L + 1} is used instead.")
             L += 1
 
         if Fs is None:
-            Fs = 80e6  # Default sample rate before decimation
+            Fs = 91.392e6  # Default sample rate before decimation
         if Fc is None:
-            Fc = 4e6  # Default cutoff frequency
+            Fc = 4.85e6  # Default cutoff frequency
 
         if is_fxp and B is None:
-            B = 16  # Default number of bits for fixed point coefficients
+            B = 18  # Default number of bits for fixed point coefficients
 
         # Normalized cutoff frequency
         Fo = R * Fc / Fs
 
         # CIC Compensator Design using firwin2
-        p = 2e3
-        s = 0.25 / p
-        fp = np.arange(0, Fo + s, s)
-        fs = np.arange(Fo + s, 0.5, s)
-        f = np.concatenate((fp, fs)) * 2
+        p = 2e3 # Granularity
+        s = 0.25 / p # Step size
+        fp = np.arange(0, Fo + s, s) # Pass band frequency samples
+        fs = np.arange(Fo + s, 0.5, s) # Stop band frequency samples
+        f = np.concatenate((fp, fs)) * 2 # Normalized frequency samples; 0<=f<=1
 
-        Mp = np.ones(len(fp))
+        Mp = np.ones(len(fp)) # Pass band response; Mp(1)=1
         Mp[1:] = np.abs(M * R * np.sin(np.pi * fp[1:] / R) / np.sin(np.pi * M * fp[1:])) ** N
         Mf = np.concatenate((Mp, np.zeros(len(fs))))
         f[-1] = 1
 
         # Design FIR filter coefficients using firwin2
-        h = firwin2(L, f, Mf)
-        h /= np.max(h)  # Normalize coefficients
+        h = firwin2(L, f, Mf) # Filter order = filter length (L) - 1
+        h /= np.max(h)  # Floating point coefficients, scaled it to 1
 
         # Output filter coefficients to a file
         filename = 'cic_ii_0_example_design_fir_comp_coeff.txt'

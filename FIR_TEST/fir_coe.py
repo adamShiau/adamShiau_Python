@@ -19,10 +19,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 # Sampling rate
-fs = 10e3  # 500KSPS
+fs = 100e6  # 500KSPS
 
 # Cutoff frequency
-cutoff = 100  # 100 Hz
+cutoff = 5e6  # 100 Hz
 
 # Filter length (number of taps)
 num_taps = 25

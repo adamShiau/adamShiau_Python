@@ -2422,3 +2422,183 @@
 2024-02-02 20:41:13 - main.myLib.mySerial.getData - INFO - myLib.mySerial.getData logger start
 2024-02-02 20:41:13 - main.myLib.crcCalculator.crcLib - INFO - myLib.crcCalculator.crcLib logger start
 2024-02-02 20:41:13 - main.myLib.myFilter.filter - INFO - myLib.myFilter.filter logger start
+2024-03-06 10:30:59 - main - INFO - create log stuff done, 
+2024-03-06 10:30:59 - main - INFO - process start
+2024-03-06 10:30:59 - main.myLib.common - INFO - myLib.common logger start
+2024-03-06 10:30:59 - main.myLib.myGui.mygui_serial - INFO - myLib.myGui.mygui_serial logger start
+2024-03-06 10:30:59 - main.myLib.mySerial.Connector - INFO - myLib.mySerial.Connector logger start
+2024-03-06 10:30:59 - main.myLib.myGui.pig_parameters_widget - INFO - myLib.myGui.pig_parameters_widget logger start
+2024-03-06 10:30:59 - main.myLib.myGui.myLabel - INFO - myLib.myGui.myLabel logger start
+2024-03-06 10:30:59 - main.myLib.myGui.pig_menu_manager - INFO - myLib.myGui.pig_menu_manager logger start
+2024-03-06 10:30:59 - main.myLib.myGui.analysis_Allan - INFO - myLib.myGui.analysis_Allan logger start
+2024-03-06 10:31:01 - main.myLib.myGui.graph - INFO - myLib.myGui.graph logger start
+2024-03-06 10:31:03 - main.myLib.myGui.myProgressBar - INFO - myLib.myGui.myProgressBar logger start
+2024-03-06 10:31:03 - main.myLib.myGui.myComboBox - INFO - myLib.myGui.myComboBox logger start
+2024-03-06 10:31:03 - main.myLib.myGui.analysis_TimingPlot - INFO - myLib.myGui.analysis_TimingPlot logger start
+2024-03-06 10:31:03 - main.myLib.myGui.myRadioButton - INFO - myLib.myGui.myRadioButton logger start
+2024-03-06 10:31:03 - main.pigImu_Widget - INFO - pigImu_Widget logger start
+2024-03-06 10:31:03 - main.myLib.myGui.myLineEdit - INFO - myLib.myGui.myLineEdit logger start
+2024-03-06 10:31:03 - main.myLib.myGui.myCheckBox - INFO - myLib.myGui.myCheckBox logger start
+2024-03-06 10:31:03 - main.pigImuReader - INFO - pigImuReader logger start
+2024-03-06 10:31:03 - main.myLib.mySerial.getData - INFO - myLib.mySerial.getData logger start
+2024-03-06 10:31:03 - main.myLib.crcCalculator.crcLib - INFO - myLib.crcCalculator.crcLib logger start
+2024-03-06 10:31:03 - main.myLib.myFilter.filter - INFO - myLib.myFilter.filter logger start
+2024-03-06 10:31:06 - main.myLib.mySerial.Connector - INFO - COM8 is connected
+2024-03-06 10:31:09 - main.myLib.myGui.mygui_serial - INFO - The GUI is started to read the data.
+2024-03-06 10:31:09 - main.myLib.common - INFO - AttributeError: the file attempt to close does not exist!
+2024-03-06 10:32:55 - main.myLib.common - INFO - AttributeError: the file attempt to close does not exist!
+2024-03-06 10:32:55 - main.myLib.myGui.mygui_serial - INFO - The GUI is stopped to read the data.
+2024-03-06 10:33:41 - main.myLib.myGui.mygui_serial - INFO - The GUI is started to read the data.
+2024-03-06 10:33:41 - main.myLib.common - INFO - AttributeError: the file attempt to close does not exist!
+2024-03-06 10:37:36 - main.myLib.common - INFO - AttributeError: the file attempt to close does not exist!
+2024-03-06 10:37:36 - main.myLib.myGui.mygui_serial - INFO - The GUI is stopped to read the data.
+2024-03-06 10:37:53 - main.myLib.myGui.mygui_serial - INFO - The GUI is started to read the data.
+2024-03-06 11:05:58 - main.myLib.myGui.mygui_serial - INFO - The device is reset. (設備重置)
+2024-03-06 11:06:00 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (OSError(9, '控制代碼無效。', None, 6)).(An error occurred during the data retrieval process, line 398.)
+2024-03-06 11:06:00 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2024-03-06 11:06:00 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2024-03-06 11:06:00 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2024-03-06 11:06:00 - main.myLib.mySerial.Connector - INFO - COM8 is disconnected
+2024-03-06 11:06:00 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2024-03-06 11:06:00 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2024-03-06 11:06:00 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2024-03-06 11:06:00 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2024-03-06 11:06:00 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2024-03-06 11:06:00 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2024-03-06 11:06:01 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2024-03-06 11:06:01 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2024-03-06 11:06:01 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2024-03-06 11:06:01 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2024-03-06 11:06:01 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2024-03-06 11:06:01 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2024-03-06 11:06:01 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2024-03-06 11:06:01 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2024-03-06 11:06:01 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2024-03-06 11:06:01 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (OSError(9, '控制代碼無效。', None, 6)).(The error occurred while clearing buffer, line 339.)
+2024-03-06 11:06:11 - main - INFO - create log stuff done, 
+2024-03-06 11:06:11 - main - INFO - process start
+2024-03-06 11:06:11 - main.myLib.common - INFO - myLib.common logger start
+2024-03-06 11:06:11 - main.myLib.myGui.mygui_serial - INFO - myLib.myGui.mygui_serial logger start
+2024-03-06 11:06:11 - main.myLib.mySerial.Connector - INFO - myLib.mySerial.Connector logger start
+2024-03-06 11:06:11 - main.myLib.myGui.pig_parameters_widget - INFO - myLib.myGui.pig_parameters_widget logger start
+2024-03-06 11:06:11 - main.myLib.myGui.myLabel - INFO - myLib.myGui.myLabel logger start
+2024-03-06 11:06:11 - main.myLib.myGui.pig_menu_manager - INFO - myLib.myGui.pig_menu_manager logger start
+2024-03-06 11:06:11 - main.myLib.myGui.analysis_Allan - INFO - myLib.myGui.analysis_Allan logger start
+2024-03-06 11:06:11 - main.myLib.myGui.graph - INFO - myLib.myGui.graph logger start
+2024-03-06 11:06:12 - main.myLib.myGui.myProgressBar - INFO - myLib.myGui.myProgressBar logger start
+2024-03-06 11:06:12 - main.myLib.myGui.myComboBox - INFO - myLib.myGui.myComboBox logger start
+2024-03-06 11:06:12 - main.myLib.myGui.analysis_TimingPlot - INFO - myLib.myGui.analysis_TimingPlot logger start
+2024-03-06 11:06:12 - main.myLib.myGui.myRadioButton - INFO - myLib.myGui.myRadioButton logger start
+2024-03-06 11:06:12 - main.pigImu_Widget - INFO - pigImu_Widget logger start
+2024-03-06 11:06:12 - main.myLib.myGui.myLineEdit - INFO - myLib.myGui.myLineEdit logger start
+2024-03-06 11:06:12 - main.myLib.myGui.myCheckBox - INFO - myLib.myGui.myCheckBox logger start
+2024-03-06 11:06:12 - main.pigImuReader - INFO - pigImuReader logger start
+2024-03-06 11:06:12 - main.myLib.mySerial.getData - INFO - myLib.mySerial.getData logger start
+2024-03-06 11:06:12 - main.myLib.crcCalculator.crcLib - INFO - myLib.crcCalculator.crcLib logger start
+2024-03-06 11:06:12 - main.myLib.myFilter.filter - INFO - myLib.myFilter.filter logger start
+2024-03-06 11:06:14 - main.myLib.mySerial.Connector - INFO - COM8 is connected
+2024-03-06 11:06:17 - main.myLib.myGui.mygui_serial - INFO - The GUI is started to read the data.
+2024-03-06 11:06:17 - main.myLib.common - INFO - AttributeError: the file attempt to close does not exist!
+2024-03-06 11:34:03 - main.myLib.common - INFO - AttributeError: the file attempt to close does not exist!
+2024-03-06 11:34:03 - main.myLib.myGui.mygui_serial - INFO - The GUI is stopped to read the data.
+2024-03-06 13:09:37 - main.myLib.mySerial.Connector - INFO - COM8 is disconnected
+2024-03-06 13:09:39 - main.myLib.mySerial.Connector - INFO - COM8 is connected
+2024-03-06 13:09:42 - main.myLib.myGui.mygui_serial - INFO - The GUI is started to read the data.
+2024-03-06 13:09:42 - main.myLib.common - INFO - AttributeError: the file attempt to close does not exist!
+2024-03-06 13:37:23 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (OSError(9, '控制代碼無效。', None, 6)).(An error occurred during the data retrieval process, line 398.)
+2024-03-06 13:37:23 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2024-03-06 13:37:23 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2024-03-06 13:37:23 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2024-03-06 13:37:23 - main.myLib.mySerial.Connector - INFO - COM8 is disconnected
+2024-03-06 13:37:23 - main.myLib.common - INFO - AttributeError: the file attempt to close does not exist!
+2024-03-06 13:37:23 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2024-03-06 13:37:23 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2024-03-06 13:37:23 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2024-03-06 13:37:23 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2024-03-06 13:37:23 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2024-03-06 13:37:23 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2024-03-06 13:37:24 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2024-03-06 13:37:24 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2024-03-06 13:37:24 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2024-03-06 13:37:24 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2024-03-06 13:37:24 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2024-03-06 13:37:24 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2024-03-06 13:37:24 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2024-03-06 13:37:24 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2024-03-06 13:37:24 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2024-03-06 13:37:24 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (OSError(9, '控制代碼無效。', None, 6)).(The error occurred while clearing buffer, line 339.)
+2024-03-06 13:37:27 - main.myLib.mySerial.Connector - INFO - COM8 is connected
+2024-03-06 13:37:33 - main.myLib.common - INFO - AttributeError: the file attempt to close does not exist!
+2024-03-06 13:37:33 - main.myLib.myGui.mygui_serial - INFO - The GUI is stopped to read the data.
+2024-03-06 13:37:35 - main.myLib.mySerial.Connector - INFO - COM8 is disconnected
+2024-03-06 13:37:46 - main - INFO - create log stuff done, 
+2024-03-06 13:37:46 - main - INFO - process start
+2024-03-06 13:37:46 - main.myLib.common - INFO - myLib.common logger start
+2024-03-06 13:37:46 - main.myLib.myGui.mygui_serial - INFO - myLib.myGui.mygui_serial logger start
+2024-03-06 13:37:46 - main.myLib.mySerial.Connector - INFO - myLib.mySerial.Connector logger start
+2024-03-06 13:37:46 - main.myLib.myGui.pig_parameters_widget - INFO - myLib.myGui.pig_parameters_widget logger start
+2024-03-06 13:37:46 - main.myLib.myGui.myLabel - INFO - myLib.myGui.myLabel logger start
+2024-03-06 13:37:46 - main.myLib.myGui.pig_menu_manager - INFO - myLib.myGui.pig_menu_manager logger start
+2024-03-06 13:37:46 - main.myLib.myGui.analysis_Allan - INFO - myLib.myGui.analysis_Allan logger start
+2024-03-06 13:37:46 - main.myLib.myGui.graph - INFO - myLib.myGui.graph logger start
+2024-03-06 13:37:47 - main.myLib.myGui.myProgressBar - INFO - myLib.myGui.myProgressBar logger start
+2024-03-06 13:37:47 - main.myLib.myGui.myComboBox - INFO - myLib.myGui.myComboBox logger start
+2024-03-06 13:37:47 - main.myLib.myGui.analysis_TimingPlot - INFO - myLib.myGui.analysis_TimingPlot logger start
+2024-03-06 13:37:47 - main.myLib.myGui.myRadioButton - INFO - myLib.myGui.myRadioButton logger start
+2024-03-06 13:37:47 - main.pigImu_Widget - INFO - pigImu_Widget logger start
+2024-03-06 13:37:47 - main.myLib.myGui.myLineEdit - INFO - myLib.myGui.myLineEdit logger start
+2024-03-06 13:37:47 - main.myLib.myGui.myCheckBox - INFO - myLib.myGui.myCheckBox logger start
+2024-03-06 13:37:47 - main.pigImuReader - INFO - pigImuReader logger start
+2024-03-06 13:37:47 - main.myLib.mySerial.getData - INFO - myLib.mySerial.getData logger start
+2024-03-06 13:37:47 - main.myLib.crcCalculator.crcLib - INFO - myLib.crcCalculator.crcLib logger start
+2024-03-06 13:37:47 - main.myLib.myFilter.filter - INFO - myLib.myFilter.filter logger start
+2024-03-06 13:37:52 - main.myLib.mySerial.Connector - INFO - COM8 is connected
+2024-03-06 13:37:55 - main.myLib.myGui.mygui_serial - INFO - The GUI is started to read the data.
+2024-03-06 13:37:55 - main.myLib.common - INFO - AttributeError: the file attempt to close does not exist!
+2024-03-06 14:40:45 - main.myLib.myGui.mygui_serial - INFO - The device is reset. (設備重置)
+2024-03-06 15:35:59 - main.myLib.myGui.mygui_serial - INFO - The device is reset. (設備重置)
+2024-03-06 16:26:13 - main.myLib.common - INFO - AttributeError: the file attempt to close does not exist!
+2024-03-06 16:26:13 - main.myLib.myGui.mygui_serial - INFO - The GUI is stopped to read the data.
+2024-03-06 16:26:14 - main.myLib.common - INFO - AttributeError: the file attempt to close does not exist!
+2024-03-06 16:26:14 - main.myLib.myGui.mygui_serial - INFO - The GUI is stopped to read the data.
+2024-03-12 11:29:16 - main - INFO - create log stuff done, 
+2024-03-12 11:29:16 - main - INFO - process start
+2024-03-12 11:29:16 - main.myLib.common - INFO - myLib.common logger start
+2024-03-12 11:29:17 - main.myLib.myGui.mygui_serial - INFO - myLib.myGui.mygui_serial logger start
+2024-03-12 11:29:17 - main.myLib.mySerial.Connector - INFO - myLib.mySerial.Connector logger start
+2024-03-12 11:29:17 - main.myLib.myGui.pig_parameters_widget - INFO - myLib.myGui.pig_parameters_widget logger start
+2024-03-12 11:29:17 - main.myLib.myGui.myLabel - INFO - myLib.myGui.myLabel logger start
+2024-03-12 11:29:17 - main.myLib.myGui.pig_menu_manager - INFO - myLib.myGui.pig_menu_manager logger start
+2024-03-12 11:29:17 - main.myLib.myGui.analysis_Allan - INFO - myLib.myGui.analysis_Allan logger start
+2024-03-12 11:29:18 - main.myLib.myGui.graph - INFO - myLib.myGui.graph logger start
+2024-03-12 11:29:19 - main.myLib.myGui.myProgressBar - INFO - myLib.myGui.myProgressBar logger start
+2024-03-12 11:29:19 - main.myLib.myGui.myComboBox - INFO - myLib.myGui.myComboBox logger start
+2024-03-12 11:29:19 - main.myLib.myGui.analysis_TimingPlot - INFO - myLib.myGui.analysis_TimingPlot logger start
+2024-03-12 11:29:19 - main.myLib.myGui.myRadioButton - INFO - myLib.myGui.myRadioButton logger start
+2024-03-12 11:29:19 - main.pigImu_Widget - INFO - pigImu_Widget logger start
+2024-03-12 11:29:19 - main.myLib.myGui.myLineEdit - INFO - myLib.myGui.myLineEdit logger start
+2024-03-12 11:29:19 - main.myLib.myGui.myCheckBox - INFO - myLib.myGui.myCheckBox logger start
+2024-03-12 11:29:19 - main.pigImuReader - INFO - pigImuReader logger start
+2024-03-12 11:29:19 - main.myLib.mySerial.getData - INFO - myLib.mySerial.getData logger start
+2024-03-12 11:29:19 - main.myLib.crcCalculator.crcLib - INFO - myLib.crcCalculator.crcLib logger start
+2024-03-12 11:29:19 - main.myLib.myFilter.filter - INFO - myLib.myFilter.filter logger start
+2024-03-12 11:29:23 - main.myLib.mySerial.Connector - INFO - COM9 is connected
+2024-03-12 11:29:27 - main.myLib.myGui.myLabel - INFO - set freq: 211
+2024-03-12 11:29:28 - main.myLib.myGui.myLabel - INFO - set wait cnt: 72
+2024-03-12 11:29:28 - main.myLib.myGui.myLabel - INFO - set err_avg: 7
+2024-03-12 11:29:28 - main.myLib.myGui.myLabel - INFO - set mod_H: 8192
+2024-03-12 11:29:28 - main.myLib.myGui.myLabel - INFO - set mod_L: -8192
+2024-03-12 11:29:28 - main.myLib.myGui.myLabel - INFO - set polarity: 1
+2024-03-12 11:29:28 - main.myLib.myGui.myLabel - INFO - set constant step: 16384
+2024-03-12 11:29:28 - main.myLib.myGui.myLabel - INFO - set HD_R: 6
+2024-03-12 11:29:29 - main.myLib.myGui.myLabel - INFO - set gain1: 6
+2024-03-12 11:29:29 - main.myLib.myGui.myLabel - INFO - set gain2: 5
+2024-03-12 11:29:29 - main.myLib.myGui.myLabel - INFO - set CUTOFF : 1000
+2024-03-12 11:29:29 - main.myLib.myGui.myLabel - INFO - set FB on: 1
+2024-03-12 11:29:29 - main.myLib.myGui.myLabel - INFO - set DAC gain: 23
+2024-03-12 11:29:29 - main.myLib.myGui.myLabel - INFO - set dataRate: 2422
+2024-03-12 11:29:33 - main.myLib.myGui.mygui_serial - INFO - The GUI is started to read the data.
+2024-03-12 11:29:33 - main.myLib.common - INFO - AttributeError: the file attempt to close does not exist!
+2024-03-12 11:29:59 - main.myLib.common - INFO - AttributeError: the file attempt to close does not exist!
+2024-03-12 11:29:59 - main.myLib.myGui.mygui_serial - INFO - The GUI is stopped to read the data.
+2024-03-12 11:30:01 - main.myLib.mySerial.Connector - INFO - COM9 is disconnected

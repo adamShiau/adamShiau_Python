@@ -16,8 +16,8 @@ def get_sma_cutoff(N, **kwargs):
     return newton(func, omega_0, deriv, **kwargs)
 
 # Simple moving average design parameters
-f_s = 100e6
-N = 128
+f_s = 0.5e6
+N = 4429
 
 # Find the cut-off frequency of the SMA
 w_c = get_sma_cutoff(N)
@@ -43,8 +43,8 @@ plt.subplot(2, 1, 1)
 plt.suptitle('Bode Plot')
 plt.plot(w, 20 * np.log10(abs(h)))       # Convert modulus to dB
 plt.ylabel('Magnitude [dB]')
-plt.xlim(0, f_s / 2 /50)
-plt.ylim(-30, 1)
+plt.xlim(0, f_s / 2 /1)
+plt.ylim(-60, 1)
 # plt.axvline(f_c, color='red')
 # plt.axvline(f_marker1, color='blue')
 plt.axvline(f_marker2, color='blue')

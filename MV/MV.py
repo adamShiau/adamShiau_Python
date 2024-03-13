@@ -16,8 +16,8 @@ def get_sma_cutoff(N, **kwargs):
     return newton(func, omega_0, deriv, **kwargs)
 
 # Simple moving average design parameters
-f_s = 100e6
-N = 128
+f_s = 300e3
+N = 16384
 
 # Find the cut-off frequency of the SMA
 w_c = get_sma_cutoff(N)

@@ -264,3 +264,4 @@
 2024-02-23 21:05:19 - main.myLib.mySerial.getData - ERROR - alignHeader_4B Error
 2024-02-27 11:30:30 - main.myLib.mySerial.Connector - ERROR - serial read timeout: check if the input power is ON, close the GUI and re-excute.
 2024-02-27 11:30:30 - main.myLib.mySerial.getData - ERROR - alignHeader_4B Error
+2024-03-14 12:50:31 - main.myLib.mySerial.Connector - ERROR - IOError, the device: COM9 can not be found or can not be configured!

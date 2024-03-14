@@ -5,14 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="85991cce-3172-48ba-9a0a-536b882fdfef" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/MV/mv_test.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MV/mv_test_2.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegiverse_API/GP_14/pigImu_Main.py" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/GP_14/pigImu_Main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegiverse_API/GP_NMEA/parameters_G03.json" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/GP_NMEA/parameters_G03.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegiverse_API/GP_NMEA/pigImu_Main.py" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/GP_NMEA/pigImu_Main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegiverse_API/GP_PARAMETER/parameters_SP8_GP.json" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/GP_PARAMETER/parameters_SP8_GP.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegiverse_API/MF_11_RD/logs/errors.log" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/MF_11_RD/logs/errors.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegiverse_API/MF_11_RD/logs/record_handler.log" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/MF_11_RD/logs/record_handler.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegiverse_API/MF_11_RD/parameters_SP8_GP.json" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/MF_11_RD/parameters_SP8_GP.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/MV/MV.py" beforeDir="false" afterPath="$PROJECT_DIR$/MV/MV.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />

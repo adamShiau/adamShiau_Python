@@ -277,7 +277,7 @@ class pigImuReader(QThread):
                 return False, False
             # print([hex(i) for i in dataPacket])
             TIME, WX, WY, WZ, AX, AY, AZ, TX, TY, TZ = cmn.readAFI_PDf(dataPacket, POS_WX, POS_WY, POS_WZ, POS_A, POS_MCUTIME,
-                                                                   POS_TX, POS_TY, POS_TZ, SIZE_4, PRINT=0)
+                                                                   POS_TX, POS_TY, POS_TZ, SIZE_4, PRINT=1)
 
             if self.isKal:
                 # WX = self.pig_wz_kal.update(WX)

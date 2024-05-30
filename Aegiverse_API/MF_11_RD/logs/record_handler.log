@@ -3995,3 +3995,140 @@
 2024-04-10 16:15:12 - main.myLib.common - INFO - AttributeError: the file attempt to close does not exist!
 2024-04-10 16:15:12 - main.myLib.myGui.mygui_serial - INFO - The GUI is stopped to read the data.
 2024-04-10 16:15:24 - main.myLib.mySerial.Connector - INFO - COM4 is disconnected
+2024-04-16 15:42:49 - main - INFO - create log stuff done, 
+2024-04-16 15:42:49 - main - INFO - process start
+2024-04-16 15:42:49 - main.myLib.common - INFO - myLib.common logger start
+2024-04-16 15:42:49 - main.myLib.myGui.mygui_serial - INFO - myLib.myGui.mygui_serial logger start
+2024-04-16 15:42:49 - main.myLib.mySerial.Connector - INFO - myLib.mySerial.Connector logger start
+2024-04-16 15:42:49 - main.myLib.myGui.pig_parameters_widget - INFO - myLib.myGui.pig_parameters_widget logger start
+2024-04-16 15:42:49 - main.myLib.myGui.myLabel - INFO - myLib.myGui.myLabel logger start
+2024-04-16 15:42:49 - main.myLib.myGui.pig_menu_manager - INFO - myLib.myGui.pig_menu_manager logger start
+2024-04-16 15:42:49 - main.myLib.myGui.analysis_Allan - INFO - myLib.myGui.analysis_Allan logger start
+2024-04-16 15:42:50 - main.myLib.myGui.graph - INFO - myLib.myGui.graph logger start
+2024-04-16 15:42:50 - main.myLib.myGui.myProgressBar - INFO - myLib.myGui.myProgressBar logger start
+2024-04-16 15:42:50 - main.myLib.myGui.myComboBox - INFO - myLib.myGui.myComboBox logger start
+2024-04-16 15:42:50 - main.myLib.myGui.analysis_TimingPlot - INFO - myLib.myGui.analysis_TimingPlot logger start
+2024-04-16 15:42:50 - main.myLib.myGui.myRadioButton - INFO - myLib.myGui.myRadioButton logger start
+2024-04-16 15:42:50 - main.pigImu_Widget - INFO - pigImu_Widget logger start
+2024-04-16 15:42:50 - main.myLib.myGui.myLineEdit - INFO - myLib.myGui.myLineEdit logger start
+2024-04-16 15:42:50 - main.myLib.myGui.myCheckBox - INFO - myLib.myGui.myCheckBox logger start
+2024-04-16 15:42:50 - main.pigImuReader - INFO - pigImuReader logger start
+2024-04-16 15:42:50 - main.myLib.mySerial.getData - INFO - myLib.mySerial.getData logger start
+2024-04-16 15:42:50 - main.myLib.crcCalculator.crcLib - INFO - myLib.crcCalculator.crcLib logger start
+2024-04-16 15:42:50 - main.myLib.myFilter.filter - INFO - myLib.myFilter.filter logger start
+2024-04-16 15:42:52 - main.myLib.mySerial.Connector - INFO - COM9 is connected
+2024-04-16 15:42:54 - main.myLib.myGui.mygui_serial - INFO - The GUI is started to read the data.
+2024-04-16 15:42:54 - main.myLib.common - INFO - AttributeError: the file attempt to close does not exist!
+2024-04-16 15:42:59 - main.myLib.common - INFO - AttributeError: the file attempt to close does not exist!
+2024-04-16 15:42:59 - main.myLib.myGui.mygui_serial - INFO - The GUI is stopped to read the data.
+2024-04-16 15:43:01 - main.myLib.myGui.mygui_serial - INFO - The GUI is started to read the data.
+2024-04-16 15:43:01 - main.myLib.common - INFO - AttributeError: the file attempt to close does not exist!
+2024-04-16 15:43:04 - main.myLib.common - INFO - AttributeError: the file attempt to close does not exist!
+2024-04-16 15:43:04 - main.myLib.myGui.mygui_serial - INFO - The GUI is stopped to read the data.
+2024-04-16 15:43:08 - main.myLib.mySerial.Connector - INFO - COM9 is disconnected
+2024-04-16 15:43:19 - main - INFO - create log stuff done, 
+2024-04-16 15:43:19 - main - INFO - process start
+2024-04-16 15:43:19 - main.myLib.common - INFO - myLib.common logger start
+2024-04-16 15:43:19 - main.myLib.myGui.mygui_serial - INFO - myLib.myGui.mygui_serial logger start
+2024-04-16 15:43:19 - main.myLib.mySerial.Connector - INFO - myLib.mySerial.Connector logger start
+2024-04-16 15:43:19 - main.myLib.myGui.pig_parameters_widget - INFO - myLib.myGui.pig_parameters_widget logger start
+2024-04-16 15:43:19 - main.myLib.myGui.myLabel - INFO - myLib.myGui.myLabel logger start
+2024-04-16 15:43:19 - main.myLib.myGui.pig_menu_manager - INFO - myLib.myGui.pig_menu_manager logger start
+2024-04-16 15:43:19 - main.myLib.myGui.analysis_Allan - INFO - myLib.myGui.analysis_Allan logger start
+2024-04-16 15:43:19 - main.myLib.myGui.graph - INFO - myLib.myGui.graph logger start
+2024-04-16 15:43:19 - main.myLib.myGui.myProgressBar - INFO - myLib.myGui.myProgressBar logger start
+2024-04-16 15:43:19 - main.myLib.myGui.myComboBox - INFO - myLib.myGui.myComboBox logger start
+2024-04-16 15:43:19 - main.myLib.myGui.analysis_TimingPlot - INFO - myLib.myGui.analysis_TimingPlot logger start
+2024-04-16 15:43:19 - main.myLib.myGui.myRadioButton - INFO - myLib.myGui.myRadioButton logger start
+2024-04-16 15:43:19 - main.pigImu_Widget - INFO - pigImu_Widget logger start
+2024-04-16 15:43:19 - main.myLib.myGui.myLineEdit - INFO - myLib.myGui.myLineEdit logger start
+2024-04-16 15:43:19 - main.myLib.myGui.myCheckBox - INFO - myLib.myGui.myCheckBox logger start
+2024-04-16 15:43:20 - main.pigImuReader - INFO - pigImuReader logger start
+2024-04-16 15:43:20 - main.myLib.mySerial.getData - INFO - myLib.mySerial.getData logger start
+2024-04-16 15:43:20 - main.myLib.crcCalculator.crcLib - INFO - myLib.crcCalculator.crcLib logger start
+2024-04-16 15:43:20 - main.myLib.myFilter.filter - INFO - myLib.myFilter.filter logger start
+2024-04-16 15:43:21 - main.myLib.mySerial.Connector - INFO - COM9 is connected
+2024-04-16 15:43:25 - main.myLib.myGui.mygui_serial - INFO - The GUI is started to read the data.
+2024-04-16 15:43:25 - main.myLib.common - INFO - AttributeError: the file attempt to close does not exist!
+2024-04-16 15:43:28 - main.myLib.common - INFO - AttributeError: the file attempt to close does not exist!
+2024-04-16 15:43:28 - main.myLib.myGui.mygui_serial - INFO - The GUI is stopped to read the data.
+2024-04-16 15:43:48 - main.myLib.mySerial.Connector - INFO - COM9 is disconnected
+2024-04-16 18:53:45 - main - INFO - create log stuff done, 
+2024-04-16 18:53:45 - main - INFO - process start
+2024-04-16 18:53:45 - main.myLib.common - INFO - myLib.common logger start
+2024-04-16 18:53:46 - main.myLib.myGui.mygui_serial - INFO - myLib.myGui.mygui_serial logger start
+2024-04-16 18:53:46 - main.myLib.mySerial.Connector - INFO - myLib.mySerial.Connector logger start
+2024-04-16 18:53:46 - main.myLib.myGui.pig_parameters_widget - INFO - myLib.myGui.pig_parameters_widget logger start
+2024-04-16 18:53:46 - main.myLib.myGui.myLabel - INFO - myLib.myGui.myLabel logger start
+2024-04-16 18:53:46 - main.myLib.myGui.pig_menu_manager - INFO - myLib.myGui.pig_menu_manager logger start
+2024-04-16 18:53:46 - main.myLib.myGui.analysis_Allan - INFO - myLib.myGui.analysis_Allan logger start
+2024-04-16 18:53:46 - main.myLib.myGui.graph - INFO - myLib.myGui.graph logger start
+2024-04-16 18:53:47 - main.myLib.myGui.myProgressBar - INFO - myLib.myGui.myProgressBar logger start
+2024-04-16 18:53:47 - main.myLib.myGui.myComboBox - INFO - myLib.myGui.myComboBox logger start
+2024-04-16 18:53:47 - main.myLib.myGui.analysis_TimingPlot - INFO - myLib.myGui.analysis_TimingPlot logger start
+2024-04-16 18:53:47 - main.myLib.myGui.myRadioButton - INFO - myLib.myGui.myRadioButton logger start
+2024-04-16 18:53:47 - main.pigImu_Widget - INFO - pigImu_Widget logger start
+2024-04-16 18:53:47 - main.myLib.myGui.myLineEdit - INFO - myLib.myGui.myLineEdit logger start
+2024-04-16 18:53:47 - main.myLib.myGui.myCheckBox - INFO - myLib.myGui.myCheckBox logger start
+2024-04-16 18:53:47 - main.pigImuReader - INFO - pigImuReader logger start
+2024-04-16 18:53:47 - main.myLib.mySerial.getData - INFO - myLib.mySerial.getData logger start
+2024-04-16 18:53:47 - main.myLib.crcCalculator.crcLib - INFO - myLib.crcCalculator.crcLib logger start
+2024-04-16 18:53:47 - main.myLib.myFilter.filter - INFO - myLib.myFilter.filter logger start
+2024-04-16 18:53:51 - main.myLib.mySerial.Connector - INFO - COM9 is connected
+2024-04-16 18:54:00 - main.myLib.myGui.myLabel - INFO - set mod_H: 1
+2024-04-16 18:54:00 - main.myLib.myGui.myLabel - INFO - set err_th: 1
+2024-04-16 18:54:00 - main.myLib.myGui.myLabel - INFO - set err offset: 6
+2024-04-16 18:54:00 - main.myLib.myGui.myLabel - INFO - set polarity: 1
+2024-04-16 18:54:00 - main.myLib.myGui.myLabel - INFO - set constant step: 5
+2024-04-16 18:54:00 - main.myLib.myGui.myLabel - INFO - set HD_R: 45
+2024-04-16 18:54:01 - main.myLib.myGui.myLabel - INFO - set gain1: 14
+2024-04-16 18:54:01 - main.myLib.myGui.myLabel - INFO - set gain2: 20
+2024-04-16 18:54:01 - main.myLib.myGui.myLabel - INFO - set FB on: 2
+2024-04-16 18:54:01 - main.myLib.myGui.myLabel - INFO - set DAC gain: 356
+2024-04-16 18:54:01 - main.myLib.myGui.myLabel - INFO - set dataRate: 5000
+2024-04-16 18:54:19 - main.myLib.myGui.myLabel - INFO - set wait cnt: 1
+2024-04-16 18:54:20 - main.myLib.myGui.myLabel - INFO - set wait cnt: 10
+2024-04-16 18:54:20 - main.myLib.myGui.myLabel - INFO - set wait cnt: 100
+2024-04-16 18:54:25 - main.myLib.myGui.myLabel - INFO - set err_avg: 1
+2024-04-16 18:54:25 - main.myLib.myGui.myLabel - INFO - set err_avg: 2
+2024-04-16 18:54:25 - main.myLib.myGui.myLabel - INFO - set err_avg: 3
+2024-04-16 18:54:25 - main.myLib.myGui.myLabel - INFO - set err_avg: 4
+2024-04-16 18:54:25 - main.myLib.myGui.myLabel - INFO - set err_avg: 5
+2024-04-16 18:54:25 - main.myLib.myGui.myLabel - INFO - set err_avg: 6
+2024-04-16 18:54:26 - main.myLib.myGui.myLabel - INFO - set err_avg: 7
+2024-04-16 18:54:28 - main.myLib.myGui.myLabel - INFO - set mod_H: 9
+2024-04-16 18:54:28 - main.myLib.myGui.myLabel - INFO - set mod_H: 92
+2024-04-16 18:54:28 - main.myLib.myGui.myLabel - INFO - set mod_H: 920
+2024-04-16 18:54:29 - main.myLib.myGui.myLabel - INFO - set mod_H: 9200
+2024-04-16 18:54:30 - main.myLib.myGui.myLabel - INFO - set mod_L: -9
+2024-04-16 18:54:30 - main.myLib.myGui.myLabel - INFO - set mod_L: -92
+2024-04-16 18:54:31 - main.myLib.myGui.myLabel - INFO - set mod_L: -920
+2024-04-16 18:54:31 - main.myLib.myGui.myLabel - INFO - set mod_L: -9200
+2024-04-16 18:54:33 - main.myLib.myGui.myLabel - INFO - set err offset: 0
+2024-04-16 18:54:38 - main.myLib.myGui.myLabel - INFO - set gain1: 5
+2024-04-16 18:54:39 - main.myLib.myGui.myLabel - INFO - set gain2: 7
+2024-04-16 18:54:44 - main.myLib.myGui.myLabel - INFO - set DAC gain: 4
+2024-04-16 18:54:44 - main.myLib.myGui.myLabel - INFO - set DAC gain: 40
+2024-04-16 18:54:52 - main.myLib.myGui.myLabel - INFO - set constant step: 0
+2024-04-16 18:54:54 - main.myLib.myGui.myLabel - INFO - set err_th: 0
+2024-04-16 18:54:55 - main.myLib.myGui.myLabel - INFO - set FB on: 0
+2024-04-16 18:54:56 - main.myLib.myGui.myLabel - INFO - set freq: 20
+2024-04-16 18:54:56 - main.myLib.myGui.myLabel - INFO - set freq: 200
+2024-04-16 18:54:57 - main.myLib.myGui.myLabel - INFO - set HD_R: 0
+2024-04-16 18:55:00 - main.myLib.myGui.myLabel - INFO - set KF_R: 1
+2024-04-16 18:55:01 - main.myLib.myGui.myLabel - INFO - set CUTOFF : 80
+2024-04-16 18:55:02 - main.myLib.myGui.myLabel - INFO - set CUTOFF : 800
+2024-04-16 18:55:17 - main.myLib.mySerial.Connector - INFO - COM9 is disconnected
+2024-04-16 18:55:18 - main.myLib.mySerial.Connector - INFO - COM9 is connected
+2024-04-16 18:55:24 - main.myLib.myGui.myLabel - INFO - set freq: 200
+2024-04-16 18:55:24 - main.myLib.myGui.myLabel - INFO - set wait cnt: 100
+2024-04-16 18:55:25 - main.myLib.myGui.myLabel - INFO - set err_avg: 7
+2024-04-16 18:55:25 - main.myLib.myGui.myLabel - INFO - set mod_H: 9200
+2024-04-16 18:55:25 - main.myLib.myGui.myLabel - INFO - set mod_L: -9200
+2024-04-16 18:55:25 - main.myLib.myGui.myLabel - INFO - set polarity: 1
+2024-04-16 18:55:25 - main.myLib.myGui.myLabel - INFO - set gain1: 5
+2024-04-16 18:55:25 - main.myLib.myGui.myLabel - INFO - set gain2: 7
+2024-04-16 18:55:25 - main.myLib.myGui.myLabel - INFO - set CUTOFF : 800
+2024-04-16 18:55:26 - main.myLib.myGui.myLabel - INFO - set DAC gain: 40
+2024-04-16 18:55:26 - main.myLib.myGui.myLabel - INFO - set dataRate: 5000
+2024-04-16 18:55:44 - main.myLib.mySerial.Connector - INFO - COM9 is disconnected

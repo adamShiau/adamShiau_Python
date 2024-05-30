@@ -594,9 +594,7 @@ def convert2Unsign_4B_R(datain):
 def IEEE_754_INT2F(datain):
     if len(datain) == 4:
         shift_data = (datain[0] << 24 | datain[1] << 16 | datain[2] << 8 | datain[3])
-        # shift_data = (datain[3] << 24 | datain[2] << 16 | datain[1] << 8 | datain[0])
         f = struct.unpack('<f', struct.pack('<I', shift_data))
-        # print('%.3f' % f[0])
         return f[0]
     else:
         return -1

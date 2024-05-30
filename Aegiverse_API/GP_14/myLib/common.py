@@ -118,7 +118,8 @@ def readGP_1Z(dataPacket, POS_WZ, POS_TIME, POS_PDTEMP, dataLen, PRINT=0):
     # ax = IEEE_754_INT2F_R(temp_ax)
     # ay = IEEE_754_INT2F_R(temp_ay)
     # az = IEEE_754_INT2F_R(temp_az)
-    pd_temp = IEEE_754_INT2F_R(temp_pdtemp)
+    # pd_temp = IEEE_754_INT2F_R(temp_pdtemp)
+    pd_temp = IEEE_754_INT2F(temp_pdtemp)
     mcu_time = convert2Unsign_4B_R(temp_time) / 1000.0
     if PRINT:
         print('\n%f ' % mcu_time, end=', ')

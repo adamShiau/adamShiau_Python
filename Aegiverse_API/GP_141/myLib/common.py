@@ -88,7 +88,8 @@ def readMP_1Z(dataPacket, POS_WX, POS_WY, POS_WZ, POS_AX, POS_AY, POS_AZ, POS_TI
 
     wx = IEEE_754_INT2F_R(temp_wx)
     wy = IEEE_754_INT2F_R(temp_wy)
-    wz = IEEE_754_INT2F(temp_wz)
+    # wz = IEEE_754_INT2F(temp_wz)
+    wz = IEEE_754_INT2F_R(temp_wy)
     ax = IEEE_754_INT2F_R(temp_ax)
     ay = IEEE_754_INT2F_R(temp_ay)
     az = IEEE_754_INT2F_R(temp_az)

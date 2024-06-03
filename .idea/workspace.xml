@@ -5,179 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="85991cce-3172-48ba-9a0a-536b882fdfef" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/AllanDev.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/GP_141/aegiverse_logo_bk.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/GP_141/log_config.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/GP_141/logs/errors.log" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/GP_141/parameters_SP8_GP.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/aegiverse_logo_bk.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/dist/aegiverse_logo_bk.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/dist/log_config.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/layout.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/log_config.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/logs/errors.log" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/myLib/EncoderConnector/ChangeLog.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/myLib/EncoderConnector/EncoderConnector/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/myLib/EncoderConnector/EncoderConnector/myEncoderConnector.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/myLib/EncoderConnector/EncoderConnector/myEncoderGenerator.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/myLib/EncoderConnector/EncoderConnector/myEncoderReader.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/myLib/EncoderConnector/EncoderConnector/myEncoderReader_qt.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/myLib/EncoderConnector/README.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/myLib/EncoderConnector/doc/README.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/myLib/EncoderConnector/setup.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/myLib/EncoderConnector/testEncoderConnector.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/myLib/EncoderConnector/testEncoderGenerator_func.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/myLib/EncoderConnector/testEncoderGenerator_object.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/myLib/EncoderConnector/testEncoderReader_func.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/myLib/EncoderConnector/testEncoderReader_object.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/myLib/README_common.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/myLib/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/myLib/common.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/myLib/crcCalculator/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/myLib/crcCalculator/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/myLib/crcCalculator/crcLib.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/myLib/myFilter/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/myLib/myFilter/filter.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/myLib/myGui/README_myGui.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/myLib/myGui/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/myLib/myGui/aegiverse_logo.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/myLib/myGui/analysis_Allan.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/myLib/myGui/analysis_SF.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/myLib/myGui/analysis_SF2.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/myLib/myGui/analysis_TimingPlot.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/myLib/myGui/autoSave.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/myLib/myGui/default_fog_parameters.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/myLib/myGui/graph.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/myLib/myGui/myCheckBox.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/myLib/myGui/myComboBox.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/myLib/myGui/myLabel.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/myLib/myGui/myLineEdit.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/myLib/myGui/myProgressBar.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/myLib/myGui/myRadioButton.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/myLib/myGui/mygui_serial.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/myLib/myGui/pandas.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/myLib/myGui/parameters_SP9.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/myLib/myGui/pd_test.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/myLib/myGui/pig_menu_manager.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/myLib/myGui/pig_parameters_widget.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/myLib/myGui/pig_parameters_widget_bk.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/myLib/myGui/plot_row_data.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/myLib/myGui/read_csv_test.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/myLib/myGui/test.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/myLib/myNavigation/googleEarth_file_generate.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/myLib/myNavigation/googleMapTest.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/myLib/myNavigation/imu2latlon_new.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/myLib/myNavigation/planar_Navigation.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/myLib/myNavigation/test.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/myLib/mySerial/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/myLib/mySerial/Connector.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/myLib/mySerial/Connector_bk.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/myLib/mySerial/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/myLib/mySerial/getData.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/myLib/mySerial/readLine_test.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/parameters_D01.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/parameters_SP8_GP.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/pigIMU_EXE.bat" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/pigImuReader.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/pigImu_Main.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/pigImu_Widget.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/pyqtSignal_test.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_Attitude/AllanDev.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_Attitude/GP_141/aegiverse_logo_bk.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_Attitude/GP_141/log_config.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_Attitude/GP_141/logs/errors.log" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_Attitude/GP_141/parameters_SP8_GP.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_Attitude/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_Attitude/aegiverse_logo_bk.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_Attitude/dist/aegiverse_logo_bk.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_Attitude/dist/log_config.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_Attitude/layout.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_Attitude/log_config.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_Attitude/logs/errors.log" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_Attitude/myLib/EncoderConnector/ChangeLog.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_Attitude/myLib/EncoderConnector/EncoderConnector/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_Attitude/myLib/EncoderConnector/EncoderConnector/myEncoderConnector.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_Attitude/myLib/EncoderConnector/EncoderConnector/myEncoderGenerator.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_Attitude/myLib/EncoderConnector/EncoderConnector/myEncoderReader.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_Attitude/myLib/EncoderConnector/EncoderConnector/myEncoderReader_qt.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_Attitude/myLib/EncoderConnector/README.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_Attitude/myLib/EncoderConnector/doc/README.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_Attitude/myLib/EncoderConnector/setup.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_Attitude/myLib/EncoderConnector/testEncoderConnector.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_Attitude/myLib/EncoderConnector/testEncoderGenerator_func.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_Attitude/myLib/EncoderConnector/testEncoderGenerator_object.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_Attitude/myLib/EncoderConnector/testEncoderReader_func.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_Attitude/myLib/EncoderConnector/testEncoderReader_object.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_Attitude/myLib/README_common.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_Attitude/myLib/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_Attitude/myLib/common.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_Attitude/myLib/crcCalculator/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_Attitude/myLib/crcCalculator/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_Attitude/myLib/crcCalculator/crcLib.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_Attitude/myLib/myFilter/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_Attitude/myLib/myFilter/filter.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_Attitude/myLib/myGui/README_myGui.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_Attitude/myLib/myGui/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_Attitude/myLib/myGui/aegiverse_logo.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_Attitude/myLib/myGui/analysis_Allan.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_Attitude/myLib/myGui/analysis_SF.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_Attitude/myLib/myGui/analysis_SF2.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_Attitude/myLib/myGui/analysis_TimingPlot.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_Attitude/myLib/myGui/autoSave.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_Attitude/myLib/myGui/default_fog_parameters.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_Attitude/myLib/myGui/graph.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_Attitude/myLib/myGui/myCheckBox.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_Attitude/myLib/myGui/myComboBox.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_Attitude/myLib/myGui/myLabel.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_Attitude/myLib/myGui/myLineEdit.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_Attitude/myLib/myGui/myProgressBar.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_Attitude/myLib/myGui/myRadioButton.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_Attitude/myLib/myGui/mygui_serial.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_Attitude/myLib/myGui/pandas.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_Attitude/myLib/myGui/parameters_SP9.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_Attitude/myLib/myGui/pd_test.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_Attitude/myLib/myGui/pig_menu_manager.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_Attitude/myLib/myGui/pig_parameters_widget.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_Attitude/myLib/myGui/pig_parameters_widget_bk.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_Attitude/myLib/myGui/plot_row_data.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_Attitude/myLib/myGui/read_csv_test.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_Attitude/myLib/myGui/test.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_Attitude/myLib/myNavigation/googleEarth_file_generate.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_Attitude/myLib/myNavigation/googleMapTest.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_Attitude/myLib/myNavigation/imu2latlon_new.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_Attitude/myLib/myNavigation/planar_Navigation.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_Attitude/myLib/myNavigation/test.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_Attitude/myLib/mySerial/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_Attitude/myLib/mySerial/Connector.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_Attitude/myLib/mySerial/Connector_bk.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_Attitude/myLib/mySerial/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_Attitude/myLib/mySerial/getData.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_Attitude/myLib/mySerial/readLine_test.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_Attitude/parameters_D01.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_Attitude/parameters_SP8_GP.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_Attitude/pigIMU_EXE.bat" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_Attitude/pigImuReader.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_Attitude/pigImu_Main.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_Attitude/pigImu_Widget.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/GP_Attitude/pyqtSignal_test.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegiverse_API/GP_14/myLib/common.py" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/GP_14/myLib/common.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegiverse_API/GP_141/myLib/common.py" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/GP_141/myLib/common.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegiverse_API/GP_141/pigImuReader.py" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/GP_141/pigImuReader.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegiverse_API/GP_NMEA/parameters_G03.json" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/GP_NMEA/parameters_G03.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/parameters_SP8_GP.json" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/parameters_SP8_GP.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegiverse_API/GP_Attitude/parameters_SP8_GP.json" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/GP_Attitude/parameters_SP8_GP.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegiverse_API/GP_Attitude/pigImuReader.py" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/GP_Attitude/pigImuReader.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Aegiverse_API/GP_PARAMETER/logs/errors.log" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/GP_PARAMETER/logs/errors.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Aegiverse_API/GP_PARAMETER/parameters_SP8_GP.json" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/GP_PARAMETER/parameters_SP8_GP.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegiverse_API/GP_PARAMETER_PDf_CH2/logs/errors.log" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/GP_PARAMETER_PDf_CH2/logs/errors.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Aegiverse_API/GP_PARAMETER_PDf_CH2/parameters_SP8_GP.json" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/GP_PARAMETER_PDf_CH2/parameters_SP8_GP.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegiverse_API/GP_PARAMETER_PDf_CH3/parameters_SP8_GP.json" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/GP_PARAMETER_PDf_CH3/parameters_SP8_GP.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegiverse_API/MF_11_RD/logs/record_handler.log" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/MF_11_RD/logs/record_handler.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegiverse_API/MF_11_RD/myLib/common.py" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/MF_11_RD/myLib/common.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegiverse_API/MF_11_RD/parameters_SP8_GP.json" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/MF_11_RD/parameters_SP8_GP.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegiverse_API/MF_11_RD/pigImuReader.py" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/MF_11_RD/pigImuReader.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegiverse_API/MF_11_RD_PDf/logs/errors.log" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/MF_11_RD_PDf/logs/errors.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegiverse_API/MF_11_RD_PDf/logs/record_handler.log" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/MF_11_RD_PDf/logs/record_handler.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegiverse_API/MF_11_RD_PDf/pigImuReader.py" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/MF_11_RD_PDf/pigImuReader.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -196,14 +30,14 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "last_opened_file_path": "D:/github/adamShiau_Python/Aegiverse_API",
-    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/github/adamShiau_Python/Aegiverse_API&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="D:\github\adamShiau_Python\Aegiverse_API" />
@@ -211,7 +45,7 @@
       <recent name="D:\github\adamShiau_Python\myAPI\0_readPig" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.pigImu_Main">
+  <component name="RunManager" selected="Python.pigImu_Main (1)">
     <configuration name="pigImu_Main (1)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="adamShiau_Python" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -233,6 +67,27 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="pigImu_Main (2)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="adamShiau_Python" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Aegiverse_API/GP_Attitude" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Aegiverse_API/GP_Attitude/pigImu_Main.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="pigImu_Main (3)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="adamShiau_Python" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -246,27 +101,6 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/pigImu_Main.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="pigImu_Main (5)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="adamShiau_Python" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Aegiverse_API/GP_141" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Aegiverse_API/GP_141/pigImu_Main.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -319,11 +153,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.pigImu_Main (1)" />
         <item itemvalue="Python.pigImu_Main" />
+        <item itemvalue="Python.pigImu_Main (2)" />
         <item itemvalue="Python.pigImu_Main (3)" />
         <item itemvalue="Python.pigImu_Widget" />
-        <item itemvalue="Python.pigImu_Main (5)" />
-        <item itemvalue="Python.pigImu_Main (1)" />
       </list>
     </recent_temporary>
   </component>

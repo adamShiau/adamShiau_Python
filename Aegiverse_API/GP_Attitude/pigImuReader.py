@@ -254,7 +254,7 @@ class pigImuReader(QThread):
         dataPacket = getData.getdataPacket(self.__Connector, head, 36)
         # print([hex(i) for i in dataPacket])
         TIME, WX, WY, WZ, AX, AY, AZ, PD_TEMP = cmn.readMP_1Z_ATT(dataPacket, POS_WX, POS_WY, POS_WZ, POS_AX, POS_AY,
-                                                              POS_AZ, POS_MCUTIME, POS_PD_TEMP, 4, PRINT=0)
+                                                              POS_AZ, POS_MCUTIME, POS_PD_TEMP, 4, PRINT=1)
         if self.isKal:
             # WX = self.pig_wz_kal.update(WX)
             # WY = self.pig_wz_kal.update(WY)

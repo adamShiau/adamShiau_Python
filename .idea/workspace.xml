@@ -6,11 +6,19 @@
   <component name="ChangeListManager">
     <list default="true" id="85991cce-3172-48ba-9a0a-536b882fdfef" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/parameters_SP8_GP.json" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/parameters_SP8_GP.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegiverse_API/GP_Attitude/parameters_SP8_GP.json" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/GP_Attitude/parameters_SP8_GP.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegiverse_API/GP_Attitude/pigImuReader.py" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/GP_Attitude/pigImuReader.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegiverse_API/GP_PARAMETER/logs/errors.log" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/GP_PARAMETER/logs/errors.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/GP_141/aegiverse_logo_bk.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/GP_141/log_config.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/GP_141/logs/errors.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/GP_141/parameters_SP8_GP.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/dist/aegiverse_logo_bk.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/dist/log_config.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/dist/logs/errors.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/logs/errors.log" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/logs/errors.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Aegiverse_API/GP_PARAMETER/parameters_SP8_GP.json" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/GP_PARAMETER/parameters_SP8_GP.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegiverse_API/GP_PARAMETER_PDf_CH2/dist/aegiverse_logo_bk.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegiverse_API/GP_PARAMETER_PDf_CH2/dist/log_config.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegiverse_API/GP_PARAMETER_PDf_CH2/dist/logs/errors.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegiverse_API/GP_PARAMETER_PDf_CH2/dist/parameters_SP8_GP.json" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Aegiverse_API/GP_PARAMETER_PDf_CH2/parameters_SP8_GP.json" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/GP_PARAMETER_PDf_CH2/parameters_SP8_GP.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -109,6 +117,27 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="pigImu_Main (4)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="adamShiau_Python" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Aegiverse_API/GP_PARAMETER_PDf_CH1" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Aegiverse_API/GP_PARAMETER_PDf_CH1/pigImu_Main.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="pigImu_Main" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="adamShiau_Python" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -130,34 +159,13 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="pigImu_Widget" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="adamShiau_Python" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/pigImu_Widget.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
     <recent_temporary>
       <list>
         <item itemvalue="Python.pigImu_Main (1)" />
         <item itemvalue="Python.pigImu_Main" />
-        <item itemvalue="Python.pigImu_Main (2)" />
+        <item itemvalue="Python.pigImu_Main (4)" />
         <item itemvalue="Python.pigImu_Main (3)" />
-        <item itemvalue="Python.pigImu_Widget" />
+        <item itemvalue="Python.pigImu_Main (2)" />
       </list>
     </recent_temporary>
   </component>

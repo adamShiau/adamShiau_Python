@@ -266,3 +266,4 @@
 2024-07-11 11:33:55 - main.myLib.mySerial.Connector - ERROR - IOError, the device: COM28 can not be found or can not be configured!
 2024-07-11 11:52:06 - main.myLib.mySerial.Connector - ERROR - IOError, the device: COM28 can not be found or can not be configured!
 2024-07-17 15:34:34 - main.myLib.mySerial.getData - ERROR - alignHeader_4B Error
+2024-08-15 14:04:48 - main.myLib.mySerial.Connector - ERROR - IOError, the device: COM4 can not be found or can not be configured!

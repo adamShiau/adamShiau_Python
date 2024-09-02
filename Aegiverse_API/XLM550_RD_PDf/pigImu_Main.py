@@ -163,7 +163,8 @@ class mainWindow(QMainWindow):
     def printPdTemperature(self, val):
         try:
             if (time.perf_counter() - self.t_start) > 0.5:
-                self.top.pd_temp_lb.lb.setText(str(val))
+                # self.top.pd_temp_lb.lb.setText(str(val))
+                self.top.pd_temp_lb.lb.setText(f"{val:.3f}")
                 self.t_start = time.perf_counter()
         except IndexError:
             __excType, __excObj, __excTb = sys.exc_info()

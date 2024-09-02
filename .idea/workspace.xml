@@ -5,96 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="85991cce-3172-48ba-9a0a-536b882fdfef" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/AllanDev.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/GP_141/aegiverse_logo_bk.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/GP_141/log_config.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/GP_141/logs/errors.log" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/GP_141/parameters_SP8_GP.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/aegiverse_logo_bk.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/dist/aegiverse_logo_bk.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/dist/log_config.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/dist/logs/errors.log" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/dist_1122/aegiverse_logo_bk.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/dist_1122/log_config.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/dist_1122/logs/errors.log" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/layout.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/log_config.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/logs/errors.log" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/logs/record_handler.log" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/myLib/EncoderConnector/ChangeLog.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/myLib/EncoderConnector/EncoderConnector/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/myLib/EncoderConnector/EncoderConnector/myEncoderConnector.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/myLib/EncoderConnector/EncoderConnector/myEncoderGenerator.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/myLib/EncoderConnector/EncoderConnector/myEncoderReader.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/myLib/EncoderConnector/EncoderConnector/myEncoderReader_qt.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/myLib/EncoderConnector/README.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/myLib/EncoderConnector/doc/README.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/myLib/EncoderConnector/setup.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/myLib/EncoderConnector/testEncoderConnector.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/myLib/EncoderConnector/testEncoderGenerator_func.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/myLib/EncoderConnector/testEncoderGenerator_object.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/myLib/EncoderConnector/testEncoderReader_func.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/myLib/EncoderConnector/testEncoderReader_object.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/myLib/README_common.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/myLib/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/myLib/common.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/myLib/crcCalculator/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/myLib/crcCalculator/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/myLib/crcCalculator/crcLib.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/myLib/myFilter/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/myLib/myFilter/filter.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/myLib/myGui/README_myGui.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/myLib/myGui/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/myLib/myGui/aegiverse_logo.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/myLib/myGui/analysis_Allan.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/myLib/myGui/analysis_SF.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/myLib/myGui/analysis_SF2.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/myLib/myGui/analysis_TimingPlot.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/myLib/myGui/autoSave.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/myLib/myGui/default_fog_parameters.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/myLib/myGui/graph.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/myLib/myGui/myCheckBox.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/myLib/myGui/myComboBox.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/myLib/myGui/myLabel.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/myLib/myGui/myLineEdit.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/myLib/myGui/myProgressBar.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/myLib/myGui/myRadioButton.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/myLib/myGui/mygui_serial.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/myLib/myGui/pandas.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/myLib/myGui/parameters_SP9.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/myLib/myGui/pd_test.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/myLib/myGui/pig_menu_manager.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/myLib/myGui/pig_parameters_widget.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/myLib/myGui/pig_parameters_widget_bk.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/myLib/myGui/plot_row_data.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/myLib/myGui/read_csv_test.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/myLib/myGui/test.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/myLib/myNavigation/googleEarth_file_generate.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/myLib/myNavigation/googleMapTest.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/myLib/myNavigation/imu2latlon_new.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/myLib/myNavigation/planar_Navigation.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/myLib/myNavigation/test.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/myLib/mySerial/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/myLib/mySerial/Connector.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/myLib/mySerial/Connector_bk.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/myLib/mySerial/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/myLib/mySerial/getData.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/myLib/mySerial/readLine_test.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/parameters_D01.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/parameters_SP8_GP.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/pigIMU_EXE.bat" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/pigImuReader.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/pigImu_Main.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/pigImu_Widget.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/pyqtSignal_test.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/readData/replace_txt.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/logs/errors.log" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/GP_141_PDf/logs/errors.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegiverse_API/GP_PARAMETER_PDf_CH2/parameters_SP8_GP.json" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/GP_PARAMETER_PDf_CH2/parameters_SP8_GP.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegiverse_API/MF_11_RD_PDf/logs/errors.log" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/MF_11_RD_PDf/logs/errors.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegiverse_API/MF_11_RD_PDf/logs/record_handler.log" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/MF_11_RD_PDf/logs/record_handler.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegiverse_API/readData/read_csv_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/readData/read_csv_test.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegiverse_API/XLM550 analysis/xlm550_read.py" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550 analysis/xlm550_read.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/logs/errors.log" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/logs/errors.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/logs/record_handler.log" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/logs/record_handler.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/pigImu_Main.py" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/pigImu_Main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -136,7 +51,7 @@
       <recent name="D:\github\adamShiau_Python\myAPI\0_readPig" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.read_csv_test">
+  <component name="RunManager" selected="Python.pigImu_Main (1)">
     <configuration name="pigImu_Main (1)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="adamShiau_Python" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -150,27 +65,6 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/pigImu_Main.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="pigImu_Main (2)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="adamShiau_Python" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/myAPI/4_PIG_roadtest" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/myAPI/4_PIG_roadtest/pigImu_Main.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -242,13 +136,34 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="xlm550_read" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="adamShiau_Python" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Aegiverse_API/XLM550 analysis" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Aegiverse_API/XLM550 analysis/xlm550_read.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.read_csv_test" />
         <item itemvalue="Python.pigImu_Main (1)" />
+        <item itemvalue="Python.xlm550_read" />
+        <item itemvalue="Python.read_csv_test" />
         <item itemvalue="Python.pigImu_Main (3)" />
         <item itemvalue="Python.replace_txt" />
-        <item itemvalue="Python.pigImu_Main (2)" />
       </list>
     </recent_temporary>
   </component>

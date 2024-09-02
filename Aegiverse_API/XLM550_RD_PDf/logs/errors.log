@@ -1129,3 +1129,23 @@
 2024-08-30 13:05:19 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
 2024-08-30 13:05:19 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
 2024-08-30 13:05:19 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (OSError(9, '控制代碼無效。', None, 6)).(The error occurred while clearing buffer, line 339.)
+2024-09-02 15:15:47 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (OSError(9, '控制代碼無效。', None, 6)).(An error occurred during the data retrieval process, line 398.)
+2024-09-02 15:15:47 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2024-09-02 15:15:47 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2024-09-02 15:15:47 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2024-09-02 15:15:48 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2024-09-02 15:15:48 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2024-09-02 15:15:48 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2024-09-02 15:15:48 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2024-09-02 15:15:48 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2024-09-02 15:15:48 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2024-09-02 15:15:48 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2024-09-02 15:15:48 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2024-09-02 15:15:48 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2024-09-02 15:15:48 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2024-09-02 15:15:48 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2024-09-02 15:15:48 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2024-09-02 15:15:49 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2024-09-02 15:15:49 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2024-09-02 15:15:49 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2024-09-02 15:15:49 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (OSError(9, '控制代碼無效。', None, 6)).(The error occurred while clearing buffer, line 339.)

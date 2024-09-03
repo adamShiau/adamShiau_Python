@@ -5,8 +5,8 @@ import os
 import pandas as pd
 
 # file_name = r'H:\共用雲端硬碟\Aegiverse_RD\GP-1Z0 開發\GP-1Z0-00\D4 (filter-test)\allan\20240402_allan\20240402_allan_earthquake.txt'
-# file_name = 'XLM550_0830.txt'
-file_name = r'D:\github\adamShiau_Python\Aegiverse_API\XLM550_RD_PDf\XLM550_0830.txt'
+file_name = 'XLM550_0830.txt'
+# file_name = r'D:\github\adamShiau_Python\Aegiverse_API\XLM550_RD_PDf\XLM550_0830.txt'
 file_name = os.path.normpath(file_name)
 print(file_name)
 Var = pd.read_csv(file_name, comment='#', skiprows=0, chunksize=None)
@@ -41,12 +41,15 @@ BS_p1 = 7.581278
 BS_p2 = -0.06303523
 BS_p3 = 0.0002968801
 Tx2 = Tx-30
-SF_comp = 100/(SF_p0 + SF_p1*Tx2 + SF_p2*Tx2**2 + SF_p3*Tx2**3)
+SF_comp = (SF_p0 + SF_p1*Tx2 + SF_p2*Tx2**2 + SF_p3*Tx2**3)
 BS_comp = (BS_p0 + BS_p1*Tx2 + BS_p2*Tx2**2 + BS_p3*Tx2**3)/1000  # mg
 # print(SF_comp)
 
-SFA = SFA1*SF_comp
-SFB = SFB1*SF_comp - BS_comp
+SFA = SFA1*100/SF_comp
+SFB = SFB1*100/SF_comp - BS_comp
+
+# plt.plot(Tx, BS_comp, label='BS_comp')
+# plt.legend()
 
 # print(SF_comp)
 # print(BS_comp)
@@ -54,9 +57,11 @@ SFB = SFB1*SF_comp - BS_comp
 # print(SFB)
 ax = ax * SFA + SFB
 # ax = ax * SF_CODE
-plt.plot(time, ax, label='ax')
-plt.legend()
+# plt.plot(time, ax, label='ax')
+# plt.legend()
 print('std ax:', np.std(ax))
+
+'''
 
 plt.figure(2)
 # SFA = 2.23992E-05
@@ -87,7 +92,7 @@ plt.legend()
 plt.figure(6)
 plt.plot(time, Tz, label='Tz')
 plt.legend()
-
+'''
 
 
 '''
@@ -128,16 +133,16 @@ ax1.legend(loc='upper left')
 ax2.legend(loc='upper right')
 '''
 
-with open('XLM550_0830_Tcomp.txt', 'w') as f:
-    # 写入变量名称
-    f.write("time,wx,wy,wz,ax,ay,az,Tx,Ty,Tz\n")
-
-    # 写入数据
-    for i in range(len(time)):
-        f.write(
-            f"{time[i]:.3f},{wx[i]:.5f},{wy[i]:.5f},{wz[i]:.5f},{ax[i]:.5f},{ay[i]:.5f},{az[i]:.5f},{Tx[i]:.2f},{Ty[i]:.2f},{Tz[i]:.2f}\n")
+# with open('XLM550_0830_Tcomp.txt', 'w') as f:
+#     # 写入变量名称
+#     f.write("time,wx,wy,wz,ax,ay,az,Tx,Ty,Tz\n")
+#
+#     # 写入数据
+#     for i in range(len(time)):
+#         f.write(
+#             f"{time[i]:.3f},{wx[i]:.5f},{wy[i]:.5f},{wz[i]:.5f},{ax[i]:.5f},{ay[i]:.5f},{az[i]:.5f},{Tx[i]:.2f},{Ty[i]:.2f},{Tz[i]:.2f}\n")
 
 print("数据已成功写入 '.txt' 文件。")
 
 plt.legend()
-# plt.show()
+plt.show()

@@ -6,7 +6,7 @@ import pandas as pd
 
 # file_name = r'H:\共用雲端硬碟\Aegiverse_RD\GP-1Z0 開發\GP-1Z0-00\D4 (filter-test)\allan\20240402_allan\20240402_allan_earthquake.txt'
 # file_name = 'XLM550_0830.txt'
-file_name = r'D:\github\adamShiau_Python\Aegiverse_API\XLM550_RD_PDf\XLM550_0831.txt'
+file_name = r'D:\github\adamShiau_Python\Aegiverse_API\XLM550_RD_PDf\XLM550_0830.txt'
 file_name = os.path.normpath(file_name)
 print(file_name)
 Var = pd.read_csv(file_name, comment='#', skiprows=0, chunksize=None)
@@ -22,27 +22,38 @@ Tx = np.array(Var['Tx'])
 Ty = np.array(Var['Ty'])
 Tz = np.array(Var['Tz'])
 # time = time/3600
-# last = 4374000
-# wz = wz[0:last]
-# time = time[0:last]
-# pd_temp = pd_temp[0:last]
-# data = np.vstack([time, wz, pd_temp]).T
-# np.savetxt('20240402_allan.txt', data, "%.3f,%.5f,%.1f")
 
-# int_wz = np.cumsum(wz)
-# mean_wz = np.mean(wz)
-# print(mean_wz)
-# wz2 = wz - mean_wz
-# int_wz2 = np.cumsum(wz2)
 
-# print(len(wz))
-# print(len(int_wz))
 SF_CODE = 2.048/2**23
+SFA1 = 1.6646E-07
+SFB1 = -0.6
 plt.figure(1)
-# SFA = 2.24042E-05
-# SFB = -80.75709061
-# ax = ax * SFA + SFB
-ax = ax * SF_CODE
+
+''' for SF temp comp.'''
+SF_p0 = 0.742982
+SF_p1 = 0.00001983288
+SF_p2 = 0.000000156571
+SF_p3 = -0.000000001536975
+
+''' for BIAS temp comp.'''
+BS_p0 = 1433.1
+BS_p1 = 7.581278
+BS_p2 = -0.06303523
+BS_p3 = 0.0002968801
+Tx2 = Tx-30
+SF_comp = 100/(SF_p0 + SF_p1*Tx2 + SF_p2*Tx2**2 + SF_p3*Tx2**3)
+BS_comp = (BS_p0 + BS_p1*Tx2 + BS_p2*Tx2**2 + BS_p3*Tx2**3)/1000  # mg
+# print(SF_comp)
+
+SFA = SFA1*SF_comp
+SFB = SFB1*SF_comp - BS_comp
+
+# print(SF_comp)
+# print(BS_comp)
+# print(SFA)
+# print(SFB)
+ax = ax * SFA + SFB
+# ax = ax * SF_CODE
 plt.plot(time, ax, label='ax')
 plt.legend()
 print('std ax:', np.std(ax))
@@ -117,16 +128,16 @@ ax1.legend(loc='upper left')
 ax2.legend(loc='upper right')
 '''
 
-# with open('XLM550_0902_3P3V_20Hz_long_g.txt', 'w') as f:
-#     # 写入变量名称
-#     f.write("time,wx,wy,wz,ax,ay,az,Tx,Ty,Tz\n")
-#
-#     # 写入数据
-#     for i in range(len(time)):
-#         f.write(
-#             f"{time[i]:.3f},{wx[i]:.5f},{wy[i]:.5f},{wz[i]:.5f},{ax[i]:.5f},{ay[i]:.5f},{az[i]:.5f},{Tx[i]:.2f},{Ty[i]:.2f},{Tz[i]:.2f}\n")
-#
-# print("数据已成功写入 '.txt' 文件。")
+with open('XLM550_0830_Tcomp.txt', 'w') as f:
+    # 写入变量名称
+    f.write("time,wx,wy,wz,ax,ay,az,Tx,Ty,Tz\n")
+
+    # 写入数据
+    for i in range(len(time)):
+        f.write(
+            f"{time[i]:.3f},{wx[i]:.5f},{wy[i]:.5f},{wz[i]:.5f},{ax[i]:.5f},{ay[i]:.5f},{az[i]:.5f},{Tx[i]:.2f},{Ty[i]:.2f},{Tz[i]:.2f}\n")
+
+print("数据已成功写入 '.txt' 文件。")
 
 plt.legend()
-plt.show()
+# plt.show()

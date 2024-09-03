@@ -5408,3 +5408,10 @@
 2024-09-02 19:42:45 - main.myLib.common - INFO - AttributeError: the file attempt to close does not exist!
 2024-09-02 19:44:28 - main.myLib.common - INFO - AttributeError: the file attempt to close does not exist!
 2024-09-02 19:44:28 - main.myLib.myGui.mygui_serial - INFO - The GUI is stopped to read the data.
+2024-09-02 19:46:28 - main.myLib.myGui.mygui_serial - INFO - The GUI is started to read the data.
+2024-09-02 19:46:28 - main.myLib.common - INFO - AttributeError: the file attempt to close does not exist!
+2024-09-02 19:51:08 - main.myLib.common - INFO - AttributeError: the file attempt to close does not exist!
+2024-09-02 19:51:08 - main.myLib.myGui.mygui_serial - INFO - The GUI is stopped to read the data.
+2024-09-02 19:51:31 - main.myLib.myGui.mygui_serial - INFO - The GUI is started to read the data.
+2024-09-03 10:04:06 - main.myLib.myGui.mygui_serial - INFO - The GUI is stopped to read the data.
+2024-09-03 10:09:08 - main.myLib.mySerial.Connector - INFO - COM4 is disconnected

@@ -106,10 +106,10 @@ def readADS122C04(dataPacket, dataLen=4, POS_AX=4, EN=1, PRINT=0):
         temp_adxl357_x = dataPacket[POS_AX:POS_AX + dataLen]
         temp_adxl357_y = dataPacket[POS_AX + 4:POS_AX + 4 + dataLen]
         temp_adxl357_z = dataPacket[POS_AX + 8:POS_AX + 8 + dataLen]
-        # xlm_temp = dataPacket[POS_AX + 12:POS_AX + 13]
         adxl357_x = convert2Sign_4B_R(temp_adxl357_x)
         adxl357_y = convert2Sign_4B_R(temp_adxl357_y)
         adxl357_z = convert2Sign_4B_R(temp_adxl357_z)
+        # adxl357_z = adxl357_z*2.048/2**23
     else:
         adxl357_x = 9.8
         adxl357_y = 9.8
@@ -172,7 +172,8 @@ def readAFI_PDf(dataPacket, POS_WX, POS_WY, POS_WZ, POS_A, POS_TIME, POS_TEMPX, 
     wx = IEEE_754_INT2F(temp_wx)
     wy = IEEE_754_INT2F(temp_wy)
     wz = IEEE_754_INT2F(temp_wz)
-    ax, ay, az = readADS122C04(dataPacket, 4, POS_A, 1, PRINT)
+    ax, ay, az = readADS122C04(dataPacket, 4, POS_A, 1, PRINT=0)
+
     Tx = IEEE_754_INT2F(temp_Tx)
     Ty = IEEE_754_INT2F(temp_Ty)
     Tz = IEEE_754_INT2F(temp_Tz)

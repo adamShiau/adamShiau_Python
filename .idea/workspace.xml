@@ -5,10 +5,22 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="85991cce-3172-48ba-9a0a-536b882fdfef" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550 analysis/xlm550_read_Tcomp.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Aegiverse_API/XLM550 analysis/xlm550_read.py" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550 analysis/xlm550_read.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegiverse_API/XLM550 analysis/xlm550_read_Tcomp.py" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550 analysis/xlm550_read_Tcomp.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/GP_141/aegiverse_logo_bk.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/GP_141/log_config.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/GP_141/logs/errors.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/GP_141/parameters_SP8_GP.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/dist/aegiverse_logo_bk.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/dist/log_config.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/dist/logs/errors.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/dist_1122/aegiverse_logo_bk.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/dist_1122/log_config.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/dist_1122/logs/errors.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/logs/errors.log" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/logs/errors.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/logs/record_handler.log" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/logs/record_handler.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/myLib/common.py" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550_RD_PDf/myLib/common.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -34,24 +46,24 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "last_opened_file_path": "D:/github/adamShiau_Python/Aegiverse_API/XLM550 analysis",
-    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/github/adamShiau_Python/Aegiverse_API/XLM550_RD_PDf&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\github\adamShiau_Python\Aegiverse_API\XLM550_RD_PDf" />
       <recent name="D:\github\adamShiau_Python\Aegiverse_API\XLM550 analysis" />
       <recent name="D:\github\adamShiau_Python\Aegiverse_API\readData" />
       <recent name="D:\github\adamShiau_Python\Aegiverse_API" />
       <recent name="C:\Users\ami73\Desktop\myAPI\0_readPig" />
-      <recent name="D:\github\adamShiau_Python\myAPI\0_readPig" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.xlm550_read_Tcomp">
+  <component name="RunManager" selected="Python.xlm550_read">
     <configuration name="pigImu_Main (1)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="adamShiau_Python" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -159,9 +171,9 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.xlm550_read_Tcomp" />
         <item itemvalue="Python.xlm550_read" />
         <item itemvalue="Python.pigImu_Main (1)" />
+        <item itemvalue="Python.xlm550_read_Tcomp" />
         <item itemvalue="Python.read_csv_test" />
         <item itemvalue="Python.pigImu_Main (3)" />
       </list>

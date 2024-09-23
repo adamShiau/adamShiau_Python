@@ -6,7 +6,7 @@ import pandas as pd
 
 # file_name = r'H:\共用雲端硬碟\Aegiverse_RD\GP-1Z0 開發\GP-1Z0-00\D4 (filter-test)\allan\20240402_allan\20240402_allan_earthquake.txt'
 # file_name = 'XLM550_0830.txt'
-file_name = r'D:\github\adamShiau_Python\Aegiverse_API\XLM550_RD_PDf\XLM550_0830.txt'
+file_name = r'D:\github\adamShiau_Python\Aegiverse_API\XLM550_RD_PDf\XLM550_0923_DiracADC_10ohm_100Hz.txt'
 file_name = os.path.normpath(file_name)
 print(file_name)
 Var = pd.read_csv(file_name, comment='#', skiprows=0, chunksize=None)
@@ -57,10 +57,13 @@ plt.legend()
 print('std ay:', np.std(ay))
 
 plt.figure(3)
-# SFA = 2.29606E-05
-# SFB = -82.76352775
+# SFA = 3.36755E-07
+# SFB = -0.0026240
 # az = az * SFA + SFB
 az = az * SF_CODE
+SF_az = 0.72498 # mA/g
+Rmeas = 10 # ohm
+az = az/Rmeas*1000/SF_az
 # az = az*2
 
 plt.plot(time, az, label='az')
@@ -117,16 +120,16 @@ ax1.legend(loc='upper left')
 ax2.legend(loc='upper right')
 '''
 
-# with open('XLM550_0902_3P3V_20Hz_long_g.txt', 'w') as f:
-#     # 写入变量名称
-#     f.write("time,wx,wy,wz,ax,ay,az,Tx,Ty,Tz\n")
-#
-#     # 写入数据
-#     for i in range(len(time)):
-#         f.write(
-#             f"{time[i]:.3f},{wx[i]:.5f},{wy[i]:.5f},{wz[i]:.5f},{ax[i]:.5f},{ay[i]:.5f},{az[i]:.5f},{Tx[i]:.2f},{Ty[i]:.2f},{Tz[i]:.2f}\n")
-#
-# print("数据已成功写入 '.txt' 文件。")
+with open('XLM550_0923_DiracADC_10ohm_100Hz_g.txt', 'w') as f:
+    # 写入变量名称
+    f.write("time,wx,wy,wz,ax,ay,az,Tx,Ty,Tz\n")
+
+    # 写入数据
+    for i in range(len(time)):
+        f.write(
+            f"{time[i]:.3f},{wx[i]:.5f},{wy[i]:.5f},{wz[i]:.5f},{ax[i]:.5f},{ay[i]:.5f},{az[i]:.5f},{Tx[i]:.2f},{Ty[i]:.2f},{Tz[i]:.2f}\n")
+
+print("数据已成功写入 '.txt' 文件。")
 
 plt.legend()
 plt.show()

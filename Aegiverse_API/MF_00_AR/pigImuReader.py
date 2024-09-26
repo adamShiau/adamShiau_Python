@@ -41,8 +41,8 @@ IMU_DATA_STRUCTURE = {
     "PD_TEMP_Y": np.zeros(1),
     "PD_TEMP_Z": np.zeros(1),
     "PITCH": np.zeros(1),
-    "ROLL": np.zeros(1),
-    "YAW": np.zeros(1)
+    "ROW": np.zeros(1),
+    "YAM": np.zeros(1)
 }
 
 HEADER_KVH = [0xFE, 0x81, 0xFF, 0x55]
@@ -82,13 +82,19 @@ class pigImuReader(QThread):
         imuThreadStop_qt = pyqtSignal()
         buffer_qt = pyqtSignal(int)
         occur_err_qt = pyqtSignal(str)
-        deviceReset_qt = pyqtSignal(bool)
+        deviceReset_qt = pyqtSignal(list)
+        stopRemind_qt = pyqtSignal(bool)
 
     def __init__(self, portName: str = "None", boolCaliw=False, boolCalia=False, baudRate: int = 230400,
                  debug_en: bool = 0):
         super(pigImuReader, self).__init__()
         self.pig_err_kal = filter.kalman_1D()
         self.pig_wz_kal = filter.kalman_1D()
+        self.pig_wx_kal = filter.kalman_1D()
+        self.pig_wy_kal = filter.kalman_1D()
+        self.pig_az_kal = filter.kalman_1D()
+        self.pig_ax_kal = filter.kalman_1D()
+        self.pig_ay_kal = filter.kalman_1D()
         self.__isCali_a = boolCalia
         self.__isCali_w = boolCaliw
         self.sf_a = 1
@@ -110,6 +116,7 @@ class pigImuReader(QThread):
         self.__imuoffset = {k: np.zeros(1) for k in set(IMU_DATA_STRUCTURE)}
         # print(not __name__ == "__main__")
         self.recording_device_reset_time = 0 # 紀錄是否重啟的狀況
+        self.whileStop = False
 
 
     # class constructor
@@ -155,6 +162,11 @@ class pigImuReader(QThread):
         self.__kal_Q = Q
         self.pig_err_kal.kal_Q = self.kal_Q
         self.pig_wz_kal.kal_Q = self.kal_Q
+        self.pig_wx_kal.kal_Q = self.kal_Q
+        self.pig_wy_kal.kal_Q = self.kal_Q
+        self.pig_az_kal.kal_Q = self.kal_Q
+        self.pig_ax_kal.kal_Q = self.kal_Q
+        self.pig_ay_kal.kal_Q = self.kal_Q
 
     @property
     def kal_R(self):
@@ -165,6 +177,12 @@ class pigImuReader(QThread):
         self.__kal_R = R
         self.pig_err_kal.kal_R = self.kal_R
         self.pig_wz_kal.kal_R = self.kal_R
+        self.pig_wx_kal.kal_R = self.kal_R
+        self.pig_wy_kal.kal_R = self.kal_R
+        self.pig_az_kal.kal_R = self.kal_R
+        self.pig_ax_kal.kal_R = self.kal_R
+        self.pig_ay_kal.kal_R = self.kal_R
+
 
     @property
     def isRun(self):
@@ -247,10 +265,12 @@ class pigImuReader(QThread):
     # End of memsImuReader::writeImuCmd
 
     def readIMU(self):
-        self.flushInputBuffer()
+        self.flushInputBuffer("None")
         self.writeImuCmd(7, 2, 2)
 
     def stopIMU(self):
+        self.writeImuCmd(7, 4, 2)
+        cmn.wait_ms(100)
         self.writeImuCmd(7, 4, 2)
         cmn.wait_ms(100)
         # self.writeImuCmd(5, 4, 2)
@@ -260,13 +280,15 @@ class pigImuReader(QThread):
         # self.writeImuCmd(5, 4, 2)
         # cmn.wait_ms(100)
         # self.writeImuCmd(5, 4, 2)
-        # cmn.wait_ms(100)
-        # self.writeImuCmd(5, 4, 2)
-        self.flushInputBuffer()
+        self.flushInputBuffer("stop")
+
 
     def dump_fog_parameters(self, ch):
         # self.writeImuCmd(0x66, 2)
         return self.__Connector.dump_fog_parameters(ch)
+
+    def dump_cali_parameters(self, ch):
+        return self.__Connector.dump_cali_parameters(ch)
 
     def getVersion(self, ch):
         # self.writeImuCmd(0x66, 2)
@@ -280,38 +302,44 @@ class pigImuReader(QThread):
     def getImuData(self):
         try:
             head = getData.alignHeader_4B(self.__Connector, HEADER_KVH)
-            dataPacket = getData.getdataPacket(self.__Connector, head, 56)
+            dataPacket = getData.getdataPacket(self.__Connector, head, 56)   # AFI AHRS規格的封包
             if dataPacket == False:
                 return False, False
             # print([hex(i) for i in dataPacket])
-            TIME, WX, WY, WZ, AX, AY, AZ, TX, TY, TZ, PITCH, ROLL, YAW = cmn.readAFI_ATT_PDf(dataPacket, POS_WX, POS_WY,
+            # TIME, WX, WY, WZ, AX, AY, AZ, TX, TY, TZ = cmn.readAFI(dataPacket, POS_WX, POS_WY, POS_WZ, POS_A, POS_MCUTIME,
+            #                                                        POS_TX, POS_TY, POS_TZ, SIZE_4, PRINT=0)
+
+            # TIME, WX, WY, WZ, AX, AY, AZ, TX, TY, TZ, PITCH, ROW, YAM = cmn.readAFI_ATT(dataPacket, POS_WX, POS_WY, POS_WZ, POS_A,
+            #                                                        POS_MCUTIME, POS_TX, POS_TY, POS_TZ, POS_PITCH, POS_ROW, POS_YAW, SIZE_4, PRINT=0)
+
+            TIME, WX, WY, WZ, AX, AY, AZ, TX, TY, TZ, PITCH, ROW, YAW = cmn.readAFI_ATT_PDf(dataPacket, POS_WX, POS_WY,
                                                                                              POS_WZ, POS_AX, POS_AY,
                                                                                              POS_AZ, POS_MCUTIME,
                                                                                              POS_TX, POS_TY, POS_TZ,
                                                                                              POS_PITCH, POS_ROLL,
-                                                                                             POS_YAW, SIZE_4, PRINT=1)
+                                                                                             POS_YAW, SIZE_4, PRINT=0)
+
 
             if self.isKal:
-                # WX = self.pig_wz_kal.update(WX)
-                # WY = self.pig_wz_kal.update(WY)
+                WX = self.pig_wx_kal.update(WX)
+                WY = self.pig_wy_kal.update(WY)
                 WZ = self.pig_wz_kal.update(WZ)
-                # AX = self.pig_wz_kal.update(AX)
-                # AY = self.pig_wz_kal.update(AY)
-                # AZ = self.pig_wz_kal.update(AZ)
+                AX = self.pig_ax_kal.update(AX)
+                AY = self.pig_ay_kal.update(AY)
+                AZ = self.pig_az_kal.update(AZ)
 
             imudata = {"TIME": TIME,
                        "WX": WX, "WY": WY, "WZ": WZ,
                        "AX": AX, "AY": AY, "AZ": AZ,
                        "PD_TEMP_X": TX, "PD_TEMP_Y": TY, "PD_TEMP_Z": TZ,
-                       "PITCH": PITCH, "ROLL": ROLL, "YAW": YAW
-                       }
+                       "PITCH": PITCH, "ROW": ROW, "YAM": YAW}
             return dataPacket, imudata
         except IndexError as IdxErr:
             __excType, __excObj, __excTb = sys.exc_info()
             __lineNum = __excTb.tb_lineno
             logger.error(f'IndexError — The index position has exceeded the range of the list.(An error occurred during the data retrieval process, line {__lineNum}.)')
-            errStr = "An error occurred during the data retrieval process, IndexError.\n Please check the issue where the error occurred, thank you.\n" \
-                     "And please take a screenshot of the error message for further troubleshooting by the responsible party.\n Thank you for your cooperation."
+            errStr = "An error occurred during the data retrieval process, IndexError.\nPlease check the issue where the error occurred, thank you.\n" \
+                     "And please take a screenshot of the error message for further troubleshooting by the responsible party.\nThank you for your cooperation."
             self.isRun = False
             self.occur_err_qt.emit(errStr)
             return False, False
@@ -319,8 +347,8 @@ class pigImuReader(QThread):
             __excType, __excObj, __excTb = sys.exc_info()
             __lineNum = __excTb.tb_lineno
             logger.error(f'TypeError — {typeErr}.(An error occurred during the data retrieval process, line {__lineNum}.)')
-            errStr = "An error occurred during the data retrieval process, TypeError.\n Please check the issue where the error occurred, thank you.\n" \
-                     "And please take a screenshot of the error message for further troubleshooting by the responsible party.\n Thank you for your cooperation."
+            errStr = "An error occurred during the data retrieval process, TypeError.\nPlease check the issue where the error occurred, thank you.\n" \
+                     "And please take a screenshot of the error message for further troubleshooting by the responsible party.\nThank you for your cooperation."
             self.isRun = False
             self.occur_err_qt.emit(errStr)
             return False, False
@@ -328,8 +356,8 @@ class pigImuReader(QThread):
             __excType, __excObj, __excTb = sys.exc_info()
             __lineNum = __excTb.tb_lineno
             logger.error(f'ValueError — {ValErr}.(An error occurred during the data retrieval process, line {__lineNum}.)')
-            errStr = "An error occurred during the data retrieval process, ValueError.\n Please check the issue where the error occurred, thank you.\n" \
-                     "And please take a screenshot of the error message for further troubleshooting by the responsible party.\n Thank you for your cooperation."
+            errStr = "An error occurred during the data retrieval process, ValueError.\nPlease check the issue where the error occurred, thank you.\n" \
+                     "And please take a screenshot of the error message for further troubleshooting by the responsible party.\nThank you for your cooperation."
             self.isRun = False
             self.occur_err_qt.emit(errStr)
             return False, False
@@ -338,8 +366,8 @@ class pigImuReader(QThread):
             __lineNum = __excTb.tb_lineno
             logger.error(f'Exception — {e}.(An error occurred during the data retrieval process, line {__lineNum}.)')
             ExceptionType = type(e)
-            errStr = f"An error occurred during the data retrieval process, {ExceptionType}.\n Please check the issue where the error occurred, thank you.\n" \
-                     "And please take a screenshot of the error message for further troubleshooting by the responsible party.\n Thank you for your cooperation."
+            errStr = f"An error occurred during the data retrieval process, {ExceptionType}.\nPlease check the issue where the error occurred, thank you.\n" \
+                     "And please take a screenshot of the error message for further troubleshooting by the responsible party.\nThank you for your cooperation."
             self.isRun = False
             self.occur_err_qt.emit(errStr)
             return False, False
@@ -348,18 +376,23 @@ class pigImuReader(QThread):
     def readInputBuffer(self):
         return self.__Connector.readInputBuffer()
 
-    def flushInputBuffer(self):
+    def flushInputBuffer(self, status):
         try:
             print('buf before:', self.readInputBuffer())
             self.__Connector.flushInputBuffer()
             print('buf after:', self.readInputBuffer())
+            if status == "stop" and self.whileStop == True:
+                self.whileStop = False
+                cmn.wait_ms(1000)
+                self.stopRemind_qt.emit(True)
         except serial.serialutil.SerialException as err:
             __excType, __excObj, __excTb = sys.exc_info()
             __lineNum = __excTb.tb_lineno
             logger.error(f'SerialException — {err}.(The error occurred while clearing buffer, line {__lineNum}.)')
-            errStr = "An error occurred during reset Buffer.\n Please check the issue where the error occurred, thank you.\n" \
-                     "And please take a screenshot of the error message for further troubleshooting by the responsible party.\n Thank you for your cooperation."
+            errStr = "An error occurred during reset Buffer.\nPlease check the issue where the error occurred, thank you.\n" \
+                     "And please take a screenshot of the error message for further troubleshooting by the responsible party.\nThank you for your cooperation."
             self.occur_err_qt.emit(errStr)
+
 
     def do_cali(self, dictContainer, cali_times):
         if self.isCali:
@@ -375,26 +408,44 @@ class pigImuReader(QThread):
         else:
             return dictContainer
 
-    def judgment_Reset(self):
+
+    def judgment_Reset(self, t):
         if self.recording_device_reset_time == 0:
             self.recording_device_reset_time = time.perf_counter()
         else:
             now_time = time.perf_counter()
-            if (now_time - self.recording_device_reset_time) > 15:
+            if (now_time - self.recording_device_reset_time) > 3:
                 self.recording_device_reset_time = time.perf_counter()
-                self.deviceReset_qt.emit(True)
+                timeList = self.SecConvertToHourMinute(t)
+                self.deviceReset_qt.emit(timeList)
+                logger.info("timeout occurs.(發生Timeout)")
                 print("自動重啟")
             else:
                 self.recording_device_reset_time = time.perf_counter()
 
 
+    def SecConvertToHourMinute(self, t):
+        Sec = 0
+        Min = 0
+        Hour = 0
+        Min_quotient, Sec = divmod(t , 60)
+        if Min_quotient != 0:
+            Hour, Min = divmod(Min_quotient, 60)
+
+        TimeList = [Sec, Min, Hour]
+        return  TimeList
+
+
     def run(self):
         logging.basicConfig(level=100)
         t0 = time.perf_counter()
+        currentDataSec = 0
+        self.whileStop = False
         while True:
             if not self.isRun:
                 print('run flag is false')
                 self.stopIMU()
+                self.whileStop = True
                 self.imuThreadStop_qt.emit()
                 break
             # End of if-condition
@@ -404,7 +455,7 @@ class pigImuReader(QThread):
             imudataArray = {k: np.empty(0) for k in set(IMU_DATA_STRUCTURE)}
 
             for i in range(self.arrayNum):
-                self.judgment_Reset()
+                self.judgment_Reset(currentDataSec)
                 try:
                     input_buf = self.readInputBuffer()
                     self.buffer_qt.emit(input_buf)
@@ -419,9 +470,10 @@ class pigImuReader(QThread):
                     __lineNum = __excTb.tb_lineno
                     logger.error(
                         f'PortNotOpenError — {e}.(An error occurred during the data retrieval process, line {__lineNum}.)')
-                    errStr = f"An error occurred during the data retrieval process.\n Please check the issue where the error occurred, thank you.\n" \
-                             "And please take a screenshot of the error message for further troubleshooting by the responsible party.\n Thank you for your cooperation."
+                    errStr = f"An error occurred during the data retrieval process.\nPlease check the issue where the error occurred, thank you.\n" \
+                             "And please take a screenshot of the error message for further troubleshooting by the responsible party.\nThank you for your cooperation."
                     self.isRun = False
+                    self.whileStop = True
                     # self.stopIMU()
                     # self.imuThreadStop_qt.emit()
                     self.occur_err_qt.emit(errStr)
@@ -430,9 +482,10 @@ class pigImuReader(QThread):
                     __excType, __excObj, __excTb = sys.exc_info()
                     __lineNum = __excTb.tb_lineno
                     logger.error(f'SerialException — {e}.(An error occurred during the data retrieval process, line {__lineNum}.)')
-                    errStr = "An error occurred during the data retrieval process, SerialException.\n Please check the issue where the error occurred, thank you.\n" \
-                             "And please take a screenshot of the error message for further troubleshooting by the responsible party.\n Thank you for your cooperation."
+                    errStr = "An error occurred during the data retrieval process, SerialException.\nPlease check the issue where the error occurred, thank you.\n" \
+                             "And please take a screenshot of the error message for further troubleshooting by the responsible party.\nThank you for your cooperation."
                     self.isRun = False
+                    self.whileStop = True
                     # self.stopIMU()
                     # self.imuThreadStop_qt.emit()
                     self.occur_err_qt.emit(errStr)
@@ -442,10 +495,13 @@ class pigImuReader(QThread):
                 dataPacket, imudata = self.getImuData()
                 if dataPacket == False and imudata == False:
                     self.isRun = False
-                    __errStr = "An error occurred during the data retrieval process.\n Please check the issue where the error occurred, thank you.\n" \
-                               "And please take a screenshot of the error message for further troubleshooting by the responsible party.\n Thank you for your cooperation."
+                    self.whileStop = True
+                    __errStr = "An error occurred during the data retrieval process.\nPlease check the issue where the error occurred, thank you.\n" \
+                               "And please take a screenshot of the error message for further troubleshooting by the responsible party.\nThank you for your cooperation."
                     self.occur_err_qt.emit(__errStr)
                     break
+                if i == 0:
+                    currentDataSec = int(imudata["TIME"])
                 # print(len(dataPacket))
                 t2 = time.perf_counter()
 
@@ -468,6 +524,9 @@ class pigImuReader(QThread):
                         imudataArray["PD_TEMP_X"] = np.append(imudataArray["PD_TEMP_X"], imudata["PD_TEMP_X"])
                         imudataArray["PD_TEMP_Y"] = np.append(imudataArray["PD_TEMP_Y"], imudata["PD_TEMP_Y"])
                         imudataArray["PD_TEMP_Z"] = np.append(imudataArray["PD_TEMP_Z"], imudata["PD_TEMP_Z"])
+                        imudataArray["PITCH"] = np.append(imudataArray["PITCH"], imudata["PITCH"])
+                        imudataArray["ROW"] = np.append(imudataArray["ROW"], imudata["ROW"])
+                        imudataArray["YAM"] = np.append(imudataArray["YAM"], imudata["YAM"])
                     t5 = time.perf_counter()
 
                     debug_info = "ACT: ," + str(input_buf) + ", " + str(round((t5 - t1) * 1000, 5)) + ", " \
@@ -478,26 +537,31 @@ class pigImuReader(QThread):
                     __excType, __excObj, __excTb = sys.exc_info()
                     __lineNum = __excTb.tb_lineno
                     logger.error(f'TypeError — {TypeErr}.(The main retrieval of the data  portion, line {__lineNum}.)')
-                    errStr = "An error occurred during the data retrieval process, TypeError.\n Please check the issue where the error occurred, thank you.\n" \
-                             "And please take a screenshot of the error message for further troubleshooting by the responsible party.\n Thank you for your cooperation."
+                    errStr = "An error occurred during the data retrieval process, TypeError.\nPlease check the issue where the error occurred, thank you.\n" \
+                             "And please take a screenshot of the error message for further troubleshooting by the responsible party.\nThank you for your cooperation."
                     self.isRun = False
+                    self.whileStop = True
                     # self.stopIMU()
                     self.occur_err_qt.emit(errStr)
-                    break
                 except Exception as e:
+                    __excType, __excObj, __excTb = sys.exc_info()
+                    __lineNum = __excTb.tb_lineno
                     logger.error(f'Exception — {e}.(The main retrieval of the data  portion, line {__lineNum}.)')
-                    errStr = "An error occurred during the data retrieval process.\n Please check the issue where the error occurred, thank you.\n" \
-                             "And please take a screenshot of the error message for further troubleshooting by the responsible party.\n Thank you for your cooperation."
+                    errStr = "An error occurred during the data retrieval process.\nPlease check the issue where the error occurred, thank you.\n" \
+                             "And please take a screenshot of the error message for further troubleshooting by the responsible party.\nThank you for your cooperation."
                     self.isRun = False
+                    self.whileStop = True
                     # self.stopIMU()
                     self.occur_err_qt.emit(errStr)
+
+                if not self.isRun:
+                    print('run flag is false')
+                    self.stopIMU()
+                    self.whileStop = True
+                    self.imuThreadStop_qt.emit()
+                    break
             # end of for loop
 
-            if not self.isRun:
-                print('run flag is false')
-                self.stopIMU()
-                self.imuThreadStop_qt.emit()
-                break
             # imudataArray["TIME"] = imudataArray["TIME"] - t0
 
             self.offset_setting(self.__imuoffset)

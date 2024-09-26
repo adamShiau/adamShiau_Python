@@ -1,0 +1,1 @@
+pyinstaller -p "C:\github\AF_GUITest\AFI\EN\MF_06_EN\myLib;." -F pigImu_Main.py

@@ -1,0 +1,144 @@
+2024-09-12 16:29:37 - main - INFO - create log stuff done, 
+2024-09-12 16:29:37 - main - INFO - process start
+2024-09-12 16:29:37 - main.myLib.common - INFO - myLib.common logger start
+2024-09-12 16:29:37 - main.myLib.myGui.mygui_serial - INFO - myLib.myGui.mygui_serial logger start
+2024-09-12 16:29:37 - main.myLib.mySerial.Connector - INFO - myLib.mySerial.Connector logger start
+2024-09-12 16:29:37 - main.myLib.myGui.pig_parameters_widget - INFO - myLib.myGui.pig_parameters_widget logger start
+2024-09-12 16:29:37 - main.myLib.myGui.myLabel - INFO - myLib.myGui.myLabel logger start
+2024-09-12 16:29:37 - main.myLib.myGui.myComboBox - INFO - myLib.myGui.myComboBox logger start
+2024-09-12 16:29:37 - main.myLib.myGui.pig_menu_manager - INFO - myLib.myGui.pig_menu_manager logger start
+2024-09-12 16:29:37 - main.myLib.myGui.analysis_Allan - INFO - myLib.myGui.analysis_Allan logger start
+2024-09-12 16:29:37 - main.myLib.myGui.graph - INFO - myLib.myGui.graph logger start
+2024-09-12 16:29:38 - main.myLib.myGui.myProgressBar - INFO - myLib.myGui.myProgressBar logger start
+2024-09-12 16:29:38 - main.myLib.myGui.analysis_TimingPlot - INFO - myLib.myGui.analysis_TimingPlot logger start
+2024-09-12 16:29:38 - main.myLib.myGui.myRadioButton - INFO - myLib.myGui.myRadioButton logger start
+2024-09-12 16:29:38 - main.pigImu_Widget - INFO - pigImu_Widget logger start
+2024-09-12 16:29:38 - main.myLib.myGui.myLineEdit - INFO - myLib.myGui.myLineEdit logger start
+2024-09-12 16:29:38 - main.myLib.myGui.myCheckBox - INFO - myLib.myGui.myCheckBox logger start
+2024-09-12 16:29:38 - main.pigImuReader - INFO - pigImuReader logger start
+2024-09-12 16:29:38 - main.myLib.mySerial.getData - INFO - myLib.mySerial.getData logger start
+2024-09-12 16:29:38 - main.myLib.crcCalculator.crcLib - INFO - myLib.crcCalculator.crcLib logger start
+2024-09-12 16:29:38 - main.myLib.myFilter.filter - INFO - myLib.myFilter.filter logger start
+2024-09-12 16:29:41 - main.myLib.mySerial.Connector - INFO - COM3 is connected
+2024-09-12 16:29:44 - main.myLib.myGui.mygui_serial - INFO - The GUI is started to read the data.
+2024-09-12 16:29:44 - main.myLib.common - INFO - AttributeError: the file attempt to close does not exist!
+2024-09-12 16:29:44 - main.myLib.myGui.mygui_serial - INFO - The save checkbox is not enabled.
+2024-09-12 16:29:44 - main.myLib.common - INFO - AttributeError: the file attempt to close does not exist!
+2024-09-12 16:29:44 - main.myLib.common - INFO - AttributeError: the file attempt to close does not exist!
+2024-09-12 16:30:06 - main.myLib.common - INFO - AttributeError: the file attempt to close does not exist!
+2024-09-12 16:30:06 - main.myLib.myGui.mygui_serial - INFO - The GUI is stopped reading the data.
+2024-09-12 16:30:30 - main.myLib.myGui.mygui_serial - INFO - The GUI is started to read the data.
+2024-09-12 16:31:06 - main.myLib.myGui.mygui_serial - INFO - The GUI is stopped reading the data.
+2024-09-12 16:31:14 - main.myLib.mySerial.Connector - INFO - COM3 is disconnected
+2024-09-12 16:36:41 - main - INFO - create log stuff done, 
+2024-09-12 16:36:42 - main - INFO - process start
+2024-09-12 16:36:42 - main.myLib.common - INFO - myLib.common logger start
+2024-09-12 16:36:42 - main.myLib.myGui.mygui_serial - INFO - myLib.myGui.mygui_serial logger start
+2024-09-12 16:36:42 - main.myLib.mySerial.Connector - INFO - myLib.mySerial.Connector logger start
+2024-09-12 16:36:42 - main.myLib.myGui.pig_parameters_widget - INFO - myLib.myGui.pig_parameters_widget logger start
+2024-09-12 16:36:42 - main.myLib.myGui.myLabel - INFO - myLib.myGui.myLabel logger start
+2024-09-12 16:36:42 - main.myLib.myGui.myComboBox - INFO - myLib.myGui.myComboBox logger start
+2024-09-12 16:36:42 - main.myLib.myGui.pig_menu_manager - INFO - myLib.myGui.pig_menu_manager logger start
+2024-09-12 16:36:42 - main.myLib.myGui.analysis_Allan - INFO - myLib.myGui.analysis_Allan logger start
+2024-09-12 16:36:42 - main.myLib.myGui.graph - INFO - myLib.myGui.graph logger start
+2024-09-12 16:36:43 - main.myLib.myGui.myProgressBar - INFO - myLib.myGui.myProgressBar logger start
+2024-09-12 16:36:43 - main.myLib.myGui.analysis_TimingPlot - INFO - myLib.myGui.analysis_TimingPlot logger start
+2024-09-12 16:36:43 - main.myLib.myGui.myRadioButton - INFO - myLib.myGui.myRadioButton logger start
+2024-09-12 16:36:43 - main.pigImu_Widget - INFO - pigImu_Widget logger start
+2024-09-12 16:36:43 - main.myLib.myGui.myLineEdit - INFO - myLib.myGui.myLineEdit logger start
+2024-09-12 16:36:43 - main.myLib.myGui.myCheckBox - INFO - myLib.myGui.myCheckBox logger start
+2024-09-12 16:36:43 - main.pigImuReader - INFO - pigImuReader logger start
+2024-09-12 16:36:43 - main.myLib.mySerial.getData - INFO - myLib.mySerial.getData logger start
+2024-09-12 16:36:43 - main.myLib.crcCalculator.crcLib - INFO - myLib.crcCalculator.crcLib logger start
+2024-09-12 16:36:43 - main.myLib.myFilter.filter - INFO - myLib.myFilter.filter logger start
+2024-09-12 16:36:48 - main.myLib.mySerial.Connector - INFO - COM3 is connected
+2024-09-12 16:36:51 - main.myLib.myGui.mygui_serial - INFO - The GUI is started to read the data.
+2024-09-12 16:36:51 - main.myLib.common - INFO - AttributeError: the file attempt to close does not exist!
+2024-09-12 16:36:51 - main.myLib.myGui.mygui_serial - INFO - The save checkbox is not enabled.
+2024-09-12 16:36:51 - main.myLib.common - INFO - AttributeError: the file attempt to close does not exist!
+2024-09-12 16:36:51 - main.myLib.common - INFO - AttributeError: the file attempt to close does not exist!
+2024-09-12 16:37:03 - main.myLib.common - INFO - AttributeError: the file attempt to close does not exist!
+2024-09-12 16:37:03 - main.myLib.myGui.mygui_serial - INFO - The GUI is stopped reading the data.
+2024-09-12 16:37:50 - main.myLib.myGui.mygui_serial - INFO - The GUI is started to read the data.
+2024-09-12 16:37:57 - main.myLib.myGui.mygui_serial - INFO - The GUI is stopped reading the data.
+2024-09-12 16:38:13 - main.myLib.mySerial.Connector - INFO - COM3 is disconnected
+2024-09-12 16:38:32 - main - INFO - create log stuff done, 
+2024-09-12 16:38:32 - main - INFO - process start
+2024-09-12 16:38:32 - main.myLib.common - INFO - myLib.common logger start
+2024-09-12 16:38:32 - main.myLib.myGui.mygui_serial - INFO - myLib.myGui.mygui_serial logger start
+2024-09-12 16:38:32 - main.myLib.mySerial.Connector - INFO - myLib.mySerial.Connector logger start
+2024-09-12 16:38:32 - main.myLib.myGui.pig_parameters_widget - INFO - myLib.myGui.pig_parameters_widget logger start
+2024-09-12 16:38:32 - main.myLib.myGui.myLabel - INFO - myLib.myGui.myLabel logger start
+2024-09-12 16:38:32 - main.myLib.myGui.myComboBox - INFO - myLib.myGui.myComboBox logger start
+2024-09-12 16:38:32 - main.myLib.myGui.pig_menu_manager - INFO - myLib.myGui.pig_menu_manager logger start
+2024-09-12 16:38:32 - main.myLib.myGui.analysis_Allan - INFO - myLib.myGui.analysis_Allan logger start
+2024-09-12 16:38:32 - main.myLib.myGui.graph - INFO - myLib.myGui.graph logger start
+2024-09-12 16:38:33 - main.myLib.myGui.myProgressBar - INFO - myLib.myGui.myProgressBar logger start
+2024-09-12 16:38:33 - main.myLib.myGui.analysis_TimingPlot - INFO - myLib.myGui.analysis_TimingPlot logger start
+2024-09-12 16:38:33 - main.myLib.myGui.myRadioButton - INFO - myLib.myGui.myRadioButton logger start
+2024-09-12 16:38:33 - main.pigImu_Widget - INFO - pigImu_Widget logger start
+2024-09-12 16:38:33 - main.myLib.myGui.myLineEdit - INFO - myLib.myGui.myLineEdit logger start
+2024-09-12 16:38:33 - main.myLib.myGui.myCheckBox - INFO - myLib.myGui.myCheckBox logger start
+2024-09-12 16:38:33 - main.pigImuReader - INFO - pigImuReader logger start
+2024-09-12 16:38:33 - main.myLib.mySerial.getData - INFO - myLib.mySerial.getData logger start
+2024-09-12 16:38:33 - main.myLib.crcCalculator.crcLib - INFO - myLib.crcCalculator.crcLib logger start
+2024-09-12 16:38:33 - main.myLib.myFilter.filter - INFO - myLib.myFilter.filter logger start
+2024-09-12 16:38:38 - main.myLib.mySerial.Connector - INFO - COM3 is connected
+2024-09-12 16:38:47 - main.myLib.mySerial.Connector - INFO - COM3 is disconnected
+2024-09-12 16:38:54 - main - INFO - create log stuff done, 
+2024-09-12 16:38:54 - main - INFO - process start
+2024-09-12 16:38:54 - main.myLib.common - INFO - myLib.common logger start
+2024-09-12 16:38:54 - main.myLib.myGui.mygui_serial - INFO - myLib.myGui.mygui_serial logger start
+2024-09-12 16:38:54 - main.myLib.mySerial.Connector - INFO - myLib.mySerial.Connector logger start
+2024-09-12 16:38:54 - main.myLib.myGui.pig_parameters_widget - INFO - myLib.myGui.pig_parameters_widget logger start
+2024-09-12 16:38:54 - main.myLib.myGui.myLabel - INFO - myLib.myGui.myLabel logger start
+2024-09-12 16:38:54 - main.myLib.myGui.myComboBox - INFO - myLib.myGui.myComboBox logger start
+2024-09-12 16:38:54 - main.myLib.myGui.pig_menu_manager - INFO - myLib.myGui.pig_menu_manager logger start
+2024-09-12 16:38:54 - main.myLib.myGui.analysis_Allan - INFO - myLib.myGui.analysis_Allan logger start
+2024-09-12 16:38:54 - main.myLib.myGui.graph - INFO - myLib.myGui.graph logger start
+2024-09-12 16:38:55 - main.myLib.myGui.myProgressBar - INFO - myLib.myGui.myProgressBar logger start
+2024-09-12 16:38:55 - main.myLib.myGui.analysis_TimingPlot - INFO - myLib.myGui.analysis_TimingPlot logger start
+2024-09-12 16:38:55 - main.myLib.myGui.myRadioButton - INFO - myLib.myGui.myRadioButton logger start
+2024-09-12 16:38:55 - main.pigImu_Widget - INFO - pigImu_Widget logger start
+2024-09-12 16:38:55 - main.myLib.myGui.myLineEdit - INFO - myLib.myGui.myLineEdit logger start
+2024-09-12 16:38:55 - main.myLib.myGui.myCheckBox - INFO - myLib.myGui.myCheckBox logger start
+2024-09-12 16:38:55 - main.pigImuReader - INFO - pigImuReader logger start
+2024-09-12 16:38:55 - main.myLib.mySerial.getData - INFO - myLib.mySerial.getData logger start
+2024-09-12 16:38:55 - main.myLib.crcCalculator.crcLib - INFO - myLib.crcCalculator.crcLib logger start
+2024-09-12 16:38:55 - main.myLib.myFilter.filter - INFO - myLib.myFilter.filter logger start
+2024-09-12 16:38:58 - main.myLib.mySerial.Connector - INFO - COM3 is connected
+2024-09-12 16:39:49 - main.myLib.myGui.mygui_serial - INFO - The GUI is started to read the data.
+2024-09-12 16:39:55 - main.myLib.myGui.mygui_serial - INFO - The GUI is stopped reading the data.
+2024-09-12 16:40:12 - main.myLib.mySerial.Connector - INFO - COM3 is disconnected
+2024-09-12 17:12:21 - main - INFO - create log stuff done, 
+2024-09-12 17:12:21 - main - INFO - process start
+2024-09-12 17:12:21 - main.myLib.common - INFO - myLib.common logger start
+2024-09-12 17:12:21 - main.myLib.myGui.mygui_serial - INFO - myLib.myGui.mygui_serial logger start
+2024-09-12 17:12:21 - main.myLib.mySerial.Connector - INFO - myLib.mySerial.Connector logger start
+2024-09-12 17:12:21 - main.myLib.myGui.pig_parameters_widget - INFO - myLib.myGui.pig_parameters_widget logger start
+2024-09-12 17:12:21 - main.myLib.myGui.myLabel - INFO - myLib.myGui.myLabel logger start
+2024-09-12 17:12:21 - main.myLib.myGui.myComboBox - INFO - myLib.myGui.myComboBox logger start
+2024-09-12 17:12:21 - main.myLib.myGui.pig_menu_manager - INFO - myLib.myGui.pig_menu_manager logger start
+2024-09-12 17:12:21 - main.myLib.myGui.analysis_Allan - INFO - myLib.myGui.analysis_Allan logger start
+2024-09-12 17:12:21 - main.myLib.myGui.graph - INFO - myLib.myGui.graph logger start
+2024-09-12 17:12:22 - main.myLib.myGui.myProgressBar - INFO - myLib.myGui.myProgressBar logger start
+2024-09-12 17:12:22 - main.myLib.myGui.analysis_TimingPlot - INFO - myLib.myGui.analysis_TimingPlot logger start
+2024-09-12 17:12:22 - main.myLib.myGui.myRadioButton - INFO - myLib.myGui.myRadioButton logger start
+2024-09-12 17:12:22 - main.pigImu_Widget - INFO - pigImu_Widget logger start
+2024-09-12 17:12:22 - main.myLib.myGui.myLineEdit - INFO - myLib.myGui.myLineEdit logger start
+2024-09-12 17:12:22 - main.myLib.myGui.myCheckBox - INFO - myLib.myGui.myCheckBox logger start
+2024-09-12 17:12:22 - main.pigImuReader - INFO - pigImuReader logger start
+2024-09-12 17:12:22 - main.myLib.mySerial.getData - INFO - myLib.mySerial.getData logger start
+2024-09-12 17:12:22 - main.myLib.crcCalculator.crcLib - INFO - myLib.crcCalculator.crcLib logger start
+2024-09-12 17:12:22 - main.myLib.myFilter.filter - INFO - myLib.myFilter.filter logger start
+2024-09-12 17:12:27 - main.myLib.mySerial.Connector - INFO - COM3 is connected
+2024-09-12 17:12:31 - main.myLib.myGui.mygui_serial - INFO - The GUI is started to read the data.
+2024-09-12 17:12:31 - main.myLib.common - INFO - AttributeError: the file attempt to close does not exist!
+2024-09-12 17:12:31 - main.myLib.myGui.mygui_serial - INFO - The save checkbox is not checked.
+2024-09-12 17:12:31 - main.myLib.common - INFO - AttributeError: the file attempt to close does not exist!
+2024-09-12 17:12:31 - main.myLib.common - INFO - AttributeError: the file attempt to close does not exist!
+2024-09-12 17:12:32 - main.myLib.common - INFO - AttributeError: the file attempt to close does not exist!
+2024-09-12 17:12:32 - main.myLib.myGui.mygui_serial - INFO - The GUI is stopped reading the data.
+2024-09-12 17:13:00 - main.myLib.myGui.mygui_serial - INFO - The GUI is started to read the data.
+2024-09-12 17:13:47 - main.myLib.myGui.mygui_serial - INFO - The GUI is stopped reading the data.
+2024-09-12 17:13:56 - main.myLib.mySerial.Connector - INFO - COM3 is disconnected

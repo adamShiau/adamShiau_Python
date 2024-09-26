@@ -6,7 +6,7 @@ import pandas as pd
 
 # file_name = r'H:\共用雲端硬碟\Aegiverse_RD\GP-1Z0 開發\GP-1Z0-00\D4 (filter-test)\allan\20240402_allan\20240402_allan_earthquake.txt'
 # file_name = 'XLM550_0830.txt'
-file_name = r'D:\github\adamShiau_Python\Aegiverse_API\XLM550_RD_PDf\XLM550_0905_DircetADC_100Hz_Vadc.txt'
+file_name = r'D:\github\adamShiau_Python\Aegiverse_API\XLM550_RD_PDf\XLM550_0924_DiracADC_1kohm_100Hz.txt'
 
 file_name = os.path.normpath(file_name)
 print(file_name)
@@ -219,7 +219,7 @@ ax1.legend(loc='upper left')
 ax2.legend(loc='upper right')
 '''
 
-with open('XLM550_0905_DircetADC_100Hz_gcomp.txt', 'w') as f:
+with open('XLM550_0924_DiracADC_1kohm_100Hz_gcomp.txt', 'w') as f:
     # 写入变量名称
     f.write("time,wx,wy,wz,ax,ay,az,Tx,Ty,Tz\n")
 

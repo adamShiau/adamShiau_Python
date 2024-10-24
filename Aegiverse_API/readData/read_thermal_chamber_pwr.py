@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import os
 import pandas as pd
 
-file_name = r'H:\我的雲端硬碟\工作相關\PUMP溫循量測\20241023_pump test_thermal_chamber.csv'
+file_name = r'H:\我的雲端硬碟\工作相關\PUMP溫循量測\1024\20241024_pump test_thermal_chamber.csv'
 file_name = os.path.normpath(file_name)
 print(file_name)
 Var = pd.read_csv(file_name, comment='#', skiprows=0, chunksize=None, sep=',')
@@ -29,14 +29,14 @@ print('len(chamber_T_shifted): ', len(chamber_T))
 # plt.show()
 
 
-file_name_1 = r'H:\我的雲端硬碟\工作相關\PUMP溫循量測\PWR_241023_190059.txt'
+file_name_1 = r'H:\我的雲端硬碟\工作相關\PUMP溫循量測\1024\PWR_241024_190059.txt'
 file_name_1 = os.path.normpath(file_name_1)
 # print(file_name_1)
 Var = pd.read_csv(file_name_1, comment='#', skiprows=0, chunksize=None, sep='\t')
 current = np.array(Var['Current(A)'])
 power = np.array(Var['Power(W)'])
 
-# print('len(power): ', len(power))
+print('len(power): ', len(power))
 # plt.figure(1)
 # plt.plot( power, label='power')
 

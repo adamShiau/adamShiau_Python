@@ -6,8 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="85991cce-3172-48ba-9a0a-536b882fdfef" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegiverse_API/MF_00_AR/logs/record_handler.log" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/MF_00_AR/logs/record_handler.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegiverse_API/XLM550 analysis/xlm550_read.py" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/XLM550 analysis/xlm550_read.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegiverse_API/readData/read_Tact_and_powerMeter.py" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/readData/read_Tact_and_powerMeter.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegiverse_API/readData/read_thermal_chamber_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/readData/read_thermal_chamber_data.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegiverse_API/readData/read_thermal_chamber_pwr.py" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/readData/read_thermal_chamber_pwr.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -50,28 +51,7 @@
       <recent name="C:\Users\ami73\Desktop\myAPI\0_readPig" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.pigImu_Main (1)">
-    <configuration name="common" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="adamShiau_Python" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Aegiverse_API/MU-2A-MC/myLib" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Aegiverse_API/MU-2A-MC/myLib/common.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
+  <component name="RunManager" selected="Python.read_Tact_and_powerMeter">
     <configuration name="pigImu_Main (1)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="adamShiau_Python" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -93,7 +73,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="pigImu_Main (3)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="read_Tact_and_powerMeter" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="adamShiau_Python" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -101,11 +81,11 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Aegiverse_API/MF_11_RD_PDf" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Aegiverse_API/readData" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Aegiverse_API/MF_11_RD_PDf/pigImu_Main.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Aegiverse_API/readData/read_Tact_and_powerMeter.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -114,7 +94,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="pigImu_Main (4)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="read_thermal_chamber_data" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="adamShiau_Python" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -122,11 +102,32 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Aegiverse_API/MU-2A-MC" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Aegiverse_API/readData" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Aegiverse_API/MU-2A-MC/pigImu_Main.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Aegiverse_API/readData/read_thermal_chamber_data.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="read_thermal_chamber_pwr" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="adamShiau_Python" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Aegiverse_API/readData" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Aegiverse_API/readData/read_thermal_chamber_pwr.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -158,11 +159,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.read_Tact_and_powerMeter" />
+        <item itemvalue="Python.read_thermal_chamber_data" />
+        <item itemvalue="Python.read_thermal_chamber_pwr" />
         <item itemvalue="Python.pigImu_Main (1)" />
         <item itemvalue="Python.xlm550_read" />
-        <item itemvalue="Python.pigImu_Main (4)" />
-        <item itemvalue="Python.pigImu_Main (3)" />
-        <item itemvalue="Python.common" />
       </list>
     </recent_temporary>
   </component>

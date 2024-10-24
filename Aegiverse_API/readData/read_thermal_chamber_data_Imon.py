@@ -4,7 +4,11 @@ import matplotlib.pyplot as plt
 import os
 import pandas as pd
 
-file_name = r'H:\我的雲端硬碟\工作相關\PUMP溫循量測\1023\20241023_pump test_thermal_chamber.csv'
+
+def moving_average(data, window_size):
+    return np.convolve(data, np.ones(window_size)/window_size, mode='valid')
+
+file_name = r'H:\我的雲端硬碟\工作相關\PUMP溫循量測\1024\20241024_pump test_thermal_chamber.csv'
 file_name = os.path.normpath(file_name)
 print(file_name)
 Var = pd.read_csv(file_name, comment='#', skiprows=0, chunksize=None, sep=',')
@@ -29,24 +33,41 @@ print('len(chamber_T_shifted): ', len(chamber_T))
 # plt.show()
 
 
-file_name_1 = r'H:\我的雲端硬碟\工作相關\PUMP溫循量測\1023\PWR_241023_190059.txt'
+file_name_1 = r'H:\我的雲端硬碟\工作相關\PUMP溫循量測\1024\20241024-0002\20241024-0002_1.txt'
 file_name_1 = os.path.normpath(file_name_1)
 # print(file_name_1)
 Var = pd.read_csv(file_name_1, comment='#', skiprows=0, chunksize=None, sep='\t')
-current = np.array(Var['Current(A)'])
-power = np.array(Var['Power(W)'])
+time = np.array(Var['Time'])
+Tact_1 = np.array(Var['ChannelA'])
+Tset_1 = np.array(Var['ChannelB'])
 
-print('len(power): ', len(power))
-# plt.figure(1)
-# plt.plot( power, label='power')
+file_name_2 = r'H:\我的雲端硬碟\工作相關\PUMP溫循量測\1024\20241024-0002\20241024-0002_2.txt'
+file_name_2 = os.path.normpath(file_name_2)
+# print(file_name_2)
+Var = pd.read_csv(file_name_2, comment='#', skiprows=0, chunksize=None, sep='\t')
+time = np.array(Var['Time'])
+Tact_2 = np.array(Var['ChannelA'])
+Tset_2 = np.array(Var['ChannelB'])
+
+Tact = np.concatenate((Tact_1, Tact_2))
+Tset = np.concatenate((Tset_1, Tset_2))
+
+window_size = 5
+Tset = moving_average(Tset, window_size)
+
+Tact = (Tact+0.3085)/0.0348
+Tset = (Tset)/2
+
+print('len(Tact): ', len(Tact))
 
 # 開始繪圖
 fig, ax1 = plt.subplots(figsize=(10, 6))
 # 繪製第一個 Y 軸 (Tact 和 Tset)
-ax1.plot(power, color='b', label='power')
-# ax1.plot(Tset, color='g', label='Tset', alpha=0.5)
+# ax1.plot(Tact, color='b', label='Tact')
+ax1.plot(Tset, color='g', label='Tset', alpha=0.5)
 ax1.set_xlabel('pts')
-ax1.set_ylabel('Power supply current (A)')
+# ax1.set_ylabel('Tact / Tset (°C)')
+ax1.set_ylabel('PUMP current (mA)')
 ax1.tick_params(axis='y')
 ax1.legend(loc='upper left')
 # 創建第二個 Y 軸 (chamber_T)
@@ -55,13 +76,20 @@ ax2.plot(chamber_T, color='r', label='Chamber Temperature', linestyle='--')
 ax2.set_ylabel('Chamber Temperature (°C)')
 ax2.tick_params(axis='y', labelcolor='r')
 ax2.legend(loc='upper right')
-# ax2.set_ylim(-60, 100)
+ax1.set_xlim(1000, len(Tset))
 # 顯示圖表
-plt.title('Power supply current and Chamber Temperature over Time')
+plt.title('Tact, and Chamber Temperature over Time')
 plt.grid(True)
 plt.tight_layout()
 
-
-
+#
+# plt.figure(2)
+# plt.plot( Tset, label='Tset')
+# plt.plot( Tact, label='Tact')
+#
+# plt.figure(3)
+# plt.plot( Tset, label='Tset')
+# plt.plot( Tact, label='Tact')
+# plt.plot( chamber_T, label='chamber_T')
 
 plt.show()

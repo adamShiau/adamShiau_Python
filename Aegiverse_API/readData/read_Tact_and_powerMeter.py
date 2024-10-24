@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import os
 import pandas as pd
 
-file_name = r'H:\我的雲端硬碟\工作相關\PUMP溫循量測\1024\20241024_ powerMeter.csv'
+file_name = r'H:\我的雲端硬碟\工作相關\PUMP溫循量測\1023\20241023_ powerMeter.csv'
 file_name = os.path.normpath(file_name)
 # print(file_name_1)
 Var = pd.read_csv(file_name, comment='#', skiprows=0, chunksize=None, sep='\t')
@@ -28,7 +28,7 @@ print('len(power_shifted): ', len(power))
 # plt.show()
 
 
-file_name_1 = r'H:\我的雲端硬碟\工作相關\PUMP溫循量測\1024\20241024-0002\20241024-0002_1.txt'
+file_name_1 = r'H:\我的雲端硬碟\工作相關\PUMP溫循量測\1023\20241023-0002\20241023-0002_1.txt'
 file_name_1 = os.path.normpath(file_name_1)
 # print(file_name_1)
 Var = pd.read_csv(file_name_1, comment='#', skiprows=0, chunksize=None, sep='\t')
@@ -36,7 +36,7 @@ time = np.array(Var['Time'])
 Tact_1 = np.array(Var['ChannelA'])
 Tset_1 = np.array(Var['ChannelB'])
 
-file_name_2 = r'H:\我的雲端硬碟\工作相關\PUMP溫循量測\1024\20241024-0002\20241024-0002_2.txt'
+file_name_2 = r'H:\我的雲端硬碟\工作相關\PUMP溫循量測\1023\20241023-0002\20241023-0002_2.txt'
 file_name_2 = os.path.normpath(file_name_2)
 # print(file_name_2)
 Var = pd.read_csv(file_name_2, comment='#', skiprows=0, chunksize=None, sep='\t')

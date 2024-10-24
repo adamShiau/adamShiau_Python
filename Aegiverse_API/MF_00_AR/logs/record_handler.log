@@ -1915,3 +1915,34 @@
 2024-09-26 20:32:27 - main.myLib.myGui.mygui_serial - INFO - The GUI is stopped reading the data.
 2024-09-26 20:32:37 - main.myLib.myGui.mygui_serial - INFO - The GUI is started to read the data.
 2024-09-26 20:33:30 - main.myLib.myGui.mygui_serial - INFO - The GUI is stopped reading the data.
+2024-09-26 20:34:08 - main.myLib.myGui.mygui_serial - INFO - The GUI is started to read the data.
+2024-09-26 20:34:16 - main.myLib.myGui.mygui_serial - INFO - The GUI is stopped reading the data.
+2024-09-26 20:34:21 - main.myLib.myGui.mygui_serial - INFO - The GUI is started to read the data.
+2024-09-27 13:45:24 - main.myLib.myGui.mygui_serial - INFO - The GUI is stopped reading the data.
+2024-09-27 13:46:21 - main.myLib.mySerial.Connector - INFO - COM17 is disconnected
+2024-09-27 13:46:28 - main.myLib.mySerial.Connector - INFO - COM17 is connected
+2024-09-27 13:46:32 - main.myLib.myGui.mygui_serial - INFO - The GUI is started to read the data.
+2024-09-27 13:46:32 - main.myLib.myGui.mygui_serial - INFO - The save checkbox is not checked.
+2024-09-27 13:46:39 - main.myLib.myGui.mygui_serial - INFO - The GUI is stopped reading the data.
+2024-09-27 13:46:42 - main.myLib.mySerial.Connector - INFO - COM17 is disconnected
+2024-10-04 15:49:56 - main - INFO - create log stuff done, 
+2024-10-04 15:49:56 - main - INFO - process start
+2024-10-04 15:49:58 - main.myLib.common - INFO - myLib.common logger start
+2024-10-04 15:49:58 - main.myLib.myGui.mygui_serial - INFO - myLib.myGui.mygui_serial logger start
+2024-10-04 15:49:58 - main.myLib.mySerial.Connector - INFO - myLib.mySerial.Connector logger start
+2024-10-04 15:49:58 - main.myLib.myGui.pig_parameters_widget - INFO - myLib.myGui.pig_parameters_widget logger start
+2024-10-04 15:49:58 - main.myLib.myGui.myLabel - INFO - myLib.myGui.myLabel logger start
+2024-10-04 15:49:58 - main.myLib.myGui.myComboBox - INFO - myLib.myGui.myComboBox logger start
+2024-10-04 15:49:58 - main.myLib.myGui.pig_menu_manager - INFO - myLib.myGui.pig_menu_manager logger start
+2024-10-04 15:49:58 - main.myLib.myGui.analysis_Allan - INFO - myLib.myGui.analysis_Allan logger start
+2024-10-04 15:49:58 - main.myLib.myGui.graph - INFO - myLib.myGui.graph logger start
+2024-10-04 15:49:59 - main.myLib.myGui.myProgressBar - INFO - myLib.myGui.myProgressBar logger start
+2024-10-04 15:49:59 - main.myLib.myGui.analysis_TimingPlot - INFO - myLib.myGui.analysis_TimingPlot logger start
+2024-10-04 15:49:59 - main.myLib.myGui.myRadioButton - INFO - myLib.myGui.myRadioButton logger start
+2024-10-04 15:49:59 - main.pigImu_Widget - INFO - pigImu_Widget logger start
+2024-10-04 15:49:59 - main.myLib.myGui.myLineEdit - INFO - myLib.myGui.myLineEdit logger start
+2024-10-04 15:49:59 - main.myLib.myGui.myCheckBox - INFO - myLib.myGui.myCheckBox logger start
+2024-10-04 15:49:59 - main.pigImuReader - INFO - pigImuReader logger start
+2024-10-04 15:49:59 - main.myLib.mySerial.getData - INFO - myLib.mySerial.getData logger start
+2024-10-04 15:49:59 - main.myLib.crcCalculator.crcLib - INFO - myLib.crcCalculator.crcLib logger start
+2024-10-04 15:49:59 - main.myLib.myFilter.filter - INFO - myLib.myFilter.filter logger start

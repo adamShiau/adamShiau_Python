@@ -5,8 +5,8 @@ import os
 import pandas as pd
 
 # file_name = r'H:\共用雲端硬碟\Aegiverse_RD\GP-1Z0 開發\GP-1Z0-00\D4 (filter-test)\allan\20240402_allan\20240402_allan_earthquake.txt'
-# file_name = 'XLM550_0830.txt'
-file_name = r'D:\github\adamShiau_Python\Aegiverse_API\XLM550_RD_PDf\XLM550_0924_DiracADC_10kohm_100Hz-1.txt'
+file_name = '20241001_MU-1A-MC_allan.txt'
+# file_name = r'D:\github\adamShiau_Python\Aegiverse_API\XLM550_RD_PDf\20241001_MU-1A-MC_allan.txt'
 file_name = os.path.normpath(file_name)
 print(file_name)
 Var = pd.read_csv(file_name, comment='#', skiprows=0, chunksize=None)
@@ -38,32 +38,35 @@ Tz = np.array(Var['Tz'])
 # print(len(wz))
 # print(len(int_wz))
 SF_CODE = 2.048/2**23
-# plt.figure(1)
+plt.figure(1)
 # SFA = 2.24042E-05
 # SFB = -80.75709061
 # ax = ax * SFA + SFB
-ax = ax * SF_CODE
-# plt.plot(time, ax, label='ax')
-# plt.legend()
+# ax = ax * SF_CODE
+ax = ax / 9.8
+plt.plot(time, ax, label='ax')
+plt.legend()
 print('std ax:', np.std(ax))
 
-# plt.figure(2)
+plt.figure(2)
 # SFA = 2.23992E-05
 # SFB = -80.74025289
 # ay = ay * SFA + SFB
-ay = ay * SF_CODE
-# plt.plot(time, ay, label='ay')
-# plt.legend()
+# ay = ay * SF_CODE
+ay = ay / 9.8
+plt.plot(time, ay, label='ay')
+plt.legend()
 print('std ay:', np.std(ay))
 
 plt.figure(3)
 # SFA = 3.36755E-07
 # SFB = -0.0026240
 # az = az * SFA + SFB
-az = az * SF_CODE
-SF_az = 0.72498 # mA/g
-Rmeas = 10000 # ohm
-az = 4*az/Rmeas*1000/SF_az
+# az = az * SF_CODE
+# SF_az = 0.72498 # mA/g
+# Rmeas = 10000 # ohm
+# az = 4*az/Rmeas*1000/SF_az
+az = az/9.8
 
 plt.plot(time, az, label='az')
 plt.legend()
@@ -75,9 +78,9 @@ print('std az:', np.std(az))
 # plt.figure(5)
 # plt.plot(time, Ty, label='Ty')
 # plt.legend()
-plt.figure(6)
-plt.plot(time, Tz, label='Tz')
-plt.legend()
+# plt.figure(6)
+# plt.plot(time, Tz, label='Tz')
+# plt.legend()
 
 
 
@@ -119,7 +122,7 @@ ax1.legend(loc='upper left')
 ax2.legend(loc='upper right')
 '''
 
-with open('XLM550_0924_DiracADC_10kohm_100Hz-1_g.txt', 'w') as f:
+with open('20241001_MU-1A-MC_allan_g.txt', 'w') as f:
     # 写入变量名称
     f.write("time,wx,wy,wz,ax,ay,az,Tx,Ty,Tz\n")
 

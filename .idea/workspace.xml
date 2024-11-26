@@ -5,9 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="85991cce-3172-48ba-9a0a-536b882fdfef" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/AHRS_position_error_analysis/translate_coordinates.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegiverse_API/readData/read_Tact_and_powerMeter.py" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/readData/read_Tact_and_powerMeter.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegiverse_API/readData/read_thermal_chamber_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/readData/read_thermal_chamber_data.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegiverse_API/GP_PARAMETER_PDf_CH2/parameters_SP8_GP.json" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/GP_PARAMETER_PDf_CH2/parameters_SP8_GP.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Aegiverse_API/readData/read_thermal_chamber_pwr.py" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/readData/read_thermal_chamber_pwr.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -50,9 +50,13 @@
       <recent name="D:\github\adamShiau_Python\Aegiverse_API\readData" />
       <recent name="C:\Users\ami73\Desktop\myAPI\0_readPig" />
     </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\github\adamShiau_Python\Aegiverse_API" />
+      <recent name="D:\github\adamShiau_Python\AHRS_position_error_analysis" />
+    </key>
   </component>
-  <component name="RunManager" selected="Python.read_Tact_and_powerMeter">
-    <configuration name="pigImu_Main (1)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+  <component name="RunManager" selected="Python.Trajectory_Airplane (1)">
+    <configuration name="Trajectory_Airplane (1)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="adamShiau_Python" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -60,11 +64,11 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Aegiverse_API/MF_00_AR" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Aegiverse_API/AHRS_position_error_analysis/AHRS_position error simulation" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Aegiverse_API/MF_00_AR/pigImu_Main.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Aegiverse_API/AHRS_position_error_analysis/AHRS_position error simulation/Trajectory_Airplane.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -73,7 +77,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="read_Tact_and_powerMeter" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="Trajectory_Airplane" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="adamShiau_Python" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -81,11 +85,11 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Aegiverse_API/readData" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Aegiverse_API/AHRS_position error simulation" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Aegiverse_API/readData/read_Tact_and_powerMeter.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Aegiverse_API/AHRS_position error simulation/Trajectory_Airplane.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -94,7 +98,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="read_thermal_chamber_data" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="pigImu_Main" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="adamShiau_Python" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -102,11 +106,11 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Aegiverse_API/readData" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Aegiverse_API/GP_PARAMETER_PDf_CH2" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Aegiverse_API/readData/read_thermal_chamber_data.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Aegiverse_API/GP_PARAMETER_PDf_CH2/pigImu_Main.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -136,7 +140,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="xlm550_read" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="translate_coordinates" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="adamShiau_Python" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -144,11 +148,11 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Aegiverse_API/XLM550 analysis" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Aegiverse_API/AHRS_position_error_analysis" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Aegiverse_API/XLM550 analysis/xlm550_read.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Aegiverse_API/AHRS_position_error_analysis/translate_coordinates.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -159,11 +163,11 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.read_Tact_and_powerMeter" />
-        <item itemvalue="Python.read_thermal_chamber_data" />
+        <item itemvalue="Python.Trajectory_Airplane (1)" />
+        <item itemvalue="Python.translate_coordinates" />
+        <item itemvalue="Python.Trajectory_Airplane" />
+        <item itemvalue="Python.pigImu_Main" />
         <item itemvalue="Python.read_thermal_chamber_pwr" />
-        <item itemvalue="Python.pigImu_Main (1)" />
-        <item itemvalue="Python.xlm550_read" />
       </list>
     </recent_temporary>
   </component>

@@ -37,13 +37,14 @@ current = np.array(Var['Current(A)'])
 power = np.array(Var['Power(W)'])
 
 print('len(power): ', len(power))
+print(current)
 # plt.figure(1)
-# plt.plot( power, label='power')
+# plt.plot(current, label='current')
 
 # 開始繪圖
 fig, ax1 = plt.subplots(figsize=(10, 6))
 # 繪製第一個 Y 軸 (Tact 和 Tset)
-ax1.plot(power, color='b', label='power')
+ax1.plot(current, color='b', label='power')
 # ax1.plot(Tset, color='g', label='Tset', alpha=0.5)
 ax1.set_xlabel('pts')
 ax1.set_ylabel('Power supply current (A)')

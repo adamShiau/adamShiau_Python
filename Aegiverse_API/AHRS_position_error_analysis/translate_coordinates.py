@@ -1,6 +1,7 @@
 import numpy as np
 import os
 
+
 def translate_coordinates(file_path, target_lat, target_lon, output_file):
     with open(file_path, 'r', encoding='utf-8') as file:
         lines = file.readlines()
@@ -22,12 +23,9 @@ def translate_coordinates(file_path, target_lat, target_lon, output_file):
         return
 
     # 計算中心點 (以原始數據的平均值作為中心點)
-    # original_center_lat = np.mean([coord[0] for coord in coordinates])
-    # original_center_lon = np.mean([coord[1] for coord in coordinates])
     original_center_lat = coordinates[0][0]
     original_center_lon = coordinates[0][1]
-    # print(coordinates[0][0])
-    # print(coordinates[0][1])
+
 
     # 計算平移的偏移量
     lat_offset = target_lat - original_center_lat
@@ -46,9 +44,16 @@ def translate_coordinates(file_path, target_lat, target_lon, output_file):
 
     print(f"平移完成！結果已保存到 {output_file}")
 
-# 使用該函數
-file_path1 = '.\\AHRS_position error simulation\\'
-file_name = 'point_20241126_141347.txt'
-full_file_path = os.path.join(file_path1, file_name)
 
-translate_coordinates(full_file_path, 23.8008019, 120.211448, 'point_20241126_141347_'+'translated_data.txt')
+# 使用該函數
+file_path1 = r'H:\共用雲端硬碟\Aegiverse_RD\FOG開發\AHRS data\Position_Error_Analysis\SG-3A-EC 240004'
+
+file_name = 'point_20241127_171011'
+file_ext = '.txt'
+# file_name = 'pos_20241108_194629_1_2'
+# file_ext = '.csv'
+full_file_path = os.path.join(file_path1, file_name+file_ext)
+full_file_path_out = os.path.join(file_path1, file_name+'_translated.txt')
+# full_file_path_out = os.path.join(file_path1, file_name+'.txt')
+
+translate_coordinates(full_file_path, 23.8008019, 120.197621, full_file_path_out)

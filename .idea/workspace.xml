@@ -5,34 +5,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="85991cce-3172-48ba-9a0a-536b882fdfef" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/AHRS_position_error_analysis/AHRS_position error simulation/Trajectory_Airplane_bk.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/AHRS_position_error_analysis/AHRS_position error simulation/plot_diff_result.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/YF_DataRead/read_data_raw.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/YF_DataRead/read_data_raw_adj.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/YF_DataRead/read_data_raw_adj_err.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/YF_DataRead/read_data_raw_sep.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegiverse_API/AHRS_position error simulation/Trajectory_Airplane.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegiverse_API/AHRS_position error simulation/map_with_path.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegiverse_API/AHRS_position error simulation/pos_20241030_182830_1_2.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegiverse_API/AHRS_position error simulation/pos_20241101_201310_1_2.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegiverse_API/AHRS_position error simulation/pos_20241108_194629_1_2.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegiverse_API/AHRS_position error simulation/pos_ADIS16505-2_20241107_1026.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegiverse_API/AHRS_position error simulation/pos_ADIS16505-2_20241108_1212.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegiverse_API/AHRS_position error simulation/pos_ADIS16505-2_20241112_1133.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegiverse_API/AHRS_position error simulation/pos_ADIS16505-2_20241113_1131.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegiverse_API/AHRS_position error simulation/pos_ADIS16505-2_20241118_1936.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegiverse_API/AHRS_position error simulation/pos_ADIS16505-2_20241119_1907.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegiverse_API/AHRS_position error simulation/pos_ADIS16505-2_20241120_2048.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegiverse_API/AHRS_position error simulation/pos_ADIS16505-2_20241121_1919.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegiverse_API/AHRS_position error simulation/pos_ADIS16505-2_20241122_1312.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegiverse_API/AHRS_position error simulation/pos_ADIS16505-2_20241122_1312_forAHRS.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegiverse_API/AHRS_position error simulation/pos_EPSON M-G366_20241112_1143.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegiverse_API/AHRS_position error simulation/pos_EPSON M-G366_20241113_1131.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegiverse_API/AHRS_position error simulation/pos_EPSON M-G366_20241115_0957.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegiverse_API/AHRS_position error simulation/pos_EPSON M-G366_20241119_1907.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegiverse_API/AHRS_position error simulation/pos_EPSON M-G366_20241120_2048.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegiverse_API/AHRS_position error simulation/pos_EPSON M-G366_20241121_1920.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegiverse_API/AHRS_position error simulation/pos_EPSON M-G366_20241122_1312.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegiverse_API/AHRS_position_error_analysis/AHRS_position error simulation/Trajectory_Airplane.py" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/AHRS_position_error_analysis/AHRS_position error simulation/Trajectory_Airplane.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegiverse_API/AHRS_position_error_analysis/AHRS_position error simulation/map_with_path.html" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/AHRS_position_error_analysis/AHRS_position error simulation/map_with_path.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegiverse_API/AHRS_position_error_analysis/translate_coordinates.py" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/AHRS_position_error_analysis/translate_coordinates.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegiverse_API/GP_PARAMETER_PDf_CH2/parameters_SP8_GP.json" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/GP_PARAMETER_PDf_CH2/parameters_SP8_GP.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegiverse_API/GP_PARAMETER_PDf_CH2/pigImu_Main.py" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/GP_PARAMETER_PDf_CH2/pigImu_Main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegiverse_API/readData/read_thermal_chamber_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/readData/read_thermal_chamber_data.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -58,29 +38,29 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "last_opened_file_path": "D:/github/adamShiau_Python/Aegiverse_API/AHRS_position_error_analysis/AHRS_position error simulation",
-    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/github/adamShiau_Python/Aegiverse_API/YF_DataRead&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\github\adamShiau_Python\Aegiverse_API\YF_DataRead" />
       <recent name="D:\github\adamShiau_Python\Aegiverse_API\AHRS_position_error_analysis\AHRS_position error simulation" />
       <recent name="D:\github\adamShiau_Python\Aegiverse_API\XLM550 analysis" />
       <recent name="D:\github\adamShiau_Python\Aegiverse_API" />
       <recent name="D:\github\adamShiau_Python\Aegiverse_API\XLM550_RD_PDf" />
-      <recent name="D:\github\adamShiau_Python\Aegiverse_API\readData" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="D:\github\adamShiau_Python\Aegiverse_API" />
       <recent name="D:\github\adamShiau_Python\AHRS_position_error_analysis" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.plot_diff_result">
-    <configuration name="Trajectory_Airplane (1)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+  <component name="RunManager" selected="Python.read_data_raw (1)">
+    <configuration name="read_data_raw (1)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="adamShiau_Python" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -88,11 +68,11 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Aegiverse_API/AHRS_position_error_analysis/AHRS_position error simulation" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Aegiverse_API/YF_DataRead" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Aegiverse_API/AHRS_position_error_analysis/AHRS_position error simulation/Trajectory_Airplane.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Aegiverse_API/YF_DataRead/read_data_raw.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -101,7 +81,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="Trajectory_Airplane2" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="read_data_raw_adj" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="adamShiau_Python" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -109,11 +89,11 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Aegiverse_API/AHRS_position_error_analysis/AHRS_position error simulation" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Aegiverse_API/YF_DataRead" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Aegiverse_API/AHRS_position_error_analysis/AHRS_position error simulation/Trajectory_Airplane2.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Aegiverse_API/YF_DataRead/read_data_raw_adj.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -122,7 +102,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="Trajectory_Airplane_bk" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="read_data_raw_adj" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="adamShiau_Python" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -130,11 +110,11 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Aegiverse_API/AHRS_position_error_analysis/AHRS_position error simulation" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Aegiverse_API/YF_DataRead" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Aegiverse_API/AHRS_position_error_analysis/AHRS_position error simulation/Trajectory_Airplane_bk.py" />
+      <option name="SCRIPT_NAME" value="D:\github\adamShiau_Python\Aegiverse_API\YF_DataRead\read_data_raw_adj.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -143,7 +123,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="plot_diff_result" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="read_data_raw_adj_err" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="adamShiau_Python" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -151,11 +131,11 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Aegiverse_API/AHRS_position_error_analysis/AHRS_position error simulation" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Aegiverse_API/YF_DataRead" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Aegiverse_API/AHRS_position_error_analysis/AHRS_position error simulation/plot_diff_result.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Aegiverse_API/YF_DataRead/read_data_raw_adj_err.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -164,7 +144,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="translate_coordinates" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="read_data_raw_sep" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="adamShiau_Python" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -172,11 +152,11 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Aegiverse_API/AHRS_position_error_analysis" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Aegiverse_API/YF_DataRead" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Aegiverse_API/AHRS_position_error_analysis/translate_coordinates.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Aegiverse_API/YF_DataRead/read_data_raw_sep.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -187,11 +167,10 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.plot_diff_result" />
-        <item itemvalue="Python.Trajectory_Airplane (1)" />
-        <item itemvalue="Python.Trajectory_Airplane_bk" />
-        <item itemvalue="Python.translate_coordinates" />
-        <item itemvalue="Python.Trajectory_Airplane2" />
+        <item itemvalue="Python.read_data_raw (1)" />
+        <item itemvalue="Python.read_data_raw_sep" />
+        <item itemvalue="Python.read_data_raw_adj_err" />
+        <item itemvalue="Python.read_data_raw_adj" />
       </list>
     </recent_temporary>
   </component>

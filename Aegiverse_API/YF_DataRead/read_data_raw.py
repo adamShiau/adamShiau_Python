@@ -22,11 +22,11 @@ def process_file(file_path):
                     "FG_Yaw": fg_yaw_match.group(1),
                     "Heading": heading_match.group(1)
                 })
+    # 轉換為 DataFrame 並刪除重複數據
     return pd.DataFrame(extracted_data).drop_duplicates(subset=["Timestamp"])
 
-# 使用 os.path.normpath 處理資料夾路徑
+# 從資料夾中讀取所有 .data 檔案
 def process_folder(folder_path):
-    folder_path = os.path.normpath(folder_path)  # 正規化路徑
     combined_data = pd.DataFrame(columns=["Timestamp", "FG_Yaw", "Heading"])
     for filename in os.listdir(folder_path):
         if filename.endswith(".data"):
@@ -44,9 +44,7 @@ start_time = combined_data["Relative_Timestamp"].min()
 combined_data["Relative_Timestamp"] = (combined_data["Relative_Timestamp"] - start_time).dt.total_seconds()
 combined_data["FG_Yaw"] = pd.to_numeric(combined_data["FG_Yaw"], errors='coerce')
 combined_data["Heading"] = pd.to_numeric(combined_data["Heading"], errors='coerce')
-
-# 移除無效數據並按時間戳排序
-combined_data_cleaned = combined_data.dropna().sort_values(by="Relative_Timestamp").reset_index(drop=True)
+combined_data_cleaned = combined_data.dropna()
 
 # 繪製圖形
 plt.figure(figsize=(12, 6))

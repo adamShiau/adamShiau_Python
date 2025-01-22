@@ -5,8 +5,8 @@ import matplotlib.pyplot as plt
 import os
 
 # 讀取 CSV 檔案
-file_path = r'D:\github\myKicad\prj\EP\IRIS ADC noise'
-file_name = 'ADC_2ch_ch1_PD_GND'
+file_path = r'D:\github\myKicad\prj\IRIS\testing\IRIS ADC noise'
+file_name = 'ADC_FIR_2CH_3'
 file_ext = '.csv'
 
 # 組合完整檔案路徑

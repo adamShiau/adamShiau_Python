@@ -5,15 +5,85 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="85991cce-3172-48ba-9a0a-536b882fdfef" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/Digital_Filter/FIR_V1.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/Digital_Filter/IIR_V1.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/Digital_Filter/IIR_V2.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/Digital_Filter/IIR_V3.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/readData/ADC noise/FFT plot_printPeak_2ch.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/readData/ADC noise/csv_read_2ch.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/AllanDev.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/aegiverse_logo_bk.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/dist/aegiverse_logo_bk.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/dist/log_config.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/dist/logs/errors.log" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/dist/parameters_SP8_GP.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/layout.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/log_config.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/logs/errors.log" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/myLib/EncoderConnector/ChangeLog.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/myLib/EncoderConnector/EncoderConnector/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/myLib/EncoderConnector/EncoderConnector/myEncoderConnector.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/myLib/EncoderConnector/EncoderConnector/myEncoderGenerator.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/myLib/EncoderConnector/EncoderConnector/myEncoderReader.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/myLib/EncoderConnector/EncoderConnector/myEncoderReader_qt.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/myLib/EncoderConnector/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/myLib/EncoderConnector/doc/README.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/myLib/EncoderConnector/setup.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/myLib/EncoderConnector/testEncoderConnector.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/myLib/EncoderConnector/testEncoderGenerator_func.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/myLib/EncoderConnector/testEncoderGenerator_object.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/myLib/EncoderConnector/testEncoderReader_func.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/myLib/EncoderConnector/testEncoderReader_object.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/myLib/README_common.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/myLib/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/myLib/common.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/myLib/crcCalculator/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/myLib/crcCalculator/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/myLib/crcCalculator/crcLib.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/myLib/myFilter/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/myLib/myFilter/filter.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/myLib/myGui/README_myGui.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/myLib/myGui/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/myLib/myGui/aegiverse_logo.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/myLib/myGui/analysis_Allan.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/myLib/myGui/analysis_SF.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/myLib/myGui/analysis_SF2.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/myLib/myGui/analysis_TimingPlot.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/myLib/myGui/autoSave.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/myLib/myGui/default_fog_parameters.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/myLib/myGui/graph.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/myLib/myGui/myCheckBox.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/myLib/myGui/myComboBox.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/myLib/myGui/myLabel.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/myLib/myGui/myLineEdit.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/myLib/myGui/myProgressBar.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/myLib/myGui/myRadioButton.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/myLib/myGui/mygui_serial.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/myLib/myGui/pandas.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/myLib/myGui/parameters_SP9.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/myLib/myGui/pd_test.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/myLib/myGui/pig_menu_manager.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/myLib/myGui/pig_parameters_widget.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/myLib/myGui/pig_parameters_widget_bk.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/myLib/myGui/plot_row_data.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/myLib/myGui/read_csv_test.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/myLib/myGui/test.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/myLib/myNavigation/googleEarth_file_generate.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/myLib/myNavigation/googleMapTest.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/myLib/myNavigation/imu2latlon_new.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/myLib/myNavigation/planar_Navigation.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/myLib/myNavigation/test.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/myLib/mySerial/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/myLib/mySerial/Connector.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/myLib/mySerial/Connector_bk.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/myLib/mySerial/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/myLib/mySerial/getData.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/myLib/mySerial/readLine_test.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/parameters_D01.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/parameters_SP8_GP.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/pigIMU_EXE.bat" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/pigImuReader.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/pigImu_Main.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/pigImu_Widget.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/pyqtSignal_test.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegiverse_API/readData/ADC noise/FFT plot_printPeak.py" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/readData/ADC noise/FFT plot_printPeak_1ch.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegiverse_API/readData/ADC noise/csv_read.py" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/readData/ADC noise/csv_read_1ch.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegiverse_API/GP_PARAMETER_CH3/parameters_SP8_GP.json" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/GP_PARAMETER_CH3/parameters_SP8_GP.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegiverse_API/GP_PARAMETER_CH3/pigImu_Main.py" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/GP_PARAMETER_CH3/pigImu_Main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -43,66 +113,24 @@
   "keyToString": {
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "last_opened_file_path": "D:/github/adamShiau_Python/Aegiverse_API/Digital_Filter",
+    "last_opened_file_path": "D:/github/adamShiau_Python/Aegiverse_API",
     "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
   }
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\github\adamShiau_Python\Aegiverse_API" />
       <recent name="D:\github\adamShiau_Python\Aegiverse_API\Digital_Filter" />
       <recent name="D:\github\adamShiau_Python\Aegiverse_API\readData\ADC noise" />
       <recent name="D:\github\adamShiau_Python\Aegiverse_API\YF_DataRead" />
       <recent name="D:\github\adamShiau_Python\Aegiverse_API\AHRS_position_error_analysis\AHRS_position error simulation" />
-      <recent name="D:\github\adamShiau_Python\Aegiverse_API\XLM550 analysis" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="D:\github\adamShiau_Python\Aegiverse_API" />
       <recent name="D:\github\adamShiau_Python\AHRS_position_error_analysis" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.IIR_V3">
-    <configuration name="FFT plot_printPeak_2ch" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="adamShiau_Python" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Aegiverse_API/readData/ADC noise" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Aegiverse_API/readData/ADC noise/FFT plot_printPeak_2ch.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="FIR_V1" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="adamShiau_Python" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Aegiverse_API/Digital_Filter" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Aegiverse_API/Digital_Filter/FIR_V1.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
+  <component name="RunManager" selected="Python.pigImu_Main (1)">
     <configuration name="IIR_V1" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="adamShiau_Python" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -116,27 +144,6 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Aegiverse_API/Digital_Filter/IIR_V1.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="IIR_V2" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="adamShiau_Python" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Aegiverse_API/Digital_Filter" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Aegiverse_API/Digital_Filter/IIR_V2.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -166,7 +173,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="read_data_raw_adj" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="pigImu_Main (1)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="adamShiau_Python" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -174,11 +181,53 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Aegiverse_API/YF_DataRead" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="D:\github\adamShiau_Python\Aegiverse_API\YF_DataRead\read_data_raw_adj.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/pigImu_Main.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="pigImu_Main" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="adamShiau_Python" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Aegiverse_API/GP_PARAMETER_CH3" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Aegiverse_API/GP_PARAMETER_CH3/pigImu_Main.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="pig_parameters_widget" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="adamShiau_Python" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/myLib/myGui" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/myLib/myGui/pig_parameters_widget.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -189,11 +238,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.pigImu_Main (1)" />
+        <item itemvalue="Python.pig_parameters_widget" />
+        <item itemvalue="Python.pigImu_Main" />
         <item itemvalue="Python.IIR_V3" />
         <item itemvalue="Python.IIR_V1" />
-        <item itemvalue="Python.IIR_V2" />
-        <item itemvalue="Python.FIR_V1" />
-        <item itemvalue="Python.FFT plot_printPeak_2ch" />
       </list>
     </recent_temporary>
   </component>

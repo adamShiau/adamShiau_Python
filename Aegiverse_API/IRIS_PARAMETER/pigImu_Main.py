@@ -176,6 +176,8 @@ class mainWindow(QMainWindow):
 
     def resetFPGATimer(self, ch):
         self.act.writeImuCmd(CMD_FOG_TIMER_RST, 1, ch)
+        time.sleep(0.001)
+        self.act.writeImuCmd(CMD_FOG_TIMER_RST, 0, ch)
 
     def start(self):
         self.resetFPGATimer(3)
@@ -263,7 +265,8 @@ class mainWindow(QMainWindow):
         # print(imudata["PIG_WZ"], end=', ')
         # print(factor)
         if self.top.plot1_showWz_cb.cb_1.isChecked():
-            self.top.plot1.ax1.setData(imudata["TIME"], imudata["PIG_WZ"] * factor)
+            # self.top.plot1.ax1.setData(imudata["TIME"], imudata["PIG_WZ"] * factor)
+            self.top.plot1.ax1.setData(imudata["TIME"], imudata["PIG_ERR"])
         else:
             self.top.plot1.ax1.clear()
         # if self.top.plot1_showWz_cb.cb_2.isChecked():

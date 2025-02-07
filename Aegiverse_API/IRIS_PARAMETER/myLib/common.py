@@ -27,10 +27,13 @@ def readPIG(dataPacket, EN=1, POS_TIME=25, sf_a=1, sf_b=0, PRINT=0):
         temp_err = dataPacket[POS_TIME + 4:POS_TIME + 8]
         temp_fog = dataPacket[POS_TIME + 8:POS_TIME + 12]
         temp_PD_temperature = dataPacket[POS_TIME + 12:POS_TIME + 14]
-        fpga_time = IEEE_754_INT2F(temp_time)
-        err_mv = convert2Sign_4B(temp_err)
-        step_dps = IEEE_754_INT2F(temp_fog)
-        PD_temperature = convert2Temperature(temp_PD_temperature)
+
+        fpga_time = IEEE_754_INT2F_R(temp_time)
+        err_mv = convert2Sign_4B_R(temp_err)
+        # step_dps = IEEE_754_INT2F_R(temp_fog)
+        step_dps = convert2Sign_4B_R(temp_fog)
+        # PD_temperature = convert2Temperature(temp_PD_temperature)
+        PD_temperature = IEEE_754_INT2F_R(temp_PD_temperature)
     else:
         fpga_time = 0
         err_mv = 0
@@ -522,6 +525,18 @@ def convert2Sign_4B(datain):
     if len(datain) == 4:
         shift_data = (datain[0] << 24 | datain[1] << 16 | datain[2] << 8 | datain[3])
         if (datain[0] >> 7) == 1:
+            return shift_data - (1 << 32)
+        else:
+            return shift_data
+    else:
+        return -1
+
+def convert2Sign_4B_R(datain):
+    if len(datain) == 4:
+        shift_data = (datain[3] << 24 | datain[2] << 16 | datain[1] << 8 | datain[0])
+        print(f"datain = [{hex(datain[3])}, {hex(datain[2])}, {hex(datain[1])}, {hex(datain[0])}]")
+
+        if (datain[3] >> 7) == 1:
             return shift_data - (1 << 32)
         else:
             return shift_data

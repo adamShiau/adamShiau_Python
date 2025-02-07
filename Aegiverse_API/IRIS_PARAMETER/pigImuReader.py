@@ -40,7 +40,7 @@ SENS_NANO33_AXLM_4G = 0.000122
 POS_ADXL355_AX = None
 POS_NANO33_WX = None
 POS_PIG = 4
-POS_TIME = 18
+POS_TIME = 20
 old = time.perf_counter_ns()
 
 
@@ -212,10 +212,10 @@ class pigImuReader(QThread):
 
     def readIMU(self):
         self.flushInputBuffer()
-        self.writeImuCmd(6, 2, 2)
+        self.writeImuCmd(99, 2, 2)
 
     def stopIMU(self):
-        self.writeImuCmd(6, 4, 2)
+        self.writeImuCmd(99, 0, 2)
 
     def dump_fog_parameters(self, ch):
         # self.writeImuCmd(0x66, 2)
@@ -232,9 +232,9 @@ class pigImuReader(QThread):
 
     def getImuData(self):
         head = getData.alignHeader_4B(self.__Connector, HEADER_KVH)
-        dataPacket = getData.getdataPacket(self.__Connector, head, 22)
+        dataPacket = getData.getdataPacket(self.__Connector, head, 24)
 
-        FPGA_TIME, ERR, STEP, PD_TEMP = cmn.readPIG(dataPacket, EN=1, PRINT=0, sf_a=self.sf_a, sf_b=self.sf_b,
+        FPGA_TIME, ERR, STEP, PD_TEMP = cmn.readPIG(dataPacket, EN=1, PRINT=1, sf_a=self.sf_a, sf_b=self.sf_b,
                                                     POS_TIME=POS_PIG)
         MCU_TIME = cmn.readTime(dataPacket, EN=1, POS_TIME=POS_TIME, PRINT=0)
 
@@ -244,7 +244,7 @@ class pigImuReader(QThread):
 
         # t = time.perf_counter()
         t = FPGA_TIME
-        imudata = {"TIME": MCU_TIME, "PIG_ERR": ERR, "PIG_WZ": STEP, "PD_TEMP": PD_TEMP}
+        imudata = {"TIME": FPGA_TIME, "PIG_ERR": ERR, "PIG_WZ": STEP, "PD_TEMP": PD_TEMP}
         return dataPacket, imudata
 
     def readInputBuffer(self):

@@ -274,7 +274,7 @@ class mainWindow(QMainWindow):
         # else:
         #     self.top.plot1.ax2.clear()
 
-        self.top.plot2.ax.setData(imudata["TIME"], imudata["PIG_ERR"])
+        self.top.plot2.ax.setData(imudata["TIME"], imudata["PIG_WZ"])
 
 
 if __name__ == "__main__":

@@ -40,29 +40,31 @@ CMD_FOG_CONST_STEP = 15
 CMD_FOG_FB_ON = 16
 CMD_FOG_GAIN2 = 17
 CMD_FOG_ERR_OFFSET = 18
+CMD_FOG_DAC_GAIN = 21
 CMD_FOG_CUTOFF = 22
+
 
 CMD_FOG_ERR_TH = 39
 CMD_FOG_TIMER_RST = 100
 
-CMD_FOG_FPGA_Q = 22
-CMD_FOG_FPGA_R = 22
-CMD_FOG_DAC_GAIN = 23
-CMD_FOG_INT_DELAY = 24
-CMD_FOG_OUT_START = 25
-CMD_FOG_SF0 = 26
-CMD_FOG_SF1 = 27
-CMD_FOG_SF2 = 28
-CMD_FOG_SF3 = 29
-CMD_FOG_SF4 = 30
-CMD_FOG_SF5 = 31
-CMD_FOG_SF6 = 32
-CMD_FOG_SF7 = 33
-CMD_FOG_SF8 = 34
-CMD_FOG_SF9 = 35
-CMD_FOG_TMIN = 36
-CMD_FOG_TMAX = 37
-CMD_FOG_SFB = 38
+CMD_FOG_FPGA_Q = 220
+CMD_FOG_FPGA_R = 220
+
+CMD_FOG_INT_DELAY = 240
+CMD_FOG_OUT_START = 250
+CMD_FOG_SF0 = 260
+CMD_FOG_SF1 = 270
+CMD_FOG_SF2 = 280
+CMD_FOG_SF3 = 290
+CMD_FOG_SF4 = 300
+CMD_FOG_SF5 = 310
+CMD_FOG_SF6 = 320
+CMD_FOG_SF7 = 330
+CMD_FOG_SF8 = 340
+CMD_FOG_SF9 = 350
+CMD_FOG_TMIN = 360
+CMD_FOG_TMAX = 370
+CMD_FOG_SFB = 380
 
 ''' FOG PARAMETERS'''
 INIT_PARAMETERS = {"MOD_H": 6850,
@@ -284,12 +286,14 @@ class pig_parameters_widget(QGroupBox):
         self.fb_on.spin.setValue(para["8"])
         self.gain2.spin.setValue(para["9"])
         self.err_offset.spin.setValue(para["10"])
+        self.dac_gain.spin.setValue(para["13"])
         self.cutoff.spin.setValue(para["14"])
+
 
         # self.err_th.spin.setValue(para["ERR_TH"])
         # self.HD_Q.spin.setValue(para["HD_Q"])
         # self.HD_R.spin.setValue(para["HD_R"])
-        # self.dac_gain.spin.setValue(para["DAC_GAIN"])
+
         # self.dataRate_sd.sd.setValue(para["DATA_RATE"])
         # self.Tmin.spin.setValue(para["TMIN"])
         # self.Tmax.spin.setValue(para["TMAX"])

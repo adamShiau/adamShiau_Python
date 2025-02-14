@@ -21,6 +21,42 @@ import struct
 PRINT_DEBUG = 0
 
 
+def IRIS_FOG(dataPacket, EN=1, POS_TIME=25, sf_a=1, sf_b=0, PRINT=0):
+    if EN:
+        temp_time = dataPacket[POS_TIME:POS_TIME + 4]
+        temp_err = dataPacket[POS_TIME + 4:POS_TIME + 8]
+        temp_fog = dataPacket[POS_TIME + 8:POS_TIME + 12]
+        temp_temperature = dataPacket[POS_TIME + 12:POS_TIME + 16]
+
+        fpga_time = IEEE_754_INT2F_R(temp_time)
+        err_mv = convert2Sign_4B_R(temp_err)
+        step_dps = IEEE_754_INT2F_R(temp_fog)
+        # step_dps = convert2Sign_4B_R(temp_fog)
+        # temperature = convert2Temperature(temp_PD_temperature)
+        temperature = IEEE_754_INT2F_R(temp_temperature)
+    else:
+        fpga_time = 0
+        err_mv = 0
+        step_dps = 0
+        temperature = 0
+    # End of if-condition
+
+    if PRINT:
+        # print()
+        print('\nPIG: ', end='\t')
+        # print(sf_a, sf_b)
+        print('%f, ' % fpga_time, end=', ')
+        print('%d, ' % err_mv, end=', ')
+        print('%f, ' % step_dps, end=', ')
+        print(round(temperature, 1))
+        # print(round(err_mv, 3), end='\t\t')
+        # print(round(step_dps, 3), end='\t\t')
+        # print(round(PD_temperature, 1))
+    # End of if-condition
+
+    return fpga_time, err_mv, step_dps, temperature
+
+
 def readPIG(dataPacket, EN=1, POS_TIME=25, sf_a=1, sf_b=0, PRINT=0):
     if EN:
         temp_time = dataPacket[POS_TIME:POS_TIME + 4]
@@ -496,6 +532,7 @@ def convert2Unsign_4B(datain):
     shift_data = (datain[0] << 24 | datain[1] << 16 | datain[2] << 8 | datain[3])
     return shift_data
 
+
 def convert2Unsign_4B_R(datain):
     shift_data = (datain[3] << 24 | datain[2] << 16 | datain[1] << 8 | datain[0])
     return shift_data
@@ -509,6 +546,7 @@ def IEEE_754_INT2F(datain):
         return f[0]
     else:
         return -1
+
 
 def IEEE_754_INT2F_R(datain):
     if len(datain) == 4:
@@ -530,6 +568,7 @@ def convert2Sign_4B(datain):
             return shift_data
     else:
         return -1
+
 
 def convert2Sign_4B_R(datain):
     if len(datain) == 4:

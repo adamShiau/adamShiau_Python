@@ -6,9 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="85991cce-3172-48ba-9a0a-536b882fdfef" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegiverse_API/FIR_filter/FIR_coefficient_cal.py" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/FIR_filter/FIR_coefficient_cal.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/myLib/myGui/pig_parameters_widget.py" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/myLib/myGui/pig_parameters_widget.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/parameters_SP8_GP.json" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/parameters_SP8_GP.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -55,7 +53,7 @@
       <recent name="D:\github\adamShiau_Python\AHRS_position_error_analysis" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.pig_parameters_widget">
+  <component name="RunManager" selected="Python.pigImu_Main (1)">
     <configuration name="FIR_coefficient_cal" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="adamShiau_Python" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -163,8 +161,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.pig_parameters_widget" />
         <item itemvalue="Python.pigImu_Main (1)" />
+        <item itemvalue="Python.pig_parameters_widget" />
         <item itemvalue="Python.FIR_coefficient_cal" />
         <item itemvalue="Python.pigImu_Main (2)" />
         <item itemvalue="Python.pigImu_Main" />

@@ -44,6 +44,10 @@ CMD_FOG_ERR_OFFSET = 18
 CMD_FOG_DAC_GAIN = 19
 CMD_FOG_CUTOFF = 20
 
+CMD_SF_COMP_T1 = 23
+CMD_SF_COMP_T2 = 24
+CMD_SF_1_SLOPE = 25
+CMD_SF_1_OFFSET = 26
 
 CMD_FOG_ERR_TH = 39
 CMD_FOG_TIMER_RST = 100
@@ -112,11 +116,11 @@ class pig_parameters_widget(QGroupBox):
         self.fb_on = spinBlock(title='mode(0:OPEN)', minValue=0, maxValue=2, double=False, step=1)
         self.err_th = spinBlock(title='ERR_TH', minValue=0, maxValue=16384, double=False, step=1)
         self.freq = spinBlockOneLabel(title='frequency', minValue=10, maxValue=1500, double=False, step=1)
-        self.KF_Q = spinBlock(title='SW_Q', minValue=1, maxValue=100000, double=False, step=1)
-        self.KF_R = spinBlock(title='SW_R', minValue=0, maxValue=100000, double=False, step=1)
-        self.HD_Q = spinBlock(title='FPGA_Q', minValue=1, maxValue=100000, double=False, step=1)
+        # self.KF_Q = spinBlock(title='SW_Q', minValue=1, maxValue=100000, double=False, step=1)
+        # self.KF_R = spinBlock(title='SW_R', minValue=0, maxValue=100000, double=False, step=1)
+        # self.HD_Q = spinBlock(title='FPGA_Q', minValue=1, maxValue=100000, double=False, step=1)
         # self.HD_Q.setEnabled(False)
-        self.HD_R = spinBlock(title='FPGA_R', minValue=0, maxValue=100000, double=False, step=1)
+        # self.HD_R = spinBlock(title='FPGA_R', minValue=0, maxValue=100000, double=False, step=1)
         # self.HD_R.setEnabled(False)
         self.Tmin = spinBlock(title='Tmin', minValue=-30, maxValue=30, double=False, step=5)
         self.Tmax = spinBlock(title='Tmax', minValue=30, maxValue=150, double=False, step=5)
@@ -124,9 +128,10 @@ class pig_parameters_widget(QGroupBox):
         '''slider'''
         self.dataRate_sd = sliderBlock(title='DATE RATE', minValue=1500, maxValue=5000, curValue=2500, interval=100)
         ''' edit line '''
-        self.sf0 = editBlock('SF0')
-        self.sf1 = editBlock('SF1')
-        self.sf2 = editBlock('SF2')
+        self.sf_comp_T1 = editBlock('sf_comp_T1')
+        self.sf_comp_T2 = editBlock('sf_comp_T2')
+        self.sf_1_slope = editBlock('sf_1_slope')
+        self.sf_1_offset = editBlock('sf_1_offset')
         self.sf3 = editBlock('SF3')
         self.sf4 = editBlock('SF4')
         self.sf5 = editBlock('SF5')
@@ -180,10 +185,10 @@ class pig_parameters_widget(QGroupBox):
         mainLayout.addWidget(self.err_th, 5, 0, 1, 2)
         mainLayout.addWidget(self.fb_on, 5, 2, 1, 2)
         mainLayout.addWidget(self.freq, 6, 0, 1, 4)
-        mainLayout.addWidget(self.HD_Q, 7, 0, 1, 2)
-        mainLayout.addWidget(self.HD_R, 7, 2, 1, 2)
-        mainLayout.addWidget(self.KF_Q, 8, 0, 1, 2)
-        mainLayout.addWidget(self.KF_R, 8, 2, 1, 2)
+        # mainLayout.addWidget(self.HD_Q, 7, 0, 1, 2)
+        # mainLayout.addWidget(self.HD_R, 7, 2, 1, 2)
+        # mainLayout.addWidget(self.KF_Q, 8, 0, 1, 2)
+        # mainLayout.addWidget(self.KF_R, 8, 2, 1, 2)
         mainLayout.addWidget(self.dataRate_sd, 9, 0, 1, 4)
         mainLayout.addWidget(self.sfb, 10, 6, 1, 2)
         mainLayout.addWidget(self.cutoff, 10, 0, 1, 2)
@@ -192,10 +197,10 @@ class pig_parameters_widget(QGroupBox):
         mainLayout.addWidget(self.GUI_Version_lb, 13, 0, 1, 4)
         mainLayout.addWidget(self.Tmin, 9, 4, 1, 2)
         mainLayout.addWidget(self.Tmax, 0, 4, 1, 2)
-        mainLayout.addWidget(self.sf0, 9, 6, 1, 2)
-        mainLayout.addWidget(self.sf1, 8, 6, 1, 2)
-        mainLayout.addWidget(self.sf2, 7, 6, 1, 2)
-        mainLayout.addWidget(self.sf3, 6, 6, 1, 2)
+        mainLayout.addWidget(self.sf_comp_T1, 9, 6, 1, 2)
+        mainLayout.addWidget(self.sf_comp_T2, 8, 6, 1, 2)
+        mainLayout.addWidget(self.sf_1_slope, 7, 6, 1, 2)
+        mainLayout.addWidget(self.sf_1_offset, 6, 6, 1, 2)
         mainLayout.addWidget(self.sf4, 5, 6, 1, 2)
         mainLayout.addWidget(self.sf5, 4, 6, 1, 2)
         mainLayout.addWidget(self.sf6, 3, 6, 1, 2)
@@ -231,10 +236,10 @@ class pig_parameters_widget(QGroupBox):
         self.err_offset.spin.valueChanged.connect(self.send_ERR_OFFSET_CMD)
         self.polarity.spin.valueChanged.connect(self.send_POLARITY_CMD)
         self.const_step.spin.valueChanged.connect(self.send_CONST_STEP_CMD)
-        self.KF_Q.spin.valueChanged.connect(self.update_KF_Q)
-        self.KF_R.spin.valueChanged.connect(self.update_KF_R)
-        self.HD_Q.spin.valueChanged.connect(self.update_FPGA_Q)
-        self.HD_R.spin.valueChanged.connect(self.update_FPGA_R)
+        # self.KF_Q.spin.valueChanged.connect(self.update_KF_Q)
+        # self.KF_R.spin.valueChanged.connect(self.update_KF_R)
+        # self.HD_Q.spin.valueChanged.connect(self.update_FPGA_Q)
+        # self.HD_R.spin.valueChanged.connect(self.update_FPGA_R)
         self.gain1.spin.valueChanged.connect(self.send_GAIN1_CMD)
         self.gain2.spin.valueChanged.connect(self.send_GAIN2_CMD)
         self.fb_on.spin.valueChanged.connect(self.send_FB_ON_CMD)
@@ -248,10 +253,10 @@ class pig_parameters_widget(QGroupBox):
         # self.sf_a.le.editingFinished.connect(self.SF_A_EDIT)
         # self.sf_b.le.editingFinished.connect(self.SF_B_EDIT)
         # self.sf_all.le.editingFinished.connect(self.send_SF_ALL_CMD)
-        self.sf0.le.editingFinished.connect(self.send_SF0_CMD)
-        self.sf1.le.editingFinished.connect(self.send_SF1_CMD)
-        self.sf2.le.editingFinished.connect(self.send_SF2_CMD)
-        self.sf3.le.editingFinished.connect(self.send_SF3_CMD)
+        self.sf_comp_T1.le.editingFinished.connect(self.send_SF_COMP_T1_CMD)
+        self.sf_comp_T2.le.editingFinished.connect(self.send_SF_COMP_T2_CMD)
+        self.sf_1_slope.le.editingFinished.connect(self.send_SF_1_SLOPE)
+        self.sf_1_offset.le.editingFinished.connect(self.send_SF_1_OFFSET)
         self.sf4.le.editingFinished.connect(self.send_SF4_CMD)
         self.sf5.le.editingFinished.connect(self.send_SF5_CMD)
         self.sf6.le.editingFinished.connect(self.send_SF6_CMD)
@@ -289,7 +294,10 @@ class pig_parameters_widget(QGroupBox):
         self.err_offset.spin.setValue(para["10"])
         self.dac_gain.spin.setValue(para["11"])
         self.cutoff.spin.setValue(para["12"])
-
+        self.sf_comp_T1.le.setText(str(self.ieee754_int_to_float(para["15"])))
+        self.sf_comp_T2.le.setText(str(self.ieee754_int_to_float(para["16"])))
+        self.sf_1_slope.le.setText(str(self.ieee754_int_to_float(para["17"])))
+        self.sf_1_offset.le.setText(str(self.ieee754_int_to_float(para["18"])))
 
         # self.err_th.spin.setValue(para["ERR_TH"])
         # self.HD_Q.spin.setValue(para["HD_Q"])
@@ -354,6 +362,16 @@ class pig_parameters_widget(QGroupBox):
 
     def writeImuCmd(self, cmd, value, fog_ch):
         self.__act.writeImuCmd(cmd, value, fog_ch)
+
+    def ieee754_int_to_float(self, int_value: int) -> float:
+        """
+        Convert a 32-bit IEEE-754 integer representation to a float.
+
+        :param int_value: Integer representation of IEEE-754 float (32-bit)
+        :return: Converted floating-point number
+        """
+        # Pack integer as 4 bytes, then unpack as a float
+        return round(struct.unpack('!f', struct.pack('!I', int_value))[0], 7)
 
     def send_FREQ_CMD(self):
         # dt_fpga = 1e3 / 91e6  # for PLL set to 91MHz
@@ -461,17 +479,25 @@ class pig_parameters_widget(QGroupBox):
         # self.__par_manager.update_parameters("DAC_GAIN", value)
         # print("%d" % value)
 
-    def send_SF0_CMD(self):
-        value = struct.unpack('<I', struct.pack('<f', float(self.sf0.le.text())))
-        self.__act.writeImuCmd(CMD_FOG_SF0, value[0])
+    def send_SF_COMP_T1_CMD(self):
+        value = struct.unpack('<I', struct.pack('<f', float(self.sf_comp_T1.le.text())))
+        print(value[0])
+        self.__act.writeImuCmd(CMD_SF_COMP_T1, value[0])
 
-    def send_SF1_CMD(self):
-        value = struct.unpack('<I', struct.pack('<f', float(self.sf1.le.text())))
-        self.__act.writeImuCmd(CMD_FOG_SF1, value[0])
+    def send_SF_COMP_T2_CMD(self):
+        value = struct.unpack('<I', struct.pack('<f', float(self.sf_comp_T2.le.text())))
+        print(value[0])
+        self.__act.writeImuCmd(CMD_SF_COMP_T2, value[0])
 
-    def send_SF2_CMD(self):
-        value = struct.unpack('<I', struct.pack('<f', float(self.sf2.le.text())))
-        self.__act.writeImuCmd(CMD_FOG_SF2, value[0])
+    def send_SF_1_SLOPE(self):
+        value = struct.unpack('<I', struct.pack('<f', float(self.sf_1_slope.le.text())))
+        print(value[0])
+        self.__act.writeImuCmd(CMD_SF_1_SLOPE, value[0])
+
+    def send_SF_1_OFFSET(self):
+        value = struct.unpack('<I', struct.pack('<f', float(self.sf_1_offset.le.text())))
+        print(value[0])
+        self.__act.writeImuCmd(CMD_SF_1_OFFSET, value[0])
 
     def send_SF3_CMD(self):
         value = struct.unpack('<I', struct.pack('<f', float(self.sf3.le.text())))

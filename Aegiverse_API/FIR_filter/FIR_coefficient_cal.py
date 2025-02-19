@@ -3,8 +3,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 fs = 100e6  # ADC取樣頻率 (100 MHz)
-fc = 3e6  # 通帶截止頻率
-n = 16  # 濾波器階數
+fc = 2e6  # 通帶截止頻率
+n = 31  # 濾波器階數
 b = firwin(n + 1, fc / (fs / 2), pass_zero='lowpass')
 
 b_fixed = np.round(b * (2**15)).astype(int)  # 量化為16位（Q15格式）

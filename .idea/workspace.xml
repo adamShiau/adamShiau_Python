@@ -6,15 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="85991cce-3172-48ba-9a0a-536b882fdfef" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegiverse_API/GP_PARAMETER_PDf_CH2/logs/errors.log" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/GP_PARAMETER_PDf_CH2/logs/errors.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegiverse_API/GP_PARAMETER_PDf_CH2/parameters_SP8_GP.json" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/GP_PARAMETER_PDf_CH2/parameters_SP8_GP.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegiverse_API/GP_PARAMETER_PDf_CH2/pigImu_Main.py" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/GP_PARAMETER_PDf_CH2/pigImu_Main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/logs/errors.log" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/logs/errors.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/myLib/common.py" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/myLib/common.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegiverse_API/FIR_filter/FIR_coefficient_cal.py" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/FIR_filter/FIR_coefficient_cal.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/myLib/myGui/pig_parameters_widget.py" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/myLib/myGui/pig_parameters_widget.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/parameters_SP8_GP.json" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/parameters_SP8_GP.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/pigImuReader.py" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/pigImuReader.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/pigImu_Main.py" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/pigImu_Main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -61,8 +55,8 @@
       <recent name="D:\github\adamShiau_Python\AHRS_position_error_analysis" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.pigImu_Main (1)">
-    <configuration name="IIR_V3" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+  <component name="RunManager" selected="Python.pig_parameters_widget">
+    <configuration name="FIR_coefficient_cal" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="adamShiau_Python" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -70,11 +64,11 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Aegiverse_API/Digital_Filter" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Aegiverse_API/FIR_filter" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Aegiverse_API/Digital_Filter/IIR_V3.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Aegiverse_API/FIR_filter/FIR_coefficient_cal.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -169,11 +163,11 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.pigImu_Main (1)" />
-        <item itemvalue="Python.pigImu_Main (2)" />
         <item itemvalue="Python.pig_parameters_widget" />
+        <item itemvalue="Python.pigImu_Main (1)" />
+        <item itemvalue="Python.FIR_coefficient_cal" />
+        <item itemvalue="Python.pigImu_Main (2)" />
         <item itemvalue="Python.pigImu_Main" />
-        <item itemvalue="Python.IIR_V3" />
       </list>
     </recent_temporary>
   </component>

@@ -29,6 +29,7 @@ MODE_FOG = 1
 MODE_IMU = 2
 MODE_EQ = 3
 MODE_IMU_FAKE = 4
+''' FOG PARAMETER'''
 CMD_FOG_MOD_FREQ = 8
 CMD_FOG_MOD_AMP_H = 9
 CMD_FOG_MOD_AMP_L = 10
@@ -40,8 +41,8 @@ CMD_FOG_CONST_STEP = 15
 CMD_FOG_FB_ON = 16
 CMD_FOG_GAIN2 = 17
 CMD_FOG_ERR_OFFSET = 18
-CMD_FOG_DAC_GAIN = 21
-CMD_FOG_CUTOFF = 22
+CMD_FOG_DAC_GAIN = 19
+CMD_FOG_CUTOFF = 20
 
 
 CMD_FOG_ERR_TH = 39
@@ -286,8 +287,8 @@ class pig_parameters_widget(QGroupBox):
         self.fb_on.spin.setValue(para["8"])
         self.gain2.spin.setValue(para["9"])
         self.err_offset.spin.setValue(para["10"])
-        self.dac_gain.spin.setValue(para["13"])
-        self.cutoff.spin.setValue(para["14"])
+        self.dac_gain.spin.setValue(para["11"])
+        self.cutoff.spin.setValue(para["12"])
 
 
         # self.err_th.spin.setValue(para["ERR_TH"])

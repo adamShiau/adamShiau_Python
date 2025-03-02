@@ -5,17 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="85991cce-3172-48ba-9a0a-536b882fdfef" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/rd_data.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/readData/ADC noise/read_adc_2ch.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Aegiverse_API/readData/ADC noise/read_adc_2ch_wFFT.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegiverse_API/GP_PARAMETER_PDf_CH2/logs/errors.log" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/GP_PARAMETER_PDf_CH2/logs/errors.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegiverse_API/GP_PARAMETER_PDf_CH2/parameters_SP8_GP.json" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/GP_PARAMETER_PDf_CH2/parameters_SP8_GP.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/dist/parameters_SP8_GP.json" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/dist/parameters_SP8_GP.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/logs/errors.log" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/logs/errors.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/parameters_SP8_GP.json" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/parameters_SP8_GP.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/pigImu_Main.py" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/pigImu_Main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegiverse_API/readData/ADC noise/csv_read_2ch.py" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/readData/ADC noise/csv_read_2ch.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/rd_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/rd_data.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

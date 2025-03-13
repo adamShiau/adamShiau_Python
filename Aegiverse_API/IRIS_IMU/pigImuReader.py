@@ -212,10 +212,10 @@ class pigImuReader(QThread):
 
     def readIMU(self):
         self.flushInputBuffer()
-        self.writeImuCmd(1, 1, 2)
+        self.writeImuCmd(2, 2, 2)
 
     def stopIMU(self):
-        self.writeImuCmd(1, 4, 2)
+        self.writeImuCmd(2, 4, 2)
 
     def dump_fog_parameters(self, ch):
         # self.writeImuCmd(0x66, 2)
@@ -232,11 +232,11 @@ class pigImuReader(QThread):
 
     def getImuData(self):
         head = getData.alignHeader_4B(self.__Connector, HEADER_KVH)
-        dataPacket = getData.getdataPacket(self.__Connector, head, 20)  # must be same as FW malloc( here )
+        dataPacket = getData.getdataPacket(self.__Connector, head, 48)  # must be same as FW malloc( here )
 
-        FPGA_TIME, ERR, STEP, PD_TEMP = cmn.IRIS_FOG(dataPacket, EN=1, PRINT=0, sf_a=self.sf_a, sf_b=self.sf_b,
+        FPGA_TIME, ERR, STEP, PD_TEMP = cmn.IRIS_IMU(dataPacket, EN=1, PRINT=1, sf_a=self.sf_a, sf_b=self.sf_b,
                                                      POS_TIME=POS_PIG)
-        # MCU_TIME = cmn.readTime(dataPacket, EN=1, POS_TIME=POS_TIME, PRINT=0)
+
 
         if self.isKal:
             ERR = self.pig_err_kal.update(ERR)

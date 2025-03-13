@@ -135,7 +135,6 @@ class mainWindow(QMainWindow):
 
     def printPdTemperature(self, val):
         if (time.perf_counter() - self.t_start) > 0.5:
-            # self.top.pd_temp_lb.lb.setText(str(val))
             self.top.pd_temp_lb.lb.setText(f"{val:.4f}")
             self.t_start = time.perf_counter()
 
@@ -248,7 +247,7 @@ class mainWindow(QMainWindow):
             cmn.print_debug(debug_info, self.__debug)
             # print(imudata["PIG_WZ"])
             datalist = [imudata["TIME"], imudata["PIG_WZ"], imudata["PD_TEMP"]]
-            data_fmt = "%.3f,%.5f,%.5f"
+            data_fmt = "%.3f,%.5f,%.1f"
             self.imudata_file.saveData(datalist, data_fmt)
             self.plotdata(self.imudata)
             self.printUpdateRate(self.imudata["TIME"])
@@ -266,7 +265,8 @@ class mainWindow(QMainWindow):
         # print(imudata["PIG_WZ"], end=', ')
         # print(factor)
         if self.top.plot1_showWz_cb.cb_1.isChecked():
-            self.top.plot1.ax1.setData(imudata["TIME"], imudata["PIG_WZ"] * factor)
+            self.top.plot1.ax1.setData(imudata["TIME"], imudata["PIG_WZ"])
+            # self.top.plot1.ax1.setData(imudata["TIME"], imudata["PIG_WZ"] * factor)
             # self.top.plot1.ax1.setData(imudata["TIME"], imudata["PIG_ERR"])
         else:
             self.top.plot1.ax1.clear()

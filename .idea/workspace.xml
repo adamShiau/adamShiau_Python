@@ -5,8 +5,90 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="85991cce-3172-48ba-9a0a-536b882fdfef" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_IMU/AllanDev.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_IMU/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_IMU/aegiverse_logo_bk.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_IMU/dist/aegiverse_logo_bk.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_IMU/dist/log_config.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_IMU/dist/logs/errors.log" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_IMU/dist/parameters_SP8_GP.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_IMU/layout.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_IMU/log_config.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_IMU/logs/errors.log" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_IMU/myLib/EncoderConnector/ChangeLog.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_IMU/myLib/EncoderConnector/EncoderConnector/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_IMU/myLib/EncoderConnector/EncoderConnector/myEncoderConnector.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_IMU/myLib/EncoderConnector/EncoderConnector/myEncoderGenerator.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_IMU/myLib/EncoderConnector/EncoderConnector/myEncoderReader.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_IMU/myLib/EncoderConnector/EncoderConnector/myEncoderReader_qt.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_IMU/myLib/EncoderConnector/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_IMU/myLib/EncoderConnector/doc/README.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_IMU/myLib/EncoderConnector/setup.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_IMU/myLib/EncoderConnector/testEncoderConnector.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_IMU/myLib/EncoderConnector/testEncoderGenerator_func.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_IMU/myLib/EncoderConnector/testEncoderGenerator_object.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_IMU/myLib/EncoderConnector/testEncoderReader_func.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_IMU/myLib/EncoderConnector/testEncoderReader_object.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_IMU/myLib/README_common.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_IMU/myLib/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_IMU/myLib/common.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_IMU/myLib/crcCalculator/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_IMU/myLib/crcCalculator/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_IMU/myLib/crcCalculator/crcLib.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_IMU/myLib/myFilter/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_IMU/myLib/myFilter/filter.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_IMU/myLib/myGui/README_myGui.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_IMU/myLib/myGui/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_IMU/myLib/myGui/aegiverse_logo.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_IMU/myLib/myGui/analysis_Allan.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_IMU/myLib/myGui/analysis_SF.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_IMU/myLib/myGui/analysis_SF2.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_IMU/myLib/myGui/analysis_TimingPlot.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_IMU/myLib/myGui/autoSave.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_IMU/myLib/myGui/default_fog_parameters.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_IMU/myLib/myGui/graph.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_IMU/myLib/myGui/myCheckBox.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_IMU/myLib/myGui/myComboBox.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_IMU/myLib/myGui/myLabel.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_IMU/myLib/myGui/myLineEdit.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_IMU/myLib/myGui/myProgressBar.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_IMU/myLib/myGui/myRadioButton.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_IMU/myLib/myGui/mygui_serial.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_IMU/myLib/myGui/pandas.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_IMU/myLib/myGui/parameters_SP9.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_IMU/myLib/myGui/pd_test.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_IMU/myLib/myGui/pig_menu_manager.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_IMU/myLib/myGui/pig_parameters_widget.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_IMU/myLib/myGui/pig_parameters_widget_bk.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_IMU/myLib/myGui/plot_row_data.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_IMU/myLib/myGui/read_csv_test.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_IMU/myLib/myGui/test.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_IMU/myLib/myNavigation/googleEarth_file_generate.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_IMU/myLib/myNavigation/googleMapTest.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_IMU/myLib/myNavigation/imu2latlon_new.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_IMU/myLib/myNavigation/planar_Navigation.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_IMU/myLib/myNavigation/test.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_IMU/myLib/mySerial/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_IMU/myLib/mySerial/Connector.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_IMU/myLib/mySerial/Connector_bk.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_IMU/myLib/mySerial/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_IMU/myLib/mySerial/getData.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_IMU/myLib/mySerial/readLine_test.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_IMU/parameters_D01.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_IMU/parameters_SP8_GP.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_IMU/pigIMU_EXE.bat" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_IMU/pigImuReader.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_IMU/pigImu_Main.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_IMU/pigImu_Widget.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_IMU/pyqtSignal_test.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_IMU/rd_data.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/rd_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/rd_data.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegiverse_API/GP_PARAMETER_PDf_CH2/logs/errors.log" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/GP_PARAMETER_PDf_CH2/logs/errors.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegiverse_API/GP_PARAMETER_PDf_CH2/parameters_SP8_GP.json" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/GP_PARAMETER_PDf_CH2/parameters_SP8_GP.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/parameters_SP8_GP.json" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/parameters_SP8_GP.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/pigImuReader.py" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/pigImuReader.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/pigImu_Main.py" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/pigImu_Main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Aegiverse_API/readData/ADC noise/read_adc_2ch_wFFT.py" beforeDir="false" afterPath="$PROJECT_DIR$/Aegiverse_API/readData/ADC noise/read_adc_2ch_wFFT.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -36,14 +118,14 @@
   "keyToString": {
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "last_opened_file_path": "D:/github/adamShiau_Python/Aegiverse_API/readData/ADC noise",
+    "last_opened_file_path": "D:/github/adamShiau_Python/Aegiverse_API",
     "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
   }
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="D:\github\adamShiau_Python\Aegiverse_API\readData\ADC noise" />
       <recent name="D:\github\adamShiau_Python\Aegiverse_API" />
+      <recent name="D:\github\adamShiau_Python\Aegiverse_API\readData\ADC noise" />
       <recent name="D:\github\adamShiau_Python\Aegiverse_API\Digital_Filter" />
       <recent name="D:\github\adamShiau_Python\Aegiverse_API\YF_DataRead" />
       <recent name="D:\github\adamShiau_Python\Aegiverse_API\AHRS_position_error_analysis\AHRS_position error simulation" />
@@ -53,7 +135,7 @@
       <recent name="D:\github\adamShiau_Python\AHRS_position_error_analysis" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.rd_data">
+  <component name="RunManager" selected="Python.pigImu_Main (2)">
     <configuration name="pigImu_Main (1)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="adamShiau_Python" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -67,6 +149,27 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Aegiverse_API/IRIS_PARAMETER/pigImu_Main.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="pigImu_Main (2)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="adamShiau_Python" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Aegiverse_API/IRIS_IMU" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Aegiverse_API/IRIS_IMU/pigImu_Main.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -117,27 +220,6 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="read_adc_2ch" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="adamShiau_Python" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Aegiverse_API/readData/ADC noise" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Aegiverse_API/readData/ADC noise/read_adc_2ch.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
     <configuration name="read_adc_2ch_wFFT" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="adamShiau_Python" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -161,11 +243,11 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.rd_data" />
+        <item itemvalue="Python.pigImu_Main (2)" />
         <item itemvalue="Python.pigImu_Main (1)" />
-        <item itemvalue="Python.read_adc_2ch_wFFT" />
         <item itemvalue="Python.pigImu_Main" />
-        <item itemvalue="Python.read_adc_2ch" />
+        <item itemvalue="Python.read_adc_2ch_wFFT" />
+        <item itemvalue="Python.rd_data" />
       </list>
     </recent_temporary>
   </component>

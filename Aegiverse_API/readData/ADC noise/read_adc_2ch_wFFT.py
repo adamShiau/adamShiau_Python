@@ -5,7 +5,7 @@ import os
 
 # 讀取 CSV 檔案
 file_path = r'C:\Users\ami73\Desktop\IRIS_FPGA'
-file_name = 'ADC_3 comp reg_adc3_sync_0227-2'
+file_name = 'ADC_3 comp reg_adc3_sync_0306-3'
 file_ext = '.csv'
 
 # 組合完整檔案路徑

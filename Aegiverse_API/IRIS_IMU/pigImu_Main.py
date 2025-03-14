@@ -217,7 +217,7 @@ class mainWindow(QMainWindow):
 
     def collectData(self, imudata):
         if not self.press_stop:
-            # Add self.first_run_flag to make sure that TIME data starts from nearing Zero after pressing Read button,
+            # Add self.first_run_flag ㄟ to make sure that TIME data starts from nearing Zero after pressing Read button,
             # if the first element of imudata['TIME'] is greater than some arbitrary small value (two here), neglect
             # this imudata['TIME'] data!
             # if self.first_run_flag and (int(imudata['TIME'][0]) > 2):
@@ -226,7 +226,8 @@ class mainWindow(QMainWindow):
             input_buf = self.act.readInputBuffer()
             t0 = time.perf_counter()
             # imudata = cmn.dictOperation(imudata, imuoffset, "SUB", IMU_DATA_STRUCTURE)
-            self.printPdTemperature(imudata["PD_TEMP"][0])
+            self.printPdTemperature(imudata["PIG_WZ"][0])
+            # self.printPdTemperature(imudata["PD_TEMP"][0])
             # print(imudata['PIG_WZ'])
             # imudata['PIG_WZ'] = np.clip(imudata['PIG_WZ'], -900, 900)
             t1 = time.perf_counter()
@@ -246,8 +247,8 @@ class mainWindow(QMainWindow):
                          + str(round((t1 - t0) * 1000, 5)) + ", " + str(round((t2 - t1) * 1000, 5))
             cmn.print_debug(debug_info, self.__debug)
             # print(imudata["PIG_WZ"])
-            datalist = [imudata["TIME"], imudata["PIG_WZ"], imudata["PD_TEMP"]]
-            data_fmt = "%.3f,%.5f,%.1f"
+            datalist = [imudata["TIME"], imudata["PIG_WZ"], imudata["PIG_ERR"]]
+            data_fmt = "%.3f,%.5f,%.5f"
             self.imudata_file.saveData(datalist, data_fmt)
             self.plotdata(self.imudata)
             self.printUpdateRate(self.imudata["TIME"])
@@ -265,7 +266,7 @@ class mainWindow(QMainWindow):
         # print(imudata["PIG_WZ"], end=', ')
         # print(factor)
         if self.top.plot1_showWz_cb.cb_1.isChecked():
-            self.top.plot1.ax1.setData(imudata["TIME"], imudata["PIG_WZ"])
+            self.top.plot1.ax1.setData(imudata["TIME"], imudata["PD_TEMP"])
             # self.top.plot1.ax1.setData(imudata["TIME"], imudata["PIG_WZ"] * factor)
             # self.top.plot1.ax1.setData(imudata["TIME"], imudata["PIG_ERR"])
         else:

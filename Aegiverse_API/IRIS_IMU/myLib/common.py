@@ -103,7 +103,7 @@ def IRIS_IMU(dataPacket, EN=1, POS_TIME=25, sf_a=1, sf_b=0, PRINT=0):
         print('%f, ' % temperature3, end=', ')
         print('%f, ' % acc_temp)
     # End of if-condition
-    return fpga_time, az, temperature2, acc_temp
+    return fpga_time, az, acc_temp, temperature2
     # return fpga_time, step1_dps, step2_dps, step3_dps, ax, ay, az, temperature1, temperature2, temperature3, acc_temp
 
 

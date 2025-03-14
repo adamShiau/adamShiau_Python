@@ -4,8 +4,8 @@ import matplotlib.pyplot as plt
 import os
 
 # 讀取 CSV 檔案
-file_path = r'C:\Users\ami73\Desktop\IRIS_FPGA'
-file_name = 'ADC_3 comp reg_adc3_sync_0306-3'
+file_path = r'D:\github\adamShiau_FPGA\intel_IP\IRIS\STP\ADC3_noise\0314'
+file_name = 'ADC_3 comp reg_adc3_sync_IRIS-3'
 file_ext = '.csv'
 
 # 組合完整檔案路徑

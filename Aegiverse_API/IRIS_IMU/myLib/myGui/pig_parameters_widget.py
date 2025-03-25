@@ -52,6 +52,31 @@ CMD_SF_1_OFFSET = 26
 CMD_FOG_ERR_TH = 39
 CMD_FOG_TIMER_RST = 100
 
+CMD_FOG_AX = 39
+CMD_FOG_AY = 40
+CMD_FOG_AZ = 41
+CMD_FOG_A11 = 42
+CMD_FOG_A12 = 43
+CMD_FOG_A13 = 44
+CMD_FOG_A21 = 45
+CMD_FOG_A22 = 46
+CMD_FOG_A23 = 47
+CMD_FOG_A31 = 48
+CMD_FOG_A32 = 49
+CMD_FOG_A33 = 50
+CMD_FOG_GX = 51
+CMD_FOG_GY = 52
+CMD_FOG_GZ = 53
+CMD_FOG_G11 = 54
+CMD_FOG_G12 = 55
+CMD_FOG_G13 = 56
+CMD_FOG_G21 = 57
+CMD_FOG_G22 = 58
+CMD_FOG_G23 = 59
+CMD_FOG_G31 = 60
+CMD_FOG_G32 = 61
+CMD_FOG_G33 = 62
+
 CMD_FOG_FPGA_Q = 220
 CMD_FOG_FPGA_R = 220
 
@@ -140,6 +165,30 @@ class pig_parameters_widget(QGroupBox):
         self.sf8 = editBlock('SF8')
         self.sf9 = editBlock('SF9')
         self.sfb = editBlock('SFB')
+        self.AX = editBlock('AX')
+        self.AY = editBlock('AY')
+        self.AZ = editBlock('AZ')
+        self.A11 = editBlock('A11')
+        self.A12 = editBlock('A12')
+        self.A13 = editBlock('A13')
+        self.A21 = editBlock('A21')
+        self.A22 = editBlock('A22')
+        self.A23 = editBlock('A23')
+        self.A31 = editBlock('A31')
+        self.A32 = editBlock('A32')
+        self.A33 = editBlock('A33')
+        self.GX = editBlock('GX')
+        self.GY = editBlock('GY')
+        self.GZ = editBlock('GZ')
+        self.G11 = editBlock('G11')
+        self.G12 = editBlock('G12')
+        self.G13 = editBlock('G13')
+        self.G21 = editBlock('G21')
+        self.G22 = editBlock('G22')
+        self.G23 = editBlock('G23')
+        self.G31 = editBlock('G31')
+        self.G32 = editBlock('G32')
+        self.G33 = editBlock('G33')
 
         self.dump_bt = QPushButton("dump")
         # self.sf_all = editBlock('SF_all')
@@ -223,6 +272,31 @@ class pig_parameters_widget(QGroupBox):
         mainLayout.addWidget(self.T6l_lb, 2, 4, 1, 2)
         mainLayout.addWidget(self.T7r_lb, 2, 8, 1, 2)
         mainLayout.addWidget(self.T7l_lb, 1, 4, 1, 2)
+        mainLayout.addWidget(self.AX, 0, 8, 1, 2)
+        mainLayout.addWidget(self.AY, 0, 10, 1, 2)
+        mainLayout.addWidget(self.AZ, 0, 12, 1, 2)
+        mainLayout.addWidget(self.A11, 1, 8, 1, 2)
+        mainLayout.addWidget(self.A12, 1, 10, 1, 2)
+        mainLayout.addWidget(self.A13, 1, 12, 1, 2)
+        mainLayout.addWidget(self.A21, 2, 8, 1, 2)
+        mainLayout.addWidget(self.A22, 2, 10, 1, 2)
+        mainLayout.addWidget(self.A23, 2, 12, 1, 2)
+        mainLayout.addWidget(self.A31, 3, 8, 1, 2)
+        mainLayout.addWidget(self.A32, 3, 10, 1, 2)
+        mainLayout.addWidget(self.A33, 3, 12, 1, 2)
+        mainLayout.addWidget(self.GX, 5, 8, 1, 2)
+        mainLayout.addWidget(self.GY, 5, 10, 1, 2)
+        mainLayout.addWidget(self.GZ, 5, 12, 1, 2)
+        mainLayout.addWidget(self.G11, 6, 8, 1, 2)
+        mainLayout.addWidget(self.G12, 6, 10, 1, 2)
+        mainLayout.addWidget(self.G13, 6, 12, 1, 2)
+        mainLayout.addWidget(self.G21, 7, 8, 1, 2)
+        mainLayout.addWidget(self.G22, 7, 10, 1, 2)
+        mainLayout.addWidget(self.G23, 7, 12, 1, 2)
+        mainLayout.addWidget(self.G31, 8, 8, 1, 2)
+        mainLayout.addWidget(self.G32, 8, 10, 1, 2)
+        mainLayout.addWidget(self.G33, 8, 12, 1, 2)
+
         self.setLayout(mainLayout)
 
     def linkfunction(self):
@@ -264,6 +338,29 @@ class pig_parameters_widget(QGroupBox):
         self.sf8.le.editingFinished.connect(self.send_SF8_CMD)
         self.sf9.le.editingFinished.connect(self.send_SF9_CMD)
         self.sfb.le.editingFinished.connect(self.send_SFB_CMD)
+        self.AX.le.editingFinished.connect(self.send_AX_CMD)
+        self.AY.le.editingFinished.connect(self.send_AY_CMD)
+        self.AZ.le.editingFinished.connect(self.send_AZ_CMD)
+        self.A11.le.editingFinished.connect(self.send_A11_CMD)
+        self.A12.le.editingFinished.connect(self.send_A12_CMD)
+        self.A13.le.editingFinished.connect(self.send_A13_CMD)
+        self.A21.le.editingFinished.connect(self.send_A21_CMD)
+        self.A22.le.editingFinished.connect(self.send_A22_CMD)
+        self.A23.le.editingFinished.connect(self.send_A23_CMD)
+        self.A31.le.editingFinished.connect(self.send_A31_CMD)
+        self.A32.le.editingFinished.connect(self.send_A32_CMD)
+        self.A33.le.editingFinished.connect(self.send_A33_CMD)
+        self.GY.le.editingFinished.connect(self.send_GY_CMD)
+        self.GZ.le.editingFinished.connect(self.send_GZ_CMD)
+        self.G11.le.editingFinished.connect(self.send_G11_CMD)
+        self.G12.le.editingFinished.connect(self.send_G12_CMD)
+        self.G13.le.editingFinished.connect(self.send_G13_CMD)
+        self.G21.le.editingFinished.connect(self.send_G21_CMD)
+        self.G22.le.editingFinished.connect(self.send_G22_CMD)
+        self.G23.le.editingFinished.connect(self.send_G23_CMD)
+        self.G31.le.editingFinished.connect(self.send_G31_CMD)
+        self.G32.le.editingFinished.connect(self.send_G32_CMD)
+        self.G33.le.editingFinished.connect(self.send_G33_CMD)
         ''' bt'''
         self.dump_bt.clicked.connect(self.getVersion)
         self.dump_bt.clicked.connect(self.dump_parameter)
@@ -530,6 +627,102 @@ class pig_parameters_widget(QGroupBox):
     def send_SFB_CMD(self):
         value = struct.unpack('<I', struct.pack('<f', float(self.sfb.le.text())))
         self.__act.writeImuCmd(CMD_FOG_SFB, value[0])
+
+    def send_AX_CMD(self):
+        value = struct.unpack('<I', struct.pack('<f', float(self.AX.le.text())))
+        self.__act.writeImuCmd(CMD_FOG_AX, value[0])
+
+    def send_AY_CMD(self):
+        value = struct.unpack('<I', struct.pack('<f', float(self.AY.le.text())))
+        self.__act.writeImuCmd(CMD_FOG_AY, value[0])
+
+    def send_AZ_CMD(self):
+        value = struct.unpack('<I', struct.pack('<f', float(self.AZ.le.text())))
+        self.__act.writeImuCmd(CMD_FOG_AZ, value[0])
+
+    def send_A11_CMD(self):
+        value = struct.unpack('<I', struct.pack('<f', float(self.A11.le.text())))
+        self.__act.writeImuCmd(CMD_FOG_A11, value[0])
+
+    def send_A12_CMD(self):
+        value = struct.unpack('<I', struct.pack('<f', float(self.A12.le.text())))
+        self.__act.writeImuCmd(CMD_FOG_A12, value[0])
+
+    def send_A13_CMD(self):
+        value = struct.unpack('<I', struct.pack('<f', float(self.A13.le.text())))
+        self.__act.writeImuCmd(CMD_FOG_A13, value[0])
+
+    def send_A21_CMD(self):
+        value = struct.unpack('<I', struct.pack('<f', float(self.A21.le.text())))
+        self.__act.writeImuCmd(CMD_FOG_A21, value[0])
+
+    def send_A22_CMD(self):
+        value = struct.unpack('<I', struct.pack('<f', float(self.A22.le.text())))
+        self.__act.writeImuCmd(CMD_FOG_A22, value[0])
+
+    def send_A23_CMD(self):
+        value = struct.unpack('<I', struct.pack('<f', float(self.A23.le.text())))
+        self.__act.writeImuCmd(CMD_FOG_A23, value[0])
+
+    def send_A31_CMD(self):
+        value = struct.unpack('<I', struct.pack('<f', float(self.A31.le.text())))
+        self.__act.writeImuCmd(CMD_FOG_A31, value[0])
+
+    def send_A32_CMD(self):
+        value = struct.unpack('<I', struct.pack('<f', float(self.A32.le.text())))
+        self.__act.writeImuCmd(CMD_FOG_A32, value[0])
+
+    def send_A33_CMD(self):
+        value = struct.unpack('<I', struct.pack('<f', float(self.A33.le.text())))
+        self.__act.writeImuCmd(CMD_FOG_A33, value[0])
+
+    def send_GX_CMD(self):
+        value = struct.unpack('<I', struct.pack('<f', float(self.GX.le.text())))
+        self.__act.writeImuCmd(CMD_FOG_GX, value[0])
+
+    def send_GY_CMD(self):
+        value = struct.unpack('<I', struct.pack('<f', float(self.GY.le.text())))
+        self.__act.writeImuCmd(CMD_FOG_GY, value[0])
+
+    def send_GZ_CMD(self):
+        value = struct.unpack('<I', struct.pack('<f', float(self.GZ.le.text())))
+        self.__act.writeImuCmd(CMD_FOG_GZ, value[0])
+
+    def send_G11_CMD(self):
+        value = struct.unpack('<I', struct.pack('<f', float(self.G11.le.text())))
+        self.__act.writeImuCmd(CMD_FOG_G11, value[0])
+
+    def send_G12_CMD(self):
+        value = struct.unpack('<I', struct.pack('<f', float(self.G12.le.text())))
+        self.__act.writeImuCmd(CMD_FOG_G12, value[0])
+
+    def send_G13_CMD(self):
+        value = struct.unpack('<I', struct.pack('<f', float(self.G13.le.text())))
+        self.__act.writeImuCmd(CMD_FOG_G13, value[0])
+
+    def send_G21_CMD(self):
+        value = struct.unpack('<I', struct.pack('<f', float(self.G21.le.text())))
+        self.__act.writeImuCmd(CMD_FOG_G21, value[0])
+
+    def send_G22_CMD(self):
+        value = struct.unpack('<I', struct.pack('<f', float(self.G22.le.text())))
+        self.__act.writeImuCmd(CMD_FOG_G22, value[0])
+
+    def send_G23_CMD(self):
+        value = struct.unpack('<I', struct.pack('<f', float(self.G23.le.text())))
+        self.__act.writeImuCmd(CMD_FOG_G23, value[0])
+
+    def send_G31_CMD(self):
+        value = struct.unpack('<I', struct.pack('<f', float(self.G31.le.text())))
+        self.__act.writeImuCmd(CMD_FOG_G31, value[0])
+
+    def send_G32_CMD(self):
+        value = struct.unpack('<I', struct.pack('<f', float(self.G32.le.text())))
+        self.__act.writeImuCmd(CMD_FOG_G32, value[0])
+
+    def send_G33_CMD(self):
+        value = struct.unpack('<I', struct.pack('<f', float(self.G33.le.text())))
+        self.__act.writeImuCmd(CMD_FOG_G33, value[0])
 
     def send_CONST_STEP_CMD(self):
         value = self.const_step.spin.value()

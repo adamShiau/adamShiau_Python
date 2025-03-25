@@ -196,7 +196,7 @@ class pigImuReader(QThread):
 
     # End of memsImuReader::disconnectIMU
 
-    def writeImuCmd(self, cmd, value, fog_ch=3):  # GP1Z use 2, SP use 3
+    def writeImuCmd(self, cmd, value, fog_ch=4):  # GP1Z use 2, SP use 3
         if value < 0:
             value = (1 << 32) + value
         # End of if-condition

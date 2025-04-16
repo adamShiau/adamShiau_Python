@@ -358,3 +358,6 @@
 2025-02-13 12:45:24 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
 2025-02-26 14:47:39 - main.myLib.mySerial.Connector - ERROR - IOError, the device: COM21 can not be found or can not be configured!
 2025-03-25 17:04:36 - main.myLib.mySerial.Connector - ERROR - IOError, the device: COM5 can not be found or can not be configured!
+2025-04-10 16:49:03 - main.myLib.mySerial.Connector - ERROR - IOError, the device: COM5 can not be found or can not be configured!
+2025-04-10 17:06:47 - main.myLib.mySerial.Connector - ERROR - IOError, the device: COM7 can not be found or can not be configured!
+2025-04-10 17:06:55 - main.myLib.mySerial.Connector - ERROR - IOError, the device: COM5 can not be found or can not be configured!

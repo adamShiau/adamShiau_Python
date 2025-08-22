@@ -413,7 +413,7 @@ class mainWindow(QMainWindow):
 
     def start(self):
         if self.haveClickBtn == False:
-            self.resetFPGATimer(3)
+            # self.resetFPGATimer(3)
             self.act.readIMU()
             self.act.isRun = True
             self.press_stop = False

@@ -4,9 +4,24 @@
 import json
 import re
 import sys
+import threading
+import time
+from datetime import datetime
+from pathlib import Path
 from collections import OrderedDict
 
-# -------- 共用設定 --------
+import serial
+
+# ================== 使用者可調整參數 ==================
+FPGA_PORT = "COM12"         # 儀器上電時會從這裡輸出 fpga_para
+MCU_PORT  = "COM3"          # MCU 會從這裡輸出 mcu_para (4 行 JSON)
+BAUDRATE  = 115200          # 若不同請調整
+READ_SILENCE_SEC = 5.0      # 連續這麼久沒有任何資料就視為結束
+GLOBAL_TIMEOUT_SEC = 30.0   # 最長等待秒數（避免無限等）
+SAVE_DIR = Path(".")        # 檔案儲存資料夾
+# =====================================================
+
+# -------- 比對用的小工具（沿用你前面已用過的解析邏輯，稍作整合） --------
 HEADER_X = "FOG X Parameter:"
 HEADER_Y = "FOG Y Parameter:"
 HEADER_Z = "FOG Z Parameter:"
@@ -14,23 +29,18 @@ HEADER_MIS = "Printing EEPROM FOG Mis-alignment..."
 CH_MAP = {"1": "X", "2": "Y", "3": "Z", "4": "MIS"}
 GROUP_LABELS = [("X", "FOG X"), ("Y", "FOG Y"), ("Z", "FOG Z"), ("MIS", "Mis-alignment")]
 
-# -------- 解析 fpga 第一部分（列表印法）--------
 def parse_first_section(lines):
     section = {"X": OrderedDict(), "Y": OrderedDict(), "Z": OrderedDict(), "MIS": OrderedDict()}
     mode = None
-    # 支援兩種格式： "0. 169, type: 0" 與 "0,169,type: 0"
     rx_param_dot = re.compile(r"^\s*(\d+)\.\s*(-?\d+)\s*,\s*type:\s*-?\d+\s*$")
     rx_param_csv = re.compile(r"^\s*(\d+)\s*,\s*(-?\d+)\s*,\s*type:\s*-?\d+\s*$")
-    # Mis-alignment： "0,-1098..."
     rx_mis = re.compile(r"^\s*(\d+)\s*,\s*(-?\d+)\s*$")
-
     for line in lines:
         s = line.strip()
         if s == HEADER_X:  mode = "X";  continue
         if s == HEADER_Y:  mode = "Y";  continue
         if s == HEADER_Z:  mode = "Z";  continue
         if s == HEADER_MIS: mode = "MIS"; continue
-
         if mode in {"X", "Y", "Z"}:
             m = rx_param_dot.match(s) or rx_param_csv.match(s)
             if m:
@@ -43,14 +53,13 @@ def parse_first_section(lines):
                 section[mode][int(idx)] = int(val)
     return section
 
-# -------- 解析 fpga 第二部分（JSON 印法）--------
 def parse_second_section_json(lines):
     section = {"X": OrderedDict(), "Y": OrderedDict(), "Z": OrderedDict(), "MIS": OrderedDict()}
-    # 例：uart_cmd, uart_value, ch, condition: 0x81, 2, 4, 1
     rx_uart = re.compile(r"uart_cmd.*?:\s*([^,\s]+)\s*,\s*(-?\d+)\s*,\s*(\d+)\s*,\s*(-?\d+)")
     rx_json_start = re.compile(r"^\s*\{")
-    i, n, pending_group = 0, len(lines), None
-
+    i = 0
+    n = len(lines)
+    pending_group = None
     while i < n:
         line = lines[i]
         m = rx_uart.search(line)
@@ -58,11 +67,9 @@ def parse_second_section_json(lines):
             ch = m.group(3)
             pending_group = CH_MAP.get(ch)
             i += 1
-            # 跳過中間標題直到遇到 '{'
             while i < n and not rx_json_start.match(lines[i].strip()):
                 i += 1
             if i < n and rx_json_start.match(lines[i].strip()):
-                # 你的檔案 JSON 在單行；保險起見收集到 '}'
                 buf = [lines[i].strip()]
                 while "}" not in lines[i]:
                     i += 1
@@ -81,36 +88,24 @@ def parse_second_section_json(lines):
         i += 1
     return section
 
-# -------- 解析 mcu_para.txt（4 行 JSON，依序 X, Y, Z, MIS）--------
-def parse_mcu_file(path):
+def parse_mcu_file_text(text):
+    """mcu_para 檔案：四個 JSON（X, Y, Z, MIS）每個通常一行。"""
     section = {"X": OrderedDict(), "Y": OrderedDict(), "Z": OrderedDict(), "MIS": OrderedDict()}
-    lines = []
-    with open(path, "r", encoding="utf-8", errors="ignore") as f:
-        for raw in f:
-            s = raw.strip()
-            if s:
-                lines.append(s)
-
-    # 收集每一個以「{」開頭「}」結尾的 JSON；通常一行一個
+    lines = [ln.strip() for ln in text.splitlines() if ln.strip()]
     json_blobs = []
-    buf = []
-    capturing = False
+    buf, capturing = [], False
     for s in lines:
-        if s.startswith("{"):
+        if s.startswith("{") and s.endswith("}"):
+            json_blobs.append(s)
+        elif s.startswith("{"):
             capturing = True
             buf = [s]
-            if s.endswith("}"):
-                json_blobs.append(" ".join(buf))
-                capturing = False
-                buf = []
         elif capturing:
             buf.append(s)
             if s.endswith("}"):
                 json_blobs.append(" ".join(buf))
                 capturing = False
                 buf = []
-
-    # 期望順序：X, Y, Z, MIS
     order = ["X", "Y", "Z", "MIS"]
     for grp, txt in zip(order, json_blobs):
         obj = json.loads(txt)
@@ -118,7 +113,6 @@ def parse_mcu_file(path):
                                           key=lambda kv: kv[0]))
     return section
 
-# -------- 差異比較 --------
 def diff_dicts(left, right):
     diffs = []
     all_keys = sorted(set(left.keys()) | set(right.keys()))
@@ -129,21 +123,14 @@ def diff_dicts(left, right):
             diffs.append((k, v1, v2))
     return diffs
 
-# -------- 主程式 --------
-def main(fpga_path, mcu_path):
-    with open(fpga_path, "r", encoding="utf-8", errors="ignore") as f:
-        fpga_lines = f.read().splitlines()
-
-    # 解析 fpga 的兩部分
+def compare_all(fpga_text, mcu_text):
+    fpga_lines = fpga_text.splitlines()
     fpga_first  = parse_first_section(fpga_lines)
     fpga_second = parse_second_section_json(fpga_lines)
-    # 解析 mcu 檔（四個 JSON）
-    mcu = parse_mcu_file(mcu_path)
+    mcu = parse_mcu_file_text(mcu_text)
 
     print("=" * 78)
-    print(f"Compare FPGA(first/list) & FPGA(second/json) against MCU(json)")
-    print(f"  FPGA file: {fpga_path}")
-    print(f"  MCU  file: {mcu_path}")
+    print("Compare FPGA(first/list) & FPGA(second/json) against MCU(json)")
     print("=" * 78)
 
     any_diff = False
@@ -171,7 +158,6 @@ def main(fpga_path, mcu_path):
                     print(f"    - {idx}: {v1} → {v2}")
             else:
                 print("  ✔ First vs MCU：No differences.")
-
             if diffs_second:
                 any_diff = True
                 print("  ✘ Second vs MCU differences (index: second → mcu):")
@@ -182,29 +168,77 @@ def main(fpga_path, mcu_path):
 
     print("\n" + ("ALL MATCH ✅" if not any_diff else "MISMATCHES FOUND ❌"))
 
+# -------- 串口擷取 --------
+class SerialCapture(threading.Thread):
+    def __init__(self, port, baudrate, silence_sec, global_timeout_sec):
+        super().__init__(daemon=True)
+        self.port = port
+        self.baudrate = baudrate
+        self.silence_sec = silence_sec
+        self.global_timeout_sec = global_timeout_sec
+        self.buffer = bytearray()
+        self.stop_event = threading.Event()   # <--- 改名
+        self.done_event = threading.Event()   # <--- 改名
+        self._exc = None
+
+    def run(self):
+        try:
+            with serial.Serial(self.port, self.baudrate, timeout=0.05) as ser:
+                start = time.time()
+                last = time.time()
+                while not self.stop_event.is_set():
+                    data = ser.read(4096)
+                    now = time.time()
+                    if data:
+                        self.buffer.extend(data)
+                        last = now
+                    if (now - last) > self.silence_sec:
+                        break
+                    if (now - start) > self.global_timeout_sec:
+                        break
+        except Exception as e:
+            self._exc = e
+        finally:
+            self.done_event.set()
+
+    def join_with_exception(self):
+        self.join()
+        if self._exc:
+            raise self._exc
+
+    def text(self, encoding="utf-8"):
+        return self.buffer.decode(encoding, errors="ignore")
+
+def main():
+    SAVE_DIR.mkdir(parents=True, exist_ok=True)
+    ts = datetime.now().strftime("%Y%m%d_%H%M%S")
+    fpga_path = SAVE_DIR / f"fpga_para_{ts}.txt"
+    mcu_path  = SAVE_DIR / f"mcu_para_{ts}.txt"
+
+    print(f"[INFO] 開始擷取序列埠：FPGA={FPGA_PORT}, MCU={MCU_PORT}, baud={BAUDRATE}")
+    print("[HINT] 你可以現在在 PyCharm 按下 Run 後，去幫兩台設備上電。")
+
+    cap_fpga = SerialCapture(FPGA_PORT, BAUDRATE, READ_SILENCE_SEC, GLOBAL_TIMEOUT_SEC)
+    cap_mcu  = SerialCapture(MCU_PORT,  BAUDRATE, READ_SILENCE_SEC, GLOBAL_TIMEOUT_SEC)
+    cap_fpga.start()
+    cap_mcu.start()
+
+    # 等兩路都完成/超時
+    cap_fpga.join_with_exception()
+    cap_mcu.join_with_exception()
+
+    # 存檔
+    fpga_text = cap_fpga.text()
+    mcu_text  = cap_mcu.text()
+
+    fpga_path.write_text(fpga_text, encoding="utf-8")
+    mcu_path.write_text(mcu_text, encoding="utf-8")
+
+    print(f"[INFO] 已儲存：{fpga_path}")
+    print(f"[INFO] 已儲存：{mcu_path}")
+
+    # 直接比對
+    compare_all(fpga_text, mcu_text)
+
 if __name__ == "__main__":
-    from pathlib import Path
-    args = sys.argv[1:]
-
-    if len(args) >= 2:
-        fpga_path = args[0]
-        mcu_path  = args[1]
-    else:
-        # 預設：腳本同資料夾
-        here = Path(__file__).resolve().parent
-        fpga_path = str(here / "fpga_para_20250823_192008.txt")
-        mcu_path  = str(here / "mcu_para_20250823_192008.txt")
-        print(f"[INFO] No arguments. Using default files in script folder:\n"
-              f"       FPGA: {fpga_path}\n"
-              f"       MCU : {mcu_path}")
-
-    # 檔案存在性檢查（更友善的錯誤訊息）
-    from pathlib import Path
-    missing = [p for p in [fpga_path, mcu_path] if not Path(p).exists()]
-    if missing:
-        print("[ERROR] File not found:", ", ".join(missing))
-        print("Tip: pass explicit paths, e.g.:")
-        print("  python compare_fpga_mcu.py <fpga_para.txt> <mcu_para.txt>")
-        sys.exit(1)
-
-    main(fpga_path, mcu_path)
+    main()

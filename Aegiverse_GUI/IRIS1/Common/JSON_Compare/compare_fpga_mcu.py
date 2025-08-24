@@ -192,8 +192,8 @@ if __name__ == "__main__":
     else:
         # 預設：腳本同資料夾
         here = Path(__file__).resolve().parent
-        fpga_path = str(here / "fpga_para_20250823_192008.txt")
-        mcu_path  = str(here / "mcu_para_20250823_192008.txt")
+        fpga_path = str(here / "fpga_para_20250823_214648.txt")
+        mcu_path  = str(here / "mcu_para_20250823_192938.txt")
         print(f"[INFO] No arguments. Using default files in script folder:\n"
               f"       FPGA: {fpga_path}\n"
               f"       MCU : {mcu_path}")

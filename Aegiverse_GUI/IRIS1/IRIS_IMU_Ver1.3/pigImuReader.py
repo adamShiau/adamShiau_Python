@@ -282,13 +282,13 @@ class pigImuReader(QThread):
     def getImuData(self):
         try:
             head = getData.alignHeader_4B(self.__Connector, HEADER_KVH)
-            dataPacket = getData.getdataPacket(self.__Connector, head, 48)  # must be same as FW malloc( here )
+            dataPacket = getData.getdataPacket(self.__Connector, head, 48)  # exclude header bytes
             if dataPacket == False:
                 return False, False
 
             # FPGA_TIME, ERR, STEP, PD_TEMP = cmn.IRIS_IMU(dataPacket, EN=1, PRINT=1, sf_a=self.sf_a, sf_b=self.sf_b,
             #                                              POS_TIME=POS_PIG)
-            TIME, WX, WY, WZ, AX, AY, AZ, TX, TY, TZ, ACC_TEMP = cmn.IRIS_IMU(dataPacket, EN=1, PRINT=1, sf_a=self.sf_a, sf_b=self.sf_b,
+            TIME, WX, WY, WZ, AX, AY, AZ, TX, TY, TZ, ACC_TEMP = cmn.IRIS_IMU(dataPacket, EN=1, PRINT=0, sf_a=self.sf_a, sf_b=self.sf_b,
                                                           POS_TIME=SIZE_HEADER)
 
 

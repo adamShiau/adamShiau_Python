@@ -203,18 +203,60 @@ class mainWindow(QMainWindow):
         finally:
             pass
 
-    def printUpdateRate(self, t_list):
+    def printUpdateRate(self, t_list, window=100):
+        """
+        以最後 window 筆時間戳計算平均資料率 (Hz)，更新到 data_rate_lb。
+        t_list: list / numpy array 等可迭代序列（秒）
+        """
         try:
-            update_rate = round(((t_list[-1] - t_list[0]) / (len(t_list) - 1)) ** -1, 1)
+            # 轉成 list
+            ts = t_list.tolist() if hasattr(t_list, "tolist") else list(t_list)
+            if not ts:
+                self.top.data_rate_lb.lb.setText("N/A")
+                return
+
+            # 只取最後 window 筆
+            ts = ts[-window:]
+
+            # 清理資料：移除 None / NaN
+            clean = []
+            for x in ts:
+                try:
+                    fx = float(x)
+                    if fx == fx:  # 過濾 NaN
+                        clean.append(fx)
+                except (TypeError, ValueError):
+                    continue
+
+            if len(clean) < 2:
+                self.top.data_rate_lb.lb.setText("N/A")
+                return
+
+            # 計算相鄰時間差（只保留正的）
+            deltas = [b - a for a, b in zip(clean[:-1], clean[1:]) if (b - a) > 0]
+            if not deltas:
+                self.top.data_rate_lb.lb.setText("N/A")
+                return
+
+            avg_dt = sum(deltas) / len(deltas)
+            update_rate = round(1.0 / avg_dt, 1)
             self.top.data_rate_lb.lb.setText(str(update_rate))
+
         except IndexError:
             __excType, __excObj, __excTb = sys.exc_info()
             __lineNum = __excTb.tb_lineno
-            logger.error(f'IndexError — The index position has exceeded the range of the list.(An error occurred while the transmission rate is displayed, line {__lineNum}.)')
+            logger.error(
+                f'IndexError — The index position has exceeded the range of the list.(An error occurred while the transmission rate is displayed, line {__lineNum}.)')
         except ValueError as ValError:
             __excType, __excObj, __excTb = sys.exc_info()
             __lineNum = __excTb.tb_lineno
-            logger.error(f'ValueError — {ValError}.(An error occurred while the transmission rate is displayed, line {__lineNum}.)')
+            logger.error(
+                f'ValueError — {ValError}.(An error occurred while the transmission rate is displayed, line {__lineNum}.)')
+        except Exception as e:
+            __excType, __excObj, __excTb = sys.exc_info()
+            __lineNum = __excTb.tb_lineno
+            logger.error(
+                f'Unexpected — {e}.(An error occurred while the transmission rate is displayed, line {__lineNum}.)')
         finally:
             pass
 
@@ -232,7 +274,7 @@ class mainWindow(QMainWindow):
         self.top.setBtnEnable(open)
 
     def connectMain(self):
-        is_port_open = self.act.connectRead(self.__connector, self.__portName, 115200)
+        is_port_open = self.act.connectRead(self.__connector, self.__portName, 230400)
         if (is_port_open != False):
             self.is_port_open_qt.emit(is_port_open)
 

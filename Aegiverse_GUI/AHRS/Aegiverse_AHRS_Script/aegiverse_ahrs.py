@@ -1,12 +1,3 @@
-# aegiverse_ahrs.py
-# 用法（Windows / Linux）：
-#   python aegiverse_ahrs.py start COM27
-#   python aegiverse_ahrs.py 1 COM27
-#   python aegiverse_ahrs.py stop COM27
-#
-# 依賴：pyserial
-#   pip install pyserial
-
 import argparse
 import sys
 import time
@@ -17,6 +8,13 @@ try:
 except Exception:
     print("pyserial not installed. Run: pip install pyserial", file=sys.stderr)
     sys.exit(2)
+import serial.tools.list_ports
+
+__version__ = "1.0"
+__author__  = "Adam Shiau"
+__date__    = "2025-08-28"
+
+
 
 # ---- 協議常數 ----
 HEADER = bytes([0xFE, 0x81, 0xFF, 0x55])
@@ -248,16 +246,36 @@ def print_csv(t, wx, wy, wz, ax, ay, az, pd, pt, rl, yw):
                      f"{pt:.6f},{rl:.6f},{yw:.6f}\n")
     sys.stdout.flush()
 
+def list_comports(only_names: bool = True) -> int:
+    ports = list(serial.tools.list_ports.comports())
+    if not ports:
+        return 1
+    if only_names:
+        for p in ports:
+            print(p.device)
+    else:
+        # 想看更多資訊時可把 only_names=False
+        for p in ports:
+            print(f"{p.device}\t{p.description}\t{p.hwid}")
+    return 0
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description="Aegiverse AHRS CLI (CSV output)")
+    ap.add_argument("--version", action="version", version=f"%(prog)s {__version__}")
     ap.add_argument("action", help="start/stop 或 1/0")
-    ap.add_argument("port",   help="COM 埠，如 COM27 或 /dev/ttyUSB0")
+    ap.add_argument("port", nargs="?", help="COM 埠，如 COM27 或 /dev/ttyUSB0")
     ap.add_argument("--baud", type=int, default=230400, help="baudrate (default 230400)")
     args = ap.parse_args(argv)
+    if args.action.strip().lower() == "list":
+        return list_comports(only_names=True)
+
     try:
         do_start = parse_action(args.action)
     except ValueError as e:
         print(str(e), file=sys.stderr)
+        return 2
+    if not args.port:
+        print("請提供埠名，例如：COM27 或 /dev/ttyUSB0", file=sys.stderr)
         return 2
     return run_start(args.port, args.baud) if do_start else run_stop(args.port, args.baud)
 

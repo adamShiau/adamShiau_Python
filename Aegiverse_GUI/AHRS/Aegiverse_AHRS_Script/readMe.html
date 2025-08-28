@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Aegiverse AHRS Script- README</title>
+<style>
+  :root{
+    --bg:#0b1220;
+    --card:#121a2b;
+    --text:#e8eefc;
+    --muted:#aab7d4;
+    --accent:#6aa9ff;
+  }
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--text);
+    font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;}
+  .wrap{max-width:900px;margin:40px auto;padding:24px;}
+  .card{background:var(--card);border-radius:14px;padding:28px;
+    box-shadow:0 10px 30px rgba(0,0,0,.35);}
+  h1,h2,h3,h4{line-height:1.25;margin:1.2em 0 .6em}
+  h1{font-size:1.9rem}
+  h2{font-size:1.35rem;color:var(--accent)}
+  pre{background:#0a111f;border:1px solid #1b2742;border-radius:8px;
+    padding:14px;overflow:auto;color:var(--text);}
+  code{background:#0a111f;padding:2px 4px;border-radius:4px;}
+  strong{color:var(--accent)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="card">
+
+<h1>Aegiverse AHRS Script</h1>
+
+<p><strong>Author:</strong> Adam Shiau<br>
+<strong>Date:</strong> 2025-08-28<br>
+<strong>Version:</strong> 1.0</p>
+
+<h2>Requirement</h2>
+<pre><code>pip install pyserial</code></pre>
+
+<h2>Basic Usage</h2>
+
+<h3>a. List available COM ports</h3>
+<pre><code>python aegiverse_ahrs.py list</code></pre>
+
+<h3>b. Start reading data</h3>
+<p class="note">Note: After powering on, please wait 5 seconds before executing data reading.</p>
+
+<p>Windows:</p>
+<pre><code> python aegiverse_ahrs.py 1 COM27</code></pre>
+
+
+<p>Linux:</p>
+<pre><code>python aegiverse_ahrs.py 1 /dev/ttyUSB0</code></pre>
+
+
+<h3>c. Stop reading data</h3>
+
+<h4>c.1 Send stop command</h4>
+<p>Windows:</p>
+<pre><code>python aegiverse_ahrs.py 0 COM27</code></pre>
+
+
+<p>Linux:</p>
+<pre><code>python aegiverse_ahrs.py 0 /dev/ttyUSB0</code></pre>
+
+
+<h4>c.2 Keyboard interrupt</h4>
+<p>Press <strong>Ctrl + C</strong></p>
+
+<h2>Output Format</h2>
+<p>Each line corresponds to one packet. Values are comma-separated, without field names.</p>
+<pre><code>TIME(s),WX(°/s),WY(°/s),WZ(°/s),AX(m/s²),AY(m/s²),AZ(m/s²),PD_TEMP(°C),PITCH(°),ROLL(°),YAW(°)</code></pre>
+
+<p>Example:</p>
+<pre><code>5.364,0.017307,0.081714,0.003035,-0.032019,0.047499,9.744682,38.500,0.188685,0.204021,4.489222</code></pre>
+
+</div>
+</div>
+</body>
+</html>

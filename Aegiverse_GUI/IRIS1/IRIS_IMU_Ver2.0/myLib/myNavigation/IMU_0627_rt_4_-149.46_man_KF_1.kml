@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+<Document>
+<Name>Session 1</Name>
+<Style id="redline">
+<LineStyle>
+<color>ffff140a</color>
+<width>5</width>
+</LineStyle>
+</Style>
+<Placemark>
+<styleUrl>#redline</styleUrl>
+<LineString>
+<extrude>1</extrude>
+<tessellate>1</tessellate>
+<altitudeMode>clampedToGround</altitudeMode>
+<coordinates>

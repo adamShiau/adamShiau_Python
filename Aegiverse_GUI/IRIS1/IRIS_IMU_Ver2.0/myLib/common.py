@@ -111,6 +111,67 @@ def IRIS_IMU(dataPacket, EN=1, POS_TIME=25, sf_a=1, sf_b=0, PRINT=0):
     return fpga_time, step1_dps, step2_dps, step3_dps, ax, ay, az, temperature1, temperature2, temperature3, acc_temp
 
 
+def IRIS_AHRS(dataPacket, EN=1, POS_TIME=25, sf_a=1, sf_b=0, PRINT=0):
+    if EN:
+        # print([hex(i) for i in dataPacket])
+        temp_fog1 = dataPacket[POS_TIME : POS_TIME + 4]
+        temp_fog2 = dataPacket[POS_TIME + 4:POS_TIME + 8]
+        temp_fog3 = dataPacket[POS_TIME + 8: POS_TIME + 12]
+        temp_ax = dataPacket[POS_TIME + 12:POS_TIME + 16]
+        temp_ay = dataPacket[POS_TIME + 16:POS_TIME + 20]
+        temp_az = dataPacket[POS_TIME + 20:POS_TIME + 24]
+        temp_temperature1 = dataPacket[POS_TIME + 24:POS_TIME + 28]
+        temp_temperature2 = dataPacket[POS_TIME + 28:POS_TIME + 32]
+        temp_temperature3 = dataPacket[POS_TIME + 32:POS_TIME + 36]
+        temp_acc_temp = dataPacket[POS_TIME + 36:POS_TIME + 40]
+        temp_time = dataPacket[POS_TIME + 40:POS_TIME + 44]
+        temp_pitch = dataPacket[POS_TIME + 44:POS_TIME + 48]
+        temp_roll = dataPacket[POS_TIME + 48:POS_TIME + 52]
+        temp_yaw = dataPacket[POS_TIME + 52:POS_TIME + 56]
+
+        fpga_time = IEEE_754_INT2F_R(temp_time)
+        step1_dps = IEEE_754_INT2F_R(temp_fog1)
+        step2_dps = IEEE_754_INT2F_R(temp_fog2)
+        step3_dps = IEEE_754_INT2F_R(temp_fog3)
+        ax = IEEE_754_INT2F_R(temp_ax)
+        ay = IEEE_754_INT2F_R(temp_ay)
+        az = IEEE_754_INT2F_R(temp_az)
+        temperature1 = IEEE_754_INT2F_R(temp_temperature1)
+        temperature2 = IEEE_754_INT2F_R(temp_temperature2)
+        temperature3 = IEEE_754_INT2F_R(temp_temperature3)
+        acc_temp = IEEE_754_INT2F_R(temp_acc_temp)
+        pitch = IEEE_754_INT2F_R(temp_pitch)
+        roll = IEEE_754_INT2F_R(temp_roll)
+        yaw = IEEE_754_INT2F_R(temp_yaw)
+    # else:
+        # fpga_time = 0
+        # err_mv = 0
+        # step_dps = 0
+        # temperature = 0
+    # End of if-condition
+
+    if PRINT:
+        print('\nIRIS AHRS: ', end='\t')
+        print('%f, ' % fpga_time, end=', ')
+        print('%f, ' % step1_dps, end=', ')
+        print('%f, ' % step2_dps, end=', ')
+        print('%f, ' % step3_dps, end=', ')
+        print('%f, ' % ax, end=', ')
+        print('%f, ' % ay, end=', ')
+        print('%f, ' % az, end=', ')
+        print('%f, ' % temperature1, end=', ')
+        print('%f, ' % temperature2, end=', ')
+        print('%f, ' % temperature3, end=', ')
+        print('%f, ' % acc_temp, end=', ')
+        print('%f, ' % pitch, end=', ')
+        print('%f, ' % roll, end=', ')
+        print('%f, ' % yaw)
+    # End of if-condition
+    # 測試使用
+    # return fpga_time, az, acc_temp, temperature2
+    return fpga_time, step1_dps, step2_dps, step3_dps, ax, ay, az, temperature1, temperature2, temperature3, acc_temp, pitch , roll, yaw
+
+
 def readPIG(dataPacket, EN=1, POS_TIME=25, sf_a=1, sf_b=0, PRINT=0):
     if EN:
         temp_time = dataPacket[POS_TIME:POS_TIME + 4]

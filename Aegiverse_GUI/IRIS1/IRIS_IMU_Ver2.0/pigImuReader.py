@@ -40,7 +40,10 @@ IMU_DATA_STRUCTURE = {
     "PD_TEMP_X": np.zeros(1),
     "PD_TEMP_Y": np.zeros(1),
     "PD_TEMP_Z": np.zeros(1),
-    "ACC_TEMP": np.zeros(1)
+    "ACC_TEMP": np.zeros(1),
+    "PITCH": np.zeros(1),
+    "ROLL": np.zeros(1),
+    "YAW": np.zeros(1)
 }
 
 HEADER_KVH = [0xFE, 0x81, 0xFF, 0x55]
@@ -247,10 +250,10 @@ class pigImuReader(QThread):
 
     def readIMU(self):
         self.flushInputBuffer("None")
-        self.writeImuCmd(2, 2, 2)
+        self.writeImuCmd(3, 2, 2)
 
     def stopIMU(self):
-        self.writeImuCmd(2, 4, 2)
+        self.writeImuCmd(3, 4, 2)
         self.flushInputBuffer("stop")
 
     def dump_fog_parameters(self, ch):
@@ -282,14 +285,16 @@ class pigImuReader(QThread):
     def getImuData(self):
         try:
             head = getData.alignHeader_4B(self.__Connector, HEADER_KVH)
-            dataPacket = getData.getdataPacket(self.__Connector, head, 48)  # exclude header bytes
+            dataPacket = getData.getdataPacket(self.__Connector, head, 60)  # exclude header bytes
             if dataPacket == False:
                 return False, False
 
-            # FPGA_TIME, ERR, STEP, PD_TEMP = cmn.IRIS_IMU(dataPacket, EN=1, PRINT=1, sf_a=self.sf_a, sf_b=self.sf_b,
-            #                                              POS_TIME=POS_PIG)
-            TIME, WX, WY, WZ, AX, AY, AZ, TX, TY, TZ, ACC_TEMP = cmn.IRIS_IMU(dataPacket, EN=1, PRINT=0, sf_a=self.sf_a, sf_b=self.sf_b,
-                                                          POS_TIME=SIZE_HEADER)
+            # TIME, WX, WY, WZ, AX, AY, AZ, TX, TY, TZ, ACC_TEMP = cmn.IRIS_IMU(dataPacket, EN=1, PRINT=0, sf_a=self.sf_a, sf_b=self.sf_b,
+            #                                               POS_TIME=SIZE_HEADER)
+
+            TIME, WX, WY, WZ, AX, AY, AZ, TX, TY, TZ, ACC_TEMP, PITCH, ROLL, YAW = cmn.IRIS_AHRS(dataPacket, EN=1, PRINT=0, sf_a=self.sf_a,
+                                                                              sf_b=self.sf_b,
+                                                                              POS_TIME=SIZE_HEADER)
 
 
             if self.isKal:
@@ -304,7 +309,8 @@ class pigImuReader(QThread):
             # t = FPGA_TIME
             # 20250729 更改WX與WZ的數據。
             imudata = {"TIME": TIME, "WX": WZ, "WY": WY, "WZ": WX, "AX": AX, "AY": AY, "AZ": AZ,
-                       "PD_TEMP_X": TX, "PD_TEMP_Y": TY, "PD_TEMP_Z": TZ, "ACC_TEMP": ACC_TEMP}
+                       "PD_TEMP_X": TX, "PD_TEMP_Y": TY, "PD_TEMP_Z": TZ, "ACC_TEMP": ACC_TEMP,
+                       "PITCH": PITCH, "ROLL": ROLL, "YAW": YAW}
             return dataPacket, imudata
         except  IndexError as IdxErr:
             __excType, __excObj, __excTb = sys.exc_info()
@@ -499,6 +505,9 @@ class pigImuReader(QThread):
                     imudataArray["PD_TEMP_Y"] = np.append(imudataArray["PD_TEMP_Y"], imudata["PD_TEMP_Y"])
                     imudataArray["PD_TEMP_Z"] = np.append(imudataArray["PD_TEMP_Z"], imudata["PD_TEMP_Z"])
                     imudataArray["ACC_TEMP"] = np.append(imudataArray["ACC_TEMP"], imudata["ACC_TEMP"])
+                    imudataArray["PITCH"] = np.append(imudataArray["PITCH"], imudata["PITCH"])
+                    imudataArray["ROLL"] = np.append(imudataArray["ROLL"], imudata["ROLL"])
+                    imudataArray["YAW"] = np.append(imudataArray["YAW"], imudata["YAW"])
                     t5 = time.perf_counter()
 
                     debug_info = "ACT: ," + str(input_buf) + ", " + str(round((t5 - t1) * 1000, 5)) + ", " \

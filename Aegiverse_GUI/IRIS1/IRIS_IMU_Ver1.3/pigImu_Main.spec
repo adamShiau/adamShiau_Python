@@ -3,7 +3,7 @@
 
 a = Analysis(
     ['pigImu_Main.py'],
-    pathex=['C:\\github\\RD\\IRIS_IMU\\IRIS_IMU_Ver1.3\\myLib', '.'],
+    pathex=['.'],
     binaries=[],
     datas=[],
     hiddenimports=[],

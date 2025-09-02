@@ -303,88 +303,6 @@ class mainWindow(QMainWindow):
         # self.top.saveDumpCb.DumpCb_X.setChecked(False)
         # self.top.saveDumpCb.DumpCb_Y.setChecked(False)
 
-    # # save下dump需要處理的過程
-    # def saveTXTDump(self):
-    #     if self.top.save_block.rb.isChecked() == True:
-    #         self.widMesdump()
-    #         # if self.recordSelAxis == 0:
-    #         #     self.getAllDumpVal()
-    #         if self.top.saveDumpCb.DumpCb_Z.isChecked() == True:
-    #             self.getChannelThreeVal()
-    #         if self.top.saveDumpCb.DumpCb_X.isChecked() == True:
-    #             self.getChannelOneVal()
-    #         if self.top.saveDumpCb.DumpCb_Y.isChecked() == True:
-    #             self.getChannelTwoVal()
-    #         self.dumpMess.close()
-
-    # def getAllDumpVal(self):
-    #     # # channel 1
-    #     self.act.flushInputBuffer("None")
-    #     resultOne = self.act.dump_fog_parameters(1)
-    #     if "無法取得值" in resultOne:
-    #         self.paraCh1 = "參數值無法取得"
-    #     else:
-    #         self.paraCh1 = resultOne
-    #     t1 = time.perf_counter()
-    #     # print(self.paraCh1)
-    #     # channel 2
-    #     self.act.flushInputBuffer("None")
-    #     resultTwo = self.act.dump_fog_parameters(2)
-    #     if "無法取得值" in resultTwo:
-    #         self.paraCh2 = "參數值無法取得"
-    #     else:
-    #         self.paraCh2 = resultTwo
-    #     # print("channel 2的參數:")
-    #     # print(self.paraCh2)
-    #     t2 = time.perf_counter()
-    #     # # channel 3
-    #     self.act.flushInputBuffer("None")
-    #     resultThree = self.act.dump_fog_parameters(3)
-    #     if "無法取得值" in resultThree:
-    #         self.paraCh3 = "參數值無法取得"
-    #     else:
-    #         self.paraCh3 = resultThree
-    #     t3 = time.perf_counter()
-    #     # print("All.........")
-    #     # print(self.paraCh3)
-    #
-    # def getChannelOneVal(self):
-    #     # # channel 1
-    #     self.act.flushInputBuffer("None")
-    #     resultOne = self.act.dump_fog_parameters(1)
-    #     if "無法取得值" in resultOne:
-    #         self.paraCh1 = "參數值無法取得"
-    #     else:
-    #         self.paraCh1 = resultOne
-    #     t1 = time.perf_counter()
-    #     print("One..............")
-    #     print(self.paraCh1)
-    #
-    # def getChannelTwoVal(self):
-    #     # channel 2
-    #     self.act.flushInputBuffer("None")
-    #     resultTwo = self.act.dump_fog_parameters(2)
-    #     if "無法取得值" in resultTwo:
-    #         self.paraCh2 = "參數值無法取得"
-    #     else:
-    #         self.paraCh2 = resultTwo
-    #     print("channel 2的參數:")
-    #     print(self.paraCh2)
-    #     t2 = time.perf_counter()
-    #     # print("Two...........")
-    #
-    # def getChannelThreeVal(self):
-    #     # # channel 3
-    #     self.act.flushInputBuffer("None")
-    #     resultThree = self.act.dump_fog_parameters(3)
-    #     if "無法取得值" in resultThree:
-    #         self.paraCh3 = "參數值無法取得"
-    #     else:
-    #         self.paraCh3 = resultThree
-    #     t3 = time.perf_counter()
-    #     print(self.paraCh3)
-    #     print("Three..........")
-
 
     def imuThreadStopDetect(self):
         self.imudata = self.resetDataContainer()
@@ -485,7 +403,7 @@ class mainWindow(QMainWindow):
             file_name = self.top.save_block.le_filename.text() + self.top.save_block.le_ext.text()
             self.imudata_file.name = file_name
             self.imudata_file.open(self.top.save_block.rb.isChecked())
-            self.imudata_file.write_line('time,wx, wy, wz, ax, ay, az, Tx, Ty, Tz, TAcc')
+            self.imudata_file.write_line('time,wx,wy,wz,ax,ay,az,Tx,Ty,Tz,TAcc,pitch,roll,yaw')
             self.haveClickBtn = True
 
 
@@ -559,9 +477,7 @@ class mainWindow(QMainWindow):
             self.changePitchPos(imudata["PITCH"][0])
             self.changeRollImgAxis(imudata["ROLL"][0])
             self.printAtt(imudata["PITCH"][0], imudata["ROLL"][0], imudata["YAW"][0])
-            # self.printPdTemperature(imudata["PD_TEMP"][0])
-            # print(imudata['PIG_WZ'])
-            # imudata['PIG_WZ'] = np.clip(imudata['PIG_WZ'], -900, 900)
+
             t1 = time.perf_counter()
 
             try:
@@ -597,8 +513,9 @@ class mainWindow(QMainWindow):
                 # print(imudata["PIG_WZ"])
                 datalist = [imudata["TIME"], imudata["WX"], imudata["WY"], imudata["WZ"],
                          imudata["AX"], imudata["AY"], imudata["AZ"]
-                        , imudata["PD_TEMP_X"], imudata["PD_TEMP_Y"], imudata["PD_TEMP_Z"], imudata["ACC_TEMP"]]
-                data_fmt = "%.3f,%.5f,%.5f,%.5f,%.5f,%.5f,%.5f,%.3f,%.3f,%.3f,%.3f"
+                        , imudata["PD_TEMP_X"], imudata["PD_TEMP_Y"], imudata["PD_TEMP_Z"], imudata["ACC_TEMP"]
+                        , imudata["PITCH"], imudata["ROLL"], imudata["YAW"]]
+                data_fmt = "%.3f,%.5f,%.5f,%.5f,%.5f,%.5f,%.5f,%.3f,%.3f,%.3f,%.3f,%.5f,%.5f,%.5f"
                 self.imudata_file.saveData(datalist, data_fmt)
             except KeyError as e:
                 __excType, __excObj, __excTb = sys.exc_info()
@@ -630,6 +547,7 @@ class mainWindow(QMainWindow):
 
             self.plotData(self.imudata)
             self.printUpdateRate(self.imudata["TIME"])
+            self.changeRotatePoint()
             # print(len(self.imudata["TIME"]))
             # print('first_run_flag')
 

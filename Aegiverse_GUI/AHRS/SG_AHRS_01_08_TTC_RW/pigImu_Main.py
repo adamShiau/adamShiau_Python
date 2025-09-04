@@ -197,11 +197,10 @@ class mainWindow(QMainWindow):
         self.top.buffer_lb.lb.setText(str(val))
 
     def printAtt(self, pitch, row, yaw):
-        # self.top.pitch_lb.lb.setText(str(pitch))
-        # self.top.row_lb.lb.setText(str(row))
-        # self.top.yaw_lb.lb.setText(str(yaw))
-        self.top.pitch_lb.lb.setText(f"{pitch:.2f}")
-        self.top.row_lb.lb.setText(f"{row:.2f}")
+        # self.top.pitch_lb.lb.setText(f"{pitch:.2f}")
+        # self.top.row_lb.lb.setText(f"{row:.2f}")
+        self.top.pitch_lb.lb.setText(f"{row:.2f}")
+        self.top.row_lb.lb.setText(f"{pitch:.2f}")
         self.top.yaw_lb.lb.setText(f"{yaw:.2f}")
 
     def printPdTemperature(self, val):
@@ -399,9 +398,12 @@ class mainWindow(QMainWindow):
             # imudata = cmn.dictOperation(imudata, imuoffset, "SUB", IMU_DATA_STRUCTURE)
             try:
                 self.printPdTemperature(imudata["PD_TEMP"][0])
-                self.changYawLabel(imudata["YAW"][0])
-                self.changePitchPos(imudata["PITCH"][0])
-                self.changeRollImgAxis(imudata["ROLL"][0])
+                # self.changYawLabel(imudata["YAW"][0])
+                # self.changePitchPos(imudata["PITCH"][0])
+                # self.changeRollImgAxis(imudata["ROLL"][0])
+                self.changYawLabel(-imudata["YAW"][0])
+                self.changePitchPos(imudata["ROLL"][0])
+                self.changeRollImgAxis(imudata["PITCH"][0])
                 self.printAtt(imudata["PITCH"][0], imudata["ROLL"][0], imudata["YAW"][0])
                 # print(imudata['PIG_WZ'])
                 # imudata['PIG_WZ'] = np.clip(imudata['PIG_WZ'], -900, 900)

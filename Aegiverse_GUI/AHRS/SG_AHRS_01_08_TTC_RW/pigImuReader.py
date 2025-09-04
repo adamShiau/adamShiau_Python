@@ -341,8 +341,8 @@ class pigImuReader(QThread):
 
         imudata = {
             "TIME": TIME,
-            "WX": WX, "WY": WY, "WZ": WZ,
-            "AX": AX, "AY": AY, "AZ": AZ,
+            "WX": -WY, "WY": -WX, "WZ": WZ,
+            "AX": -AY, "AY": -AX, "AZ": AZ,
             "PD_TEMP": PD_TEMP,
             "PITCH": PITCH, "ROLL": ROLL, "YAW": YAW
         }

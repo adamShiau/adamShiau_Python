@@ -1,9 +1,6 @@
-#20250904
-1. 修改自SG_AHRS_01_07_TTC_RW
-2. 修改getImuData(), alignHeader_4B(), isCrcFail(), isCrc32Fail() 四個函數內容，讓輸入數據在遇到例外時GUI不會停止
-3. 修改姿態角與溫度顯示到小數以下第二位
-4. 修改溫度顯示名稱為Temp
-
+#20250910
+1. copy 自 SG_AHRS_01_07_TTC_RW
+2. Yaw顯示修改，讓他與label讀值相同
 
 #20250819
 1.將寫log的部分，改成使用log函式庫中的函式。

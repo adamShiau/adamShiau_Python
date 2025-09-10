@@ -171,11 +171,14 @@ class AttitudeIndicator_view_processing(QGraphicsView):
     def yaw_flight_update_move(self, yaw_val):
         self.yaw_Item3.setRotation(yaw_val)
         self.__yawval = "0"
+        '''
         if yaw_val > 0:
             yawVal = 360 - yaw_val
             self.__yawval = f'{yawVal:.0f}'
         if yaw_val < 0:
             self.__yawval = f'{(-yaw_val):.0f}'
+        '''
+        self.__yawval = f'{yaw_val:.0f}'
         self.yaw_text.setText(str(self.__yawval))
         self.scene.update()
 

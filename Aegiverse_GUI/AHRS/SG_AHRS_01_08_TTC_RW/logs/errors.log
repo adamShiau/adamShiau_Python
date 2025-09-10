@@ -17,3 +17,19 @@
 2025-09-10 10:30:31 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
 2025-09-10 10:38:24 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
 2025-09-10 11:02:39 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-10 12:16:55 - main.myLib.mySerial.Connector - ERROR - 撈取數據並轉換為json格式的過程中，因數據格式無法轉換為json格式，所以出現json.decoder.JSONDecodeError, line 206.
+2025-09-10 12:20:58 - main.myLib.mySerial.Connector - ERROR - 撈取數據並轉換為json格式的過程中，因數據格式無法轉換為json格式，所以出現json.decoder.JSONDecodeError, line 206.
+2025-09-10 12:21:08 - main.myLib.mySerial.Connector - ERROR - 撈取數據並轉換為json格式的過程中，因數據格式無法轉換為json格式，所以出現json.decoder.JSONDecodeError, line 206.
+2025-09-10 12:33:57 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-10 12:34:00 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-10 12:34:09 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-10 16:56:40 - main.myLib.mySerial.Connector - ERROR - 1700001, The serial open operation failed while establishing the connection.
+2025-09-10 17:17:58 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-10 18:52:56 - main - ERROR - 1000006, AttributeError — 'pig_calibration_widget' object has no attribute 'Update_Btn'.(An error occurred in the connect, line 253.)
+2025-09-10 18:53:17 - main - ERROR - 1000006, AttributeError — 'pig_calibration_widget' object has no attribute 'Update_Btn'.(An error occurred in the connect, line 253.)
+2025-09-10 18:53:51 - main - ERROR - 1000006, AttributeError — 'pig_calibration_widget' object has no attribute 'Update_Btn'.(An error occurred in the connect, line 253.)
+2025-09-10 19:09:34 - main.myLib.mySerial.Connector - ERROR - 撈取數據並轉換為json格式的過程中，因數據格式無法轉換為json格式，所以出現json.decoder.JSONDecodeError, line 231.
+2025-09-10 19:13:06 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-10 19:13:17 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-10 19:13:18 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-10 19:21:32 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.

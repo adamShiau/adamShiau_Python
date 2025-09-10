@@ -71,7 +71,7 @@ class mainWindow(QMainWindow):
         self.__portName = None
         self.__baudRate = "BaudRate(預設)"
         self.__portNotErr = True # 用來判斷port的部分
-        self.__versionNumber = "SG-AHRS-01-07-TTC-RW"
+        self.__versionNumber = "SG-AHRS-01-08-TTC-RW"
         self.setWindowTitle("Aegiverse GUI ("+self.__versionNumber+")")
         self.__connector = Connector()
         self.__isFileOpen = False

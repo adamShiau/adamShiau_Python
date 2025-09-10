@@ -1,6 +1,7 @@
 #20250910
 1. copy 自 SG_AHRS_01_07_TTC_RW
 2. Yaw顯示修改，讓他與label讀值相同
+3. 將parameter 與 mis 修改需黃底上傳功能移除
 
 #20250819
 1.將寫log的部分，改成使用log函式庫中的函式。

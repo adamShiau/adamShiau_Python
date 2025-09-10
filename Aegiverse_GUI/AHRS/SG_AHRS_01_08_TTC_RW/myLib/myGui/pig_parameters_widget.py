@@ -320,51 +320,99 @@ class pig_parameters_widget(QGroupBox):
         self.setLayout(scrollLayout)
 
     def linkfunction(self):
-        ''' spin box connect'''
-        self.wait_cnt.spin.valueChanged.connect(lambda: self.selectcontrolchangecolor(self.wait_cnt.spin, self.send_WAIT_CNT_CMD))
-        self.avg.spin.valueChanged.connect(lambda: self.selectcontrolchangecolor(self.avg.spin, self.send_AVG_CMD))
-        self.mod_H.spin.valueChanged.connect(lambda: self.selectcontrolchangecolor(self.mod_H.spin, self.send_MOD_H_CMD))
-        self.mod_L.spin.valueChanged.connect(lambda: self.selectcontrolchangecolor(self.mod_L.spin, self.send_MOD_L_CMD))
-        self.freq.spin.valueChanged.connect(lambda: self.selectcontrolchangecolor(self.freq.spin, self.send_FREQ_CMD))
-        self.err_th.spin.valueChanged.connect(lambda: self.selectcontrolchangecolor(self.err_th.spin, self.send_ERR_TH_CMD))
-        self.err_offset.spin.valueChanged.connect(lambda: self.selectcontrolchangecolor(self.err_offset.spin, self.send_ERR_OFFSET_CMD))
-        self.polarity.spin.valueChanged.connect(lambda: self.selectcontrolchangecolor(self.polarity.spin, self.send_POLARITY_CMD))
-        self.const_step.spin.valueChanged.connect(lambda: self.selectcontrolchangecolor(self.const_step.spin, self.send_CONST_STEP_CMD))
-        # self.KF_Q.spin.valueChanged.connect(lambda: self.selectcontrolchangecolor(self.KF_Q.spin))
-        # self.KF_R.spin.valueChanged.connect(lambda: self.selectcontrolchangecolor(self.KF_R.spin))
-        self.HD_Q.spin.valueChanged.connect(lambda: self.selectcontrolchangecolor(self.HD_Q.spin, self.update_FPGA_Q))
-        self.HD_R.spin.valueChanged.connect(lambda: self.selectcontrolchangecolor(self.HD_R.spin, self.update_FPGA_R))
-        self.gain1.spin.valueChanged.connect(lambda: self.selectcontrolchangecolor(self.gain1.spin, self.send_GAIN1_CMD))
-        self.gain2.spin.valueChanged.connect(lambda: self.selectcontrolchangecolor(self.gain2.spin, self.send_GAIN2_CMD))
-        self.fb_on.spin.valueChanged.connect(lambda: self.selectcontrolchangecolor(self.fb_on.spin, self.send_FB_ON_CMD))
-        self.dac_gain.spin.valueChanged.connect(lambda:self.selectcontrolchangecolor(self.dac_gain.spin, self.send_DAC_GAIN_CMD))
-        self.cutoff.spin.valueChanged.connect(lambda: self.selectcontrolchangecolor(self.cutoff.spin, self.send_CUTOFF_CMD))
-        # ''' slider '''
-        # self.dataRate_sd.sd.valueChanged.connect(self.send_DATA_RATE_CMD)
-        ''' line edit '''
-        # self.sf_a.le.editingFinished.connect(self.SF_A_EDIT)
-        # self.sf_b.le.editingFinished.connect(self.SF_B_EDIT)
-        # self.sf_all.le.editingFinished.connect(self.send_SF_ALL_CMD)
-        self.sf0.le.editingFinished.connect(lambda: self.selectcontrolchangecolor(self.sf0.le, self.send_SF0_CMD))
-        self.sf1.le.editingFinished.connect(lambda: self.selectcontrolchangecolor(self.sf1.le, self.send_SF1_CMD))
+        """Connect UI signals directly to command functions."""
 
-        self.T1.le.textChanged.connect(lambda: self.selectcontrolchangecolor(self.T1.le, self.send_BIAS_T1_CMD))
-        self.T2.le.textChanged.connect(lambda: self.selectcontrolchangecolor(self.T2.le, self.send_BIAS_T2_CMD))
-        self.slope1.le.textChanged.connect(lambda: self.selectcontrolchangecolor(self.slope1.le, self.send_SFB_SLOPE_1_CMD))
-        self.slope2.le.textChanged.connect(lambda: self.selectcontrolchangecolor(self.slope2.le, self.send_SFB_SLOPE_2_CMD))
-        self.slope3.le.textChanged.connect(lambda: self.selectcontrolchangecolor(self.slope3.le, self.send_SFB_SLOPE_3_CMD))
-        self.offset1.le.textChanged.connect(lambda: self.selectcontrolchangecolor(self.offset1.le, self.send_SFB_OFFSET_1_CMD))
-        self.offset2.le.textChanged.connect(lambda: self.selectcontrolchangecolor(self.offset2.le, self.send_SFB_OFFSET_2_CMD))
-        self.offset3.le.textChanged.connect(lambda: self.selectcontrolchangecolor(self.offset3.le, self.send_SFB_OFFSET_3_CMD))
+        # ---- spin boxes ----
+        self.wait_cnt.spin.valueChanged.connect(lambda *_: self.send_WAIT_CNT_CMD())
+        self.avg.spin.valueChanged.connect(lambda *_: self.send_AVG_CMD())
+        self.mod_H.spin.valueChanged.connect(lambda *_: self.send_MOD_H_CMD())
+        self.mod_L.spin.valueChanged.connect(lambda *_: self.send_MOD_L_CMD())
+        self.freq.spin.valueChanged.connect(lambda *_: self.send_FREQ_CMD())
+        self.err_th.spin.valueChanged.connect(lambda *_: self.send_ERR_TH_CMD())
+        self.err_offset.spin.valueChanged.connect(lambda *_: self.send_ERR_OFFSET_CMD())
+        self.polarity.spin.valueChanged.connect(lambda *_: self.send_POLARITY_CMD())
+        self.const_step.spin.valueChanged.connect(lambda *_: self.send_CONST_STEP_CMD())
+        # self.KF_Q.spin.valueChanged.connect(lambda *_: self.send_KF_Q_CMD())
+        # self.KF_R.spin.valueChanged.connect(lambda *_: self.send_KF_R_CMD())
+        self.HD_Q.spin.valueChanged.connect(lambda *_: self.update_FPGA_Q())
+        self.HD_R.spin.valueChanged.connect(lambda *_: self.update_FPGA_R())
+        self.gain1.spin.valueChanged.connect(lambda *_: self.send_GAIN1_CMD())
+        self.gain2.spin.valueChanged.connect(lambda *_: self.send_GAIN2_CMD())
+        self.fb_on.spin.valueChanged.connect(lambda *_: self.send_FB_ON_CMD())
+        self.dac_gain.spin.valueChanged.connect(lambda *_: self.send_DAC_GAIN_CMD())
+        self.cutoff.spin.valueChanged.connect(lambda *_: self.send_CUTOFF_CMD())
 
-        self.std_wx.le.textChanged.connect(lambda: self.selectcontrolchangecolor(self.std_wx.le, self.send_STD_Wx_CMD))
-        self.std_wy.le.textChanged.connect(lambda: self.selectcontrolchangecolor(self.std_wy.le, self.send_STD_Wy_CMD))
-        self.std_wz.le.textChanged.connect(lambda: self.selectcontrolchangecolor(self.std_wz.le, self.send_STD_Wz_CMD))
+        # ---- line edits (editingFinished: 無參數；textChanged: 會帶 str) ----
+        # 若希望在「離開輸入框」時送出，用 editingFinished：
+        self.sf0.le.editingFinished.connect(lambda: self.send_SF0_CMD())
+        self.sf1.le.editingFinished.connect(lambda: self.send_SF1_CMD())
 
-        ''' bt'''
-        self.dump_bt.clicked.connect(self.dump_parameter)
-        self.updateBtn.clicked.connect(self.update_changevalue)
-        self.loadTempFileBtn.clicked.connect(self.loadCSVandWriteBias)
+        # 若希望「文字一改就送」，用 textChanged：
+        self.T1.le.textChanged.connect(lambda *_: self.send_BIAS_T1_CMD())
+        self.T2.le.textChanged.connect(lambda *_: self.send_BIAS_T2_CMD())
+        self.slope1.le.textChanged.connect(lambda *_: self.send_SFB_SLOPE_1_CMD())
+        self.slope2.le.textChanged.connect(lambda *_: self.send_SFB_SLOPE_2_CMD())
+        self.slope3.le.textChanged.connect(lambda *_: self.send_SFB_SLOPE_3_CMD())
+        self.offset1.le.textChanged.connect(lambda *_: self.send_SFB_OFFSET_1_CMD())
+        self.offset2.le.textChanged.connect(lambda *_: self.send_SFB_OFFSET_2_CMD())
+        self.offset3.le.textChanged.connect(lambda *_: self.send_SFB_OFFSET_3_CMD())
+
+        self.std_wx.le.textChanged.connect(lambda *_: self.send_STD_Wx_CMD())
+        self.std_wy.le.textChanged.connect(lambda *_: self.send_STD_Wy_CMD())
+        self.std_wz.le.textChanged.connect(lambda *_: self.send_STD_Wz_CMD())
+
+        # ---- buttons (clicked(bool)) ----
+        self.dump_bt.clicked.connect(lambda *_: self.dump_parameter())
+        self.updateBtn.clicked.connect(lambda *_: self.update_changevalue())
+        self.loadTempFileBtn.clicked.connect(lambda *_: self.loadCSVandWriteBias())
+
+    # def linkfunction(self):
+    #     ''' spin box connect'''
+    #     self.wait_cnt.spin.valueChanged.connect(lambda: self.selectcontrolchangecolor(self.wait_cnt.spin, self.send_WAIT_CNT_CMD))
+    #     self.avg.spin.valueChanged.connect(lambda: self.selectcontrolchangecolor(self.avg.spin, self.send_AVG_CMD))
+    #     self.mod_H.spin.valueChanged.connect(lambda: self.selectcontrolchangecolor(self.mod_H.spin, self.send_MOD_H_CMD))
+    #     self.mod_L.spin.valueChanged.connect(lambda: self.selectcontrolchangecolor(self.mod_L.spin, self.send_MOD_L_CMD))
+    #     self.freq.spin.valueChanged.connect(lambda: self.selectcontrolchangecolor(self.freq.spin, self.send_FREQ_CMD))
+    #     self.err_th.spin.valueChanged.connect(lambda: self.selectcontrolchangecolor(self.err_th.spin, self.send_ERR_TH_CMD))
+    #     self.err_offset.spin.valueChanged.connect(lambda: self.selectcontrolchangecolor(self.err_offset.spin, self.send_ERR_OFFSET_CMD))
+    #     self.polarity.spin.valueChanged.connect(lambda: self.selectcontrolchangecolor(self.polarity.spin, self.send_POLARITY_CMD))
+    #     self.const_step.spin.valueChanged.connect(lambda: self.selectcontrolchangecolor(self.const_step.spin, self.send_CONST_STEP_CMD))
+    #     # self.KF_Q.spin.valueChanged.connect(lambda: self.selectcontrolchangecolor(self.KF_Q.spin))
+    #     # self.KF_R.spin.valueChanged.connect(lambda: self.selectcontrolchangecolor(self.KF_R.spin))
+    #     self.HD_Q.spin.valueChanged.connect(lambda: self.selectcontrolchangecolor(self.HD_Q.spin, self.update_FPGA_Q))
+    #     self.HD_R.spin.valueChanged.connect(lambda: self.selectcontrolchangecolor(self.HD_R.spin, self.update_FPGA_R))
+    #     self.gain1.spin.valueChanged.connect(lambda: self.selectcontrolchangecolor(self.gain1.spin, self.send_GAIN1_CMD))
+    #     self.gain2.spin.valueChanged.connect(lambda: self.selectcontrolchangecolor(self.gain2.spin, self.send_GAIN2_CMD))
+    #     self.fb_on.spin.valueChanged.connect(lambda: self.selectcontrolchangecolor(self.fb_on.spin, self.send_FB_ON_CMD))
+    #     self.dac_gain.spin.valueChanged.connect(lambda:self.selectcontrolchangecolor(self.dac_gain.spin, self.send_DAC_GAIN_CMD))
+    #     self.cutoff.spin.valueChanged.connect(lambda: self.selectcontrolchangecolor(self.cutoff.spin, self.send_CUTOFF_CMD))
+    #     # ''' slider '''
+    #     # self.dataRate_sd.sd.valueChanged.connect(self.send_DATA_RATE_CMD)
+    #     ''' line edit '''
+    #     # self.sf_a.le.editingFinished.connect(self.SF_A_EDIT)
+    #     # self.sf_b.le.editingFinished.connect(self.SF_B_EDIT)
+    #     # self.sf_all.le.editingFinished.connect(self.send_SF_ALL_CMD)
+    #     self.sf0.le.editingFinished.connect(lambda: self.selectcontrolchangecolor(self.sf0.le, self.send_SF0_CMD))
+    #     self.sf1.le.editingFinished.connect(lambda: self.selectcontrolchangecolor(self.sf1.le, self.send_SF1_CMD))
+    #
+    #     self.T1.le.textChanged.connect(lambda: self.selectcontrolchangecolor(self.T1.le, self.send_BIAS_T1_CMD))
+    #     self.T2.le.textChanged.connect(lambda: self.selectcontrolchangecolor(self.T2.le, self.send_BIAS_T2_CMD))
+    #     self.slope1.le.textChanged.connect(lambda: self.selectcontrolchangecolor(self.slope1.le, self.send_SFB_SLOPE_1_CMD))
+    #     self.slope2.le.textChanged.connect(lambda: self.selectcontrolchangecolor(self.slope2.le, self.send_SFB_SLOPE_2_CMD))
+    #     self.slope3.le.textChanged.connect(lambda: self.selectcontrolchangecolor(self.slope3.le, self.send_SFB_SLOPE_3_CMD))
+    #     self.offset1.le.textChanged.connect(lambda: self.selectcontrolchangecolor(self.offset1.le, self.send_SFB_OFFSET_1_CMD))
+    #     self.offset2.le.textChanged.connect(lambda: self.selectcontrolchangecolor(self.offset2.le, self.send_SFB_OFFSET_2_CMD))
+    #     self.offset3.le.textChanged.connect(lambda: self.selectcontrolchangecolor(self.offset3.le, self.send_SFB_OFFSET_3_CMD))
+    #
+    #     self.std_wx.le.textChanged.connect(lambda: self.selectcontrolchangecolor(self.std_wx.le, self.send_STD_Wx_CMD))
+    #     self.std_wy.le.textChanged.connect(lambda: self.selectcontrolchangecolor(self.std_wy.le, self.send_STD_Wy_CMD))
+    #     self.std_wz.le.textChanged.connect(lambda: self.selectcontrolchangecolor(self.std_wz.le, self.send_STD_Wz_CMD))
+    #
+    #     ''' bt'''
+    #     self.dump_bt.clicked.connect(self.dump_parameter)
+    #     self.updateBtn.clicked.connect(self.update_changevalue)
+    #     self.loadTempFileBtn.clicked.connect(self.loadCSVandWriteBias)
+
 
     def dump_parameter(self):
         self.cleanItemPropertyVal()

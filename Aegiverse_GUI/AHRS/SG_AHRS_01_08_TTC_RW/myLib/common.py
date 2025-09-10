@@ -155,7 +155,8 @@ def readMP_1Z_ATT(dataPacket, POS_WX, POS_WY, POS_WZ, POS_AX, POS_AY, POS_AZ, PO
         print('%f, ' % yaw, end=', ')
         print('%f, ' % pd_temp)
 
-    return mcu_time, wx, wy, wz, ax, ay, az, pd_temp, pitch, roll, yaw
+    return mcu_time, -wy, -wx, -wz, -ay, -ax, -az, pd_temp, pitch, roll, yaw
+    # return mcu_time, wx, wy, wz, ax, ay, az, pd_temp, pitch, roll, yaw
 
 def readNANO33(dataPacket, EN, dataLen=2, POS_WX=13, sf_xlm=1.0, sf_gyro=1.0, PRINT=0):
     if EN:

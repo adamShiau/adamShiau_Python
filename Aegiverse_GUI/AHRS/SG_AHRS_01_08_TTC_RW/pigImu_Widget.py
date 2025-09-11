@@ -17,7 +17,7 @@ logger.info(__name__ + ' logger start')
 from myLib.myGui.graph import *
 from myLib.myGui.mygui_serial import *
 from myLib.myGui.myLabel import *
-from myLib.myGui.myLineEdit import dataSaveBlock, lineEditBlock, btnLineEditBlock, compensateBlock
+from myLib.myGui.myLineEdit import dataSaveBlock_Rcs, lineEditBlock, btnLineEditBlock, compensateBlock
 from myLib.myGui.myCheckBox import checkBoxBlock_2, checkBoxBlock_3
 from myLib.myGui.myRadioButton import radioButtonBlock_2
 from myLib.myGui.AttitudeIndicator import AttitudeIndicator_view_processing
@@ -35,7 +35,8 @@ class pigImuWidget(QWidget):
         self.read_bt.setEnabled(False)
         self.stop_bt = QPushButton("stop")
         self.stop_bt.setEnabled(False)
-        self.save_block = dataSaveBlock("save data")
+        # self.save_block = dataSaveBlock("save data")
+        self.save_block = dataSaveBlock_Rcs("save data")
         self.para_block = lineEditBlock(name='parameter configuration file', le_name="parameters_SP8_GP")
         self.para_block.setEnabled(False)
         # self.para_block = lineEditBlock(name='parameter configuration file', le_name="parameters_G03")

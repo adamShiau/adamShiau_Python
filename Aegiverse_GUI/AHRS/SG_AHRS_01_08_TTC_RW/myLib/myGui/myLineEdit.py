@@ -43,6 +43,28 @@ class dataSaveBlock(QGroupBox):
         layout.addWidget(self.le_ext, 0, 4, 1, 1)
         self.setLayout(layout)
 
+class dataSaveBlock_Rcs(QGroupBox):
+    def __init__(self, name=""):
+        super().__init__()
+        self.setTitle(name)
+        self.setFont(QFont('Arial', 10))
+
+        self.rb = QRadioButton("Save")          # 如果真的要用 Radio，表示「選擇某種存檔模式」
+        self.rcs_cb = QCheckBox("Rcs?")         # ← 改成 CheckBox，彼此不互斥
+
+        self.le_filename = QLineEdit("enter_file_name")
+        self.le_ext = QLineEdit(".txt"); self.le_ext.setFixedWidth(50)
+
+        self.rb.setChecked(False)
+        self.rcs_cb.setChecked(False)
+
+        layout = QGridLayout()
+        layout.addWidget(self.rb,        0, 0, 1, 1)
+        layout.addWidget(self.rcs_cb,    0, 1, 1, 1)
+        layout.addWidget(self.le_filename,0, 2, 1, 1)
+        layout.addWidget(self.le_ext,    0, 3, 1, 1)
+        self.setLayout(layout)
+
 
 class dataSaveBlock_noExt(QGroupBox):
     def __init__(self, title="", path='.'):

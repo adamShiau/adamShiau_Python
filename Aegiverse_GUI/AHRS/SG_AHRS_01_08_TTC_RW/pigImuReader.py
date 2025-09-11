@@ -3,6 +3,7 @@ import builtins
 import inspect
 import logging
 import os
+import traceback
 
 from PySide6.QtWidgets import QApplication
 
@@ -122,12 +123,45 @@ class pigImuReader(QThread):
         # 發生錯誤要顯示因錯誤所以停止並出現訊息視窗
         self.__isOccurrErr = False
 
+        # 2025/09/11 新增，for R_CS 姿態旋轉使用
+        # R_CS 和 MCU 端一致（row-major）
+        self.__use_rcs = False
+        self.__R_CS = None # 3x3 row-major, len=9（與MCU相同的 Rcs）
+
     # class constructor
 
     def __del__(self):
         logger.info("class memsImuReader's destructor called!")
 
     # End of destructor
+
+    # use_rcs property
+    @property
+    def use_rcs(self) -> bool:
+        return self.__use_rcs
+
+    @use_rcs.setter
+    def use_rcs(self, enabled: bool):
+        self.__use_rcs = bool(enabled)
+        print("act.use_rcs:", self.__use_rcs)
+        # traceback.print_stack(limit=3)  # 顯示呼叫堆疊（只印 3 層，方便追）
+
+    # R_CS property
+    @property
+    def R_CS(self):
+        return self.__R_CS
+
+    @R_CS.setter
+    def R_CS(self, value):
+        if value is None:
+            self.__R_CS = None
+            print("act.R_CS cleared")
+            return
+        if hasattr(value, "__len__") and len(value) == 9:
+            self.__R_CS = list(value)
+            print("act.R_CS updated:", self.__R_CS)
+        else:
+            raise ValueError("R_CS must be length-9 row-major 3x3 matrix")
 
     @property
     def sf_a(self):
@@ -322,9 +356,12 @@ class pigImuReader(QThread):
         if dataPacket == False or head == False:
             return False, False
         # print([hex(i) for i in dataPacket])
-        TIME, WX, WY, WZ, AX, AY, AZ, PD_TEMP, PITCH, ROLL, YAW = cmn.readMP_1Z_ATT(dataPacket, POS_WX, POS_WY, POS_WZ, POS_AX, POS_AY,
-                                                              POS_AZ, POS_MCUTIME, POS_PD_TEMP, POS_PITCH, POS_ROLL,
-                                                            POS_YAW, 4, PRINT=0)
+        TIME, WX, WY, WZ, AX, AY, AZ, PD_TEMP, PITCH, ROLL, YAW = cmn.readAHRS_Rotate(
+            dataPacket,
+            POS_WX, POS_WY, POS_WZ, POS_AX, POS_AY, POS_AZ,
+            POS_MCUTIME, POS_PD_TEMP, POS_PITCH, POS_ROLL, POS_YAW, 4, PRINT=0,
+            use_rcs=self.use_rcs, R_CS=self.R_CS
+        )
 
         if self.isKal:
             WX = self.pig_wx_kal.update(WX)

@@ -1,7 +1,12 @@
 #20250910
 1. copy 自 SG_AHRS_01_07_TTC_RW
-2. Yaw顯示修改，讓他與label讀值相同
-3. 將parameter 與 mis 修改需黃底上傳功能移除
+2. Pitch顯示方式修改，pitch 變大時藍天增加
+3. Yaw顯示修改，值域修改成0 ~ 360
+4. 將parameter 修改需黃底上傳功能移除
+5. common.py新增 def _rot_case_to_sensor(vx, vy, vz, R_CS)，可將case frame轉回sensor frame
+6. pigImuReader.py裡接收封包函數改成使用readAHRS_Rotate()，新增use_rcs=False, R_CS=None兩引數來對frame做轉換
+7. 新增dataSaveBlock_Rcs() widget
+8. 存檔時多一個Rcs的勾選選項，要做校正時須先勾選，檔名會自動加上_Rcs
 
 #20250819
 1.將寫log的部分，改成使用log函式庫中的函式。

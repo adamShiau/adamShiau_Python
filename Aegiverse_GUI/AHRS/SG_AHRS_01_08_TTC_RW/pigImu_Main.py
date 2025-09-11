@@ -101,6 +101,12 @@ class mainWindow(QMainWindow):
         # self.act.kal_R = 50
         # self.act.kal_Q = 1
 
+        # 2025/09/11 RCS 初始化
+        Rcs = [0, -1, 0,
+               -1, 0, 0,
+               0, 0, -1]
+        self.act.R_CS = Rcs
+
 
     def mainUI(self):
         self.setCentralWidget(self.top)
@@ -136,8 +142,6 @@ class mainWindow(QMainWindow):
                                               self.show_Kal_menu
                                               ])
         # file name le
-        self.top.save_block.le_filename.editingFinished.connect(
-            lambda: self.file_name_le_connect(self.top.save_block.le_filename))
 
         # 設定使用Checkbox控制是否要顯示畫出的線
         self.top.plot1_lineName.cb1.clicked.connect(self.top.plotLineWXVisible)
@@ -154,6 +158,10 @@ class mainWindow(QMainWindow):
         # 將計算的補償寫至設備並計算GX、GY、AX、AY
         self.act.AutoCompAvg_qt.connect(self.compensation_calcu_stop)
 
+        # 是否使用RCS做資料frame旋轉至sensor frame
+        self.top.save_block.rcs_cb.toggled.connect(
+            lambda checked: setattr(self.act, "use_rcs", checked)
+        )
 
     def file_name_le_connect(self, obj):
         cmn.print_debug('file name: %s' % obj.text(), PRINT_DEBUG)
@@ -311,9 +319,16 @@ class mainWindow(QMainWindow):
         self.press_stop = False
         self.act.start()
         if self.top.save_block.rb.isChecked():
-            file_name = self.top.save_block.le_filename.text() + self.top.save_block.le_ext.text()
+            # 若 RCS checkbox 有被勾選，file name 多一個 _Rcs
+            if self.top.save_block.rcs_cb.isChecked():
+                file_name = self.top.save_block.le_filename.text() + '_Rcs' + self.top.save_block.le_ext.text()
+            else :
+                file_name = self.top.save_block.le_filename.text() + self.top.save_block.le_ext.text()
             self.imudata_file.name = file_name
             self.imudata_file.open(self.top.save_block.rb.isChecked())
+            # 若 RCS checkbox 有被勾選，先寫一行提示
+            if self.top.save_block.rcs_cb.isChecked():
+                self.imudata_file.write_line("# data rotate to sensor frame")
             self.imudata_file.write_line('time,wx,wy,wz,ax,ay,az,T,pitch,roll,yaw')
 
     def stop(self):
@@ -491,6 +506,7 @@ class mainWindow(QMainWindow):
 
     def changePitchPos(self, pitch):
         self.top.Att_indicator.pitch_flight_update_translate(pitch)
+        # print("pitch: ", pitch)
 
     def changeRotatePoint(self):
         self.top.Att_indicator.updateView()

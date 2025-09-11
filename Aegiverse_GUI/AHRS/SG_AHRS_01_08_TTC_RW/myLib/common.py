@@ -114,6 +114,56 @@ def readMP_1Z(dataPacket, POS_WX, POS_WY, POS_WZ, POS_AX, POS_AY, POS_AZ, POS_TI
 
     return mcu_time, wx, wy, wz, ax, ay, az, pd_temp
 
+def readAHRS_Rotate(dataPacket, POS_WX, POS_WY, POS_WZ, POS_AX, POS_AY, POS_AZ,
+                  POS_TIME, POS_PDTEMP, POS_PITCH, POS_ROLL, POS_YAW, dataLen,
+                  PRINT=0, use_rcs=False, R_CS=None):
+    temp_wx = dataPacket[POS_WX:POS_WX + dataLen]
+    temp_wy = dataPacket[POS_WY:POS_WY + dataLen]
+    temp_wz = dataPacket[POS_WZ:POS_WZ + dataLen]
+    temp_ax = dataPacket[POS_AX:POS_AX + dataLen]
+    temp_ay = dataPacket[POS_AY:POS_AY + dataLen]
+    temp_az = dataPacket[POS_AZ:POS_AZ + dataLen]
+    temp_pdtemp = dataPacket[POS_PDTEMP:POS_PDTEMP + dataLen]
+    temp_time = dataPacket[POS_TIME:POS_TIME + dataLen]
+    temp_pitch = dataPacket[POS_PITCH:POS_PITCH + dataLen]
+    temp_row = dataPacket[POS_ROLL:POS_ROLL + dataLen]
+    temp_yaw = dataPacket[POS_YAW:POS_YAW + dataLen]
+
+    wx = IEEE_754_INT2F_R(temp_wx)
+    wy = IEEE_754_INT2F_R(temp_wy)
+    wz = IEEE_754_INT2F_R(temp_wz)
+    ax = IEEE_754_INT2F_R(temp_ax)
+    ay = IEEE_754_INT2F_R(temp_ay)
+    az = IEEE_754_INT2F_R(temp_az)
+    pitch = IEEE_754_INT2F_R(temp_pitch)
+    roll  = IEEE_754_INT2F_R(temp_row)
+    yaw   = IEEE_754_INT2F_R(temp_yaw)
+    pd_temp  = IEEE_754_INT2F(temp_pdtemp)
+    mcu_time = convert2Unsign_4B_R(temp_time) / 1000.0
+
+    # --- 若 GUI checkbox 打勾，就把 case->sensor 再輸出 ---
+    if use_rcs and (R_CS is not None) and len(R_CS) == 9:
+        wx, wy, wz = _rot_case_to_sensor(wx, wy, wz, R_CS)
+        ax, ay, az = _rot_case_to_sensor(ax, ay, az, R_CS)
+        # print('rotate to sensor')
+        # 姿態(PITCH/ROLL/YAW)是 Local+Case 的顯示角，**不轉**。
+
+    if PRINT:
+        print('\n%f, ' % mcu_time, end=', ')
+        print('%f, ' % wx, end=', ')
+        print('%f, ' % wy, end=', ')
+        print('%f, ' % wz, end=', ')
+        print('%f, ' % ax, end=', ')
+        print('%f, ' % ay, end=', ')
+        print('%f, ' % az, end=', ')
+        print('%f, ' % pitch, end=', ')
+        print('%f, ' % roll, end=', ')
+        print('%f, ' % yaw, end=', ')
+        print('%f, ' % pd_temp)
+
+    return mcu_time, wx, wy, wz, ax, ay, az, pd_temp, pitch, roll, yaw
+
+
 def readMP_1Z_ATT(dataPacket, POS_WX, POS_WY, POS_WZ, POS_AX, POS_AY, POS_AZ, POS_TIME, POS_PDTEMP, POS_PITCH, POS_ROLL, POS_YAW, dataLen, PRINT=0):
     temp_wx = dataPacket[POS_WX:POS_WX + dataLen]
     temp_wy = dataPacket[POS_WY:POS_WY + dataLen]
@@ -155,8 +205,8 @@ def readMP_1Z_ATT(dataPacket, POS_WX, POS_WY, POS_WZ, POS_AX, POS_AY, POS_AZ, PO
         print('%f, ' % yaw, end=', ')
         print('%f, ' % pd_temp)
 
-    return mcu_time, -wy, -wx, -wz, -ay, -ax, -az, pd_temp, pitch, roll, yaw
-    # return mcu_time, wx, wy, wz, ax, ay, az, pd_temp, pitch, roll, yaw
+    # return mcu_time, -wy, -wx, -wz, -ay, -ax, -az, pd_temp, pitch, roll, yaw
+    return mcu_time, wx, wy, wz, ax, ay, az, pd_temp, pitch, roll, yaw
 
 def readNANO33(dataPacket, EN, dataLen=2, POS_WX=13, sf_xlm=1.0, sf_gyro=1.0, PRINT=0):
     if EN:
@@ -678,6 +728,24 @@ def dictOperation(dictA: dict, dictB: dict, mode: str, dictStruct: dict):
     else:
         print(mode + " method doesn't exist!")
         pass
+
+def _rot_case_to_sensor(vx, vy, vz, R_CS):
+    """
+    將 case 向量 v_case = [vx,vy,vz] 轉回 sensor：
+      v_sensor = R_CS^T * v_case
+    R_CS: row-major 3x3，可是 list/tuple/np.ndarray 均可。
+    """
+    # 讀 row-major
+    r00, r01, r02, r10, r11, r12, r20, r21, r22 = (
+        R_CS[0], R_CS[1], R_CS[2],
+        R_CS[3], R_CS[4], R_CS[5],
+        R_CS[6], R_CS[7], R_CS[8]
+    )
+    # 轉置相乘（注意是 r** 的「欄」進來）
+    xs = r00*vx + r10*vy + r20*vz
+    ys = r01*vx + r11*vy + r21*vz
+    zs = r02*vx + r12*vy + r22*vz
+    return xs, ys, zs
 
 
 # End of dicOperation

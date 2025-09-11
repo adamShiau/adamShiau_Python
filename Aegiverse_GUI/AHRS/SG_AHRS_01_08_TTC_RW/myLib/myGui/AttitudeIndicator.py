@@ -149,7 +149,7 @@ class AttitudeIndicator_view_processing(QGraphicsView):
         self.planeAxis_Item.setRotation(self.__rotate_angle)
 
         Itemradians = math.radians(-self.__rotate_angle)  # 計算旋轉的弧度
-        movementVal = 8.23 * (-self.__pitch_angle)  # 計算pitch從原點0，移動到該刻度的數值
+        movementVal = 8.23 * (self.__pitch_angle)  # 計算pitch從原點0，移動到該刻度的數值
 
         self.__moveDistanceX_new = movementVal * math.sin(Itemradians) # 新的平移量
         self.__moveDistanceY_new = movementVal * math.cos(Itemradians) # 新的平移量
@@ -167,18 +167,21 @@ class AttitudeIndicator_view_processing(QGraphicsView):
         # 更新畫面
         self.scene.update()
 
-
     def yaw_flight_update_move(self, yaw_val):
-        self.yaw_Item3.setRotation(yaw_val)
-        self.__yawval = "0"
-        '''
-        if yaw_val > 0:
-            yawVal = 360 - yaw_val
-            self.__yawval = f'{yawVal:.0f}'
+        # 1. 顯示用：把 -180~180 轉換成 0~360
         if yaw_val < 0:
-            self.__yawval = f'{(-yaw_val):.0f}'
-        '''
-        self.__yawval = f'{yaw_val:.0f}'
-        self.yaw_text.setText(str(self.__yawval))
+            yaw_display = yaw_val + 360
+        else:
+            yaw_display = yaw_val
+
+        # 2. 圖片旋轉（保持原本的 -yaw_val）
+        self.yaw_Item3.setRotation(-yaw_val)
+
+        # 3. 更新數值文字
+        self.__yawval = f'{yaw_display:.0f}'
+        self.yaw_text.setText(self.__yawval)
+
+        # print('yaw: ', yaw_val, 'display:', yaw_display)
         self.scene.update()
+
 

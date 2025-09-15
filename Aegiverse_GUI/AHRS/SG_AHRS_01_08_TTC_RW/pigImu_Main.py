@@ -157,7 +157,6 @@ class mainWindow(QMainWindow):
 
         # 將計算的補償寫至設備並計算GX、GY、AX、AY
         self.act.AutoCompAvg_qt.connect(self.compensation_calcu_stop)
-
         # 是否使用RCS做資料frame旋轉至sensor frame
         self.top.save_block.rcs_cb.toggled.connect(
             lambda checked: setattr(self.act, "use_rcs", checked)

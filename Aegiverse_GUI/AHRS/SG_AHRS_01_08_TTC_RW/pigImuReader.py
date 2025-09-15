@@ -336,6 +336,7 @@ class pigImuReader(QThread):
 
     def dump_fog_parameters(self, ch):
         # self.writeImuCmd(0x66, 2)
+        print('DUMP here')
         return self.__Connector.dump_fog_parameters(ch)
 
     def dump_cali_parameters(self, ch):

@@ -199,27 +199,70 @@ class Connector:
             self.__ser.write([0x66, 0, 0, 0, 0x05, ch])
             time.sleep(0.5)
             self.__ser.write(bytearray([0x55, 0x56]))
-            # self.__ser.write(bytearray([0x55, 0x56]))
             time.sleep(0.5)
+
             A = self.__ser.readline()
-            # print(A)
-            parafeedback = json.loads(A)
+            print(A)
+
+            # decode 成字串
+            s = A.decode("utf-8").strip()
+
+            # 把 NaN 換成 null (讓 JSON 合法)
+            s = s.replace("nan", "null").replace("NaN", "null")
+
+            parafeedback = json.loads(s)
+
+            print(parafeedback)
             return parafeedback
-        except serial.SerialException as e:
-            # tb = e.__traceback__  # 錯誤軌跡資訊
-            # # 英文 -> Please verify that the serial port is properly connected and the device is powered.
-            # logProcess.centrailzedError(num="", fileName=ExternalName_log, content="請確認序列埠是否已連接，且設備已經上電。", line=tb.tb_lineno)
+
+        except serial.SerialException:
             __excType, __excObj, __excTb = sys.exc_info()
             __lineNum = __excTb.tb_lineno
-            logger.error(f'Please verify that the serial port is properly connected and the device is powered, line {__lineNum}.')
+            logger.error(
+                f'Please verify that the serial port is properly connected and the device is powered, line {__lineNum}.')
             return False
-        except json.JSONDecodeError as jsonErr:
-            # tb = jsonErr.__traceback__  # 錯誤軌跡資訊
-            # logProcess.centrailzedError(num="", fileName=ExternalName_log, content="撈取數據並轉換為json格式的過程中，因數據格式無法轉換為json格式，所以出現json.decoder.JSONDecodeError。", line=tb.tb_lineno)
+
+        except json.JSONDecodeError:
             __excType, __excObj, __excTb = sys.exc_info()
             __lineNum = __excTb.tb_lineno
-            logger.error(f'撈取數據並轉換為json格式的過程中，因數據格式無法轉換為json格式，所以出現json.decoder.JSONDecodeError, line {__lineNum}.')
+            logger.error(
+                f'撈取數據並轉換為json格式的過程中，因數據格式無法轉換為json格式，所以出現json.decoder.JSONDecodeError, line {__lineNum}.')
             return False
+
+    # def dump_fog_parameters(self, ch=2):
+    #     try:
+    #         self.__ser.write(bytearray([0xAB, 0xBA]))
+    #         self.__ser.write([0x66, 0, 0, 0, 0x05, ch])
+    #         time.sleep(0.5)
+    #         self.__ser.write(bytearray([0x55, 0x56]))
+    #         # self.__ser.write(bytearray([0x55, 0x56]))
+    #         time.sleep(0.5)
+    #         A = self.__ser.readline()
+    #         print(A)
+    #
+    #         # decode 成字串
+    #         s = A.decode("utf-8").strip()
+    #
+    #         # 允許 NaN 解析
+    #         parafeedback = json.loads(s, strict=False)
+    #
+    #         print(parafeedback)
+    #         return parafeedback
+    #     except serial.SerialException as e:
+    #         # tb = e.__traceback__  # 錯誤軌跡資訊
+    #         # # 英文 -> Please verify that the serial port is properly connected and the device is powered.
+    #         # logProcess.centrailzedError(num="", fileName=ExternalName_log, content="請確認序列埠是否已連接，且設備已經上電。", line=tb.tb_lineno)
+    #         __excType, __excObj, __excTb = sys.exc_info()
+    #         __lineNum = __excTb.tb_lineno
+    #         logger.error(f'Please verify that the serial port is properly connected and the device is powered, line {__lineNum}.')
+    #         return False
+    #     except json.JSONDecodeError as jsonErr:
+    #         # tb = jsonErr.__traceback__  # 錯誤軌跡資訊
+    #         # logProcess.centrailzedError(num="", fileName=ExternalName_log, content="撈取數據並轉換為json格式的過程中，因數據格式無法轉換為json格式，所以出現json.decoder.JSONDecodeError。", line=tb.tb_lineno)
+    #         __excType, __excObj, __excTb = sys.exc_info()
+    #         __lineNum = __excTb.tb_lineno
+    #         logger.error(f'撈取數據並轉換為json格式的過程中，因數據格式無法轉換為json格式，所以出現json.decoder.JSONDecodeError, line {__lineNum}.')
+    #         return False
 
     def dump_cali_parameters(self, ch=2):
         try:

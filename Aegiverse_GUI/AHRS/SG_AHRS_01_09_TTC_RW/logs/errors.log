@@ -1,0 +1,65 @@
+2025-09-08 19:25:30 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-09 09:42:09 - main.myLib.mySerial.Connector - ERROR - 1700001, The serial open operation failed while establishing the connection.
+2025-09-09 09:52:32 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-09 10:53:41 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-09 12:54:50 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-09 14:25:27 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-09 14:25:30 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-09 14:25:32 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-09 14:27:22 - main.myLib.mySerial.Connector - ERROR - 1700001, The serial open operation failed while establishing the connection.
+2025-09-09 14:27:29 - main.myLib.mySerial.Connector - ERROR - 1700001, The serial open operation failed while establishing the connection.
+2025-09-09 15:14:21 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-09 15:33:27 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-09 16:26:04 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-09 17:42:00 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-09 18:34:32 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-09 19:12:32 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-10 10:30:31 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-10 10:38:24 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-10 11:02:39 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-10 12:16:55 - main.myLib.mySerial.Connector - ERROR - 撈取數據並轉換為json格式的過程中，因數據格式無法轉換為json格式，所以出現json.decoder.JSONDecodeError, line 206.
+2025-09-10 12:20:58 - main.myLib.mySerial.Connector - ERROR - 撈取數據並轉換為json格式的過程中，因數據格式無法轉換為json格式，所以出現json.decoder.JSONDecodeError, line 206.
+2025-09-10 12:21:08 - main.myLib.mySerial.Connector - ERROR - 撈取數據並轉換為json格式的過程中，因數據格式無法轉換為json格式，所以出現json.decoder.JSONDecodeError, line 206.
+2025-09-10 12:33:57 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-10 12:34:00 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-10 12:34:09 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-10 16:56:40 - main.myLib.mySerial.Connector - ERROR - 1700001, The serial open operation failed while establishing the connection.
+2025-09-10 17:17:58 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-10 18:52:56 - main - ERROR - 1000006, AttributeError — 'pig_calibration_widget' object has no attribute 'Update_Btn'.(An error occurred in the connect, line 253.)
+2025-09-10 18:53:17 - main - ERROR - 1000006, AttributeError — 'pig_calibration_widget' object has no attribute 'Update_Btn'.(An error occurred in the connect, line 253.)
+2025-09-10 18:53:51 - main - ERROR - 1000006, AttributeError — 'pig_calibration_widget' object has no attribute 'Update_Btn'.(An error occurred in the connect, line 253.)
+2025-09-10 19:09:34 - main.myLib.mySerial.Connector - ERROR - 撈取數據並轉換為json格式的過程中，因數據格式無法轉換為json格式，所以出現json.decoder.JSONDecodeError, line 231.
+2025-09-10 19:13:06 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-10 19:13:17 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-10 19:13:18 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-10 19:21:32 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-10 19:45:41 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-10 19:45:49 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-10 19:45:49 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-10 19:46:05 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-10 19:52:18 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-10 19:52:47 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-11 11:35:34 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-11 12:06:32 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-11 12:06:43 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-11 12:08:44 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-11 14:48:02 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-11 16:05:46 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-12 15:28:06 - main.myLib.mySerial.Connector - ERROR - 撈取數據並轉換為json格式的過程中，因數據格式無法轉換為json格式，所以出現json.decoder.JSONDecodeError, line 206.
+2025-09-12 15:30:32 - main.myLib.mySerial.Connector - ERROR - 撈取數據並轉換為json格式的過程中，因數據格式無法轉換為json格式，所以出現json.decoder.JSONDecodeError, line 206.
+2025-09-12 15:32:23 - main.myLib.mySerial.Connector - ERROR - 撈取數據並轉換為json格式的過程中，因數據格式無法轉換為json格式，所以出現json.decoder.JSONDecodeError, line 206.
+2025-09-12 15:37:13 - main.myLib.mySerial.Connector - ERROR - 撈取數據並轉換為json格式的過程中，因數據格式無法轉換為json格式，所以出現json.decoder.JSONDecodeError, line 211.
+2025-09-15 17:05:55 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-15 17:05:58 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-17 09:25:18 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-17 09:26:40 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-17 09:45:31 - main.myLib.mySerial.Connector - ERROR - 1700001, The serial open operation failed while establishing the connection.
+2025-09-17 09:45:56 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-17 11:13:53 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-17 11:32:04 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-17 11:32:50 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-17 11:34:04 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-17 11:34:07 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-17 11:34:23 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-17 12:11:31 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-17 12:47:24 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.

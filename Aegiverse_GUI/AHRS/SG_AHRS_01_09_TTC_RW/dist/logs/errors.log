@@ -1,0 +1,23 @@
+2025-09-10 12:00:01 - main.checkTamper_logger - WARNING - crc fail: 1
+2025-09-10 12:08:55 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-10 12:16:20 - main.myLib.mySerial.Connector - ERROR - 撈取數據並轉換為json格式的過程中，因數據格式無法轉換為json格式，所以出現json.decoder.JSONDecodeError, line 206.
+2025-09-10 12:16:26 - main.myLib.mySerial.Connector - ERROR - 撈取數據並轉換為json格式的過程中，因數據格式無法轉換為json格式，所以出現json.decoder.JSONDecodeError, line 206.
+2025-09-10 12:40:41 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-10 12:41:59 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-10 17:28:09 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-10 17:31:51 - main.checkTamper_logger - WARNING - crc fail: 1
+2025-09-10 17:34:12 - main.checkTamper_logger - WARNING - crc fail: 2
+2025-09-11 15:33:24 - main.checkTamper_logger - WARNING - crc fail: 1
+2025-09-11 15:35:32 - main.checkTamper_logger - WARNING - crc fail: 2
+2025-09-11 15:44:43 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-11 15:44:44 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-11 16:02:43 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-11 16:02:45 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-11 16:02:48 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-11 16:02:54 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-11 16:02:59 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-11 16:04:50 - main.checkTamper_logger - WARNING - crc fail: 1
+2025-09-11 16:09:04 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-11 16:09:06 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-11 16:26:40 - main.checkTamper_logger - WARNING - crc fail: 1
+2025-09-11 16:50:30 - main.checkTamper_logger - WARNING - crc fail: 1

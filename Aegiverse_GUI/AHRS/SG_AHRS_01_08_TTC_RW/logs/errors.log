@@ -51,3 +51,14 @@
 2025-09-12 15:37:13 - main.myLib.mySerial.Connector - ERROR - 撈取數據並轉換為json格式的過程中，因數據格式無法轉換為json格式，所以出現json.decoder.JSONDecodeError, line 211.
 2025-09-15 17:05:55 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
 2025-09-15 17:05:58 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-17 09:25:18 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-17 09:26:40 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-17 09:45:31 - main.myLib.mySerial.Connector - ERROR - 1700001, The serial open operation failed while establishing the connection.
+2025-09-17 09:45:56 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-17 11:13:53 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-17 11:32:04 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-17 11:32:50 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-17 11:34:04 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-17 11:34:07 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-17 11:34:23 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-17 12:11:31 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.

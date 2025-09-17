@@ -62,6 +62,7 @@ class mainWindow(QMainWindow):
 
     def __init__(self, debug_en: bool = False):
         super(mainWindow, self).__init__()
+        # self.setFixedSize(1250, 930)
         self.__first_run_flag = True
         self.press_stop = False
         self.resize(1600, 800)

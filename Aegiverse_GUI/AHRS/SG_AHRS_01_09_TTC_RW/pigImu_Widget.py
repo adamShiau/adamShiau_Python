@@ -78,7 +78,7 @@ class pigImuWidget(QWidget):
         layout.addWidget(self.buffer_lb, 1, 2, 1, 1)
         layout.addWidget(self.pd_temp_lb, 1, 3, 1, 1)
         layout.addWidget(self.data_rate_lb, 1, 4, 1, 1)
-        layout.addWidget(self.logo_lb, 0, 17, 2, 5)
+        # layout.addWidget(self.logo_lb, 0, 17, 2, 5)
 
         layout.addWidget(self.pitch_lb, 1, 5, 1, 1)
         layout.addWidget(self.row_lb, 1, 6, 1, 1)

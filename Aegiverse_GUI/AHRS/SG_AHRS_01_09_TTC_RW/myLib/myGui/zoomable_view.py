@@ -1,52 +1,45 @@
 # myLib/myGui/zoomable_view.py
-from PySide6.QtCore import Qt
-from PySide6.QtGui import QTransform, QKeySequence, QShortcut, QPainter  # ← 加上 QPainter
-from PySide6.QtWidgets import (
-    QGraphicsView, QGraphicsScene, QGraphicsProxyWidget, QWidget
-)
+from enum import Enum
+from PySide6.QtCore import Qt, QRectF
+from PySide6.QtGui import QTransform, QKeySequence, QShortcut, QPainter
+from PySide6.QtWidgets import QGraphicsView, QGraphicsScene, QGraphicsProxyWidget, QWidget
 
+
+class FitMode(str, Enum):
+    NONE = "none"        # 不自動配適
+    CONTAIN = "contain"  # 等比：整個內容都可見
+    COVER = "cover"      # 不等比：填滿寬高（可能變形）
+    WIDTH = "width"      # 依寬度貼齊
+    HEIGHT = "height"    # 依高度貼齊
 
 class ZoomableView(QGraphicsView):
-    """
-    用 QGraphicsView 包裝任意 QWidget，支援：
-      - Ctrl + 滾輪：縮放
-      - 滑鼠中鍵/空白鍵拖曳：平移
-      - Ctrl + 0：重置縮放
-      - Ctrl + = / Ctrl + +：放大
-      - Ctrl + -：縮小
-      - 滑鼠雙擊：重置縮放
-    """
-    def __init__(self, widget: QWidget, parent=None, min_scale=0.6, max_scale=3.0, step=1.12):
+    def __init__(self, widget: QWidget, parent=None,
+                 min_scale=0.6, max_scale=3.0, step=1.12, start_scale=1.0):
         super().__init__(parent)
         self.setScene(QGraphicsScene(self))
         self._proxy: QGraphicsProxyWidget = self.scene().addWidget(widget)
 
-        # 這行改用 QPainter.* 常數
-        self.setRenderHints(
-            self.renderHints()
-            | QPainter.Antialiasing
-            | QPainter.TextAntialiasing
-            | QPainter.SmoothPixmapTransform
-        )
+        self.setRenderHints(self.renderHints() | QPainter.Antialiasing | QPainter.TextAntialiasing | QPainter.SmoothPixmapTransform)
         self.setDragMode(QGraphicsView.ScrollHandDrag)
         self.setTransformationAnchor(QGraphicsView.AnchorUnderMouse)
         self.setResizeAnchor(QGraphicsView.AnchorViewCenter)
         self.setViewportUpdateMode(QGraphicsView.SmartViewportUpdate)
 
-        # 參數
         self._min_scale = float(min_scale)
         self._max_scale = float(max_scale)
         self._step = float(step)
         self._current_scale = 1.0
 
-        # 快捷鍵
+        self._fit_mode: FitMode = FitMode.NONE  # ← 預設不自動配適
+
         QShortcut(QKeySequence("Ctrl+="), self, activated=self.zoom_in)
         QShortcut(QKeySequence("Ctrl++"), self, activated=self.zoom_in)
         QShortcut(QKeySequence("Ctrl+-"), self, activated=self.zoom_out)
         QShortcut(QKeySequence("Ctrl+0"), self, activated=self.reset_zoom)
 
-        # 初始視角
         self._fit_initial()
+        if abs(float(start_scale) - 1.0) > 1e-6:
+            self.set_zoom(start_scale)
 
     def _fit_initial(self):
         self.fitInView(self._proxy, Qt.KeepAspectRatio)
@@ -86,3 +79,46 @@ class ZoomableView(QGraphicsView):
     def reset_zoom(self):
         self.setTransform(QTransform())
         self._current_scale = 1.0
+
+    def set_fit_mode(self, mode: str | FitMode):
+        self._fit_mode = FitMode(mode)
+        self._apply_fit()
+
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        self._apply_fit()
+
+    def _apply_fit(self):
+        if self._fit_mode == FitMode.NONE:
+            return
+        rect: QRectF = self._proxy.sceneBoundingRect()
+        if rect.isEmpty():
+            return
+
+        vw = max(1, self.viewport().width())
+        vh = max(1, self.viewport().height())
+        sw = rect.width()
+        sh = rect.height()
+
+        if self._fit_mode == FitMode.CONTAIN:
+            s = min(vw / sw, vh / sh)
+            self.set_zoom(s)
+        elif self._fit_mode == FitMode.COVER:
+            # 不等比填滿：設定非等比縮放（可能變形）
+            sx = vw / sw
+            sy = vh / sh
+            self.setTransform(QTransform())  # 先清空
+            self._current_scale = 1.0
+            self.scale(sx, sy)
+        elif self._fit_mode == FitMode.WIDTH:
+            s = vw / sw
+            self.set_zoom(s)
+        elif self._fit_mode == FitMode.HEIGHT:
+            s = vh / sh
+            self.set_zoom(s)
+
+    def set_zoom(self, scale: float):
+        s = max(self._min_scale, min(self._max_scale, float(scale)))
+        self.setTransform(QTransform())
+        self._current_scale = 1.0
+        self._apply_scale(s)

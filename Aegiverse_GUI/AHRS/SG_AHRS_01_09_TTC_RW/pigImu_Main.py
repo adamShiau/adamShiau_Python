@@ -79,6 +79,7 @@ class mainWindow(QMainWindow):
         self.__isFileOpen = False
         self.top = TOP()
         self.view = ZoomableView(self.top, min_scale=0.6, max_scale=3.0, step=1.12)  # ← 新增
+        self.view.set_fit_mode("cover") #''' 等比填滿: contain, 不等比填滿: cover, 自由縮放: none'''
         self.act = ACTION()
         self.imudata_file = cmn.data_manager(fnum=0)
         self.pig_cali_menu = calibrationBlock()
@@ -515,8 +516,6 @@ class mainWindow(QMainWindow):
 
 
 if __name__ == "__main__":
-    QApplication.setAttribute(Qt.AA_EnableHighDpiScaling, True)
-    QApplication.setAttribute(Qt.AA_UseHighDpiPixmaps, True)
     app = QApplication(sys.argv)
     main = mainWindow(debug_en=False)
     main.show()

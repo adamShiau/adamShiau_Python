@@ -74,6 +74,26 @@ def bossac_capabilities(bossac_path: str) -> dict:
         pass
     return caps
 
+
+def get_port_info_map():
+    """回傳 {device: ListPortInfo} 的快照，方便之後比對 description/VID/PID。"""
+    m = {}
+    for p in serial.tools.list_ports.comports():
+        m[p.device] = p
+    return m
+
+def is_likely_bootloader(port_info) -> bool:
+    """用描述或 VID/PID 粗略判斷是否是 bootloader 埠。"""
+    if port_info is None:
+        return False
+    desc = (port_info.description or "").lower()
+    # 很多 Arduino/SAMD bootloader 描述會包含 "bootloader" 或 "sam-ba"
+    if "bootloader" in desc or "sam-ba" in desc:
+        return True
+    # 也可用已知的 VID/PID 來判斷；這裡做保守處理，只用描述關鍵字
+    return False
+
+
 # --------- Worker ---------
 @dataclass
 class FlashTask:
@@ -102,32 +122,67 @@ class FlashWorker(QtCore.QObject):
     def _run_impl(self):
         self.progress.emit(0)
         self.log.emit(f"選擇的應用程式埠：{self.task.app_port}")
-        before = ports_set()
+
+        # 步驟 1/4
+        self.log.emit("步驟 1/4：記錄目前已存在的序列埠...")
+        before_map = get_port_info_map()
+        before = set(before_map.keys())
         self.progress.emit(10)
 
-        self.log.emit("步驟 2/4：以 1200 bps 觸發 bootloader...")
-        try:
-            touch_1200bps(self.task.app_port)
-        except Exception as e:
-            self.finished.emit(False, f"1200bps 觸發失敗：{e}")
-            return
-        self.progress.emit(25)
+        # 若一開始就已在 bootloader，直接用這個埠寫入
+        sel_info = before_map.get(self.task.app_port)
+        if is_likely_bootloader(sel_info):
+            self.log.emit(f"偵測到所選埠 {self.task.app_port} 已是 bootloader，跳過 1200bps 觸發。")
+            boot_port = self.task.app_port
+        else:
+            # 步驟 2/4
+            self.log.emit("步驟 2/4：以 1200 bps 觸發 bootloader...")
+            try:
+                touch_1200bps(self.task.app_port)
+            except Exception as e:
+                self.finished.emit(False, f"1200bps 觸發失敗：{e}")
+                return
+            self.progress.emit(25)
 
-        self.log.emit("等待新的 bootloader 埠出現...")
-        boot_port = wait_new_bootloader_port(before, 8.0)
+            # 等待新埠
+            self.log.emit("等待新的 bootloader 埠出現...")
+            boot_port = wait_new_bootloader_port(before, timeout_s=8.0)
+
+            # 容錯 A：沒新埠，但原埠仍在且看起來是 bootloader → 用原埠
+            if not boot_port:
+                after_map = get_port_info_map()
+                if self.task.app_port in after_map and is_likely_bootloader(after_map[self.task.app_port]):
+                    boot_port = self.task.app_port
+                    self.log.emit("未偵測到新埠，但所選埠仍在且像 bootloader，改用原埠寫入。")
+
+            # 容錯 B：沒新埠、原埠也不像；但系統只多出一個埠 → 直接用那個
+            if not boot_port:
+                now = set(get_port_info_map().keys())
+                diff = list(now - before)
+                if len(diff) == 1:
+                    boot_port = diff[0]
+                    self.log.emit(f"未看到明確 bootloader 訊號，但出現單一新埠，改用：{boot_port}")
+
         if not boot_port:
             self.finished.emit(False, "找不到 bootloader 埠，請按兩下 RESET 再試。")
             return
+
         self.log.emit(f"偵測到 bootloader 埠：{boot_port}")
         self.progress.emit(40)
 
+        # 步驟 3/4：燒錄
+        self.log.emit("步驟 3/4：執行 bossac 寫入（寫入中輸出會即時顯示）...")
         ok, outlog = self._flash_with_bossac(boot_port)
         self.log.emit(outlog)
         self.progress.emit(90)
 
         if not ok:
-            self.finished.emit(False, "bossac 寫入失敗")
+            self.finished.emit(False, "bossac 寫入失敗，詳見上方日誌。")
             return
+
+        # 步驟 4/4：收尾
+        self.log.emit("步驟 4/4：裝置重啟並回到應用程式...")
+        time.sleep(1.2)
         self.progress.emit(100)
         self.finished.emit(True, "更新完成")
 
@@ -243,13 +298,16 @@ class UpdaterWindow(QtWidgets.QMainWindow):
 
     def refresh_ports(self):
         self.port_cb.clear()
-        ports = serial.tools.list_ports.comports()
+        ports = list(serial.tools.list_ports.comports())
         for p in ports:
-            desc = f"{p.device} — {p.description}"
-            if p.hwid:
-                # 顯示 VID/PID 部分，通常在 hwid 內
-                desc += f" ({p.hwid.split()[0]})"
-            self.port_cb.addItem(desc, userData=p.device)
+            vidpid = ""
+            try:
+                if p.vid is not None and p.pid is not None:
+                    vidpid = f" (VID:PID={p.vid:04X}:{p.pid:04X})"
+            except Exception:
+                pass
+            label = f"{p.device} — {p.description}{vidpid}"
+            self.port_cb.addItem(label, userData=p.device)  # 真正的 COM 名放 userData
         self.status.showMessage(f"找到 {len(ports)} 個序列埠")
 
     def browse_fw(self):
@@ -266,7 +324,7 @@ class UpdaterWindow(QtWidgets.QMainWindow):
 
     def on_update(self):
         idx = self.port_cb.currentIndex()
-        app_port = self.port_cb.itemData(idx)  # 真正的 COM 埠名稱
+        app_port = self.port_cb.itemData(idx)  # ← 這裡拿真正的 COM 名稱
         fw = self.fw_edit.text().strip()
         bossac = self.bossac_edit.text().strip()
         if not app_port:

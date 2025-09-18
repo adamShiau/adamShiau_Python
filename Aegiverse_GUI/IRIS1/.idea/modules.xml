@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/../AHRS/.idea/AHRS.iml" filepath="$PROJECT_DIR$/../AHRS/.idea/AHRS.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/IRIS1.iml" filepath="$PROJECT_DIR$/.idea/IRIS1.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../MCU programmer/.idea/MCU programmer.iml" filepath="$PROJECT_DIR$/../MCU programmer/.idea/MCU programmer.iml" />
     </modules>
   </component>
 </project>

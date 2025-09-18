@@ -79,7 +79,9 @@ class mainWindow(QMainWindow):
         self.__isFileOpen = False
         self.top = TOP()
         self.view = ZoomableView(self.top, min_scale=0.6, max_scale=3.0, step=1.12)  # ← 新增
-        self.view.set_fit_mode("cover") #''' 等比填滿: contain, 不等比填滿: cover, 自由縮放: none'''
+        self.view.set_fit_mode("none") #''' 等比填滿: contain, 不等比填滿: cover, 自由縮放: none'''
+        # 固定高度 930，寬度不限制
+        self.view.setFixedHeight(930)
         self.act = ACTION()
         self.imudata_file = cmn.data_manager(fnum=0)
         self.pig_cali_menu = calibrationBlock()

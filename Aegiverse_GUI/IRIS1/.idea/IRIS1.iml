@@ -6,5 +6,6 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="AHRS" />
     <orderEntry type="module" module-name="MCU programmer" />
+    <orderEntry type="module" module-name="Get Web Pdf" />
   </component>
 </module>

@@ -411,7 +411,7 @@ class mainWindow(QMainWindow):
                 if self.top.save_block.rcs_cb.isChecked():
                     print('top.save_block.rcs_cb.isChecked')
                     self.imudata_file.write_line("# data rotate to sensor frame")
-                self.imudata_file.write_line('time,wx,wy,wz,ax,ay,az,T,pitch,roll,yaw')
+                self.imudata_file.write_line('time,wx,wy,wz,ax,ay,az,Tx,Ty,Tz,Tacc,pitch,roll,yaw')
 
             self.haveClickBtn = True
 

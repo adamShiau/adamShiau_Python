@@ -196,12 +196,12 @@ class mainWindow(QMainWindow):
     def printBuffer(self, val):
         self.top.buffer_lb.lb.setText(str(val))
 
-    def printPdTemperature(self, val, X_val, Y_val):
+    def printPdTemperature(self, X_val, Y_val, Z_val):
         try:
             if (time.perf_counter() - self.t_start) > 0.5:
-                self.top.pd_temp_lb.lb.setText(f'{val:.4f}')
                 self.top.pdX_temp_lb.lb.setText(f'{X_val:.4f}')
                 self.top.pdY_temp_lb.lb.setText(f'{Y_val:.4f}')
+                self.top.pdZ_temp_lb.lb.setText(f'{Z_val:.4f}')
                 self.t_start = time.perf_counter()
         except IndexError:
             __excType, __excObj, __excTb = sys.exc_info()

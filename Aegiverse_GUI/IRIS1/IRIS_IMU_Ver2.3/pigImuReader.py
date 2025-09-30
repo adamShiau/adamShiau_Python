@@ -326,7 +326,7 @@ class pigImuReader(QThread):
             #                                                                   sf_b=self.sf_b,
             #                                                                   POS_TIME=SIZE_HEADER)
             TIME, WX, WY, WZ, AX, AY, AZ, TX, TY, TZ, ACC_TEMP, PITCH, ROLL, YAW = cmn.IRIS_AHRS_Rotate(dataPacket, EN=1,
-                                                                                                 PRINT=0,
+                                                                                                 PRINT=1,
                                                                                                  sf_a=self.sf_a,
                                                                                                  sf_b=self.sf_b,
                                                                                                  POS_TIME=SIZE_HEADER,

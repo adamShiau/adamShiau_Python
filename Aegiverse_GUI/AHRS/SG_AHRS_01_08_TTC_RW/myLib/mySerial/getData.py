@@ -29,17 +29,9 @@ def alignHeader_4B(comportObj, header):
                 datain[1] = datain[2]
                 datain[2] = datain[3]
                 datain[3] = comportObj.readBinaryList(1)[0]
-            # except IndexError:
-            #     logger.error('IndexError: alignHeader_4B')
-            #     sys.exit()
-            #     break
             except IndexError as e:  # ValueError的錯誤，在list中不會出現此錯誤，除非有使用到轉換類型或運算，才有可能因資料類型不同發生ValueError。
                 logger.error('1600001, Please make sure the number of indices matches the expected dimensions for retrieval.')
-                # sys.exit()
-                # break
-                return False
-
-            # print(datain)
+                return None
 # End of alignHeader_4B
 
 def alignHeader_7B(comportObj, header):
@@ -63,20 +55,20 @@ def alignHeader_7B(comportObj, header):
                 sys.exit()
                 break
 
+# def getdataPacket(comportObj, head, rbytes=25):
+#     rdata = comportObj.readBinaryList(rbytes)
+#     if head == False or rdata == False:
+#         return False
+#     imuPacket = head + rdata
+#     return imuPacket
+
 def getdataPacket(comportObj, head, rbytes=25):
+    if head is None:
+        return None
     rdata = comportObj.readBinaryList(rbytes)
-    if head == False or rdata == False:
-        return False
-    imuPacket = head + rdata
-    return imuPacket
-    # if head == False:
-    #     rdata = comportObj.readBinaryList(rbytes)
-    #     imuPacket = head + rdata
-    #     return imuPacket
-    # else:
-    #     imuPacket= head
-    #     return imuPacket
-# End of getdataPacket
+    if not rdata:
+        return None
+    return head + rdata
 
 
 if __name__ == "__main__":

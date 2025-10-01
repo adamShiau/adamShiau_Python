@@ -352,32 +352,47 @@ class pigImuReader(QThread):
     # End of memsImuReader::setCallback
 
     def getImuData(self):
-        head = getData.alignHeader_4B(self.__Connector, HEADER_KVH)
-        dataPacket = getData.getdataPacket(self.__Connector, head, 36+12)
-        if dataPacket == False or head == False:
-            return False, False
-        # print([hex(i) for i in dataPacket])
-        TIME, WX, WY, WZ, AX, AY, AZ, PD_TEMP, PITCH, ROLL, YAW = cmn.readAHRS_Rotate(
-            dataPacket,
-            POS_WX, POS_WY, POS_WZ, POS_AX, POS_AY, POS_AZ,
-            POS_MCUTIME, POS_PD_TEMP, POS_PITCH, POS_ROLL, POS_YAW, 4, PRINT=0,
-            use_rcs=self.use_rcs, R_CS=self.R_CS
-        )
+        try:
+            # 嘗試對齊 Header
+            head = getData.alignHeader_4B(self.__Connector, HEADER_KVH)
+            if head is None:
+                return None, None  # 安全跳過
 
-        if self.isKal:
-            WX = self.pig_wx_kal.update(WX)
-            WY = self.pig_wy_kal.update(WY)
-            WZ = self.pig_wz_kal.update(WZ)
-            AX = self.pig_ax_kal.update(AX)
-            AY = self.pig_ay_kal.update(AY)
-            AZ = self.pig_az_kal.update(AZ)
+            # 取得資料包
+            dataPacket = getData.getdataPacket(self.__Connector, head, 36 + 12)
+            if dataPacket is None:
+                return None, None
 
-        imudata = {"TIME": TIME,
-                   "WX": WX, "WY": WY, "WZ": WZ,
-                   "AX": AX, "AY": AY, "AZ": AZ,
-                   "PD_TEMP": PD_TEMP,
-                   "PITCH": PITCH, "ROLL": ROLL, "YAW": YAW}
-        return dataPacket, imudata
+            # 解碼資料
+            TIME, WX, WY, WZ, AX, AY, AZ, PD_TEMP, PITCH, ROLL, YAW = cmn.readAHRS_Rotate(
+                dataPacket,
+                POS_WX, POS_WY, POS_WZ, POS_AX, POS_AY, POS_AZ,
+                POS_MCUTIME, POS_PD_TEMP, POS_PITCH, POS_ROLL, POS_YAW, 4, PRINT=0,
+                use_rcs=self.use_rcs, R_CS=self.R_CS
+            )
+
+            # Kalman 濾波處理（如果開啟）
+            if self.isKal:
+                WX = self.pig_wx_kal.update(WX)
+                WY = self.pig_wy_kal.update(WY)
+                WZ = self.pig_wz_kal.update(WZ)
+                AX = self.pig_ax_kal.update(AX)
+                AY = self.pig_ay_kal.update(AY)
+                AZ = self.pig_az_kal.update(AZ)
+
+            # 打包結果
+            imudata = {
+                "TIME": TIME,
+                "WX": WX, "WY": WY, "WZ": WZ,
+                "AX": AX, "AY": AY, "AZ": AZ,
+                "PD_TEMP": PD_TEMP,
+                "PITCH": PITCH, "ROLL": ROLL, "YAW": YAW
+            }
+            return dataPacket, imudata
+
+        except Exception as e:
+            logger.error(f"getImuData exception: {e}")
+            return None, None
 
     def readInputBuffer(self):
         return self.__Connector.readInputBuffer()

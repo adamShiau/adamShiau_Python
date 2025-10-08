@@ -70,3 +70,49 @@
 2025-10-01 11:17:43 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
 2025-10-01 12:27:27 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
 2025-10-01 12:27:27 - main.pigImuReader - ERROR - getImuData exception: 'bool' object is not subscriptable
+2025-10-07 15:13:17 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-10-07 15:13:17 - main.pigImuReader - ERROR - getImuData exception: 'bool' object is not subscriptable
+2025-10-07 15:15:01 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-10-07 15:15:01 - main.pigImuReader - ERROR - getImuData exception: 'bool' object is not subscriptable
+2025-10-07 15:15:15 - main.myLib.mySerial.Connector - ERROR - 1700002, SerialException - The device can not be found or can not be configured.
+2025-10-07 15:15:15 - main.myLib.mySerial.Connector - ERROR - 1700002, SerialException - The device can not be found or can not be configured.
+2025-10-07 15:15:15 - main.myLib.mySerial.Connector - ERROR - 1700002, SerialException - The device can not be found or can not be configured.
+2025-10-07 15:15:16 - main.myLib.mySerial.Connector - ERROR - 1700002, SerialException - The device can not be found or can not be configured.
+2025-10-07 15:15:16 - main.myLib.mySerial.Connector - ERROR - 1700002, SerialException - The device can not be found or can not be configured.
+2025-10-07 15:15:16 - main.myLib.mySerial.Connector - ERROR - 1700002, SerialException - The device can not be found or can not be configured.
+2025-10-07 15:15:16 - main.myLib.mySerial.Connector - ERROR - 1700007, Errors encountered when the serial port is unavailable, disconnected, or already in use at runtime. The error is 'ClearCommError failed (PermissionError(13, '存取被拒。', None, 5))'
+2025-10-07 15:15:16 - main.myLib.mySerial.Connector - ERROR - 1700007, Errors encountered when the serial port is unavailable, disconnected, or already in use at runtime. The error is 'ClearCommError failed (PermissionError(13, '存取被拒。', None, 5))'
+2025-10-07 15:15:16 - main.myLib.mySerial.Connector - ERROR - 1700002, SerialException - The device can not be found or can not be configured.
+2025-10-07 15:15:16 - main.myLib.mySerial.Connector - ERROR - 1700002, SerialException - The device can not be found or can not be configured.
+2025-10-07 15:15:16 - main.myLib.mySerial.Connector - ERROR - 1700002, SerialException - The device can not be found or can not be configured.
+2025-10-07 15:15:17 - main.myLib.mySerial.Connector - ERROR - 1700007, Errors encountered when the serial port is unavailable, disconnected, or already in use at runtime. The error is 'ClearCommError failed (PermissionError(13, '存取被拒。', None, 5))'
+2025-10-07 15:15:17 - main.myLib.mySerial.Connector - ERROR - 1700003, Other exceptional events occurred. The error is 'ClearCommError failed (PermissionError(13, '存取被拒。', None, 5))'
+2025-10-07 15:15:17 - main.pigImuReader - ERROR - getImuData exception: 'bool' object is not subscriptable
+2025-10-07 15:15:18 - main.myLib.mySerial.Connector - ERROR - 1700002, SerialException - The device can not be found or can not be configured.
+2025-10-07 15:15:18 - main.myLib.mySerial.Connector - ERROR - 1700002, SerialException - The device can not be found or can not be configured.
+2025-10-07 15:15:18 - main.myLib.mySerial.Connector - ERROR - 1700002, SerialException - The device can not be found or can not be configured.
+2025-10-07 15:15:32 - main.myLib.mySerial.Connector - ERROR - 1700001, The serial open operation failed while establishing the connection.
+2025-10-07 15:15:49 - main.myLib.mySerial.Connector - ERROR - 1700001, The serial open operation failed while establishing the connection.
+2025-10-07 15:18:18 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-10-07 15:18:18 - main.pigImuReader - ERROR - getImuData exception: 'bool' object is not subscriptable
+2025-10-07 16:12:06 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-10-07 16:12:06 - main.pigImuReader - ERROR - getImuData exception: 'bool' object is not subscriptable
+2025-10-07 16:16:35 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-10-07 16:16:35 - main.pigImuReader - ERROR - getImuData exception: 'bool' object is not subscriptable
+2025-10-07 16:16:37 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-10-07 16:16:37 - main.pigImuReader - ERROR - getImuData exception: 'bool' object is not subscriptable
+2025-10-07 16:18:57 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-10-07 16:18:57 - main.pigImuReader - ERROR - getImuData exception: 'bool' object is not subscriptable
+2025-10-07 16:19:23 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-10-07 16:19:23 - main.pigImuReader - ERROR - getImuData exception: 'bool' object is not subscriptable
+2025-10-07 16:19:25 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-10-07 16:19:25 - main.pigImuReader - ERROR - getImuData exception: 'bool' object is not subscriptable
+2025-10-07 16:19:28 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-10-07 16:19:28 - main.pigImuReader - ERROR - getImuData exception: 'bool' object is not subscriptable
+2025-10-07 16:20:41 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-10-07 16:20:41 - main.pigImuReader - ERROR - getImuData exception: 'bool' object is not subscriptable
+2025-10-07 16:27:59 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-10-07 16:27:59 - main.pigImuReader - ERROR - getImuData exception: 'bool' object is not subscriptable
+2025-10-07 16:29:29 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-10-07 16:29:29 - main.pigImuReader - ERROR - getImuData exception: 'bool' object is not subscriptable
+2025-10-07 16:52:40 - main.pigImuReader - ERROR - getImuData exception: list index out of range

@@ -386,9 +386,9 @@ class pig_calibration_widget(QGroupBox):
         self.W3_1.le.setText(str(self.ieee754_int_to_float(self.checkKeyExist(para, "21"))))
         self.W3_2.le.setText(str(self.ieee754_int_to_float(self.checkKeyExist(para, "22"))))
         self.W3_3.le.setText(str(self.ieee754_int_to_float(self.checkKeyExist(para, "23"))))
-        self.Wx.le.setText(str(self.ieee754_int_to_float(self.checkKeyExist(para, "14")))) # 與WZ參數值對調
+        self.Wx.le.setText(str(self.ieee754_int_to_float(self.checkKeyExist(para, "12"))))
         self.Wy.le.setText(str(self.ieee754_int_to_float(self.checkKeyExist(para, "13"))))
-        self.Wz.le.setText(str(self.ieee754_int_to_float(self.checkKeyExist(para, "12")))) # 與WZ參數值對調
+        self.Wz.le.setText(str(self.ieee754_int_to_float(self.checkKeyExist(para, "14"))))
         self.A1_1.le.setText(str(self.ieee754_int_to_float(self.checkKeyExist(para, "3"))))
         self.A1_2.le.setText(str(self.ieee754_int_to_float(self.checkKeyExist(para, "4"))))
         self.A1_3.le.setText(str(self.ieee754_int_to_float(self.checkKeyExist(para, "5"))))
@@ -711,6 +711,7 @@ class pig_calibration_widget(QGroupBox):
     def Send_GX_CMD(self):
         value = struct.unpack('<I', struct.pack('<f', (float(self.Wx.le.text()))))
         self.__act.writeImuCmd(CMD_Gyro_GX, value[0], 4)
+        print("Send_GX_CMD: ", value[0])
 
     def Send_GY_CMD(self):
         value = struct.unpack('<I', struct.pack('<f', (float(self.Wy.le.text()))))
@@ -719,6 +720,7 @@ class pig_calibration_widget(QGroupBox):
     def Send_GZ_CMD(self):
         value = struct.unpack('<I', struct.pack('<f', (float(self.Wz.le.text()))))
         self.__act.writeImuCmd(CMD_Gyro_GZ, value[0], 4)
+        print("Send_GZ_CMD: ", value[0])
 
     def Send_A11_CMD(self):
         value = struct.unpack('<I', struct.pack('<f', (float(self.A1_1.le.text()))))

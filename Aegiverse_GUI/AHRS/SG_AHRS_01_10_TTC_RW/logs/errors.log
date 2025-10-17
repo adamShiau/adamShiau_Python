@@ -180,3 +180,11 @@
 2025-10-15 20:02:30 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
 2025-10-15 20:02:30 - main.myLib.mySerial.getData - ERROR - alignHeader_6B Error
 2025-10-15 20:02:30 - main.myLib.mySerial.Connector - ERROR - 1700003, Other exceptional events occurred. The error is 'Attempting to use a port that is not open'
+2025-10-17 17:38:42 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-10-17 17:38:42 - main.myLib.mySerial.getData - ERROR - alignHeader_6B Error
+2025-10-17 17:38:42 - main.myLib.mySerial.Connector - ERROR - 1700003, Other exceptional events occurred. The error is 'Attempting to use a port that is not open'
+2025-10-17 17:38:42 - main.pigImuReader - ERROR - 1200003, TypeError — 'NoneType' object is not subscriptable.(Please check if there is an error in the data type being saved, line 553.)
+2025-10-17 17:38:42 - main.myLib.mySerial.Connector - ERROR - 1700007, Errors encountered when the serial port is unavailable, disconnected, or already in use at runtime. The error is 'ClearCommError failed (OSError(9, '控制代碼無效。', None, 6))'
+2025-10-17 17:38:42 - main.myLib.mySerial.Connector - ERROR - 1700003, Other exceptional events occurred. The error is 'Attempting to use a port that is not open'
+2025-10-17 17:38:42 - main.myLib.mySerial.getData - ERROR - alignHeader_6B Error
+2025-10-17 17:38:42 - main.myLib.mySerial.Connector - ERROR - 1700003, Other exceptional events occurred. The error is 'Attempting to use a port that is not open'

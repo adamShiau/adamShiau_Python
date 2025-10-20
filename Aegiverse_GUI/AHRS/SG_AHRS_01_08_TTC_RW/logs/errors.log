@@ -116,3 +116,9 @@
 2025-10-07 16:29:29 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
 2025-10-07 16:29:29 - main.pigImuReader - ERROR - getImuData exception: 'bool' object is not subscriptable
 2025-10-07 16:52:40 - main.pigImuReader - ERROR - getImuData exception: list index out of range
+2025-10-20 15:19:03 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-10-20 15:19:03 - main.pigImuReader - ERROR - getImuData exception: 'bool' object is not subscriptable
+2025-10-20 15:19:19 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-10-20 15:19:19 - main.pigImuReader - ERROR - getImuData exception: 'bool' object is not subscriptable
+2025-10-20 15:24:54 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-10-20 15:24:54 - main.pigImuReader - ERROR - getImuData exception: 'bool' object is not subscriptable

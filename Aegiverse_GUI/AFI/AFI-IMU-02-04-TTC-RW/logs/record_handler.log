@@ -1,0 +1,53 @@
+2025-10-23 15:10:18 - main - INFO - create log stuff done, 
+2025-10-23 15:10:18 - main - INFO - process start
+2025-10-23 15:10:21 - main.myLib.common - INFO - myLib.common logger start
+2025-10-23 15:10:21 - main.myLib.myGui.mygui_serial - INFO - myLib.myGui.mygui_serial logger start
+2025-10-23 15:10:22 - main.myLib.mySerial.Connector - INFO - myLib.mySerial.Connector logger start
+2025-10-23 15:10:22 - main.myLib.myGui.pig_parameters_widget - INFO - myLib.myGui.pig_parameters_widget logger start
+2025-10-23 15:10:22 - main.myLib.myGui.myLabel - INFO - myLib.myGui.myLabel logger start
+2025-10-23 15:10:22 - main.myLib.myGui.myComboBox - INFO - myLib.myGui.myComboBox logger start
+2025-10-23 15:10:22 - main.myLib.myGui.pig_menu_manager - INFO - myLib.myGui.pig_menu_manager logger start
+2025-10-23 15:10:22 - main.myLib.myGui.analysis_Allan - INFO - myLib.myGui.analysis_Allan logger start
+2025-10-23 15:10:22 - main.myLib.myGui.graph - INFO - myLib.myGui.graph logger start
+2025-10-23 15:10:26 - main.myLib.myGui.myProgressBar - INFO - myLib.myGui.myProgressBar logger start
+2025-10-23 15:10:26 - main.myLib.myGui.analysis_TimingPlot - INFO - myLib.myGui.analysis_TimingPlot logger start
+2025-10-23 15:10:26 - main.myLib.myGui.myRadioButton - INFO - myLib.myGui.myRadioButton logger start
+2025-10-23 15:10:26 - main.pigImu_Widget - INFO - pigImu_Widget logger start
+2025-10-23 15:10:26 - main.myLib.myGui.myLineEdit - INFO - myLib.myGui.myLineEdit logger start
+2025-10-23 15:10:26 - main.myLib.myGui.myCheckBox - INFO - myLib.myGui.myCheckBox logger start
+2025-10-23 15:10:26 - main.pigImuReader - INFO - pigImuReader logger start
+2025-10-23 15:10:26 - main.myLib.mySerial.getData - INFO - myLib.mySerial.getData logger start
+2025-10-23 15:10:26 - main.myLib.crcCalculator.crcLib - INFO - myLib.crcCalculator.crcLib logger start
+2025-10-23 15:10:26 - main.myLib.myFilter.filter - INFO - myLib.myFilter.filter logger start
+2025-10-23 15:10:26 - main.myLib.myGui.pig_W_A_calibration_parameter_widget - INFO - myLib.myGui.pig_W_A_calibration_parameter_widget logger start
+2025-10-23 15:10:26 - main.myLib.myGui.pig_version_widget - INFO - myLib.myGui.pig_version_widget logger start
+2025-10-23 15:10:52 - main.myLib.mySerial.Connector - INFO - COM18 is connected
+2025-10-23 15:10:56 - main.myLib.myGui.mygui_serial - INFO - The GUI is started to read the data.
+2025-10-23 15:10:56 - main.myLib.common - INFO - AttributeError: the file attempt to close does not exist!
+2025-10-23 15:10:56 - main.myLib.myGui.mygui_serial - INFO - The save checkbox is not checked.
+2025-10-23 15:10:56 - main.myLib.common - INFO - AttributeError: the file attempt to close does not exist!
+2025-10-23 15:10:56 - main.myLib.common - INFO - AttributeError: the file attempt to close does not exist!
+2025-10-23 15:11:13 - main.myLib.common - INFO - AttributeError: the file attempt to close does not exist!
+2025-10-23 15:11:13 - main.myLib.myGui.mygui_serial - INFO - The GUI is stopped reading the data.
+2025-10-23 15:11:18 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (OSError(9, '控制代碼無效。', None, 6)).(An error occurred during the data retrieval process, line 443.)
+2025-10-23 15:11:18 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2025-10-23 15:11:18 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2025-10-23 15:11:18 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2025-10-23 15:11:19 - main.myLib.mySerial.Connector - INFO - COM18 is disconnected
+2025-10-23 15:11:19 - main.myLib.common - INFO - AttributeError: the file attempt to close does not exist!
+2025-10-23 15:11:19 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2025-10-23 15:11:19 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2025-10-23 15:11:19 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2025-10-23 15:11:19 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2025-10-23 15:11:19 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2025-10-23 15:11:19 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2025-10-23 15:11:19 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2025-10-23 15:11:19 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2025-10-23 15:11:19 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2025-10-23 15:11:19 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2025-10-23 15:11:19 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2025-10-23 15:11:19 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2025-10-23 15:11:20 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2025-10-23 15:11:20 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2025-10-23 15:11:20 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2025-10-23 15:11:20 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (OSError(9, '控制代碼無效。', None, 6)).(The error occurred while clearing buffer, line 361.)

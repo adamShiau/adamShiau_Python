@@ -1,0 +1,1 @@
+pyinstaller -p "C:\github\AF_GUITest\AFI\AFI-IMU-02-03-TTC-RW\myLib;." -F pigImu_Main.py

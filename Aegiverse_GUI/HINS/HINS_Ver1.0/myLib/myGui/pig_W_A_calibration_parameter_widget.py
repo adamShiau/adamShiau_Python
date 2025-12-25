@@ -192,6 +192,9 @@ class pig_calibration_widget(QGroupBox):
         self.dump_Btn = QPushButton("Dump")
         self.dump_Btn.setFixedHeight(30)
         self.setBtnStyle(self.dump_Btn)
+        self.init_para_btn = QPushButton("Init Para")
+        self.init_para_btn.setFixedHeight(30)
+        self.setBtnStyle(self.init_para_btn)
         self.Update_Btn = QPushButton("Update")
         self.Update_Btn.setFixedHeight(30)
         self.Update_Btn.setObjectName("UDBtn")
@@ -215,6 +218,7 @@ class pig_calibration_widget(QGroupBox):
         BtnHorizontal.setSpacing(5)
         BtnHorizontal.setContentsMargins(0, 0, 0, 0)
         BtnHorizontal.addWidget(self.dump_Btn)
+        BtnHorizontal.addWidget(self.init_para_btn)
         BtnHorizontal.addWidget(self.Update_Btn)
         BtnHorizontal.addWidget(self.loadMisalignmentFile_Gyro)
         BtnHorizontal.addWidget(self.loadMisalignmentFile_Acce)
@@ -289,6 +293,7 @@ class pig_calibration_widget(QGroupBox):
         # self.Ay.le.setValidator(limite_doublevalidator)
         # self.Az.le.setValidator(limite_doublevalidator)
         self.dump_Btn.clicked.connect(self.dump_cali_parameter)
+        self.init_para_btn.clicked.connect(self.init_para)
         # self.Update_Btn.clicked.connect(self.update_changevalue)
         self.loadMisalignmentFile_Gyro.clicked.connect(lambda: self.loadCSVandWriteMisalignment("G"))
         self.loadMisalignmentFile_Acce.clicked.connect(lambda: self.loadCSVandWriteMisalignment("A"))
@@ -626,6 +631,112 @@ class pig_calibration_widget(QGroupBox):
             return isinstance(result, dict)
         except (ValueError, SyntaxError):
             return False
+
+
+    def init_para(self):
+        """Apply INIT_PARAMETERS sequentially; each setText triggers Send_*_CMD."""
+        if getattr(self, "_init_in_progress", False):
+            return
+        self._init_in_progress = True
+
+        # Disable buttons during init
+        self.init_para_btn.setEnabled(False)
+        self.dump_Btn.setEnabled(False)
+        self.export_Btn.setEnabled(False)
+        self.import_Btn.setEnabled(False)
+        self.loadMisalignmentFile_Gyro.setEnabled(False)
+        self.loadMisalignmentFile_Acce.setEnabled(False)
+
+        self._init_ops = self._build_init_ops_from_INIT_PARAMETERS()
+        self._init_total = len(self._init_ops)
+        self._init_idx = 0
+
+        self._init_progress = QtWidgets.QProgressDialog("Updating calibration parameters…", None, 0, self._init_total, self)
+        self._init_progress.setWindowTitle("Init Para")
+        self._init_progress.setWindowModality(QtCore.Qt.WindowModal)
+        self._init_progress.setAutoClose(True)
+        self._init_progress.setAutoReset(True)
+        self._init_progress.show()
+
+        QtCore.QTimer.singleShot(0, self._init_para_step)
+
+    def _init_para_step(self):
+        if self._init_idx >= self._init_total:
+            self._init_progress.setValue(self._init_total)
+            self._init_progress.close()
+
+            # Re-enable buttons
+            self.init_para_btn.setEnabled(True)
+            self.dump_Btn.setEnabled(True)
+            self.export_Btn.setEnabled(True)
+            self.import_Btn.setEnabled(True)
+            self.loadMisalignmentFile_Gyro.setEnabled(True)
+            self.loadMisalignmentFile_Acce.setEnabled(True)
+
+            self._init_in_progress = False
+            self.mesboxProcess("info", "Init Para", "Calibration parameters updated.")
+            return
+
+        setter, value = self._init_ops[self._init_idx]
+        try:
+            setter(value)
+        except Exception as e:
+            logger.error(f"init_para failed at idx={self._init_idx}: {e}")
+
+        self._init_idx += 1
+        self._init_progress.setValue(self._init_idx)
+
+        # Wait 50ms between each parameter update
+        QtCore.QTimer.singleShot(50, self._init_para_step)
+
+    def _build_init_ops_from_INIT_PARAMETERS(self):
+        """Build ordered setter ops based on the key table (see exportTXTDump)."""
+        p = INIT_PARAMETERS
+
+        def gv(k, default=0):
+            return p.get(str(k), default)
+
+        def fmt(x):
+            try:
+                return f"{float(x):.10f}".rstrip("0").rstrip(".")
+            except Exception:
+                return str(x)
+
+        ops = []
+        # Accelerometer b
+        ops.append((self.Ax.le.setText, fmt(gv(0))))
+        ops.append((self.Ay.le.setText, fmt(gv(1))))
+        ops.append((self.Az.le.setText, fmt(gv(2))))
+
+        # Accelerometer R
+        ops.append((self.A1_1.le.setText, fmt(gv(3))))
+        ops.append((self.A1_2.le.setText, fmt(gv(4))))
+        ops.append((self.A1_3.le.setText, fmt(gv(5))))
+        ops.append((self.A2_1.le.setText, fmt(gv(6))))
+        ops.append((self.A2_2.le.setText, fmt(gv(7))))
+        ops.append((self.A2_3.le.setText, fmt(gv(8))))
+        ops.append((self.A3_1.le.setText, fmt(gv(9))))
+        ops.append((self.A3_2.le.setText, fmt(gv(10))))
+        ops.append((self.A3_3.le.setText, fmt(gv(11))))
+
+        # Gyro b
+        ops.append((self.Wx.le.setText, fmt(gv(12))))
+        ops.append((self.Wy.le.setText, fmt(gv(13))))
+        ops.append((self.Wz.le.setText, fmt(gv(14))))
+
+        # Gyro R
+        ops.append((self.W1_1.le.setText, fmt(gv(15))))
+        ops.append((self.W1_2.le.setText, fmt(gv(16))))
+        ops.append((self.W1_3.le.setText, fmt(gv(17))))
+        ops.append((self.W2_1.le.setText, fmt(gv(18))))
+        ops.append((self.W2_2.le.setText, fmt(gv(19))))
+        ops.append((self.W2_3.le.setText, fmt(gv(20))))
+        ops.append((self.W3_1.le.setText, fmt(gv(21))))
+        ops.append((self.W3_2.le.setText, fmt(gv(22))))
+        ops.append((self.W3_3.le.setText, fmt(gv(23))))
+
+        return ops
+
 
     def mesboxProcess(self, status, title, content):
         mesbox = QMessageBox(self)

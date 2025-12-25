@@ -51,6 +51,11 @@ CMD_Accele_AX = 48
 CMD_Accele_AY = 49
 CMD_Accele_AZ = 50
 
+INIT_PARAMETERS = {
+    "0": 0, "1": 0, "2": 0, "3": 9.8, "4": 0, "5": 0, "6": 0, "7": 9.8, "8": 0, "9": 0, "10": 0,
+    "11": 9.8, "12": 0, "13": 0, "14": 0, "15": 1, "16": 0, "17": 0, "18": 0, "19": 1, "20": 0, "21": 0,
+    "22": 0, "23": 1
+}
 
 class pig_calibration_widget(QGroupBox):
     def __init__(self, act, dataFile, dataFileName):

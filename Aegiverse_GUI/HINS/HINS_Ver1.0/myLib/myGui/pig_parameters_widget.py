@@ -11,7 +11,7 @@ import time
 
 import numpy as np
 import pandas as pd
-from PySide6 import QtWidgets
+from PySide6 import QtWidgets, QtCore
 
 from myLib.myGui.myComboBox import comboGroup_1
 
@@ -251,6 +251,7 @@ class pig_parameters_widget(QGroupBox):
         self.dump_bt = QPushButton("Dump")
         self.Import_Btn = QPushButton("Import")
         self.Export_Btn = QPushButton("Export")
+        self.init_para_btn = QPushButton("Init Para")
         # 用於status bar的功能建立
         self.progressBar_export = QProgressBar()
         self.progressBar_export.setRange(0, 100)
@@ -269,6 +270,7 @@ class pig_parameters_widget(QGroupBox):
         self.BtnFrame = QVBoxLayout()
         self.BtnFrame.setContentsMargins(20, 1, 100, 1)
         self.BtnFrame.addWidget(self.dump_bt)
+        self.BtnFrame.addWidget(self.init_para_btn)
         self.BtnFrame.addWidget(self.updateBtn)
         self.BtnFrame.addWidget(self.Import_Btn)
         self.BtnFrame.addWidget(self.progressBar_import)
@@ -382,6 +384,7 @@ class pig_parameters_widget(QGroupBox):
 
         ''' bt'''
         self.dump_bt.clicked.connect(self.dump_parameter)
+        self.init_para_btn.clicked.connect(self.init_para)
         self.updateBtn.clicked.connect(self.update_changevalue)
         # 2025/05/28 先設置，要調整時比較好快速的調整，所以將更新按鈕改為禁止使用。
         self.updateBtn.setDisabled(True)
@@ -404,6 +407,110 @@ class pig_parameters_widget(QGroupBox):
         # elif type(initPara) == bool:
         elif initPara == "無法取得值":
             self.mesboxProcess("warning", "Error occurred while in dump", "Please check if the device has power.")
+
+    def init_para(self):
+        """
+        Apply INIT_PARAMETERS (GUI-style values) to widgets sequentially.
+        Each change triggers existing valueChanged/textChanged callbacks -> auto send CMD.
+        """
+        # 防止重複按
+        if hasattr(self, "_init_in_progress") and self._init_in_progress:
+            return
+        self._init_in_progress = True
+        self.init_para_btn.setEnabled(False)
+
+        # 準備進度視窗
+        ops = self._build_init_ops_from_INIT_PARAMETERS()
+        self._init_total = len(ops)
+        self._init_idx = 0
+        self._init_ops = ops
+
+        self._init_progress = QtWidgets.QProgressDialog("Updating parameters…", None, 0, self._init_total, self)
+        self._init_progress.setWindowTitle("Init Para")
+        self._init_progress.setWindowModality(QtCore.Qt.WindowModal)
+        self._init_progress.setAutoClose(True)
+        self._init_progress.setAutoReset(True)
+        self._init_progress.show()
+
+        # 開始跑
+        QtCore.QTimer.singleShot(0, self._init_para_step)
+
+    def _init_para_step(self):
+        if self._init_idx >= self._init_total:
+            # done
+            self._init_progress.setValue(self._init_total)
+            self._init_progress.close()
+            self.init_para_btn.setEnabled(True)
+            self._init_in_progress = False
+            self.mesboxProcess("info", "Init Para", "Parameters updated.")
+            return
+
+        (setter, value) = self._init_ops[self._init_idx]
+
+        try:
+            setter(value)  # 這裡會觸發 valueChanged/textChanged -> send cmd
+        except Exception as e:
+            logger.error(f"init_para step failed at idx={self._init_idx}: {e}")
+
+        self._init_idx += 1
+        self._init_progress.setValue(self._init_idx)
+
+        # 50ms 後做下一個
+        QtCore.QTimer.singleShot(50, self._init_para_step)
+
+    def _build_init_ops_from_INIT_PARAMETERS(self):
+        """
+        Convert INIT_PARAMETERS (GUI-style values) to a list of (setter, value) operations in order.
+        Important: do NOT call set_init_value() because that expects dump-format (IEEE ints, scaling, etc).
+        """
+        p = INIT_PARAMETERS
+
+        def gv(k, default=0):
+            return p.get(str(k), default)
+
+        ops = []
+
+        # spin boxes (direct int)
+        ops.append((self.freq.spin.setValue, int(gv(0))))
+        ops.append((self.mod_H.spin.setValue, int(gv(1))))
+        ops.append((self.mod_L.spin.setValue, int(gv(2))))
+        ops.append((self.polarity.spin.setValue, int(gv(3))))
+        ops.append((self.wait_cnt.spin.setValue, int(gv(4))))
+        ops.append((self.avg.spin.setValue, int(gv(5))))
+        ops.append((self.gain1.spin.setValue, int(gv(6))))
+        ops.append((self.const_step.spin.setValue, int(gv(7))))
+        ops.append((self.fb_on.spin.setValue, int(gv(8))))
+        ops.append((self.gain2.spin.setValue, int(gv(9))))
+        ops.append((self.err_offset.spin.setValue, int(gv(10))))
+        ops.append((self.dac_gain.spin.setValue, int(gv(11))))
+
+        # cutoff: GUI-style (float shown in spin)
+        ops.append((self.cutoff.spin.setValue, float(gv(12))))
+
+        # line edits: treat INIT as GUI displayed string/number
+        # SF (displayed multiplied by 10000 in your UI note)
+        ops.append((self.sf0.le.setText, str(gv(17))))
+        ops.append((self.sf1.le.setText, str(gv(18))))
+
+        # Bias temp
+        ops.append((self.T1.le.setText, str(gv(23))))
+        ops.append((self.T2.le.setText, str(gv(24))))
+        ops.append((self.slope1.le.setText, str(gv(25))))
+        ops.append((self.offset1.le.setText, str(gv(26))))
+        ops.append((self.slope2.le.setText, str(gv(27))))
+        ops.append((self.offset2.le.setText, str(gv(28))))
+        ops.append((self.slope3.le.setText, str(gv(29))))
+        ops.append((self.offset3.le.setText, str(gv(30))))
+
+        # ACCL SF temp (displayed *10000)
+        ops.append((self.ACCLsta.le.setText, str(gv(31))))
+        ops.append((self.ACCLstb.le.setText, str(gv(32))))
+
+        # ACCL bias temp
+        ops.append((self.ACCL_slope1.le.setText, str(gv(33))))
+        ops.append((self.ACCL_offset1.le.setText, str(gv(34))))
+
+        return ops
 
     def getVersion(self):
         self.__act.flushInputBuffer("None")

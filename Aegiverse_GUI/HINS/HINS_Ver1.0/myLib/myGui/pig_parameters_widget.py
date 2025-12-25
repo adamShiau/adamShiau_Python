@@ -92,31 +92,16 @@ CMD_ACCL_SFB_SLOPE_1 = 41
 CMD_ACCL_SFB_OFFSET_1 = 42
 
 ''' FOG PARAMETERS'''
-INIT_PARAMETERS = {"MOD_H": 6850,
-                   "MOD_L": -6850,
-                   "FREQ": 135,
-                   "DAC_GAIN": 20,
-                   "ERR_OFFSET": 0,
-                   "POLARITY": 1,
-                   "WAIT_CNT": 65,
-                   "ERR_TH": 0,
-                   "ERR_AVG": 6,
-                   "GAIN1": 6,
-                   "GAIN2": 5,
-                   "FB_ON": 1,
-                   "CONST_STEP": 0,
-                   "KF_Q": 1,
-                   "KF_R": 6,
-                   "HD_Q": 1,
-                   "HD_R": 1,
-                   "SF_A": 0.00295210451588764 * 1.02 / 2,
-                   "SF_B": -0.00137052112589694,
-                   "DATA_RATE": 2000
-                   }
+INIT_PARAMETERS = {
+    "0": 163, "1": 8192, "2": -8192, "3": 0, "4": 50, "5": 5, "6": 6, "7": 16384, "8": 1, "9": 5, "10": 0,
+    "11": 72, "12": 650, "17": 0, "18": 1, "23": 50, "24": 10, "25": 0, "26": 0, "27": 0, "28": 0, "29": 0,
+    "30": 0, "31": 0, "32": 10000, "33": 0, "34": 0
+}
 
 UPDate_Fucn = {
     "Func": np.array([])
 }
+
 
 class pig_parameters_widget(QGroupBox):
     def __init__(self, act, dataFileName, fileName="default_fog_parameters.json"):
@@ -128,7 +113,7 @@ class pig_parameters_widget(QGroupBox):
         self.dumpTrigerState = None
         self.__int_to_float_errorTimes = 0
         self.__modifiedItem = set()  # 用來儲存被修改的控制項。
-        #self.__par_manager = cmn.parameters_manager(fileName, INIT_PARAMETERS, fnum=1)
+        # self.__par_manager = cmn.parameters_manager(fileName, INIT_PARAMETERS, fnum=1)
         self.setWindowTitle("PIG parameters")
         # self.setTitle("PIG parameters")
         self.wait_cnt = spinBlock(title='Wait cnt', minValue=0, maxValue=300, double=False, step=1)
@@ -318,12 +303,10 @@ class pig_parameters_widget(QGroupBox):
         # channel
         self.dropdown_para = comboGroup_1("channel")
         self.dropdown_para.addItem(["X", "Y", "Z"])  # Z -> 3, X -> 1, Y -> 2
-        # 因為WX與WZ對調，所以選擇channel的部分也需要對掉下dump的值
-        self.__chVal = 3
-        #原本測試使用的channel值
-        # self.__chVal = 3
-        #print(str(self.__chVal))
-
+        # Only use Z channel for now: default to Z and lock the dropdown
+        self.dropdown_para.cb.setCurrentText("Z")
+        self.dropdown_para.cb.setEnabled(False)
+        self.__chVal = 1  # Z
 
         self.initUI()
         self.linkfunction()
@@ -341,7 +324,7 @@ class pig_parameters_widget(QGroupBox):
         mainLayout.addWidget(self.gain2, 3, 2, 1, 2)
         mainLayout.addWidget(self.const_step, 4, 2, 1, 2)
         mainLayout.addWidget(self.dac_gain, 4, 0, 1, 2)
-        #mainLayout.addWidget(self.err_th, 5, 0, 1, 2)
+        # mainLayout.addWidget(self.err_th, 5, 0, 1, 2)
         mainLayout.addWidget(self.fb_on, 5, 0, 1, 4)
         mainLayout.addWidget(self.freq, 6, 0, 1, 4)
         # mainLayout.addWidget(self.HD_Q, 7, 0, 1, 2)
@@ -350,7 +333,7 @@ class pig_parameters_widget(QGroupBox):
         # mainLayout.addWidget(self.KF_R, 7, 2, 1, 2)
         mainLayout.addWidget(self.cutoff, 7, 0, 1, 2)
         mainLayout.addWidget(self.dropdown_para, 7, 2, 1, 2)
-        #mainLayout.addWidget(self.dump_bt, 9, 0, 1, 2)
+        # mainLayout.addWidget(self.dump_bt, 9, 0, 1, 2)
         # mainLayout.addWidget(self.Firmware_Version_lb, 11, 0, 1, 4)
         # mainLayout.addWidget(self.GUI_Version_lb, 12, 0, 1, 4)
         mainLayout.addWidget(self.SFTemp, 0, 4, 2, 1)
@@ -359,7 +342,7 @@ class pig_parameters_widget(QGroupBox):
         mainLayout.addWidget(self.ACCLBiasTemp, 2, 5, 8, 1)
         mainLayout.addWidget(self.SNFrame, 0, 6, 2, 1)
         mainLayout.addWidget(self.loadTempFile, 10, 4, 1, 1)
-        #mainLayout.addWidget(self.updateBtn, 11, 4, 1, 1)
+        # mainLayout.addWidget(self.updateBtn, 11, 4, 1, 1)
         mainLayout.addLayout(self.BtnFrame, 2, 6, 2, 1)
 
         self.setLayout(mainLayout)
@@ -422,7 +405,6 @@ class pig_parameters_widget(QGroupBox):
         elif initPara == "無法取得值":
             self.mesboxProcess("warning", "Error occurred while in dump", "Please check if the device has power.")
 
-
     def getVersion(self):
         self.__act.flushInputBuffer("None")
         self.Firmware_Version_lb.setText(self.__act.getVersion(self.__chVal))
@@ -446,12 +428,13 @@ class pig_parameters_widget(QGroupBox):
         self.__act.flushInputBuffer("None")
         SN = self.__act.dump_SN_parameters(3)
         if SN == "發生參數值為空的狀況":
-            self.mesboxProcess("info", "參數值為空", "1.請確認設備是否還未設定序號。\n2.請確認設備是否已上電。\n3.請斷開設備連接，並將設備重新上電，再連接設備取序號參數。\n謝謝")
+            self.mesboxProcess("info", "參數值為空",
+                               "1.請確認設備是否還未設定序號。\n2.請確認設備是否已上電。\n3.請斷開設備連接，並將設備重新上電，再連接設備取序號參數。\n謝謝")
         else:
             self.SN_Str.setText(str(SN))
             self.SN_Str.setStyleSheet('background-color: white')
 
-    def submit_SN_parameter(self, importStatus = False):
+    def submit_SN_parameter(self, importStatus=False):
         SNText = self.SN_Str.text()
         SNAscii = None
         Invalid_characters = ['\\', '/', ':', '*', '?', '"', '<', '>', '|']
@@ -499,20 +482,21 @@ class pig_parameters_widget(QGroupBox):
                 # 時間
                 PCTimeNow = datetime.datetime.now()
                 timeFormat = PCTimeNow.strftime("%Y%m%d%H%M")
-                SNFile = SNPara.replace("\x00", "") # 因儲存的檔案名稱不能含有此種特殊字元，需要使用取代的方式取代掉
-                self.imudata_file_Para.name = str(SNFile)+ "_" + timeFormat + "_" +self.filename + ".txt"
+                SNFile = SNPara.replace("\x00", "")  # 因儲存的檔案名稱不能含有此種特殊字元，需要使用取代的方式取代掉
+                self.imudata_file_Para.name = str(SNFile) + "_" + timeFormat + "_" + self.filename + ".txt"
                 self.imudata_file_Para.open(True)
                 # 寫入參數key值的對應表
                 self.imudata_file_Para.write_dump("參數key值對應表 ->")
-                self.imudata_file_Para.write_dump(f" 0= frequency            , 1= MOD_H                   , 2= MOD_L  ,\n"
-                                                  f" 3=polarity                  , 4= Wait cnt                    , 5= avg,\n"
-                                                  f" 6= GAIN1                   , 7= const_step                , 8= mode(0:OPEN),\n"
-                                                  f" 9= GAIN2                   , 10= Err offset                 , 11= DAC_GAIN,\n"
-                                                  f" 12= CutOff                 , 17= FOG的STA               , 18= FOG的STB,\n"
-                                                  f" 23= FOG Bias的T1      , 24= FOG Bias的T2          , 25= FOG Bias的BTA1,\n"
-                                                  f" 26= FOG Bias的BTB1 , 27= FOG Bias的BTA2      , 28= FOG Bias的BTB2,\n"
-                                                  f" 29= FOG Bias的BTA3 , 30= FOG Bias的BTB3      , 31= ACCL的STA,\n"
-                                                  f" 32= ACCL的STB          , 33= ACCL Bias的BTA1    , 34= ACCL Bias的BTB1")
+                self.imudata_file_Para.write_dump(
+                    f" 0= frequency            , 1= MOD_H                   , 2= MOD_L  ,\n"
+                    f" 3=polarity                  , 4= Wait cnt                    , 5= avg,\n"
+                    f" 6= GAIN1                   , 7= const_step                , 8= mode(0:OPEN),\n"
+                    f" 9= GAIN2                   , 10= Err offset                 , 11= DAC_GAIN,\n"
+                    f" 12= CutOff                 , 17= FOG的STA               , 18= FOG的STB,\n"
+                    f" 23= FOG Bias的T1      , 24= FOG Bias的T2          , 25= FOG Bias的BTA1,\n"
+                    f" 26= FOG Bias的BTB1 , 27= FOG Bias的BTA2      , 28= FOG Bias的BTB2,\n"
+                    f" 29= FOG Bias的BTA3 , 30= FOG Bias的BTB3      , 31= ACCL的STA,\n"
+                    f" 32= ACCL的STB          , 33= ACCL Bias的BTA1    , 34= ACCL Bias的BTB1")
                 # 寫入參數與序號
                 self.imudata_file_Para.write_dump("SN")
                 self.imudata_file_Para.write_dump(dumpParaSN)
@@ -571,7 +555,7 @@ class pig_parameters_widget(QGroupBox):
                             if itIsSN == True and content_replace != "None":
                                 # 先將\xe4\xbd\xa0 此種形式的字轉換為看得懂的文字
                                 content_SN = bytearray(content_replace, "utf-8").decode("utf-8")
-                                #content_SN = content_replace.encode('utf-8').decode('unicode_escape').encode('latin1').decode('utf-8')
+                                # content_SN = content_replace.encode('utf-8').decode('unicode_escape').encode('latin1').decode('utf-8')
                                 if 0 < len(content_SN) <= 12:
                                     self.SN_Str.setText(str(content_SN))
                                     self.SN_Str.setStyleSheet('background-color: white')
@@ -584,7 +568,7 @@ class pig_parameters_widget(QGroupBox):
                                 self.__chVal = int(num[1].replace(" ", ""))
                                 itIsChannel = True
                             if "SN" in content_replace:
-                                 itIsSN = True
+                                itIsSN = True
                             time.sleep(0.5)
                             QApplication.processEvents()
                             self.progressBar_import.setValue(progressbar_Val)
@@ -596,8 +580,9 @@ class pig_parameters_widget(QGroupBox):
                     logger.error(f"匯入參數的過程中發生錯誤 - {e}")
                 finally:
                     if self.progressBar_import.value() != 100:
-                        self.mesboxProcess("warning", "匯入功能發生錯誤", "匯入的過程中: \n(1)因檔案中沒有SN、Channel等標題或標題錯誤，無法匯入資訊。\n(2)因為檔案為空白狀態，所以無法匯入資訊。\n"
-                                                                          "(3)資料類型有問題，導致無法匯入參數。\n(4)序號使用了不符合的符號命名檔案名稱。\n請檢查是否匯入功能有問題。")
+                        self.mesboxProcess("warning", "匯入功能發生錯誤",
+                                           "匯入的過程中: \n(1)因檔案中沒有SN、Channel等標題或標題錯誤，無法匯入資訊。\n(2)因為檔案為空白狀態，所以無法匯入資訊。\n"
+                                           "(3)資料類型有問題，導致無法匯入參數。\n(4)序號使用了不符合的符號命名檔案名稱。\n請檢查是否匯入功能有問題。")
                     self.progressBar_import.hide()
                     self.keyExistOrNotMes("匯入參數值")
             else:
@@ -610,7 +595,6 @@ class pig_parameters_widget(QGroupBox):
             return isinstance(result, dict)
         except (ValueError, SyntaxError):
             return False
-
 
     def selectcontrolchangecolor(self, control, send_item_func):
         control.setStyleSheet('background-color: yellow;')
@@ -658,7 +642,6 @@ class pig_parameters_widget(QGroupBox):
         self.ACCL_slope1.le.setStyleSheet('background-color: white')
         self.ACCL_offset1.le.setStyleSheet('background-color: white')
 
-
     def checkKeyExist(self, para, key):
         try:
             val = para.get(str(key))
@@ -701,7 +684,8 @@ class pig_parameters_widget(QGroupBox):
                 slopeVal = self.checkKeyExist(biasData, "slope")
                 offsetVal = self.checkKeyExist(biasData, "offset")
 
-                if isinstance(tempVal, pd.Series) and isinstance(slopeVal, pd.Series) and isinstance(offsetVal, pd.Series):
+                if isinstance(tempVal, pd.Series) and isinstance(slopeVal, pd.Series) and isinstance(offsetVal,
+                                                                                                     pd.Series):
                     try:
                         self.T1.le.setText(f'{tempVal[3]:.1f}')
                         self.T2.le.setText(f'{tempVal[1]:.1f}')
@@ -788,23 +772,23 @@ class pig_parameters_widget(QGroupBox):
             self.keyExistOrNotMes("parameter參數值")
             # func()
         else:
-            self.mesboxProcess("warning", "update按鈕錯誤警告", "請確認是否已經點擊過dump按鈕，或是已經將設備的\n參數回填至控制項中，且數據已經顯示於畫面。")
-
+            self.mesboxProcess("warning", "update按鈕錯誤警告",
+                               "請確認是否已經點擊過dump按鈕，或是已經將設備的\n參數回填至控制項中，且數據已經顯示於畫面。")
 
     def keyExistOrNotMes(self, name):
         if self.keyIsNotExist:
             if name == "parameter參數值":
-                self.mesboxProcess("warning", name+"有不存在的狀況", "在取parameter參數值的狀況時，因設備版號為舊的部分，\n"
-                                                                                "而GUI為最新版本未有撈取舊參數值，所以訊息通知使用者\n"
-                                                                                "有些參數若為0或空值，代表該參數在舊版本的設備中未使\n"
-                                                                                "用，因此撈取不到正確的參數。")
+                self.mesboxProcess("warning", name + "有不存在的狀況", "在取parameter參數值的狀況時，因設備版號為舊的部分，\n"
+                                                                       "而GUI為最新版本未有撈取舊參數值，所以訊息通知使用者\n"
+                                                                       "有些參數若為0或空值，代表該參數在舊版本的設備中未使\n"
+                                                                       "用，因此撈取不到正確的參數。")
             elif name == "匯入參數值":
-                self.mesboxProcess("warning", name+"有不存在的狀況", "請確認匯入的參數，是否有key值設定錯誤，或是不存在的狀況發生。")
+                self.mesboxProcess("warning", name + "有不存在的狀況",
+                                   "請確認匯入的參數，是否有key值設定錯誤，或是不存在的狀況發生。")
             else:
                 self.mesboxProcess("warning", name + "有不存在的狀況", "請確認使用的CSV檔案內容與標題是否有問題。")
 
             self.keyIsNotExist = False
-
 
     def set_init_value(self, para):
         self.freq.spin.setValue(self.checkKeyExist(para, "0"))
@@ -817,12 +801,9 @@ class pig_parameters_widget(QGroupBox):
         self.const_step.spin.setValue(self.checkKeyExist(para, "7"))
         self.fb_on.spin.setValue(self.checkKeyExist(para, "8"))
         self.gain2.spin.setValue(self.checkKeyExist(para, "9"))
-        # self.err_th.spin.setValue(self.checkKeyExist(para, "ERR_TH"))
         self.err_offset.spin.setValue(self.checkKeyExist(para, "10"))
         self.dac_gain.spin.setValue(self.checkKeyExist(para, "11"))
         self.cutoff.spin.setValue(self.ieee754_int_to_float(self.checkKeyExist(para, "12")))
-        # self.KF_Q.spin.setValue(self.checkKeyExist(para, "SW_Q"))
-        # self.KF_R.spin.setValue(self.checkKeyExist(para, "SW_R"))
 
         ### 20240417 修改
         # #將會有可能產生科學符號的部份，使用此方式將科學符號轉為標準表示法
@@ -850,7 +831,7 @@ class pig_parameters_widget(QGroupBox):
         self.offset2.le.setText(f'{offset2_process:.10f}'.rstrip('0').rstrip('.'))
         self.offset3.le.setText(f'{offset3_process:.10f}'.rstrip('0').rstrip('.'))
 
-        accl_sf0_val = self.ieee754_int_to_float(self.checkKeyExist(para, "31"), 31) *10000
+        accl_sf0_val = self.ieee754_int_to_float(self.checkKeyExist(para, "31"), 31) * 10000
         accl_sf1_val = self.ieee754_int_to_float(self.checkKeyExist(para, "32"), 32) * 10000
         self.ACCLsta.le.setText(f'{accl_sf0_val:.6f}'.rstrip('0').rstrip('.'))
         self.ACCLstb.le.setText(f'{accl_sf1_val:.6f}'.rstrip('0').rstrip('.'))
@@ -859,7 +840,7 @@ class pig_parameters_widget(QGroupBox):
         self.ACCL_slope1.le.setText(f'{accl_slope_process:.10f}'.rstrip('0').rstrip('.'))
         self.ACCL_offset1.le.setText(f'{accl_offset_process:.10f}'.rstrip('0').rstrip('.'))
 
-        #pass
+        # pass
         if not __name__ == "__main__":
             self.controlchangewhite()
 
@@ -908,7 +889,7 @@ class pig_parameters_widget(QGroupBox):
                         # 當參數為有號數的情況，需要做的處理
                         if str(valTruncated)[0] == "-":
                             valTruncated_unSign = int(valTruncated) & 0xFFFFFFFF
-                            #print(int(valTruncated))
+                            # print(int(valTruncated))
                             struct_pack = struct.pack('<I', valTruncated_unSign)
                             struct_unpack = struct.unpack('<f', struct_pack)[0]
                             typeChange = round(struct_unpack, 7)
@@ -932,7 +913,6 @@ class pig_parameters_widget(QGroupBox):
 
         return typeChange
 
-
     def send_FREQ_CMD(self):
         # dt_fpga = 1e3 / 91e6  # for PLL set to 91MHz
         # dt_fpga = 1e3 / 90e6
@@ -945,61 +925,61 @@ class pig_parameters_widget(QGroupBox):
         self.freq.lb.setText(str(round(1 / (2 * (value + 1) * dt_fpga), 2)) + ' KHz')
         self.__act.writeImuCmd(CMD_FOG_MOD_FREQ, value, self.__chVal)
         # print('send_FREQ_CMD:', self.__chVal)
-        #self.__par_manager.update_parameters("FREQ", value)
+        # self.__par_manager.update_parameters("FREQ", value)
 
     def send_MOD_H_CMD(self):
         value = self.mod_H.spin.value()
         # logger.info('set mod_H: %d', value)
         self.__act.writeImuCmd(CMD_FOG_MOD_AMP_H, value, self.__chVal)
-        #self.__par_manager.update_parameters("MOD_H", value)
+        # self.__par_manager.update_parameters("MOD_H", value)
 
     def send_MOD_L_CMD(self):
         value = self.mod_L.spin.value()
         self.__act.writeImuCmd(CMD_FOG_MOD_AMP_L, value, self.__chVal)
         # logger.info('set mod_L: %d', value)
-        #self.__par_manager.update_parameters("MOD_L", value)
+        # self.__par_manager.update_parameters("MOD_L", value)
 
     def send_ERR_OFFSET_CMD(self):
         value = self.err_offset.spin.value()
         # logger.info('set err offset: %d', value)
         self.__act.writeImuCmd(CMD_FOG_ERR_OFFSET, value, self.__chVal)
-        #self.__par_manager.update_parameters("ERR_OFFSET", value)
+        # self.__par_manager.update_parameters("ERR_OFFSET", value)
 
     def send_POLARITY_CMD(self):
         value = self.polarity.spin.value()
         # logger.info('set polarity: %d', value)
         self.__act.writeImuCmd(CMD_FOG_POLARITY, value, self.__chVal)
-        #self.__par_manager.update_parameters("POLARITY", value)
+        # self.__par_manager.update_parameters("POLARITY", value)
 
     def send_WAIT_CNT_CMD(self):
         value = self.wait_cnt.spin.value()
         # logger.info('set wait cnt: %d', value)
         self.__act.writeImuCmd(CMD_FOG_WAIT_CNT, value, self.__chVal)
-        #self.__par_manager.update_parameters("WAIT_CNT", value)
+        # self.__par_manager.update_parameters("WAIT_CNT", value)
 
     def send_ERR_TH_CMD(self):
         value = self.err_th.spin.value()
         # logger.info('set err_th: %d', value)
         self.__act.writeImuCmd(CMD_FOG_ERR_TH, value, self.__chVal)
-        #self.__par_manager.update_parameters("ERR_TH", value)
+        # self.__par_manager.update_parameters("ERR_TH", value)
 
     def send_AVG_CMD(self):
         value = self.avg.spin.value()
         # logger.info('set err_avg: %d', value)
         self.__act.writeImuCmd(CMD_FOG_ERR_AVG, value, self.__chVal)
-        #self.__par_manager.update_parameters("ERR_AVG", value)
+        # self.__par_manager.update_parameters("ERR_AVG", value)
 
     def send_GAIN1_CMD(self):
         value = self.gain1.spin.value()
         # logger.info('set gain1: %d', value)
         self.__act.writeImuCmd(CMD_FOG_GAIN1, value, self.__chVal)
-        #self.__par_manager.update_parameters("GAIN1", value)
+        # self.__par_manager.update_parameters("GAIN1", value)
 
     def send_GAIN2_CMD(self):
         value = self.gain2.spin.value()
         # logger.info('set gain2: %d', value)
         self.__act.writeImuCmd(CMD_FOG_GAIN2, value, self.__chVal)
-        #self.__par_manager.update_parameters("GAIN2", value)
+        # self.__par_manager.update_parameters("GAIN2", value)
 
     def send_FB_ON_CMD(self):
         value = self.fb_on.spin.value()
@@ -1007,13 +987,13 @@ class pig_parameters_widget(QGroupBox):
         self.__act.writeImuCmd(CMD_FOG_FB_ON, value, self.__chVal)
         # self.__act.writeImuCmd(CMD_FOG_FB_ON, 0)
         # self.__act.writeImuCmd(CMD_FOG_FB_ON, value)
-        #self.__par_manager.update_parameters("FB_ON", value)
+        # self.__par_manager.update_parameters("FB_ON", value)
 
     def send_DAC_GAIN_CMD(self):
         value = self.dac_gain.spin.value()
         # logger.info('set DAC gain: %d', value)
         self.__act.writeImuCmd(CMD_FOG_DAC_GAIN, value, self.__chVal)
-        #self.__par_manager.update_parameters("DAC_GAIN", value)
+        # self.__par_manager.update_parameters("DAC_GAIN", value)
 
     def send_TMIN_CMD(self):
         value = self.Tmin.spin.value()
@@ -1046,7 +1026,6 @@ class pig_parameters_widget(QGroupBox):
         # logger.info('set SFA : %d', Re_sf0Val)
         value = struct.unpack('<I', struct.pack('<f', Re_sf0Val))
         self.__act.writeImuCmd(CMD_FOG_SF0, value[0], self.__chVal)
-
 
     def send_SF1_CMD(self):
         Re_sf1Val = float(self.sf1.le.text()) * 0.0001  # 與AA同方式
@@ -1113,7 +1092,7 @@ class pig_parameters_widget(QGroupBox):
         value = self.const_step.spin.value()
         # logger.info('set constant step: %d', value)
         self.__act.writeImuCmd(CMD_FOG_CONST_STEP, value, self.__chVal)
-        #self.__par_manager.update_parameters("CONST_STEP", value)
+        # self.__par_manager.update_parameters("CONST_STEP", value)
 
     def update_KF_Q(self):
         value = self.KF_Q.spin.value()
@@ -1125,37 +1104,37 @@ class pig_parameters_widget(QGroupBox):
         value = self.KF_R.spin.value()
         # logger.info('set KF_R: %d', value)
         self.__act.kal_R = value
-        #self.__par_manager.update_parameters("KF_R", value)
+        # self.__par_manager.update_parameters("KF_R", value)
 
     def update_FPGA_Q(self):
         value = self.HD_Q.spin.value()
         # logger.info('set HD_Q: %d', value)
         self.__act.writeImuCmd(CMD_FOG_FPGA_Q, value)
-        #self.__par_manager.update_parameters("HD_Q", value)
+        # self.__par_manager.update_parameters("HD_Q", value)
 
     def update_FPGA_R(self):
         value = self.HD_R.spin.value()
         # logger.info('set HD_R: %d', value)
         self.__act.writeImuCmd(CMD_FOG_FPGA_R, value)
-        #self.__par_manager.update_parameters("HD_R", value)
+        # self.__par_manager.update_parameters("HD_R", value)
 
     def send_DATA_RATE_CMD(self):
         value = self.dataRate_sd.sd.value()
         # logger.info('set dataRate: %d', value)
         self.__act.writeImuCmd(CMD_FOG_INT_DELAY, value)
-        #self.__par_manager.update_parameters("DATA_RATE", value)
+        # self.__par_manager.update_parameters("DATA_RATE", value)
 
     def SF_A_EDIT(self):
         value = float(self.sf_a.le.text())
         # logger.info('set sf_a: %f', value)
         self.__act.sf_a = value
-        #self.__par_manager.update_parameters("SF_A", value)
+        # self.__par_manager.update_parameters("SF_A", value)
 
     def SF_B_EDIT(self):
         value = float(self.sf_b.le.text())
         # logger.info('set sf_b: %f', value)
         self.__act.sf_b = value
-        #self.__par_manager.update_parameters("SF_B", value)
+        # self.__par_manager.update_parameters("SF_B", value)
 
     def send_BIAS_T1_CMD(self):
         logger.info('set BIAS T1 : %d', float(self.T1.le.text()))
@@ -1260,13 +1239,15 @@ class pig_parameters_widget(QGroupBox):
         y = float(self.dac_Vpi.le.text())
         b = float(self.rst_voltage.le.text())
         dac_gain_slope = 0.0087  # 斜率
-        dac_gain_Val = np.round(((y-b)/dac_gain_slope))
+        dac_gain_Val = np.round(((y - b) / dac_gain_slope))
         result = int(dac_gain_Val)
         self.dac_gain.spin.setValue(result)
 
-class  invalidCharException(Exception):
+
+class invalidCharException(Exception):
     def __init__(self, mes):
         super().__init__(mes)
+
 
 # --- preview only: run this file to see layout ---
 if __name__ == "__main__":
@@ -1295,5 +1276,4 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     w = pig_parameters_widget(ACT, dataFileName="preview")
     w.show()
-    sys.exit(app.exec())   # PySide6 用 exec()，不是 exec_()
-
+    sys.exit(app.exec())  # PySide6 用 exec()，不是 exec_()

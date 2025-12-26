@@ -362,24 +362,47 @@ class Connector:
             return "Error"
 
     def dump_SN_parameters(self, ch=2):
+        # CMD_DUMP_SN = 0x82
         self.__ser.write(bytearray([0xAB, 0xBA]))
         self.__ser.write([0x82, 0, 0, 0, 0, ch])
         self.__ser.write(bytearray([0x55, 0x56]))
-        # 透過修改撈取的方式，如果暫存區有12字節就撈取，避免受timeout的影響
-        SNAscii = self.__ser.read(12)
-        # # 將ASCII轉換為文字
-        # # 當接收的資料格式為"72 101 108 108 111 32 87 111 114 108 100 33"
-        # # 字串形式的ASCII碼，可以使用下方的轉換方式
-        # SNAscii_split = SNAscii
-        if SNAscii != b'':
-        #     if isinstance(SNAscii, str):
-        #         SNAscii_split = map(int, SNAscii.split())
-        #     # 如果撈取的資料格式為[72, 101, 108, 108, 111, 32, 87, 111, 114, 108, 100, 33]
-        #     # 可以指使用下列的程式碼做轉換
-        #     SNStr = ''.join(map(chr, SNAscii_split))
-        #     return SNStr
-            return SNAscii.decode('ascii')
-        elif SNAscii == b'':
+
+        try:
+            # 1) ACK (A1): FA A1 82 status lenL lenH checksum16
+            ack = self._read_frame(timeout_s=1.0)
+            if ack["type"] != 0xA1 or ack["cmd"] != 0x82:
+                raise ValueError(f"unexpected ACK frame: {ack}")
+            if ack["len"] != 0:
+                # 依你的規格 ACK 應該 len=0
+                raise ValueError(f"ACK len should be 0, got {ack['len']}")
+
+            # 2) RESULT (A2): FA A2 82 status lenL lenH payload[len] checksum16
+            res = self._read_frame(timeout_s=2.0)
+            if res["type"] != 0xA2 or res["cmd"] != 0x82:
+                raise ValueError(f"unexpected RESULT frame: {res}")
+
+            if res["len"] == 0:
+                # MCU timeout / SN 未設定 / 其他 failure（你目前 GUI 用這個訊息判斷）
+                return "發生參數值為空的狀況"
+
+            payload = res["payload"]
+
+            # 你的 SN payload 固定 12 bytes ASCII（可含空白/0x00 padding）
+            # 先 decode，再把尾端 padding 去掉，讓 GUI 顯示更乾淨
+            sn = payload.decode("ascii", errors="replace")
+            sn = sn.rstrip("\x00").rstrip(" ")
+
+            # 若全部被 strip 乾淨變空字串，仍回報為空
+            if sn == "":
+                return "發生參數值為空的狀況"
+
+            return sn
+
+        except TimeoutError:
+            logger.error("dump_SN_parameters timeout while waiting ACK/RESULT")
+            return "發生參數值為空的狀況"
+        except ValueError as e:
+            logger.error(f"dump_SN_parameters parse error: {e}")
             return "發生參數值為空的狀況"
 
 

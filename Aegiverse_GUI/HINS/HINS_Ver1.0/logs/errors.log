@@ -1,0 +1,2 @@
+2025-12-26 20:18:12 - main.myLib.mySerial.Connector - ERROR - dump_SN_parameters parse error: unexpected ACK frame: {'type': 162, 'cmd': 102, 'status': 3, 'len': 0, 'payload': b''}
+2025-12-26 20:18:27 - main.myLib.mySerial.Connector - ERROR - dump_fog_parameters parse error: unexpected ACK frame: {'type': 162, 'cmd': 102, 'status': 3, 'len': 0, 'payload': b''}

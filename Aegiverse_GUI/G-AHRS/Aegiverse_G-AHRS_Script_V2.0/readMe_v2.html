@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Aegiverse AHRS Script - README</title>
+<style>
+  :root{
+    --bg:#0b1220;
+    --card:#121a2b;
+    --text:#e8eefc;
+    --muted:#aab7d4;
+    --accent:#6aa9ff;
+  }
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--text);
+    font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;}
+  .wrap{max-width:900px;margin:40px auto;padding:24px;}
+  .card{background:var(--card);border-radius:14px;padding:28px;
+    box-shadow:0 10px 30px rgba(0,0,0,.35);}
+  h1,h2,h3,h4{line-height:1.25;margin:1.2em 0 .6em}
+  h1{font-size:1.9rem}
+  h2{font-size:1.35rem;color:var(--accent)}
+  pre{background:#0a111f;border:1px solid #1b2742;border-radius:8px;
+    padding:14px;overflow:auto;color:var(--text);}
+  code{background:#0a111f;padding:2px 4px;border-radius:4px;}
+  strong{color:var(--accent)}
+  ul{margin-left:1.2em}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="card">
+
+<h1>Aegiverse AHRS / GNSS Script</h1>
+
+<p>
+<strong>Author:</strong> Adam Shiau<br>
+<strong>Date:</strong> 2025-12-18<br>
+<strong>Script:</strong> aegiverse_g_ahrs_v2.py<br>
+<strong>Current Version:</strong> 2.0
+</p>
+
+<h2>Requirement</h2>
+<pre><code>pip install pyserial</code></pre>
+
+<h2>Basic Usage</h2>
+
+<h3>a. List available COM ports</h3>
+<pre><code>python aegiverse_g_ahrs_v2.py list</code></pre>
+
+<h3>b. Start reading data</h3>
+<p><strong>Note:</strong> After powering on the device, please wait about 5 seconds before starting data reading.</p>
+
+<h4>b.1 AHRS packet (mode = 1)</h4>
+<p>Windows:</p>
+<pre><code>python aegiverse_g_ahrs_v2.py 1 COM27</code></pre>
+<p>Linux:</p>
+<pre><code>python aegiverse_g_ahrs_v2.py 1 /dev/ttyUSB0</code></pre>
+
+<h4>b.2 GNSS packet (mode = 2)</h4>
+<p>Windows:</p>
+<pre><code>python aegiverse_g_ahrs_v2.py 2 COM27</code></pre>
+<p>Linux:</p>
+<pre><code>python aegiverse_g_ahrs_v2.py 2 /dev/ttyUSB0</code></pre>
+
+<h3>c. Stop reading data</h3>
+
+<h4>c.1 Send stop command</h4>
+<p>Windows:</p>
+<pre><code>python aegiverse_g_ahrs_v2.py 0 COM27</code></pre>
+<p>Linux:</p>
+<pre><code>python aegiverse_g_ahrs_v2.py 0 /dev/ttyUSB0</code></pre>
+
+<h4>c.2 Keyboard interrupt</h4>
+<p>Press <strong>Ctrl + C</strong></p>
+
+<h2>Output Format</h2>
+
+<h3>AHRS output (mode = 1)</h3>
+<pre><code>TIME(s),WX(°/s),WY(°/s),WZ(°/s),AX(m/s²),AY(m/s²),AZ(m/s²),PD_TEMP(°C),PITCH(°),ROLL(°),YAW(°)</code></pre>
+
+<h3>GNSS output (mode = 2)</h3>
+<pre><code>MCU_TIME(s),LATITUDE(deg),LONGITUDE(deg),ALTITUDE(m),
+UTC_YEAR,UTC_MONTH,UTC_DAY,
+UTC_HOUR,UTC_MINUTE,UTC_SECOND,UTC_MILLISECOND,
+GPS_STATUS_CODE</code></pre>
+
+<p>Formatting rules:</p>
+<ul>
+  <li>MCU_TIME: 3 decimal places (seconds)</li>
+  <li>Latitude / Longitude: 6 decimal places (degrees)</li>
+  <li>Altitude: 2 decimal places (meters)</li>
+</ul>
+
+<h2>Version History / Change Log</h2>
+
+<h3>v2.0 (2025-12-18)</h3>
+<ul>
+  <li>Added GNSS packet support (mode=2).</li>
+</ul>
+
+<h3>v1.0 (2025-12-01)</h3>
+<ul>
+  <li>Initial release with AHRS packet streaming.</li>
+</ul>
+
+<h2>Notes</h2>
+<ul>
+  <li>Mode 1 and mode 2 are mutually exclusive; only one packet type is streamed at a time.</li>
+  <li>GNSS MCU_TIME is derived from the device MCU timer.</li>
+  <li>GPS_STATUS_CODE definition follows the device protocol.</li>
+</ul>
+
+</div>
+</div>
+</body>
+</html>

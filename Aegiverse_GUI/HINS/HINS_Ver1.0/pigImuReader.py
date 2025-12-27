@@ -297,7 +297,6 @@ class pigImuReader(QThread):
         return self.__Connector.dump_cali_parameters(ch)
 
     def getVersion(self, ch):
-        # self.writeImuCmd(0x66, 2)
         return self.__Connector.getVersion(ch)
 
     def dump_SN_parameters(self, ch):

@@ -351,14 +351,34 @@ class Connector:
 
     def getVersion(self, ch=2):
         self.__ser.write(bytearray([0xAB, 0xBA]))
-        self.__ser.write([0x65, 0, 0, 0, 0, ch])
+        self.__ser.write([0x83, 0, 0, 0, 0, ch])
         self.__ser.write(bytearray([0x55, 0x56]))
-        # self.__ser.write(bytearray([0x55, 0x56]))
         try:
-            VerVal = self.__ser.read_until(b'\n')
-            return VerVal.decode('utf-8')
-        except Exception as e:
-            logger.error("執行撈取設備版號出現錯誤。")
+            # 1) ACK (A1): FA A1 83 status lenL lenH checksum16
+            ack = self._read_frame(timeout_s=1.0)
+            if ack["type"] != 0xA1 or ack["cmd"] != 0x83:
+                raise ValueError(f"unexpected ACK frame: {ack}")
+            if ack["len"] != 0:
+                raise ValueError(f"ACK len should be 0, got {ack['len']}")
+
+            # 2) RESULT (A2): FA A2 83 status lenL lenH payload[len] checksum16
+            res = self._read_frame(timeout_s=2.0)
+            if res["type"] != 0xA2 or res["cmd"] != 0x83:
+                raise ValueError(f"unexpected RESULT frame: {res}")
+
+            if res["len"] == 0:
+                # timeout / failure
+                return "Error"
+
+            ver = res["payload"].decode("ascii", errors="replace")
+            ver = ver.rstrip("\x00").rstrip("\r").rstrip("\n").strip()
+            return ver
+
+        except TimeoutError:
+            logger.error("getVersion timeout while waiting ACK/RESULT")
+            return "Error"
+        except ValueError as e:
+            logger.error(f"getVersion parse error: {e}")
             return "Error"
 
     def dump_SN_parameters(self, ch=2):

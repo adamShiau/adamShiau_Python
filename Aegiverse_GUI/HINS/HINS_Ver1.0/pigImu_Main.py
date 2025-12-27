@@ -65,8 +65,8 @@ class mainWindow(QMainWindow):
         self.cali_parameter_menu = None
         self.pig_version_menu = None
         self.__portName = None
-        self.GUI_vers = "IRIS-IMU-05-00-RD-RW"
-        self.setWindowTitle("Aegiverse IRIS IMU GUI")
+        self.GUI_vers = "HINS-INS-01-00-RD-RW"
+        self.setWindowTitle("Aegiverse G-HINS GUI")
         self.__connector = Connector()
         self.__isFileOpen = False
         self.top = TOP()

@@ -302,6 +302,9 @@ class pigImuReader(QThread):
     def dump_SN_parameters(self, ch):
         return self.__Connector.dump_SN_parameters(ch)
 
+    def dump_configuration(self):
+        return self.__Connector.dump_configuration()
+
     def update_SN_parameters(self, para):
         para.insert(0, 0x6E)
         self.__Connector.write(bytearray([0xCD, 0xDC]))

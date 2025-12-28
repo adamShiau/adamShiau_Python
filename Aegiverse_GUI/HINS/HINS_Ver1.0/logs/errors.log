@@ -223,3 +223,18 @@
 2025-12-27 22:44:41 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 215
 2025-12-27 22:44:41 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 216
 2025-12-27 22:44:41 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 217
+2025-12-28 22:44:57 - main.myLib.mySerial.Connector - ERROR - IOError, the device: COM8 can not be found or can not be configured!
+2025-12-28 22:44:57 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2025-12-28 22:44:57 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2025-12-28 22:44:57 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2025-12-28 22:44:58 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (OSError(9, '控制代碼無效。', None, 6)).(The error occurred while clearing buffer, line 399.)
+2025-12-28 22:45:00 - main.myLib.myGui.mygui_serial - ERROR - Stop when timeout or error occurs.(發生Timeout且超時或是錯誤導致GUI的停止運行)
+2025-12-29 00:46:56 - main.myLib.mySerial.Connector - ERROR - dump_configuration timeout while waiting ACK/RESULT
+2025-12-29 00:53:18 - main.myLib.mySerial.Connector - ERROR - serial read timeout: check if the input power is ON, close the GUI and re-excute.
+2025-12-29 00:53:18 - main.myLib.mySerial.getData - ERROR - alignHeader_4B Error
+2025-12-29 00:53:18 - main.myLib.mySerial.Connector - ERROR - Other exceptional events occurred. The error is ''NoneType' object has no attribute 'hEvent''
+2025-12-29 00:53:18 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2025-12-29 00:53:18 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2025-12-29 00:53:18 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2025-12-29 00:53:18 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (OSError(9, '控制代碼無效。', None, 6)).(The error occurred while clearing buffer, line 399.)
+2025-12-29 00:53:21 - main.myLib.myGui.mygui_serial - ERROR - Stop when timeout or error occurs.(發生Timeout且超時或是錯誤導致GUI的停止運行)

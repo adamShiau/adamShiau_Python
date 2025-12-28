@@ -41,6 +41,7 @@ from myLib.myGui.pig_menu_manager import pig_menu_manager
 from myLib.myGui import analysis_Allan, analysis_TimingPlot
 from myLib.myGui import analysis_Allan, analysis_TimingPlot, myRadioButton
 from myLib.myGui.pig_W_A_calibration_parameter_widget import pig_calibration_widget
+from myLib.myGui.pig_configuration_widget import pig_configuration_widget
 from pigImu_Widget import pigImuWidget as TOP
 from pigImuReader import pigImuReader as ACTION
 from pigImuReader import IMU_DATA_STRUCTURE
@@ -63,6 +64,7 @@ class mainWindow(QMainWindow):
         self.resize(1450, 800)
         self.pig_parameter_widget = None
         self.cali_parameter_menu = None
+        self.pig_configuration_menu = None
         self.pig_version_menu = None
         self.__portName = None
         self.GUI_vers = "HINS-INS-01-00-RD-RW"
@@ -128,12 +130,14 @@ class mainWindow(QMainWindow):
         self.is_port_open_qt.connect(self.is_port_open_status_manager)
         # menu trigger connection
         self.pig_menu.action_trigger_connect([self.show_parameters,
-                                              self.show_calibration_menu,
-                                              self.show_plot_data_menu,
-                                              self.show_cal_allan_menu,
-                                              self.show_initial_setting_menu,
                                               self.show_W_A_cali_parameter_menu,
-                                              self.show_version_menu
+                                              self.show_version_menu,
+                                              self.show_configuration_menu
+                                              # self.show_calibration_menu,
+                                              # self.show_plot_data_menu,
+                                              # self.show_cal_allan_menu,
+                                              # self.show_initial_setting_menu,
+
                                               ])
         # file name le
         self.top.save_block.le_filename.editingFinished.connect(
@@ -185,6 +189,8 @@ class mainWindow(QMainWindow):
     def show_W_A_cali_parameter_menu(self):
         self.cali_parameter_menu.show()
 
+    def show_configuration_menu(self):
+        self.pig_configuration_menu.show()
     def show_version_menu(self):
         self.act.flushInputBuffer("None")
         self.pig_version_menu.ViewVersion(self.act.getVersion(2), self.GUI_vers)
@@ -292,6 +298,7 @@ class mainWindow(QMainWindow):
             # This line instantiate a parameter widget, load the parameter.json from LE block and send to FPGA
             self.pig_parameter_widget = pig_parameters_widget(self.act, self.top.save_block.le_filename.text())
             self.cali_parameter_menu = pig_calibration_widget(self.act, self.imudata_file_Misa, self.top.save_block.le_filename.text())
+            self.pig_configuration_menu = pig_configuration_widget(self.act)
             self.pig_version_menu = VersionTable()
             self.act.isCali_w, self.act.isCali_a = self.pig_cali_menu.cali_status()  # update calibration flag to act
             self.act.stopIMU()

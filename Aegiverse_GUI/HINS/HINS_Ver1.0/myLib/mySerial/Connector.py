@@ -337,17 +337,6 @@ class Connector:
             logger.error(f"dump_cali_parameters parse error: {e}")
             return "無法取得值"
 
-    # def dump_cali_parameters(self, ch=2):
-    #     self.__ser.write(bytearray([0xAB, 0xBA]))
-    #     self.__ser.write([0x81, 0, 0, 0, 0, ch])
-    #     self.__ser.write(bytearray([0x55, 0x56]))
-    #     caliVal = self.__ser.read_until(b'\n')
-    #     try:
-    #         return json.loads(caliVal)
-    #     except json.JSONDecodeError:
-    #         logger.error("執行撈取misalignment參數出現錯誤。")
-    #         return False
-
 
     def getVersion(self, ch=2):
         self.__ser.write(bytearray([0xAB, 0xBA]))
@@ -425,6 +414,48 @@ class Connector:
             logger.error(f"dump_SN_parameters parse error: {e}")
             return "發生參數值為空的狀況"
 
+    def dump_configuration(self):
+        """
+        CMD_DUMP_CONFIGURATION = 0x84
+        TX: AB BA 84 00 00 00 00 00 55 56   (依你提供固定格式)
+        RX: ACK  + RESULT(JSON)
+            JSON: {"0": <datarate_idx>, "1": <baudrate_idx>, ...}
+        """
+        # send command (exact bytes you specified)
+        self.__ser.write(bytearray([0xAB, 0xBA]))
+        self.__ser.write([0x84, 0, 0, 0, 0, 0])
+        self.__ser.write(bytearray([0x55, 0x56]))
+
+        try:
+            # 1) ACK
+            ack = self._read_frame(timeout_s=1.0)
+            if ack["type"] != 0xA1 or ack["cmd"] != 0x84:
+                raise ValueError(f"unexpected ACK frame: {ack}")
+            if ack["len"] != 0:
+                raise ValueError(f"ACK len should be 0, got {ack['len']}")
+
+            # 2) RESULT
+            res = self._read_frame(timeout_s=2.0)
+            if res["type"] != 0xA2 or res["cmd"] != 0x84:
+                raise ValueError(f"unexpected RESULT frame: {res}")
+
+            if res["len"] == 0:
+                return "無法取得值"
+
+            payload_bytes = res["payload"]
+            try:
+                payload_str = payload_bytes.decode("utf-8", errors="strict")
+            except UnicodeDecodeError:
+                payload_str = payload_bytes.decode("utf-8", errors="replace")
+
+            return json.loads(payload_str)
+
+        except TimeoutError:
+            logger.error("dump_configuration timeout while waiting ACK/RESULT")
+            return "無法取得值"
+        except (ValueError, json.JSONDecodeError) as e:
+            logger.error(f"dump_configuration parse error: {e}")
+            return "無法取得值"
 
     def readLine(self):
         return self.__ser.readline()

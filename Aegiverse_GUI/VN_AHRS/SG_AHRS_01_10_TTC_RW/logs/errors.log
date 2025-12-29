@@ -1,0 +1,193 @@
+2025-09-08 19:25:30 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-09 09:42:09 - main.myLib.mySerial.Connector - ERROR - 1700001, The serial open operation failed while establishing the connection.
+2025-09-09 09:52:32 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-09 10:53:41 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-09 12:54:50 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-09 14:25:27 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-09 14:25:30 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-09 14:25:32 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-09 14:27:22 - main.myLib.mySerial.Connector - ERROR - 1700001, The serial open operation failed while establishing the connection.
+2025-09-09 14:27:29 - main.myLib.mySerial.Connector - ERROR - 1700001, The serial open operation failed while establishing the connection.
+2025-09-09 15:14:21 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-09 15:33:27 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-09 16:26:04 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-09 17:42:00 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-09 18:34:32 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-09 19:12:32 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-10 10:30:31 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-10 10:38:24 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-10 11:02:39 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-10 12:16:55 - main.myLib.mySerial.Connector - ERROR - 撈取數據並轉換為json格式的過程中，因數據格式無法轉換為json格式，所以出現json.decoder.JSONDecodeError, line 206.
+2025-09-10 12:20:58 - main.myLib.mySerial.Connector - ERROR - 撈取數據並轉換為json格式的過程中，因數據格式無法轉換為json格式，所以出現json.decoder.JSONDecodeError, line 206.
+2025-09-10 12:21:08 - main.myLib.mySerial.Connector - ERROR - 撈取數據並轉換為json格式的過程中，因數據格式無法轉換為json格式，所以出現json.decoder.JSONDecodeError, line 206.
+2025-09-10 12:33:57 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-10 12:34:00 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-10 12:34:09 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-10 16:56:40 - main.myLib.mySerial.Connector - ERROR - 1700001, The serial open operation failed while establishing the connection.
+2025-09-10 17:17:58 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-10 18:52:56 - main - ERROR - 1000006, AttributeError — 'pig_calibration_widget' object has no attribute 'Update_Btn'.(An error occurred in the connect, line 253.)
+2025-09-10 18:53:17 - main - ERROR - 1000006, AttributeError — 'pig_calibration_widget' object has no attribute 'Update_Btn'.(An error occurred in the connect, line 253.)
+2025-09-10 18:53:51 - main - ERROR - 1000006, AttributeError — 'pig_calibration_widget' object has no attribute 'Update_Btn'.(An error occurred in the connect, line 253.)
+2025-09-10 19:09:34 - main.myLib.mySerial.Connector - ERROR - 撈取數據並轉換為json格式的過程中，因數據格式無法轉換為json格式，所以出現json.decoder.JSONDecodeError, line 231.
+2025-09-10 19:13:06 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-10 19:13:17 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-10 19:13:18 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-10 19:21:32 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-10 19:45:41 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-10 19:45:49 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-10 19:45:49 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-10 19:46:05 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-10 19:52:18 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-10 19:52:47 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-11 11:35:34 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-11 12:06:32 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-11 12:06:43 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-11 12:08:44 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-11 14:48:02 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-11 16:05:46 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-12 15:28:06 - main.myLib.mySerial.Connector - ERROR - 撈取數據並轉換為json格式的過程中，因數據格式無法轉換為json格式，所以出現json.decoder.JSONDecodeError, line 206.
+2025-09-12 15:30:32 - main.myLib.mySerial.Connector - ERROR - 撈取數據並轉換為json格式的過程中，因數據格式無法轉換為json格式，所以出現json.decoder.JSONDecodeError, line 206.
+2025-09-12 15:32:23 - main.myLib.mySerial.Connector - ERROR - 撈取數據並轉換為json格式的過程中，因數據格式無法轉換為json格式，所以出現json.decoder.JSONDecodeError, line 206.
+2025-09-12 15:37:13 - main.myLib.mySerial.Connector - ERROR - 撈取數據並轉換為json格式的過程中，因數據格式無法轉換為json格式，所以出現json.decoder.JSONDecodeError, line 211.
+2025-09-15 17:05:55 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-15 17:05:58 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-17 09:25:18 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-17 09:26:40 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-17 09:45:31 - main.myLib.mySerial.Connector - ERROR - 1700001, The serial open operation failed while establishing the connection.
+2025-09-17 09:45:56 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-17 11:13:53 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-17 11:32:04 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-17 11:32:50 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-17 11:34:04 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-17 11:34:07 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-17 11:34:23 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-17 12:11:31 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-22 18:21:23 - main.myLib.mySerial.Connector - ERROR - 撈取數據並轉換為json格式的過程中，因數據格式無法轉換為json格式，所以出現json.decoder.JSONDecodeError, line 213.
+2025-09-22 18:30:39 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-22 18:35:56 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-22 18:41:16 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-09-22 18:44:30 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-10-01 11:17:43 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-10-01 12:27:27 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-10-01 12:27:27 - main.pigImuReader - ERROR - getImuData exception: 'bool' object is not subscriptable
+2025-10-07 15:13:17 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-10-07 15:13:17 - main.pigImuReader - ERROR - getImuData exception: 'bool' object is not subscriptable
+2025-10-07 15:15:01 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-10-07 15:15:01 - main.pigImuReader - ERROR - getImuData exception: 'bool' object is not subscriptable
+2025-10-07 15:15:15 - main.myLib.mySerial.Connector - ERROR - 1700002, SerialException - The device can not be found or can not be configured.
+2025-10-07 15:15:15 - main.myLib.mySerial.Connector - ERROR - 1700002, SerialException - The device can not be found or can not be configured.
+2025-10-07 15:15:15 - main.myLib.mySerial.Connector - ERROR - 1700002, SerialException - The device can not be found or can not be configured.
+2025-10-07 15:15:16 - main.myLib.mySerial.Connector - ERROR - 1700002, SerialException - The device can not be found or can not be configured.
+2025-10-07 15:15:16 - main.myLib.mySerial.Connector - ERROR - 1700002, SerialException - The device can not be found or can not be configured.
+2025-10-07 15:15:16 - main.myLib.mySerial.Connector - ERROR - 1700002, SerialException - The device can not be found or can not be configured.
+2025-10-07 15:15:16 - main.myLib.mySerial.Connector - ERROR - 1700007, Errors encountered when the serial port is unavailable, disconnected, or already in use at runtime. The error is 'ClearCommError failed (PermissionError(13, '存取被拒。', None, 5))'
+2025-10-07 15:15:16 - main.myLib.mySerial.Connector - ERROR - 1700007, Errors encountered when the serial port is unavailable, disconnected, or already in use at runtime. The error is 'ClearCommError failed (PermissionError(13, '存取被拒。', None, 5))'
+2025-10-07 15:15:16 - main.myLib.mySerial.Connector - ERROR - 1700002, SerialException - The device can not be found or can not be configured.
+2025-10-07 15:15:16 - main.myLib.mySerial.Connector - ERROR - 1700002, SerialException - The device can not be found or can not be configured.
+2025-10-07 15:15:16 - main.myLib.mySerial.Connector - ERROR - 1700002, SerialException - The device can not be found or can not be configured.
+2025-10-07 15:15:17 - main.myLib.mySerial.Connector - ERROR - 1700007, Errors encountered when the serial port is unavailable, disconnected, or already in use at runtime. The error is 'ClearCommError failed (PermissionError(13, '存取被拒。', None, 5))'
+2025-10-07 15:15:17 - main.myLib.mySerial.Connector - ERROR - 1700003, Other exceptional events occurred. The error is 'ClearCommError failed (PermissionError(13, '存取被拒。', None, 5))'
+2025-10-07 15:15:17 - main.pigImuReader - ERROR - getImuData exception: 'bool' object is not subscriptable
+2025-10-07 15:15:18 - main.myLib.mySerial.Connector - ERROR - 1700002, SerialException - The device can not be found or can not be configured.
+2025-10-07 15:15:18 - main.myLib.mySerial.Connector - ERROR - 1700002, SerialException - The device can not be found or can not be configured.
+2025-10-07 15:15:18 - main.myLib.mySerial.Connector - ERROR - 1700002, SerialException - The device can not be found or can not be configured.
+2025-10-07 15:15:32 - main.myLib.mySerial.Connector - ERROR - 1700001, The serial open operation failed while establishing the connection.
+2025-10-07 15:15:49 - main.myLib.mySerial.Connector - ERROR - 1700001, The serial open operation failed while establishing the connection.
+2025-10-07 15:18:18 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-10-07 15:18:18 - main.pigImuReader - ERROR - getImuData exception: 'bool' object is not subscriptable
+2025-10-07 16:12:06 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-10-07 16:12:06 - main.pigImuReader - ERROR - getImuData exception: 'bool' object is not subscriptable
+2025-10-07 16:16:35 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-10-07 16:16:35 - main.pigImuReader - ERROR - getImuData exception: 'bool' object is not subscriptable
+2025-10-07 16:16:37 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-10-07 16:16:37 - main.pigImuReader - ERROR - getImuData exception: 'bool' object is not subscriptable
+2025-10-07 16:18:57 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-10-07 16:18:57 - main.pigImuReader - ERROR - getImuData exception: 'bool' object is not subscriptable
+2025-10-07 16:19:23 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-10-07 16:19:23 - main.pigImuReader - ERROR - getImuData exception: 'bool' object is not subscriptable
+2025-10-07 16:19:25 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-10-07 16:19:25 - main.pigImuReader - ERROR - getImuData exception: 'bool' object is not subscriptable
+2025-10-07 16:19:28 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-10-07 16:19:28 - main.pigImuReader - ERROR - getImuData exception: 'bool' object is not subscriptable
+2025-10-07 16:20:41 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-10-07 16:20:41 - main.pigImuReader - ERROR - getImuData exception: 'bool' object is not subscriptable
+2025-10-07 16:27:59 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-10-07 16:27:59 - main.pigImuReader - ERROR - getImuData exception: 'bool' object is not subscriptable
+2025-10-07 16:29:29 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-10-07 16:29:29 - main.pigImuReader - ERROR - getImuData exception: 'bool' object is not subscriptable
+2025-10-07 16:52:40 - main.pigImuReader - ERROR - getImuData exception: list index out of range
+2025-10-15 17:57:01 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-10-15 17:57:01 - main.myLib.mySerial.getData - ERROR - alignHeader_6B Error
+2025-10-15 17:57:01 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-10-15 17:57:01 - main.pigImuReader - ERROR - 1200003, TypeError — 'NoneType' object is not subscriptable.(Please check if there is an error in the data type being saved, line 548.)
+2025-10-15 17:57:01 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-10-15 17:57:01 - main.myLib.mySerial.getData - ERROR - alignHeader_6B Error
+2025-10-15 17:57:01 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-10-15 18:01:07 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-10-15 18:01:07 - main.myLib.mySerial.getData - ERROR - alignHeader_6B Error
+2025-10-15 18:01:08 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-10-15 18:01:08 - main.pigImuReader - ERROR - 1200003, TypeError — 'NoneType' object is not subscriptable.(Please check if there is an error in the data type being saved, line 549.)
+2025-10-15 18:01:08 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-10-15 18:01:08 - main.myLib.mySerial.getData - ERROR - alignHeader_6B Error
+2025-10-15 18:01:08 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-10-15 19:14:08 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-10-15 19:14:08 - main.myLib.mySerial.getData - ERROR - alignHeader_6B Error
+2025-10-15 19:14:09 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-10-15 19:14:09 - main.pigImuReader - ERROR - 1200003, TypeError — 'NoneType' object is not subscriptable.(Please check if there is an error in the data type being saved, line 551.)
+2025-10-15 19:14:09 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-10-15 19:14:09 - main.myLib.mySerial.getData - ERROR - alignHeader_6B Error
+2025-10-15 19:14:09 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-10-15 19:16:50 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-10-15 19:16:50 - main.myLib.mySerial.getData - ERROR - alignHeader_6B Error
+2025-10-15 19:16:51 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-10-15 19:16:51 - main.pigImuReader - ERROR - 1200003, TypeError — 'NoneType' object is not subscriptable.(Please check if there is an error in the data type being saved, line 551.)
+2025-10-15 19:16:51 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-10-15 19:16:51 - main.myLib.mySerial.getData - ERROR - alignHeader_6B Error
+2025-10-15 19:16:51 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-10-15 19:31:16 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-10-15 19:31:16 - main.myLib.mySerial.getData - ERROR - alignHeader_6B Error
+2025-10-15 19:31:21 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-10-15 19:37:53 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-10-15 19:37:53 - main.myLib.mySerial.getData - ERROR - alignHeader_6B Error
+2025-10-15 19:37:58 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-10-15 19:43:18 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-10-15 19:43:18 - main.myLib.mySerial.getData - ERROR - alignHeader_6B Error
+2025-10-15 19:43:23 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-10-15 19:43:23 - main.pigImuReader - ERROR - 1200003, TypeError — 'NoneType' object is not subscriptable.(Please check if there is an error in the data type being saved, line 551.)
+2025-10-15 19:43:27 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-10-15 19:43:27 - main.myLib.mySerial.getData - ERROR - alignHeader_6B Error
+2025-10-15 19:43:27 - main.myLib.mySerial.Connector - ERROR - 1700003, Other exceptional events occurred. The error is 'Attempting to use a port that is not open'
+2025-10-15 19:52:50 - main.myLib.mySerial.Connector - ERROR - 1700002, SerialException - The device can not be found or can not be configured.
+2025-10-15 19:52:50 - main.myLib.mySerial.Connector - ERROR - 1700002, SerialException - The device can not be found or can not be configured.
+2025-10-15 19:52:50 - main.myLib.mySerial.Connector - ERROR - 1700002, SerialException - The device can not be found or can not be configured.
+2025-10-15 19:52:50 - main.myLib.mySerial.Connector - ERROR - 1700007, Errors encountered when the serial port is unavailable, disconnected, or already in use at runtime. The error is 'ClearCommError failed (PermissionError(13, '存取被拒。', None, 5))'
+2025-10-15 19:52:50 - main.myLib.mySerial.Connector - ERROR - 1700007, Errors encountered when the serial port is unavailable, disconnected, or already in use at runtime. The error is 'ClearCommError failed (PermissionError(13, '存取被拒。', None, 5))'
+2025-10-15 19:52:50 - main.myLib.mySerial.Connector - ERROR - Send VNWRG command failed: WriteFile failed (PermissionError(13, '存取被拒。', None, 5)), line 306
+2025-10-15 19:52:50 - main.myLib.mySerial.Connector - ERROR - 1700007, Errors encountered when the serial port is unavailable, disconnected, or already in use at runtime. The error is 'ClearCommError failed (PermissionError(13, '存取被拒。', None, 5))'
+2025-10-15 19:52:50 - main.myLib.mySerial.Connector - ERROR - 1700003, Other exceptional events occurred. The error is 'ClearCommError failed (PermissionError(13, '存取被拒。', None, 5))'
+2025-10-15 19:52:50 - main.myLib.mySerial.getData - ERROR - alignHeader_6B Error
+2025-10-15 19:52:50 - main.myLib.mySerial.Connector - ERROR - 1700003, Other exceptional events occurred. The error is 'ClearCommError failed (PermissionError(13, '存取被拒。', None, 5))'
+2025-10-15 19:52:50 - main.pigImuReader - ERROR - 1200003, TypeError — 'NoneType' object is not subscriptable.(Please check if there is an error in the data type being saved, line 551.)
+2025-10-15 19:52:50 - main.myLib.mySerial.Connector - ERROR - 1700007, Errors encountered when the serial port is unavailable, disconnected, or already in use at runtime. The error is 'ClearCommError failed (PermissionError(13, '存取被拒。', None, 5))'
+2025-10-15 19:52:50 - main.myLib.mySerial.Connector - ERROR - 1700003, Other exceptional events occurred. The error is 'ClearCommError failed (PermissionError(13, '存取被拒。', None, 5))'
+2025-10-15 19:52:50 - main.myLib.mySerial.getData - ERROR - alignHeader_6B Error
+2025-10-15 19:52:50 - main.myLib.mySerial.Connector - ERROR - 1700003, Other exceptional events occurred. The error is 'ClearCommError failed (PermissionError(13, '存取被拒。', None, 5))'
+2025-10-15 19:53:00 - main.myLib.mySerial.Connector - ERROR - Send VNWRG command failed: WriteFile failed (PermissionError(13, '存取被拒。', None, 5)), line 306
+2025-10-15 20:02:22 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-10-15 20:02:22 - main.myLib.mySerial.getData - ERROR - alignHeader_6B Error
+2025-10-15 20:02:27 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-10-15 20:02:27 - main.pigImuReader - ERROR - 1200003, TypeError — 'NoneType' object is not subscriptable.(Please check if there is an error in the data type being saved, line 553.)
+2025-10-15 20:02:30 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-10-15 20:02:30 - main.myLib.mySerial.getData - ERROR - alignHeader_6B Error
+2025-10-15 20:02:30 - main.myLib.mySerial.Connector - ERROR - 1700003, Other exceptional events occurred. The error is 'Attempting to use a port that is not open'
+2025-10-17 17:38:42 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-10-17 17:38:42 - main.myLib.mySerial.getData - ERROR - alignHeader_6B Error
+2025-10-17 17:38:42 - main.myLib.mySerial.Connector - ERROR - 1700003, Other exceptional events occurred. The error is 'Attempting to use a port that is not open'
+2025-10-17 17:38:42 - main.pigImuReader - ERROR - 1200003, TypeError — 'NoneType' object is not subscriptable.(Please check if there is an error in the data type being saved, line 553.)
+2025-10-17 17:38:42 - main.myLib.mySerial.Connector - ERROR - 1700007, Errors encountered when the serial port is unavailable, disconnected, or already in use at runtime. The error is 'ClearCommError failed (OSError(9, '控制代碼無效。', None, 6))'
+2025-10-17 17:38:42 - main.myLib.mySerial.Connector - ERROR - 1700003, Other exceptional events occurred. The error is 'Attempting to use a port that is not open'
+2025-10-17 17:38:42 - main.myLib.mySerial.getData - ERROR - alignHeader_6B Error
+2025-10-17 17:38:42 - main.myLib.mySerial.Connector - ERROR - 1700003, Other exceptional events occurred. The error is 'Attempting to use a port that is not open'
+2025-12-29 12:24:35 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2025-12-29 12:24:35 - main.myLib.mySerial.getData - ERROR - alignHeader_6B Error
+2025-12-29 12:24:35 - main.myLib.mySerial.Connector - ERROR - 1700003, Other exceptional events occurred. The error is 'Attempting to use a port that is not open'

@@ -888,6 +888,7 @@ class pig_parameters_widget(QGroupBox):
         logger.info(f'set STD_Wx : {float(self.std_wx.le.text())}')
         value = struct.unpack('<I', struct.pack('<f', float(self.std_wx.le.text())))
         self.__act.writeImuCmd(CMD_FOG_STD_WX, value[0])
+        print("%x" % value[0])
 
     def send_STD_Wy_CMD(self):
         logger.info(f'set STD_Wy : {float(self.std_wy.le.text())}')

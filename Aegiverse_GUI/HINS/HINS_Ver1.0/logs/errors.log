@@ -250,3 +250,64 @@
 2025-12-29 10:52:55 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
 2025-12-29 10:52:55 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (OSError(9, '控制代碼無效。', None, 6)).(The error occurred while clearing buffer, line 399.)
 2025-12-29 10:52:58 - main.myLib.myGui.mygui_serial - ERROR - Stop when timeout or error occurs.(發生Timeout且超時或是錯誤導致GUI的停止運行)
+2025-12-31 12:32:22 - main.myLib.mySerial.Connector - ERROR - serial read timeout: check if the input power is ON, close the GUI and re-excute.
+2025-12-31 12:32:22 - main.pigImuReader - ERROR - TypeError — can only concatenate list (not "bool") to list.(An error occurred during the data retrieval process, line 323.)
+2025-12-31 12:32:22 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2025-12-31 12:32:22 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2025-12-31 12:32:22 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2025-12-31 12:32:22 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (PermissionError(13, '存取被拒。', None, 5)).(The error occurred while clearing buffer, line 399.)
+2025-12-31 12:34:04 - main.myLib.myGui.mygui_serial - ERROR - Stop when timeout or error occurs.(發生Timeout且超時或是錯誤導致GUI的停止運行)
+2025-12-31 15:04:00 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (PermissionError(13, '存取被拒。', None, 5)).(The error occurred while clearing buffer, line 399.)
+2025-12-31 15:04:02 - main.myLib.myGui.mygui_serial - ERROR - Stop when timeout or error occurs.(發生Timeout且超時或是錯誤導致GUI的停止運行)
+2025-12-31 15:04:02 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2025-12-31 15:04:02 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2025-12-31 15:04:02 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2025-12-31 15:04:02 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (PermissionError(13, '存取被拒。', None, 5)).(An error occurred during the data retrieval process, line 475.)
+2025-12-31 15:04:02 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2025-12-31 15:04:02 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2025-12-31 15:04:02 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2025-12-31 15:04:02 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (PermissionError(13, '存取被拒。', None, 5)).(The error occurred while clearing buffer, line 399.)
+2025-12-31 15:04:04 - main.myLib.myGui.mygui_serial - ERROR - Stop when timeout or error occurs.(發生Timeout且超時或是錯誤導致GUI的停止運行)
+2025-12-31 15:04:21 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (OSError(9, '控制代碼無效。', None, 6)).(An error occurred during the data retrieval process, line 478.)
+2025-12-31 15:04:21 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2025-12-31 15:04:21 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2025-12-31 15:04:21 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2025-12-31 15:04:22 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (OSError(9, '控制代碼無效。', None, 6)).(The error occurred while clearing buffer, line 399.)
+2025-12-31 15:04:24 - main.myLib.myGui.mygui_serial - ERROR - Stop when timeout or error occurs.(發生Timeout且超時或是錯誤導致GUI的停止運行)
+2025-12-31 17:01:00 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (OSError(9, '控制代碼無效。', None, 6)).(An error occurred during the data retrieval process, line 478.)
+2025-12-31 17:01:00 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2025-12-31 17:01:00 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2025-12-31 17:01:00 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2025-12-31 17:01:00 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (OSError(9, '控制代碼無效。', None, 6)).(The error occurred while clearing buffer, line 399.)
+2025-12-31 17:01:02 - main.myLib.myGui.mygui_serial - ERROR - Stop when timeout or error occurs.(發生Timeout且超時或是錯誤導致GUI的停止運行)
+2025-12-31 17:01:43 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (OSError(9, '控制代碼無效。', None, 6)).(An error occurred during the data retrieval process, line 478.)
+2025-12-31 17:01:43 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2025-12-31 17:01:43 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2025-12-31 17:01:43 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2025-12-31 17:01:43 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (OSError(9, '控制代碼無效。', None, 6)).(The error occurred while clearing buffer, line 399.)
+2025-12-31 17:01:45 - main.myLib.myGui.mygui_serial - ERROR - Stop when timeout or error occurs.(發生Timeout且超時或是錯誤導致GUI的停止運行)
+2025-12-31 18:09:40 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (PermissionError(13, '存取被拒。', None, 5)).(An error occurred during the data retrieval process, line 475.)
+2025-12-31 18:09:40 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2025-12-31 18:09:40 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2025-12-31 18:09:40 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2025-12-31 18:09:40 - main.myLib.myGui.mygui_serial - ERROR - Exception — unsupported operand type(s) for +: 'NoneType' and 'datetime.timedelta', line 344.)
+2025-12-31 18:09:40 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (PermissionError(13, '存取被拒。', None, 5)).(The error occurred while clearing buffer, line 399.)
+2025-12-31 18:09:59 - main.myLib.myGui.mygui_serial - ERROR - Stop when timeout or error occurs.(發生Timeout且超時或是錯誤導致GUI的停止運行)
+2025-12-31 19:42:53 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (OSError(9, '控制代碼無效。', None, 6)).(An error occurred during the data retrieval process, line 478.)
+2025-12-31 19:42:53 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2025-12-31 19:42:53 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2025-12-31 19:42:53 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2025-12-31 19:42:54 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (OSError(9, '控制代碼無效。', None, 6)).(The error occurred while clearing buffer, line 399.)
+2025-12-31 19:42:56 - main.myLib.myGui.mygui_serial - ERROR - Stop when timeout or error occurs.(發生Timeout且超時或是錯誤導致GUI的停止運行)
+2025-12-31 19:43:20 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (PermissionError(13, '存取被拒。', None, 5)).(An error occurred during the data retrieval process, line 478.)
+2025-12-31 19:43:20 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2025-12-31 19:43:20 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2025-12-31 19:43:20 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2025-12-31 19:43:20 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (PermissionError(13, '存取被拒。', None, 5)).(The error occurred while clearing buffer, line 399.)
+2025-12-31 19:43:21 - main.myLib.myGui.mygui_serial - ERROR - Stop when timeout or error occurs.(發生Timeout且超時或是錯誤導致GUI的停止運行)
+2025-12-31 19:44:15 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (OSError(9, '控制代碼無效。', None, 6)).(An error occurred during the data retrieval process, line 478.)
+2025-12-31 19:44:15 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2025-12-31 19:44:15 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2025-12-31 19:44:15 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2025-12-31 19:44:15 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (OSError(9, '控制代碼無效。', None, 6)).(The error occurred while clearing buffer, line 399.)
+2025-12-31 19:44:17 - main.myLib.myGui.mygui_serial - ERROR - Stop when timeout or error occurs.(發生Timeout且超時或是錯誤導致GUI的停止運行)

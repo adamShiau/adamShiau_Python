@@ -283,10 +283,10 @@ class pigImuReader(QThread):
 
     def readIMU(self):
         self.flushInputBuffer("None")
-        self.writeImuCmd(3, 2, 2)
+        self.writeImuCmd(4, 2, 2)
 
     def stopIMU(self):
-        self.writeImuCmd(3, 4, 2)
+        self.writeImuCmd(4, 4, 2)
         self.flushInputBuffer("stop")
 
     def dump_fog_parameters(self, ch):

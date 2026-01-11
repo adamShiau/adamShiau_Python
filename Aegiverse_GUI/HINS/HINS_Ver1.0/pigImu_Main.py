@@ -103,9 +103,12 @@ class mainWindow(QMainWindow):
         self.hasConnect = None
 
         # 2025/09/11 RCS 初始化
+        # Rcs = [0, 1, 0,
+        #        -1, 0, 0,
+        #        0, 0, 1]
         Rcs = [0, -1, 0,
-               -1, 0, 0,
-               0, 0, -1]
+               1, 0, 0,
+               0, 0, 1]
         self.act.R_CS = Rcs
 
 

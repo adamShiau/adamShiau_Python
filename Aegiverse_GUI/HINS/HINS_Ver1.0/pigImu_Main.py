@@ -102,13 +102,16 @@ class mainWindow(QMainWindow):
         self.recordSelAxis = None
         self.hasConnect = None
 
-        # 2025/09/11 RCS 初始化
-        # Rcs = [0, 1, 0,
+        ''' HINS ENU'''
+        # Rcs = [0, -1, 0,
         #        -1, 0, 0,
-        #        0, 0, 1]
+        #        0, 0, -1]
+
+        ''' HINS NED'''
         Rcs = [0, -1, 0,
                1, 0, 0,
                0, 0, 1]
+
         self.act.R_CS = Rcs
 
 

@@ -326,3 +326,9 @@
 2026-01-04 01:49:14 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (OSError(9, '控制代碼無效。', None, 6)).(The error occurred while clearing buffer, line 399.)
 2026-01-04 01:49:17 - main.myLib.myGui.mygui_serial - ERROR - Stop when timeout or error occurs.(發生Timeout且超時或是錯誤導致GUI的停止運行)
 2026-01-10 20:24:02 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 1
+2026-01-12 09:45:02 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (OSError(9, '控制代碼無效。', None, 6)).(An error occurred during the data retrieval process, line 478.)
+2026-01-12 09:45:02 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2026-01-12 09:45:02 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2026-01-12 09:45:02 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2026-01-12 09:45:02 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (OSError(9, '控制代碼無效。', None, 6)).(The error occurred while clearing buffer, line 399.)
+2026-01-12 09:45:04 - main.myLib.myGui.mygui_serial - ERROR - Stop when timeout or error occurs.(發生Timeout且超時或是錯誤導致GUI的停止運行)

@@ -27,70 +27,51 @@ class VersionTable(QGroupBox):
         self.versionTable.setRowCount(4)
         self.versionTable.setColumnCount(2)
 
-
     def ViewVersion(self, DeviceVer, GUIVer):
         """
-        DeviceVer is a merged comma-separated string returned by MCU, e.g.
-            "HINS_MCU_V2.0,HINS_TOP_V1,HINS_CPU_V1_0"
-        Display as separate rows:
-            NIOS2 VERSION, FPGA VERSION, MCU VERSION, GUI VERSION
-        Parse by token prefix; if prefix not found, fall back to order (NIOS2, FPGA, MCU).
+        DeviceVer 固定順序: MCU, TOP(FPGA), CPU(NIOS2), JIC
+        例如: "HINS_MCU_V3.1_M,HINS_TOP_V1,HINS_CPU_V1_0,HINS_2026-01-15"
         """
         dev = (DeviceVer or "").strip()
         tokens = [t.strip() for t in dev.split(",") if t.strip()]
 
-        nios2_ver = ""
-        fpga_ver = ""
-        mcu_ver = ""
+        # 初始化預設值，避免 tokens 數量不足時報錯
+        mcu_ver = tokens[0] if len(tokens) > 0 else ""
+        fpga_ver = tokens[1] if len(tokens) > 1 else ""
+        nios2_ver = tokens[2] if len(tokens) > 2 else ""
+        jic_ver = tokens[3] if len(tokens) > 3 else ""
 
-        # Prefix-based parsing (robust to ordering)
-        for t in tokens:
-            up = t.upper()
-            if up.startswith("HINS_CPU_") or "NIOS" in up or ("CPU" in up and "MCU" not in up):
-                nios2_ver = t
-            elif up.startswith("HINS_TOP_") or "TOP" in up or "FPGA" in up:
-                fpga_ver = t
-            elif up.startswith("HINS_MCU_") or "MCU" in up:
-                mcu_ver = t
+        # 定義顯示標籤與對應數值
+        labels = [
+            "NIOS2 VERSION",
+            "FPGA VERSION",
+            "MCU VERSION",
+            "JIC VERSION",  # 新增項目
+            "GUI VERSION"
+        ]
+        values = [nios2_ver, fpga_ver, mcu_ver, jic_ver, GUIVer]
 
-        # Fallback to declared order: NIOS2, FPGA, MCU
-        if (nios2_ver == "" or fpga_ver == "" or mcu_ver == "") and len(tokens) >= 3:
-            if nios2_ver == "":
-                nios2_ver = tokens[0]
-            if fpga_ver == "":
-                fpga_ver = tokens[1]
-            if mcu_ver == "":
-                mcu_ver = tokens[2]
-
-        labels = ["NIOS2 VERSION", "FPGA VERSION", "MCU VERSION", "GUI VERSION"]
-        values = [nios2_ver, fpga_ver, mcu_ver, GUIVer]
-
+        # 更新表格設定
         self.versionTable.clear()
-        self.versionTable.setRowCount(4)
+        self.versionTable.setRowCount(len(labels))  # 動態設定為 5 列
         self.versionTable.setColumnCount(2)
 
         for r, (lab, val) in enumerate(zip(labels, values)):
             self.versionTable.setItem(r, 0, QTableWidgetItem(lab))
             self.versionTable.setItem(r, 1, QTableWidgetItem(str(val)))
 
-        # Hide headers (labels are in col 0)
+        # 介面調整
         self.versionTable.horizontalHeader().setVisible(False)
         self.versionTable.verticalHeader().setVisible(False)
-
-        # Column sizing
         self.versionTable.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         self.versionTable.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeToContents)
         self.versionTable.resizeRowsToContents()
-        self.versionTable.resizeColumnsToContents()
 
-        layout = QVBoxLayout()
-        layout.addWidget(self.versionTable)
-        self.setLayout(layout)
 
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     ver = VersionTable()
-    ver.ViewVersion("MCU & FOG")
+    ver.ViewVersion("HINS_MCU_V3.1_M,HINS_TOP_V1,HINS_CPU_V1_0,HINS_2026-01-15", "V1.0.0")
     ver.show()
     app.exec()

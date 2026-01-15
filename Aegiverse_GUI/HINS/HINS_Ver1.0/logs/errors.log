@@ -332,3 +332,62 @@
 2026-01-12 09:45:02 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
 2026-01-12 09:45:02 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (OSError(9, '控制代碼無效。', None, 6)).(The error occurred while clearing buffer, line 399.)
 2026-01-12 09:45:04 - main.myLib.myGui.mygui_serial - ERROR - Stop when timeout or error occurs.(發生Timeout且超時或是錯誤導致GUI的停止運行)
+2026-01-14 11:46:49 - main.myLib.mySerial.Connector - ERROR - dump_SN_parameters parse error: unexpected ACK frame: {'type': 162, 'cmd': 102, 'status': 3, 'len': 0, 'payload': b''}
+2026-01-14 11:47:05 - main.myLib.mySerial.Connector - ERROR - dump_SN_parameters parse error: unexpected ACK frame: {'type': 162, 'cmd': 129, 'status': 3, 'len': 0, 'payload': b''}
+2026-01-14 16:12:36 - main.myLib.mySerial.Connector - ERROR - IOError, the device: COM23 can not be found or can not be configured!
+2026-01-14 16:12:36 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2026-01-14 16:12:36 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2026-01-14 16:12:36 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2026-01-14 16:12:36 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (OSError(9, '控制代碼無效。', None, 6)).(The error occurred while clearing buffer, line 399.)
+2026-01-14 16:12:39 - main.myLib.myGui.mygui_serial - ERROR - Stop when timeout or error occurs.(發生Timeout且超時或是錯誤導致GUI的停止運行)
+2026-01-14 16:24:28 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (OSError(9, '控制代碼無效。', None, 6)).(An error occurred during the data retrieval process, line 478.)
+2026-01-14 16:24:28 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2026-01-14 16:24:28 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2026-01-14 16:24:28 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2026-01-14 16:24:28 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (OSError(9, '控制代碼無效。', None, 6)).(The error occurred while clearing buffer, line 399.)
+2026-01-14 16:24:31 - main.myLib.myGui.mygui_serial - ERROR - Stop when timeout or error occurs.(發生Timeout且超時或是錯誤導致GUI的停止運行)
+2026-01-14 16:27:02 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (OSError(9, '控制代碼無效。', None, 6)).(An error occurred during the data retrieval process, line 478.)
+2026-01-14 16:27:02 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2026-01-14 16:27:02 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2026-01-14 16:27:02 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2026-01-14 16:27:02 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (OSError(9, '控制代碼無效。', None, 6)).(The error occurred while clearing buffer, line 399.)
+2026-01-14 16:27:04 - main.myLib.myGui.mygui_serial - ERROR - Stop when timeout or error occurs.(發生Timeout且超時或是錯誤導致GUI的停止運行)
+2026-01-14 19:05:13 - main.myLib.mySerial.Connector - ERROR - dump_SN_parameters parse error: unexpected ACK frame: {'type': 162, 'cmd': 130, 'status': 0, 'len': 8, 'payload': b'adam1227'}
+2026-01-14 19:05:17 - main.myLib.mySerial.Connector - ERROR - dump_SN_parameters parse error: unexpected ACK frame: {'type': 162, 'cmd': 130, 'status': 0, 'len': 8, 'payload': b'adam1227'}
+2026-01-14 19:07:23 - main.myLib.mySerial.Connector - ERROR - dump_fog_parameters parse error: unexpected ACK frame: {'type': 162, 'cmd': 102, 'status': 0, 'len': 343, 'payload': b'{"0":163,"1":9000,"2":-8192,"3":0,"4":51,"5":5,"6":6,"7":16384,"8":1,"9":5,"10":0,"11":72,"12":1143111680,"13":-1,"14":-1,"15":-1,"16":-1,"17":0,"18":953267991,"19":-1,"20":-1,"21":-1,"22":-1,"23":1112014848,"24":1092616192,"25":0,"26":0,"27":0,"28":0,"29":0,"30":0,"31":0,"32":1065353216,"33":0,"34":0,"35":-1,"36":-1,"37":-1,"38":-1,"39":-1}'}
+2026-01-14 19:07:27 - main.myLib.mySerial.Connector - ERROR - dump_fog_parameters parse error: unexpected ACK frame: {'type': 162, 'cmd': 102, 'status': 0, 'len': 343, 'payload': b'{"0":163,"1":9000,"2":-8192,"3":0,"4":51,"5":5,"6":6,"7":16384,"8":1,"9":5,"10":0,"11":72,"12":1143111680,"13":-1,"14":-1,"15":-1,"16":-1,"17":0,"18":953267991,"19":-1,"20":-1,"21":-1,"22":-1,"23":1112014848,"24":1092616192,"25":0,"26":0,"27":0,"28":0,"29":0,"30":0,"31":0,"32":1065353216,"33":0,"34":0,"35":-1,"36":-1,"37":-1,"38":-1,"39":-1}'}
+2026-01-14 20:32:52 - main.myLib.mySerial.Connector - ERROR - dump_fog_parameters parse error: unexpected ACK frame: {'type': 162, 'cmd': 102, 'status': 0, 'len': 343, 'payload': b'{"0":163,"1":9000,"2":-8192,"3":0,"4":51,"5":5,"6":6,"7":16384,"8":1,"9":5,"10":0,"11":72,"12":1143111680,"13":-1,"14":-1,"15":-1,"16":-1,"17":0,"18":953267991,"19":-1,"20":-1,"21":-1,"22":-1,"23":1112014848,"24":1092616192,"25":0,"26":0,"27":0,"28":0,"29":0,"30":0,"31":0,"32":1065353216,"33":0,"34":0,"35":-1,"36":-1,"37":-1,"38":-1,"39":-1}'}
+2026-01-14 20:33:21 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (OSError(22, '因為執行緒結束或應用程式要求，所以已中止 I/O 操作。', None, 995)).(An error occurred during the data retrieval process, line 478.)
+2026-01-14 20:33:21 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2026-01-14 20:33:21 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2026-01-14 20:33:21 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2026-01-14 20:33:21 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (PermissionError(13, '裝置無法辨識命令。', None, 22)).(The error occurred while clearing buffer, line 399.)
+2026-01-14 20:33:24 - main.myLib.myGui.mygui_serial - ERROR - Stop when timeout or error occurs.(發生Timeout且超時或是錯誤導致GUI的停止運行)
+2026-01-14 20:33:26 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (PermissionError(13, '裝置無法辨識命令。', None, 22)).(The error occurred while clearing buffer, line 399.)
+2026-01-14 20:33:26 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2026-01-14 20:33:26 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2026-01-14 20:33:26 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2026-01-14 20:33:26 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (PermissionError(13, '裝置無法辨識命令。', None, 22)).(An error occurred during the data retrieval process, line 475.)
+2026-01-14 20:33:26 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2026-01-14 20:33:26 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2026-01-14 20:33:26 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2026-01-14 20:33:26 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (PermissionError(13, '裝置無法辨識命令。', None, 22)).(The error occurred while clearing buffer, line 399.)
+2026-01-14 20:33:28 - main.myLib.myGui.mygui_serial - ERROR - Stop when timeout or error occurs.(發生Timeout且超時或是錯誤導致GUI的停止運行)
+2026-01-15 17:17:54 - main.myLib.mySerial.Connector - ERROR - IOError, the device: COM19 can not be found or can not be configured!
+2026-01-15 17:17:54 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2026-01-15 17:17:54 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2026-01-15 17:17:54 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2026-01-15 17:17:54 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (OSError(9, '控制代碼無效。', None, 6)).(The error occurred while clearing buffer, line 399.)
+2026-01-15 17:17:57 - main.myLib.myGui.mygui_serial - ERROR - Stop when timeout or error occurs.(發生Timeout且超時或是錯誤導致GUI的停止運行)
+2026-01-15 20:21:29 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (OSError(9, '控制代碼無效。', None, 6)).(An error occurred during the data retrieval process, line 478.)
+2026-01-15 20:21:29 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2026-01-15 20:21:29 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2026-01-15 20:21:29 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2026-01-15 20:21:30 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (OSError(9, '控制代碼無效。', None, 6)).(The error occurred while clearing buffer, line 399.)
+2026-01-15 20:21:33 - main.myLib.myGui.mygui_serial - ERROR - Stop when timeout or error occurs.(發生Timeout且超時或是錯誤導致GUI的停止運行)
+2026-01-15 20:22:11 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (OSError(9, '控制代碼無效。', None, 6)).(An error occurred during the data retrieval process, line 478.)
+2026-01-15 20:22:11 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2026-01-15 20:22:11 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2026-01-15 20:22:11 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2026-01-15 20:22:12 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (OSError(9, '控制代碼無效。', None, 6)).(The error occurred while clearing buffer, line 399.)
+2026-01-15 20:22:20 - main.myLib.myGui.mygui_serial - ERROR - Stop when timeout or error occurs.(發生Timeout且超時或是錯誤導致GUI的停止運行)

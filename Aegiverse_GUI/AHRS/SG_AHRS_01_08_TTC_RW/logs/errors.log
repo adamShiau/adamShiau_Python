@@ -158,3 +158,11 @@
 2025-12-10 12:35:48 - main.pigImuReader - ERROR - getImuData exception: 'bool' object is not subscriptable
 2025-12-10 12:35:52 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
 2025-12-10 12:35:52 - main.pigImuReader - ERROR - getImuData exception: 'bool' object is not subscriptable
+2026-01-13 16:52:10 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2026-01-13 16:52:10 - main.pigImuReader - ERROR - getImuData exception: 'bool' object is not subscriptable
+2026-01-13 16:52:35 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2026-01-13 16:52:35 - main.pigImuReader - ERROR - getImuData exception: 'bool' object is not subscriptable
+2026-01-13 16:55:28 - main.myLib.mySerial.Connector - ERROR - 撈取數據並轉換為json格式的過程中，因數據格式無法轉換為json格式，所以出現json.decoder.JSONDecodeError, line 274.
+2026-01-13 16:56:21 - main.myLib.mySerial.Connector - ERROR - 1700003, serial read timeout: check if the input power is ON, close the GUI and re-execute.
+2026-01-13 16:56:21 - main.pigImuReader - ERROR - getImuData exception: 'bool' object is not subscriptable
+2026-01-13 17:21:09 - main.myLib.mySerial.Connector - ERROR - 撈取數據並轉換為json格式的過程中，因數據格式無法轉換為json格式，所以出現json.decoder.JSONDecodeError, line 213.

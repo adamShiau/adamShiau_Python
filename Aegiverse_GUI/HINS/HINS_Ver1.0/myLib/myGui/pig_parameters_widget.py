@@ -55,6 +55,8 @@ CMD_FOG_GAIN1 = 14
 CMD_FOG_GAIN2 = 17
 CMD_FOG_FB_ON = 16
 CMD_FOG_CONST_STEP = 15
+CMD_OUT_TH = 21
+CMD_OUT_TH_EN = 22
 CMD_FOG_FPGA_Q = 220
 CMD_FOG_FPGA_R = 220
 CMD_FOG_DAC_GAIN = 19
@@ -94,7 +96,7 @@ CMD_ACCL_SFB_OFFSET_1 = 42
 ''' FOG PARAMETERS'''
 INIT_PARAMETERS = {
     "0": 163, "1": 8192, "2": -8192, "3": 0, "4": 50, "5": 5, "6": 6, "7": 16384, "8": 1, "9": 5, "10": 0,
-    "11": 72, "12": 650, "17": 0, "18": 1, "23": 50, "24": 10, "25": 0, "26": 0, "27": 0, "28": 0, "29": 0,
+    "11": 72, "12": 650, "13":0, "14":0, "17": 0, "18": 1, "23": 50, "24": 10, "25": 0, "26": 0, "27": 0, "28": 0, "29": 0,
     "30": 0, "31": 0, "32": 10000, "33": 0, "34": 0
 }
 
@@ -126,8 +128,10 @@ class pig_parameters_widget(QGroupBox):
         self.gain2 = spinBlock(title='GAIN2', minValue=0, maxValue=20, double=False, step=1)
         self.const_step = spinBlock(title='const_step', minValue=-32768, maxValue=65000, double=False, step=100)
         self.dac_gain = spinBlock(title='DAC_GAIN', minValue=0, maxValue=1023, double=False, step=1)
+        self.out_th_en = spinBlock(title='Att. Threshold EN', minValue=0, maxValue=1, double=False, step=1)
 
         # editline
+        self.out_th = editBlock("Att. Threshold")
         self.dac_Vpi = editBlock(title='Vπ')
         self.dac_Vpi.setFixedWidth(100)
         self.rst_voltage = editBlock(title='RST Voltage')
@@ -334,6 +338,8 @@ class pig_parameters_widget(QGroupBox):
         # mainLayout.addWidget(self.KF_Q, 7, 0, 1, 2)
         # mainLayout.addWidget(self.KF_R, 7, 2, 1, 2)
         mainLayout.addWidget(self.cutoff, 7, 0, 1, 2)
+        mainLayout.addWidget(self.out_th, 8, 0, 1, 2)
+        mainLayout.addWidget(self.out_th_en, 9, 0, 1, 2)
         mainLayout.addWidget(self.dropdown_para, 7, 2, 1, 2)
         # mainLayout.addWidget(self.dump_bt, 9, 0, 1, 2)
         # mainLayout.addWidget(self.Firmware_Version_lb, 11, 0, 1, 4)
@@ -364,7 +370,9 @@ class pig_parameters_widget(QGroupBox):
         self.fb_on.spin.valueChanged.connect(self.send_FB_ON_CMD)
         self.dac_gain.spin.valueChanged.connect(self.send_DAC_GAIN_CMD)
         self.cutoff.spin.valueChanged.connect(self.send_CUTOFF_CMD)
+        self.out_th_en.spin.valueChanged.connect(self.send_OUT_TH_EN_CMD)
         ''' line edit '''
+        self.out_th.le.textChanged.connect(self.send_OUT_TH_CMD)
         self.sf0.le.textChanged.connect(self.send_SF0_CMD)
         self.sf1.le.textChanged.connect(self.send_SF1_CMD)
         self.T1.le.textChanged.connect(self.send_BIAS_T1_CMD)
@@ -599,7 +607,8 @@ class pig_parameters_widget(QGroupBox):
                     f" 3=polarity                  , 4= Wait cnt                    , 5= avg,\n"
                     f" 6= GAIN1                   , 7= const_step                , 8= mode(0:OPEN),\n"
                     f" 9= GAIN2                   , 10= Err offset                 , 11= DAC_GAIN,\n"
-                    f" 12= CutOff                 , 17= FOG的STA               , 18= FOG的STB,\n"
+                    f" 12= CutOff                 , 13= OUT_TH               , 14= OUT_EN,\n"
+                    f" 17= FOG的STA               , 18= FOG的STB,\n"
                     f" 23= FOG Bias的T1      , 24= FOG Bias的T2          , 25= FOG Bias的BTA1,\n"
                     f" 26= FOG Bias的BTB1 , 27= FOG Bias的BTA2      , 28= FOG Bias的BTB2,\n"
                     f" 29= FOG Bias的BTA3 , 30= FOG Bias的BTB3      , 31= ACCL的STA,\n"
@@ -911,6 +920,10 @@ class pig_parameters_widget(QGroupBox):
         self.err_offset.spin.setValue(self.checkKeyExist(para, "10"))
         self.dac_gain.spin.setValue(self.checkKeyExist(para, "11"))
         self.cutoff.spin.setValue(self.ieee754_int_to_float(self.checkKeyExist(para, "12")))
+        self.out_th_en.spin.setValue(self.checkKeyExist(para, "14"))
+
+        out_th = self.ieee754_int_to_float(self.checkKeyExist(para, "13"))
+        self.out_th.le.setText(f'{out_th:.4f}'.rstrip('0').rstrip('.'))
 
         ### 20240417 修改
         # #將會有可能產生科學符號的部份，使用此方式將科學符號轉為標準表示法
@@ -1127,6 +1140,18 @@ class pig_parameters_widget(QGroupBox):
         self.__act.writeImuCmd(CMD_FOG_CUTOFF, value[0], self.__chVal)
         # self.__par_manager.update_parameters("DAC_GAIN", value)
         # print("%d" % value)
+
+    def send_OUT_TH_EN_CMD(self):
+        value = self.out_th_en.spin.value()
+        # logger.info('set FB on: %d', value)
+        self.__act.writeImuCmd(CMD_OUT_TH_EN, value, self.__chVal)
+
+
+    def send_OUT_TH_CMD(self):
+        out_th = float(self.out_th.le.text())
+        # logger.info('set SFA : %d', Re_sf0Val)
+        value = struct.unpack('<I', struct.pack('<f', out_th))
+        self.__act.writeImuCmd(CMD_OUT_TH, value[0], self.__chVal)
 
     def send_SF0_CMD(self):
         Re_sf0Val = float(self.sf0.le.text()) * 0.0001  # 與AA同方式

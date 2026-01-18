@@ -52,9 +52,16 @@ class HinsGnssInsReader(BaseReader):
         if v1_type == 0xA1:
             print(f"[V1 ACK] 指令 {hex(v1_cmd)} 已成功接收")
 
-        # 第二部分: V1 Result (FA A2)
         elif v1_type == 0xA2:
-            print(f"[V1 Result] 提取 MIP 數據: {' '.join(['%02X' % b for b in v1_payload])}")
-            # 第三部分: 拋出純 MIP 數據，觸發 test_new_arch.py 的 [RX]
             if len(v1_payload) > 0:
+                # 1. 這是您目前看到的 [RX] 來源 (Hex 原始數據)
                 self.raw_ack_qt.emit(v1_payload)
+
+                # 2. 關鍵修正：進入您寫好的 Parser 進行「Descriptor 查表解析」
+                parsed_data = self.parser.parse(v1_payload)
+
+                # 3. 為了除錯，直接在這裡印出解析結果
+                print(f"[Parser Result] 解析成功: {parsed_data}")
+
+                # 4. 發送解析後的字典訊號 (用於未來更新 UI)
+                self.data_ready_qt.emit(parsed_data)

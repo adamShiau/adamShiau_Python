@@ -18,6 +18,8 @@ from PySide6.QtGui import QAction
 
 class pig_menu_manager:
     def __init__(self, menuBar, obj):
+        self.hins_cmd_action = None
+        self.pig_version_action = None
         self.pig_initial_setting_action = None
         self.pig_plot_action = None
         self.pig_allan_action = None
@@ -31,6 +33,8 @@ class pig_menu_manager:
         self.action_list(obj)
 
     def action_list(self, obj):
+        
+        """version menu"""
         self.pig_version_action = QAction("version")
         self.pig_version_action.setEnabled(False)
         self.file_menu.addAction(self.pig_version_action)
@@ -51,6 +55,13 @@ class pig_menu_manager:
         self.pig_config_action.setShortcut("Ctrl+C")
         self.pig_config_action.setEnabled(False)
         self.setting_menu.addAction(self.pig_config_action)
+
+        '''HINS CMD setting'''
+        self.hins_cmd_action = QAction("HINS_Config", obj)
+        self.hins_cmd_action.setShortcut("Ctrl+h")
+        self.hins_cmd_action.setEnabled(False)
+        self.setting_menu.addAction(self.hins_cmd_action)
+
         '''
         self.pig_cali_action = QAction("pig calibration", obj)
         self.pig_cali_action.setShortcut("Ctrl+k")
@@ -76,6 +87,7 @@ class pig_menu_manager:
         self.pig_W_A_cali_action.triggered.connect(fn[1])
         self.pig_version_action.triggered.connect(fn[2])
         self.pig_config_action.triggered.connect(fn[3])
+        self.hins_cmd_action.triggered.connect(fn[4])
         # self.pig_cali_action.triggered.connect(fn[1])
         # self.pig_plot_action.triggered.connect(fn[2])
         # self.pig_allan_action.triggered.connect(fn[3])
@@ -87,5 +99,6 @@ class pig_menu_manager:
         self.pig_W_A_cali_action.setEnabled(open)
         self.pig_version_action.setEnabled(open)
         self.pig_config_action.setEnabled(open)
+        self.hins_cmd_action.setEnabled(open)
         # self.pig_cali_action.setEnabled(not open)
         # self.pig_initial_setting_action.setEnabled(not open)

@@ -42,6 +42,7 @@ from myLib.myGui import analysis_Allan, analysis_TimingPlot
 from myLib.myGui import analysis_Allan, analysis_TimingPlot, myRadioButton
 from myLib.myGui.pig_W_A_calibration_parameter_widget import pig_calibration_widget
 from myLib.myGui.pig_configuration_widget import pig_configuration_widget
+from myLib.myGui.hins_cmd_widget import hins_cmd_widget
 from pigImu_Widget import pigImuWidget as TOP
 from pigImuReader import pigImuReader as ACTION
 from pigImuReader import IMU_DATA_STRUCTURE
@@ -65,6 +66,7 @@ class mainWindow(QMainWindow):
         self.pig_parameter_widget = None
         self.cali_parameter_menu = None
         self.pig_configuration_menu = None
+        self.hins_cmd_menu = None
         self.pig_version_menu = None
         self.__portName = None
         self.GUI_vers = "HINS-INS-01-00-RD-RW"
@@ -138,7 +140,8 @@ class mainWindow(QMainWindow):
         self.pig_menu.action_trigger_connect([self.show_parameters,
                                               self.show_W_A_cali_parameter_menu,
                                               self.show_version_menu,
-                                              self.show_configuration_menu
+                                              self.show_configuration_menu,
+                                              self.show_hins_cmd_menu
                                               # self.show_calibration_menu,
                                               # self.show_plot_data_menu,
                                               # self.show_cal_allan_menu,
@@ -180,6 +183,10 @@ class mainWindow(QMainWindow):
     def show_parameters(self):
         self.pig_parameter_widget.show()
 
+    def show_hins_cmd_menu(self):
+        if self.hins_cmd_menu:
+            self.hins_cmd_menu.show()
+
     def show_calibration_menu(self):
         self.pig_cali_menu.show()
 
@@ -197,6 +204,7 @@ class mainWindow(QMainWindow):
 
     def show_configuration_menu(self):
         self.pig_configuration_menu.show()
+
     def show_version_menu(self):
         self.act.flushInputBuffer("None")
         self.pig_version_menu.ViewVersion(self.act.getVersion(2), self.GUI_vers)
@@ -306,8 +314,10 @@ class mainWindow(QMainWindow):
             self.cali_parameter_menu = pig_calibration_widget(self.act, self.imudata_file_Misa, self.top.save_block.le_filename.text())
             self.pig_configuration_menu = pig_configuration_widget(self.act)
             self.pig_version_menu = VersionTable()
+            self.hins_cmd_menu = hins_cmd_widget(self.act)
             self.act.isCali_w, self.act.isCali_a = self.pig_cali_menu.cali_status()  # update calibration flag to act
             self.act.stopIMU()
+            self.act.raw_hins_ack_qt.connect(self.hins_cmd_menu.update_rx_display)
         else:
             # 20231128
             self.act.stopIMU()

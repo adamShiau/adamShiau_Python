@@ -88,3 +88,4 @@ if __name__ == "__main__":
         ser.write([5, 0, 0, 0, 4])
         ser.disconnect()
     pass
+

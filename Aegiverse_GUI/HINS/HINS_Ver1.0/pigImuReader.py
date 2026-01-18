@@ -70,6 +70,7 @@ class pigImuReader(QThread):
         occur_err_qt = Signal(str)
         deviceReset_qt = Signal(list)
         stopRemind_qt = Signal(bool)
+        raw_hins_ack_qt = Signal(list)  # 新增：專門給 HINS 回傳使用的信號
 
     def __init__(self, portName: str = "None", boolCaliw=False, boolCalia=False, baudRate: int = 230400,
                  debug_en: bool = 0):
@@ -281,6 +282,12 @@ class pigImuReader(QThread):
 
     # End of memsImuReader::writeImuCmd
 
+    def writeRawCmd(self, data):
+        """ 直接送出原始 Byte 陣列，不加上任何額外 Header/Trailer """
+        if self.__Connector:
+            self.__Connector.write(bytearray(data))
+            # logger.info(f"Raw Cmd Sent: {['%02X' % b for b in data]}")
+
     def readIMU(self):
         self.flushInputBuffer("None")
         self.writeImuCmd(4, 2, 2)
@@ -324,9 +331,6 @@ class pigImuReader(QThread):
             if dataPacket == False:
                 return False, False
 
-            # TIME, WX, WY, WZ, AX, AY, AZ, TX, TY, TZ, ACC_TEMP, PITCH, ROLL, YAW = cmn.IRIS_AHRS(dataPacket, EN=1, PRINT=1, sf_a=self.sf_a,
-            #                                                                   sf_b=self.sf_b,
-            #                                                                   POS_TIME=SIZE_HEADER)
             TIME, WX, WY, WZ, AX, AY, AZ, TX, TY, TZ, ACC_TEMP, PITCH, ROLL, YAW = cmn.IRIS_AHRS_Rotate(dataPacket, EN=1,
                                                                                                  PRINT=1,
                                                                                                  sf_a=self.sf_a,

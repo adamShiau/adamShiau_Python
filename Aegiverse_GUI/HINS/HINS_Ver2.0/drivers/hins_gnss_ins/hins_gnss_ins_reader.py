@@ -27,8 +27,8 @@ class HinsGnssInsReader(BaseReader):
                         raw_data = self._connector.readBinaryList(available)
                         if raw_data:
                             # --- 加入這段來印出 HEX ---
-                            hex_str = " ".join([f"{b:02X}" for b in raw_data])
-                            print(f"\n[DEBUG RAW] {hex_str}")
+                            # hex_str = " ".join([f"{b:02X}" for b in raw_data])
+                            # print(f"\n[DEBUG RAW] {hex_str}")
                             # -----------------------
                             self.dispatcher.feed_data(raw_data)
                     else:

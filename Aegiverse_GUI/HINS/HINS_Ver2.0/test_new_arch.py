@@ -17,9 +17,9 @@ if __name__ == "__main__":
     # 1. 建立 QApplication，這會接管事件迴圈
     app = QApplication(sys.argv)
 
-    ser = Connector(portName="COM8", baudRate=230400)
+    ser = Connector(portName="COM19", baudRate=230400)
     if not ser.connectConn():
-        print("無法連接 COM8")
+        print("無法連接 COM19")
         sys.exit()
 
     reader = HinsGnssInsReader()

@@ -1021,3 +1021,189 @@
 2026-01-21 20:20:57,150 [INFO] main.drivers.HinsFogImu: Sent FOG Cmd: 4, Val: 4
 2026-01-21 20:20:57,151 [INFO] main.drivers.HinsFogImu: [HinsFogImu] Thread stop requested.
 2026-01-21 20:20:57,259 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM19 is disconnected
+2026-01-21 20:22:16,127 [INFO] pigImu_Widget.pigImu_Widget: pigImu_Widget logger start
+2026-01-21 20:22:16,150 [INFO] myLib.myGui.graph.myLib.myGui.graph: myLib.myGui.graph logger start
+2026-01-21 20:22:16,875 [INFO] myLib.common.myLib.common: myLib.common logger start
+2026-01-21 20:22:16,876 [INFO] myLib.myGui.mygui_serial.myLib.myGui.mygui_serial: myLib.myGui.mygui_serial logger start
+2026-01-21 20:22:16,877 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: myLib.myGui.myLabel logger start
+2026-01-21 20:22:16,878 [INFO] myLib.myGui.myLineEdit.myLib.myGui.myLineEdit: myLib.myGui.myLineEdit logger start
+2026-01-21 20:22:16,878 [INFO] myLib.myGui.myCheckBox.myLib.myGui.myCheckBox: myLib.myGui.myCheckBox logger start
+2026-01-21 20:22:16,879 [INFO] myLib.myGui.myRadioButton.myLib.myGui.myRadioButton: myLib.myGui.myRadioButton logger start
+2026-01-21 20:22:16,880 [INFO] record_Log: record_Log logger start
+2026-01-21 20:22:16,894 [INFO] myLib.myGui.AttitudeIndicator.myLib.myGui.AttitudeIndicator: myLib.myGui.AttitudeIndicator logger start
+2026-01-21 20:22:16,896 [INFO] myLib.myGui.pig_menu_manager.myLib.myGui.pig_menu_manager: myLib.myGui.pig_menu_manager logger start
+2026-01-21 20:22:16,901 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: myLib.mySerial.Connector logger start
+2026-01-21 20:22:16,920 [INFO] myLib.crcCalculator.crcLib.myLib.crcCalculator.crcLib: myLib.crcCalculator.crcLib logger start
+2026-01-21 20:22:21,225 [INFO] Main: Connecting to COM19 at 230400...
+2026-01-21 20:22:21,265 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM19 is connected
+2026-01-21 20:22:21,268 [INFO] main.drivers.HinsFogImu: HinsFogImu Reader Started.
+2026-01-21 20:22:22,011 [INFO] main.drivers.HinsFogImu: Start Reading IMU...
+2026-01-21 20:22:22,012 [INFO] main.drivers.HinsFogImu: Sent FOG Cmd: 4, Val: 2
+2026-01-21 20:22:25,466 [INFO] main.drivers.HinsFogImu: Stop Reading IMU...
+2026-01-21 20:22:25,467 [INFO] main.drivers.HinsFogImu: Sent FOG Cmd: 4, Val: 4
+2026-01-21 20:22:27,142 [INFO] main.drivers.HinsFogImu: Start Reading IMU...
+2026-01-21 20:22:27,143 [INFO] main.drivers.HinsFogImu: Sent FOG Cmd: 4, Val: 2
+2026-01-21 20:22:29,303 [INFO] main.drivers.HinsFogImu: Stop Reading IMU...
+2026-01-21 20:22:29,304 [INFO] main.drivers.HinsFogImu: Sent FOG Cmd: 4, Val: 4
+2026-01-21 20:22:31,349 [INFO] main.drivers.HinsFogImu: Stop Reading IMU...
+2026-01-21 20:22:31,350 [INFO] main.drivers.HinsFogImu: Sent FOG Cmd: 4, Val: 4
+2026-01-21 20:22:31,350 [INFO] main.drivers.HinsFogImu: [HinsFogImu] Thread stop requested.
+2026-01-21 20:22:31,469 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM19 is disconnected
+2026-01-21 20:28:17,975 [INFO] pigImu_Widget.pigImu_Widget: pigImu_Widget logger start
+2026-01-21 20:28:17,996 [INFO] myLib.myGui.graph.myLib.myGui.graph: myLib.myGui.graph logger start
+2026-01-21 20:28:18,623 [INFO] myLib.common.myLib.common: myLib.common logger start
+2026-01-21 20:28:18,624 [INFO] myLib.myGui.mygui_serial.myLib.myGui.mygui_serial: myLib.myGui.mygui_serial logger start
+2026-01-21 20:28:18,625 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: myLib.myGui.myLabel logger start
+2026-01-21 20:28:18,626 [INFO] myLib.myGui.myLineEdit.myLib.myGui.myLineEdit: myLib.myGui.myLineEdit logger start
+2026-01-21 20:28:18,626 [INFO] myLib.myGui.myCheckBox.myLib.myGui.myCheckBox: myLib.myGui.myCheckBox logger start
+2026-01-21 20:28:18,626 [INFO] myLib.myGui.myRadioButton.myLib.myGui.myRadioButton: myLib.myGui.myRadioButton logger start
+2026-01-21 20:28:18,627 [INFO] record_Log: record_Log logger start
+2026-01-21 20:28:18,638 [INFO] myLib.myGui.AttitudeIndicator.myLib.myGui.AttitudeIndicator: myLib.myGui.AttitudeIndicator logger start
+2026-01-21 20:28:18,640 [INFO] myLib.myGui.pig_menu_manager.myLib.myGui.pig_menu_manager: myLib.myGui.pig_menu_manager logger start
+2026-01-21 20:28:18,644 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: myLib.mySerial.Connector logger start
+2026-01-21 20:28:18,648 [INFO] myLib.myGui.myComboBox.myLib.myGui.myComboBox: myLib.myGui.myComboBox logger start
+2026-01-21 20:28:18,648 [INFO] myLib.myGui.pig_parameters_widget.myLib.myGui.pig_parameters_widget: myLib.myGui.pig_parameters_widget logger start
+2026-01-21 20:28:18,650 [INFO] myLib.myGui.pig_W_A_calibration_parameter_widget.myLib.myGui.pig_W_A_calibration_parameter_widget: myLib.myGui.pig_W_A_calibration_parameter_widget logger start
+2026-01-21 20:28:18,651 [INFO] myLib.myGui.pig_version_widget.myLib.myGui.pig_version_widget: myLib.myGui.pig_version_widget logger start
+2026-01-21 20:28:18,651 [INFO] myLib.myGui.pig_configuration_widget.myLib.myGui.pig_configuration_widget: myLib.myGui.pig_configuration_widget logger start
+2026-01-21 20:28:18,656 [INFO] myLib.crcCalculator.crcLib.myLib.crcCalculator.crcLib: myLib.crcCalculator.crcLib logger start
+2026-01-21 20:28:19,955 [INFO] Main: Port Selected: COM33
+2026-01-21 20:28:19,956 [INFO] Main: Port Selected: COM33
+2026-01-21 20:28:21,053 [INFO] Main: Port Selected: COM19
+2026-01-21 20:28:21,817 [INFO] Main: Connecting to COM19 at 230400...
+2026-01-21 20:28:21,858 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM19 is connected
+2026-01-21 20:28:21,862 [INFO] main.drivers.HinsGnssIns: HinsGnssIns Reader Started.
+2026-01-21 20:28:21,862 [INFO] main.drivers.HinsFogImu: HinsFogImu Reader Started.
+2026-01-21 20:28:22,626 [INFO] main.drivers.HinsFogImu: Start Reading IMU...
+2026-01-21 20:28:22,628 [INFO] main.drivers.HinsFogImu: Sent FOG Cmd: 4, Val: 2
+2026-01-21 20:28:22,716 [WARNING] main.drivers.HinsFogImu: CRC32 Check Failed
+2026-01-21 20:28:22,755 [WARNING] main.drivers.HinsFogImu: CRC32 Check Failed
+2026-01-21 20:28:22,776 [WARNING] main.drivers.HinsFogImu: CRC32 Check Failed
+2026-01-21 20:28:22,797 [WARNING] main.drivers.HinsFogImu: CRC32 Check Failed
+2026-01-21 20:28:22,826 [WARNING] main.drivers.HinsFogImu: CRC32 Check Failed
+2026-01-21 20:28:22,856 [WARNING] main.drivers.HinsFogImu: CRC32 Check Failed
+2026-01-21 20:28:22,887 [WARNING] main.drivers.HinsFogImu: CRC32 Check Failed
+2026-01-21 20:28:22,916 [WARNING] main.drivers.HinsFogImu: CRC32 Check Failed
+2026-01-21 20:28:23,005 [WARNING] main.drivers.HinsFogImu: CRC32 Check Failed
+2026-01-21 20:28:23,026 [WARNING] main.drivers.HinsFogImu: CRC32 Check Failed
+2026-01-21 20:28:23,086 [WARNING] main.drivers.HinsFogImu: CRC32 Check Failed
+2026-01-21 20:28:23,136 [WARNING] main.drivers.HinsFogImu: CRC32 Check Failed
+2026-01-21 20:28:23,175 [WARNING] main.drivers.HinsFogImu: CRC32 Check Failed
+2026-01-21 20:28:23,205 [WARNING] main.drivers.HinsFogImu: CRC32 Check Failed
+2026-01-21 20:28:23,255 [WARNING] main.drivers.HinsFogImu: CRC32 Check Failed
+2026-01-21 20:28:23,295 [WARNING] main.drivers.HinsFogImu: CRC32 Check Failed
+2026-01-21 20:28:23,325 [WARNING] main.drivers.HinsFogImu: CRC32 Check Failed
+2026-01-21 20:28:23,385 [WARNING] main.drivers.HinsFogImu: CRC32 Check Failed
+2026-01-21 20:28:23,415 [WARNING] main.drivers.HinsFogImu: CRC32 Check Failed
+2026-01-21 20:28:23,464 [WARNING] main.drivers.HinsFogImu: CRC32 Check Failed
+2026-01-21 20:28:23,506 [WARNING] main.drivers.HinsFogImu: CRC32 Check Failed
+2026-01-21 20:28:23,556 [WARNING] main.drivers.HinsFogImu: CRC32 Check Failed
+2026-01-21 20:28:23,605 [WARNING] main.drivers.HinsFogImu: CRC32 Check Failed
+2026-01-21 20:28:23,675 [WARNING] main.drivers.HinsFogImu: CRC32 Check Failed
+2026-01-21 20:28:23,715 [WARNING] main.drivers.HinsFogImu: CRC32 Check Failed
+2026-01-21 20:28:23,815 [WARNING] main.drivers.HinsFogImu: CRC32 Check Failed
+2026-01-21 20:28:23,846 [WARNING] main.drivers.HinsFogImu: CRC32 Check Failed
+2026-01-21 20:28:24,066 [WARNING] main.drivers.HinsFogImu: CRC32 Check Failed
+2026-01-21 20:28:24,115 [WARNING] main.drivers.HinsFogImu: CRC32 Check Failed
+2026-01-21 20:28:24,167 [WARNING] main.drivers.HinsFogImu: CRC32 Check Failed
+2026-01-21 20:28:24,235 [WARNING] main.drivers.HinsFogImu: CRC32 Check Failed
+2026-01-21 20:28:24,286 [WARNING] main.drivers.HinsFogImu: CRC32 Check Failed
+2026-01-21 20:28:24,315 [WARNING] main.drivers.HinsFogImu: CRC32 Check Failed
+2026-01-21 20:28:24,375 [WARNING] main.drivers.HinsFogImu: CRC32 Check Failed
+2026-01-21 20:28:24,427 [WARNING] main.drivers.HinsFogImu: CRC32 Check Failed
+2026-01-21 20:28:24,445 [WARNING] main.drivers.HinsFogImu: CRC32 Check Failed
+2026-01-21 20:28:24,474 [WARNING] main.drivers.HinsFogImu: CRC32 Check Failed
+2026-01-21 20:28:24,535 [WARNING] main.drivers.HinsFogImu: CRC32 Check Failed
+2026-01-21 20:28:24,556 [WARNING] main.drivers.HinsFogImu: CRC32 Check Failed
+2026-01-21 20:28:24,596 [WARNING] main.drivers.HinsFogImu: CRC32 Check Failed
+2026-01-21 20:28:24,666 [WARNING] main.drivers.HinsFogImu: CRC32 Check Failed
+2026-01-21 20:28:24,695 [WARNING] main.drivers.HinsFogImu: CRC32 Check Failed
+2026-01-21 20:28:24,745 [WARNING] main.drivers.HinsFogImu: CRC32 Check Failed
+2026-01-21 20:28:24,904 [WARNING] main.drivers.HinsFogImu: CRC32 Check Failed
+2026-01-21 20:28:24,917 [WARNING] main.drivers.HinsFogImu: CRC32 Check Failed
+2026-01-21 20:28:24,945 [WARNING] main.drivers.HinsFogImu: CRC32 Check Failed
+2026-01-21 20:28:24,995 [WARNING] main.drivers.HinsFogImu: CRC32 Check Failed
+2026-01-21 20:28:25,007 [WARNING] main.drivers.HinsFogImu: CRC32 Check Failed
+2026-01-21 20:28:25,036 [WARNING] main.drivers.HinsFogImu: CRC32 Check Failed
+2026-01-21 20:28:25,077 [WARNING] main.drivers.HinsFogImu: CRC32 Check Failed
+2026-01-21 20:28:35,788 [INFO] pigImu_Widget.pigImu_Widget: pigImu_Widget logger start
+2026-01-21 20:28:35,809 [INFO] myLib.myGui.graph.myLib.myGui.graph: myLib.myGui.graph logger start
+2026-01-21 20:28:36,446 [INFO] myLib.common.myLib.common: myLib.common logger start
+2026-01-21 20:28:36,447 [INFO] myLib.myGui.mygui_serial.myLib.myGui.mygui_serial: myLib.myGui.mygui_serial logger start
+2026-01-21 20:28:36,448 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: myLib.myGui.myLabel logger start
+2026-01-21 20:28:36,449 [INFO] myLib.myGui.myLineEdit.myLib.myGui.myLineEdit: myLib.myGui.myLineEdit logger start
+2026-01-21 20:28:36,449 [INFO] myLib.myGui.myCheckBox.myLib.myGui.myCheckBox: myLib.myGui.myCheckBox logger start
+2026-01-21 20:28:36,450 [INFO] myLib.myGui.myRadioButton.myLib.myGui.myRadioButton: myLib.myGui.myRadioButton logger start
+2026-01-21 20:28:36,450 [INFO] record_Log: record_Log logger start
+2026-01-21 20:28:36,462 [INFO] myLib.myGui.AttitudeIndicator.myLib.myGui.AttitudeIndicator: myLib.myGui.AttitudeIndicator logger start
+2026-01-21 20:28:36,464 [INFO] myLib.myGui.pig_menu_manager.myLib.myGui.pig_menu_manager: myLib.myGui.pig_menu_manager logger start
+2026-01-21 20:28:36,468 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: myLib.mySerial.Connector logger start
+2026-01-21 20:28:36,476 [INFO] myLib.crcCalculator.crcLib.myLib.crcCalculator.crcLib: myLib.crcCalculator.crcLib logger start
+2026-01-21 20:28:39,376 [INFO] Main: Connecting to COM19 at 230400...
+2026-01-21 20:28:39,417 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM19 is connected
+2026-01-21 20:28:39,420 [INFO] main.drivers.HinsFogImu: HinsFogImu Reader Started.
+2026-01-21 20:28:41,607 [INFO] main.drivers.HinsFogImu: Stop Reading IMU...
+2026-01-21 20:28:41,608 [INFO] main.drivers.HinsFogImu: Sent FOG Cmd: 4, Val: 4
+2026-01-21 20:28:43,102 [INFO] main.drivers.HinsFogImu: Stop Reading IMU...
+2026-01-21 20:28:43,104 [INFO] main.drivers.HinsFogImu: Sent FOG Cmd: 4, Val: 4
+2026-01-21 20:28:43,104 [INFO] main.drivers.HinsFogImu: [HinsFogImu] Thread stop requested.
+2026-01-21 20:28:43,223 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM19 is disconnected
+2026-01-21 20:29:44,844 [INFO] pigImu_Widget.pigImu_Widget: pigImu_Widget logger start
+2026-01-21 20:29:44,865 [INFO] myLib.myGui.graph.myLib.myGui.graph: myLib.myGui.graph logger start
+2026-01-21 20:29:45,504 [INFO] myLib.common.myLib.common: myLib.common logger start
+2026-01-21 20:29:45,505 [INFO] myLib.myGui.mygui_serial.myLib.myGui.mygui_serial: myLib.myGui.mygui_serial logger start
+2026-01-21 20:29:45,506 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: myLib.myGui.myLabel logger start
+2026-01-21 20:29:45,506 [INFO] myLib.myGui.myLineEdit.myLib.myGui.myLineEdit: myLib.myGui.myLineEdit logger start
+2026-01-21 20:29:45,507 [INFO] myLib.myGui.myCheckBox.myLib.myGui.myCheckBox: myLib.myGui.myCheckBox logger start
+2026-01-21 20:29:45,507 [INFO] myLib.myGui.myRadioButton.myLib.myGui.myRadioButton: myLib.myGui.myRadioButton logger start
+2026-01-21 20:29:45,508 [INFO] record_Log: record_Log logger start
+2026-01-21 20:29:45,519 [INFO] myLib.myGui.AttitudeIndicator.myLib.myGui.AttitudeIndicator: myLib.myGui.AttitudeIndicator logger start
+2026-01-21 20:29:45,521 [INFO] myLib.myGui.pig_menu_manager.myLib.myGui.pig_menu_manager: myLib.myGui.pig_menu_manager logger start
+2026-01-21 20:29:45,525 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: myLib.mySerial.Connector logger start
+2026-01-21 20:29:45,529 [INFO] myLib.myGui.myComboBox.myLib.myGui.myComboBox: myLib.myGui.myComboBox logger start
+2026-01-21 20:29:45,530 [INFO] myLib.myGui.pig_parameters_widget.myLib.myGui.pig_parameters_widget: myLib.myGui.pig_parameters_widget logger start
+2026-01-21 20:29:45,532 [INFO] myLib.myGui.pig_W_A_calibration_parameter_widget.myLib.myGui.pig_W_A_calibration_parameter_widget: myLib.myGui.pig_W_A_calibration_parameter_widget logger start
+2026-01-21 20:29:45,533 [INFO] myLib.myGui.pig_version_widget.myLib.myGui.pig_version_widget: myLib.myGui.pig_version_widget logger start
+2026-01-21 20:29:45,533 [INFO] myLib.myGui.pig_configuration_widget.myLib.myGui.pig_configuration_widget: myLib.myGui.pig_configuration_widget logger start
+2026-01-21 20:29:45,538 [INFO] myLib.crcCalculator.crcLib.myLib.crcCalculator.crcLib: myLib.crcCalculator.crcLib logger start
+2026-01-21 20:29:46,760 [INFO] Main: Port Selected: COM33
+2026-01-21 20:29:46,761 [INFO] Main: Port Selected: COM33
+2026-01-21 20:29:47,792 [INFO] Main: Port Selected: COM19
+2026-01-21 20:29:48,354 [INFO] Main: Connecting to COM19 at 230400...
+2026-01-21 20:29:48,394 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM19 is connected
+2026-01-21 20:29:48,398 [INFO] main.drivers.HinsGnssIns: HinsGnssIns Reader Started.
+2026-01-21 20:29:48,398 [INFO] main.drivers.HinsFogImu: HinsFogImu Reader Started.
+2026-01-21 20:29:49,096 [INFO] main.drivers.HinsFogImu: Start Reading IMU...
+2026-01-21 20:29:49,098 [INFO] main.drivers.HinsFogImu: Sent FOG Cmd: 4, Val: 2
+2026-01-21 20:30:05,475 [INFO] main.drivers.HinsFogImu: Stop Reading IMU...
+2026-01-21 20:30:05,476 [INFO] main.drivers.HinsFogImu: Sent FOG Cmd: 4, Val: 4
+2026-01-21 20:30:07,535 [INFO] main.drivers.HinsFogImu: Stop Reading IMU...
+2026-01-21 20:30:07,536 [INFO] main.drivers.HinsFogImu: Sent FOG Cmd: 4, Val: 4
+2026-01-21 20:30:07,537 [INFO] main.drivers.HinsFogImu: [HinsFogImu] Thread stop requested.
+2026-01-21 20:30:07,537 [INFO] main.drivers.HinsGnssIns: [HinsGnssIns] Thread stop requested.
+2026-01-21 20:30:07,666 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM19 is disconnected
+2026-01-21 20:30:51,685 [INFO] pigImu_Widget.pigImu_Widget: pigImu_Widget logger start
+2026-01-21 20:30:51,705 [INFO] myLib.myGui.graph.myLib.myGui.graph: myLib.myGui.graph logger start
+2026-01-21 20:30:52,337 [INFO] myLib.common.myLib.common: myLib.common logger start
+2026-01-21 20:30:52,338 [INFO] myLib.myGui.mygui_serial.myLib.myGui.mygui_serial: myLib.myGui.mygui_serial logger start
+2026-01-21 20:30:52,339 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: myLib.myGui.myLabel logger start
+2026-01-21 20:30:52,339 [INFO] myLib.myGui.myLineEdit.myLib.myGui.myLineEdit: myLib.myGui.myLineEdit logger start
+2026-01-21 20:30:52,340 [INFO] myLib.myGui.myCheckBox.myLib.myGui.myCheckBox: myLib.myGui.myCheckBox logger start
+2026-01-21 20:30:52,340 [INFO] myLib.myGui.myRadioButton.myLib.myGui.myRadioButton: myLib.myGui.myRadioButton logger start
+2026-01-21 20:30:52,341 [INFO] record_Log: record_Log logger start
+2026-01-21 20:30:52,352 [INFO] myLib.myGui.AttitudeIndicator.myLib.myGui.AttitudeIndicator: myLib.myGui.AttitudeIndicator logger start
+2026-01-21 20:30:52,354 [INFO] myLib.myGui.pig_menu_manager.myLib.myGui.pig_menu_manager: myLib.myGui.pig_menu_manager logger start
+2026-01-21 20:30:52,357 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: myLib.mySerial.Connector logger start
+2026-01-21 20:30:52,365 [INFO] myLib.crcCalculator.crcLib.myLib.crcCalculator.crcLib: myLib.crcCalculator.crcLib logger start
+2026-01-21 20:30:54,955 [INFO] Main: Connecting to COM19 at 230400...
+2026-01-21 20:30:54,997 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM19 is connected
+2026-01-21 20:30:55,000 [INFO] main.drivers.HinsFogImu: HinsFogImu Reader Started.
+2026-01-21 20:30:55,651 [INFO] main.drivers.HinsFogImu: Start Reading IMU...
+2026-01-21 20:30:55,653 [INFO] main.drivers.HinsFogImu: Sent FOG Cmd: 4, Val: 2
+2026-01-21 20:31:00,114 [INFO] main.drivers.HinsFogImu: Stop Reading IMU...
+2026-01-21 20:31:00,115 [INFO] main.drivers.HinsFogImu: Sent FOG Cmd: 4, Val: 4
+2026-01-21 20:31:00,117 [WARNING] main.drivers.HinsFogImu: CRC32 Check Failed
+2026-01-21 20:31:01,187 [INFO] main.drivers.HinsFogImu: Stop Reading IMU...
+2026-01-21 20:31:01,189 [INFO] main.drivers.HinsFogImu: Sent FOG Cmd: 4, Val: 4
+2026-01-21 20:31:01,189 [INFO] main.drivers.HinsFogImu: [HinsFogImu] Thread stop requested.
+2026-01-21 20:31:01,307 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM19 is disconnected

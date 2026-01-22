@@ -117,3 +117,38 @@ class HinsConfigWidget(QWidget):
                 else:
                     self.le_ack_status.setStyleSheet("color: red; font-weight: bold;")
                     self.le_ack_status.setText(f"Error {err_code} (Cmd {cmd_echo})")
+
+
+# ==========================================
+#   UI 預覽測試區塊 (Layout Preview Only)
+# ==========================================
+if __name__ == "__main__":
+    import sys
+    import os
+    from PySide6.QtWidgets import QApplication
+    from PySide6.QtCore import QObject, Signal  # 必須引用 Signal
+
+    # 1. 修正路徑
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    root_dir = os.path.abspath(os.path.join(current_dir, "../../../.."))
+    sys.path.append(root_dir)
+
+
+    # 2. 定義 Dummy Reader (必須繼承 QObject 且包含所有必要的 Signal)
+    class DummyReader(QObject):
+        # 定義 GUI 需要的所有訊號
+        data_ready_qt = Signal(dict)  # 用於顯示解析後的數據
+        raw_ack_qt = Signal(list)  # 用於顯示原始 HEX 回傳 (Command ACK) <--- [補上這行]
+
+        def write_raw(self, data):
+            hex_str = " ".join([f"{b:02X}" for b in data])
+            print(f"[UI Preview] write_raw called: {hex_str}")
+
+
+    app = QApplication(sys.argv)
+
+    # 3. 啟動視窗
+    window = HinsConfigWidget(DummyReader())
+    window.show()
+
+    sys.exit(app.exec())

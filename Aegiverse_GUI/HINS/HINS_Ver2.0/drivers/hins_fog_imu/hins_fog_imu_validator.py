@@ -1,28 +1,23 @@
 # drivers/hins_fog_imu/hins_fog_imu_validator.py
-# -*- coding:UTF-8 -*-
+from myLib.crcCalculator import crcLib
 import logging
-from myLib.crcCalculator import crcLib  # 沿用舊有 CRC 工具
-
 
 class HinsFogImuValidator:
-    """
-    FOG IMU 專用校驗器
-    職責：執行 CRC32 檢查，決定是否捨棄封包
-    """
-
-    def __init__(self, device_name="HinsFogImu"):
-        self.logger = logging.getLogger(f"main.drivers.{device_name}.Validator")
-        self.err_count = 0
+    def __init__(self):
+        self.logger = logging.getLogger("drivers.HinsFog.Validator")
 
     def validate(self, packet: list) -> bool:
         """
-        返回 True 表示校驗通過，False 則捨棄
+        驗證 FOG 封包的完整性 (CRC32)
         """
-        # 使用您原有的 crcLib 檢查
+        if not packet:
+            return False
+
+        # FOG 使用 CRC32 校驗
+        # isCrc32Fail 回傳 True 代表校驗失敗 (Fail)
         if crcLib.isCrc32Fail(packet, len(packet)):
-            self.err_count += 1
-            # 自動記錄 Bug 到 log 中
-            self.logger.error(f"CRC Checksum Failed (Total errors: {self.err_count})")
+            # 您可以選擇開啟 log，但在 Hybrid 模式下可能會誤報 GNSS 封包
+            # self.logger.warning(f"CRC32 Check Failed. Len: {len(packet)}")
             return False
 
         return True

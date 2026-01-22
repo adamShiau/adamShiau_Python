@@ -29,7 +29,7 @@ class HinsGnssInsReader(QObject):
 
         # 1. 驗證 (使用 Validator)
         if not self.validator.validate(packet):
-            self.logger.warning("GNSS Packet Validation Failed")
+            # self.logger.warning("GNSS Packet Validation Failed")
             return
 
         # 2. 判斷是否為 MIP Data (0xA2)

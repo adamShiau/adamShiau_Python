@@ -30,17 +30,17 @@ from myLib.myGui.pig_menu_manager import pig_menu_manager
 from myLib.mySerial.Connector import Connector
 from myLib import common as cmn
 
-# 引用舊有功能視窗
-from myLib.myGui.pig_parameters_widget import pig_parameters_widget
-from myLib.myGui.pig_W_A_calibration_parameter_widget import pig_calibration_widget
-from myLib.myGui.pig_version_widget import VersionTable
-from myLib.myGui.pig_configuration_widget import pig_configuration_widget
+# 引用 menu Widget
+from drivers.hins_fog_imu.widgets.pig_parameters_widget import pig_parameters_widget
+from drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget import pig_calibration_widget
+from drivers.hins_fog_imu.widgets.pig_version_widget import VersionTable
+from drivers.hins_fog_imu.widgets.pig_configuration_widget import pig_configuration_widget
+from drivers.hins_gnss_ins.widgets.hins_config_widget import HinsConfigWidget
 
-# 引用新架構 Drivers & Widgets
+# 引用新架構 Drivers
 from drivers.hins_hybrid_reader import HinsHybridReader
 from drivers.hins_fog_imu.hins_fog_imu_reader import HinsFogImuReader
 from drivers.hins_gnss_ins.hins_gnss_ins_reader import HinsGnssInsReader
-from drivers.hins_gnss_ins.hins_config_widget import HinsConfigWidget
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -112,6 +112,22 @@ class MainWindow(QMainWindow):
 
         # 綁定 Save RadioButton 點擊事件 -> 觸發開檔/關檔
         self.central_widget.save_block.rb.clicked.connect(self.toggle_save_data)
+
+        # --- Menu Action 連接 ---
+        # 根據 pig_menu_manager.py 的 action_trigger_connect 順序:
+        # fn[0]: Parameters
+        # fn[1]: Calibration
+        # fn[2]: Version
+        # fn[3]: Configuration
+        # fn[4]: HINS Config
+        self.pig_menu.action_trigger_connect([
+            self.show_parameters,
+            self.show_W_A_cali_parameter_menu,
+            self.show_version_menu,
+            self.show_configuration_menu,
+            self.show_hins_cmd_menu
+        ])
+        # -----------------------------
 
         # 數據流 (只進 Buffer)，數據流從 FogReader 發出的
         self.fog_reader.data_ready_qt.connect(self.collect_fog_data)
@@ -356,9 +372,6 @@ class MainWindow(QMainWindow):
             self.central_widget.save_block.rb.setChecked(False)  # 取消 UI 勾選
             self.toggle_save_data()  # 觸發關檔邏輯
 
-        self.hybrid_reader.stop()
-        self.hybrid_reader.wait()
-
         self.hybrid_reader.stop()  # 這裡會把 is_run 設為 False
         self.hybrid_reader.wait()  # 等待執行緒完全結束
 
@@ -398,7 +411,7 @@ class MainWindow(QMainWindow):
         self.cali_parameter_menu.show()
 
     def show_version_menu(self):
-        ver_str = self.hybrid_reader.getVersion(2)
+        ver_str = self.fog_reader.getVersion(2)
         self.pig_version_menu.ViewVersion(ver_str, "HINS-FINAL-ARCH")
         self.pig_version_menu.show()
 

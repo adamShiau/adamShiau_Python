@@ -21,5 +21,5 @@ class HinsGnssInsValidator:
             return True
         else:
             # 使用 print 確保您在測試時看得到錯誤
-            print(f"\n[Checksum Error] CMD:{hex(packet[2])} | 算出:{ck_a:02X} {ck_b:02X} | 封包內:{packet[-2]:02X} {packet[-1]:02X}")
+            # print(f"\n[Checksum Error] CMD:{hex(packet[2])} | 算出:{ck_a:02X} {ck_b:02X} | 封包內:{packet[-2]:02X} {packet[-1]:02X}")
             return False

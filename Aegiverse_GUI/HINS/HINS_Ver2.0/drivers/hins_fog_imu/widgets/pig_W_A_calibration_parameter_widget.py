@@ -888,8 +888,37 @@ class pig_calibration_widget(QGroupBox):
         print("send AZ")
 
 
+# ==========================================
+#   UI 預覽測試區塊 (Layout Preview Only)
+# ==========================================
 if __name__ == "__main__":
-    app = QApplication([])
-    win = pig_calibration_widget("act")
-    win.show()
-    app.exec_()
+    import sys
+    import os
+    from PySide6.QtWidgets import QApplication
+
+    # 1. 修正路徑 (讓 Python 找得到根目錄的 myLib)
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    root_dir = os.path.abspath(os.path.join(current_dir, "../../../.."))
+    sys.path.append(root_dir)
+
+
+    # 2. 定義 Dummy Reader (防止報錯)
+    class DummyReader:
+        def __getattr__(self, name):
+            # 無論 UI 呼叫什麼方法 (如 flushInputBuffer)，都回傳這個空函式
+            def method(*args, **kwargs):
+                print(f"[UI Preview] Method called: {name}")
+                return 0
+
+            return method
+
+
+    app = QApplication(sys.argv)
+
+    # 3. 啟動視窗
+    # 注意：這個 Widget 的 __init__ 通常是 (act, parent, filename)
+    # 我們傳入 DummyReader, None, 和一個假檔名
+    window = pig_calibration_widget(DummyReader(), None, "test_cali_config")
+
+    window.show()
+    sys.exit(app.exec())

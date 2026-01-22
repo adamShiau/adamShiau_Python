@@ -1381,31 +1381,41 @@ class invalidCharException(Exception):
         super().__init__(mes)
 
 
-# --- preview only: run this file to see layout ---
+# ==========================================
+#   UI 預覽測試區塊 (Layout Preview Only)
+# ==========================================
 if __name__ == "__main__":
-    import os, sys, struct
-    from types import SimpleNamespace
+    import sys
+    import os
     from PySide6.QtWidgets import QApplication
 
-    # 確保能 import 到 myLib（一定要在任何 from myLib... 之前做；
-    # 若你已在檔案上方處理過路徑，這段可刪）
-    _CUR = os.path.dirname(__file__)
-    _ROOT = os.path.abspath(os.path.join(_CUR, "../../"))
-    if _ROOT not in sys.path:
-        sys.path.insert(0, _ROOT)
+    # 1. 修正路徑：將專案根目錄加入 path，以便能 import myLib
+    # 目前位置：drivers/hins_fog_imu/widgets/ (向上 4 層即為根目錄)
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    root_dir = os.path.abspath(os.path.join(current_dir, "../../../.."))
+    sys.path.append(root_dir)
 
-    # 最簡 ACT：所有方法都不做事；誤按按鈕也不會噴錯
-    ACT = SimpleNamespace(
-        flushInputBuffer=lambda *_: None,
-        writeImuCmd=lambda *a, **k: None,
-        dump_fog_parameters=lambda ch: {},  # 按了 Dump 也只是不填值
-        getVersion=lambda ch: "FW-PREVIEW",
-        dump_SN_parameters=lambda ch: "",
-        update_SN_parameters=lambda arr: None,
-        kal_Q=0, kal_R=0,
-    )
+
+    # 2. 定義一個「啞巴」Reader (Dummy Reader)
+    # 它的目的只是為了讓 Widget 初始化不報錯，不需要任何功能
+    class DummyReader:
+        def __getattr__(self, name):
+            # 無論 UI 呼叫什麼方法 (writeImuCmd, flushInputBuffer...)
+            # 都回傳一個「什麼都不做的函式」，並回傳空值
+            def method(*args, **kwargs):
+                print(f"[UI Preview] Method called: {name}")
+                return 0  # 避免某些計算需要數值
+
+            return method
+
 
     app = QApplication(sys.argv)
-    w = pig_parameters_widget(ACT, dataFileName="preview")
-    w.show()
-    sys.exit(app.exec())  # PySide6 用 exec()，不是 exec_()
+
+    # 3. 啟動視窗 (請依據檔案名稱修改對應的 Class)
+    # ------------------------------------------------
+    # 如果是 pig_parameters_widget.py:
+    window = pig_parameters_widget(DummyReader(), "Preview_Mode")
+    # ------------------------------------------------
+
+    window.show()
+    sys.exit(app.exec())

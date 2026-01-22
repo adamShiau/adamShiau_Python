@@ -68,10 +68,42 @@ class VersionTable(QGroupBox):
         self.versionTable.resizeRowsToContents()
 
 
-
+# ==========================================
+#   UI 預覽測試區塊 (Layout Preview Only)
+# ==========================================
 if __name__ == "__main__":
+    import sys
+    import os
+    from PySide6.QtWidgets import QApplication
+
+    # 1. 修正路徑：將專案根目錄加入 path，以便能 import myLib
+    # 目前位置：drivers/hins_fog_imu/widgets/ (向上 4 層即為根目錄)
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    root_dir = os.path.abspath(os.path.join(current_dir, "../../../.."))
+    sys.path.append(root_dir)
+
+
+    # 2. 定義一個「啞巴」Reader (Dummy Reader)
+    # 它的目的只是為了讓 Widget 初始化不報錯，不需要任何功能
+    class DummyReader:
+        def __getattr__(self, name):
+            # 無論 UI 呼叫什麼方法 (writeImuCmd, flushInputBuffer...)
+            # 都回傳一個「什麼都不做的函式」，並回傳空值
+            def method(*args, **kwargs):
+                print(f"[UI Preview] Method called: {name}")
+                return 0  # 避免某些計算需要數值
+
+            return method
+
+
     app = QApplication(sys.argv)
-    ver = VersionTable()
-    ver.ViewVersion("HINS_MCU_V3.1_M,HINS_TOP_V1,HINS_CPU_V1_0,HINS_2026-01-15", "V1.0.0")
-    ver.show()
-    app.exec()
+
+    # 3. 啟動視窗 (請依據檔案名稱修改對應的 Class)
+    # ------------------------------------------------
+    # 如果是 pig_version_widget.py:
+    window = VersionTable() # VersionTable 可能不需要 Reader，視您的實作而定
+
+    # ------------------------------------------------
+
+    window.show()
+    sys.exit(app.exec())

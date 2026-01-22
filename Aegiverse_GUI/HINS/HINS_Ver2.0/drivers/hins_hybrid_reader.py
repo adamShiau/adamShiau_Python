@@ -94,3 +94,22 @@ class HinsHybridReader(BaseReader):
 
     def stop_imu(self):
         self.write_fog_cmd(4, 4, 2)
+
+    def flush_buffers(self):
+        """ 清除硬體與軟體緩衝區，確保下次讀到的是最新數據 """
+        # 1. 清除 Serial Port 硬體緩衝
+        if self._connector:
+            try:
+                self._connector.flushInputBuffer()
+            except:
+                pass
+
+        # 2. 清除 Decoder 軟體緩衝 (避免殘留半截封包)
+        # 這些 buffer 是 list，直接清空即可
+        if hasattr(self, 'fog_decoder'):
+            self.fog_decoder.buffer = []
+
+        if hasattr(self, 'gnss_decoder'):
+            self.gnss_decoder.buffer = []
+
+        self.logger.info("Buffers flushed.")

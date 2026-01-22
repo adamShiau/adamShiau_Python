@@ -1,84 +1,95 @@
 # drivers/hins_fog_imu/hins_fog_imu_reader.py
-import time
+from PySide6.QtCore import QObject, Signal
 import logging
-from drivers.base_reader import BaseReader
-from utils.protocol_manager import ProtocolDispatcher
+from myLib import common as cmn  # 用於 RCS 矩陣運算
+from myLib.crcCalculator import crcLib
+
+# 引入組件
 from .hins_fog_imu_decoder import HinsFogImuDecoder
 from .hins_fog_imu_parser import HinsFogImuParser
 
-# 引用舊有 CRC 庫
-from myLib.crcCalculator import crcLib
 
+class HinsFogImuReader(QObject):
+    # 定義訊號 (跟 BaseReader 一樣，為了相容 UI)
+    data_ready_qt = Signal(dict)
+    raw_ack_qt = Signal(list)
 
-class HinsFogImuReader(BaseReader):
     def __init__(self):
-        super().__init__(name="HinsFogImu")
-        self.dispatcher = ProtocolDispatcher()
+        super().__init__()
+        self.logger = logging.getLogger("drivers.HinsFog")
+
+        # 組件初始化
         self.decoder = HinsFogImuDecoder()
         self.parser = HinsFogImuParser()
+        self._connector = None  # 由 HybridReader 注入
 
-        # 將 Decoder 綁定到 Callback
-        self.dispatcher.add_parser(self.decoder, self.handle_packet)
+        # RCS 設定
+        self.is_rcs_mode = False
+        self.R_CS = [0, -1, 0, 1, 0, 0, 0, 0, 1]
 
-    def run(self):
-        self.logger.info("HinsFogImu Reader Started.")
-        while self.is_run:
-            try:
-                if self._connector:
-                    available = self._connector.readInputBuffer()
-                    if available > 0:
-                        raw_data = self._connector.readBinaryList(available)
-                        if raw_data:
-                            self.dispatcher.feed_data(raw_data)
-                    else:
-                        time.sleep(0.001)
-                else:
-                    time.sleep(0.1)
-            except Exception as e:
-                self.logger.error(f"Run loop error: {e}")
-                break
+    def set_connector(self, connector):
+        self._connector = connector
+
+    def set_rcs_mode(self, enabled: bool):
+        self.is_rcs_mode = enabled
 
     def handle_packet(self, packet):
-        """ 當 Decoder 抓到完整 64 bytes 封包時觸發 """
+        """ 當 Dispatcher 發現 FOG 封包時觸發 """
 
-        # 1. CRC 檢查 (使用舊有的 crcLib)
-        # packet 是 list，crcLib 可能需要 list 或 bytes，根據舊 code 傳 list 即可
+        # 1. CRC 驗證 (Validator 的角色)
         if crcLib.isCrc32Fail(packet, len(packet)):
-            self.logger.warning("CRC32 Check Failed")
-            return
+            return  # CRC 失敗，丟棄
 
-        # 2. 發送原始數據訊號 (可供 Debug)
-        self.raw_ack_qt.emit(packet)
-
-        # 3. 解析物理量
+        # 2. 解析
         parsed_data = self.parser.parse(packet)
 
-        # 4. 發送給 UI 畫圖
         if parsed_data:
+            # 3. 業務邏輯：RCS 旋轉 (這就是您希望解耦的地方)
+            if self.is_rcs_mode:
+                self.apply_rcs_rotation(parsed_data)
+
+            # 4. 發送結果
             self.data_ready_qt.emit(parsed_data)
 
+    def apply_rcs_rotation(self, data):
+        """ 內部私有方法：處理旋轉 """
+        # 取出原始值
+        raw_wx = data["WX"][0];
+        raw_wy = data["WY"][0];
+        raw_wz = data["WZ"][0]
+        raw_ax = data["AX"][0];
+        raw_ay = data["AY"][0];
+        raw_az = data["AZ"][0]
+
+        # 運算
+        r_wx, r_wy, r_wz = cmn._rot_case_to_sensor(raw_wx, raw_wy, raw_wz, self.R_CS)
+        r_ax, r_ay, r_az = cmn._rot_case_to_sensor(raw_ax, raw_ay, raw_az, self.R_CS)
+
+        # 寫回
+        data["WX"][0] = r_wx;
+        data["WY"][0] = r_wy;
+        data["WZ"][0] = r_wz
+        data["AX"][0] = r_ax;
+        data["AY"][0] = r_ay;
+        data["AZ"][0] = r_az
+
+    # --- 指令發送區 (封裝 FOG 協議) ---
     def write_fog_cmd(self, cmd, value, fog_ch=3):
-        """ 移植舊的 writeImuCmd """
-        if value < 0:
-            value = (1 << 32) + value
-
-        # 建構 Payload
+        if not self._connector: return
+        if value < 0: value = (1 << 32) + value
         payload = [cmd, (value >> 24 & 0xFF), (value >> 16 & 0xFF), (value >> 8 & 0xFF), (value & 0xFF), fog_ch]
-
-        # 加上 Header (AB BA) 與 Tail (55 56)
         full_cmd = [0xAB, 0xBA] + payload + [0x55, 0x56]
-
-        self.write_raw(full_cmd)
-        self.logger.info(f"Sent FOG Cmd: {cmd}, Val: {value}")
+        try:
+            self._connector.write(bytearray(full_cmd))
+        except:
+            pass
 
     def read_imu(self):
-        """ 啟動連續讀取 (Cmd 4, Val 2) """
-        self.logger.info("Start Reading IMU...")
-        if self._connector: self._connector.flushInputBuffer()
         self.write_fog_cmd(4, 2, 2)
 
     def stop_imu(self):
-        """ 停止讀取 (Cmd 4, Val 4) """
-        self.logger.info("Stop Reading IMU...")
         self.write_fog_cmd(4, 4, 2)
-        if self._connector: self._connector.flushInputBuffer()
+
+    def getVersion(self, mode):
+        # 這裡可以保留您原本讀取版本的邏輯
+        return "FOG_VER_MOCK"

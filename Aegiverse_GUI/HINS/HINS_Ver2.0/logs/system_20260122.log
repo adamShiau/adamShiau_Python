@@ -571,3 +571,87 @@
 2026-01-22 11:08:37,767 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
 2026-01-22 11:08:37,767 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
 2026-01-22 11:08:37,874 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM19 is disconnected
+2026-01-22 11:39:44,930 [INFO] pigImu_Widget.pigImu_Widget: pigImu_Widget logger start
+2026-01-22 11:39:44,955 [INFO] myLib.myGui.graph.myLib.myGui.graph: myLib.myGui.graph logger start
+2026-01-22 11:39:45,705 [INFO] myLib.common.myLib.common: myLib.common logger start
+2026-01-22 11:39:45,706 [INFO] myLib.myGui.mygui_serial.myLib.myGui.mygui_serial: myLib.myGui.mygui_serial logger start
+2026-01-22 11:39:45,707 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: myLib.myGui.myLabel logger start
+2026-01-22 11:39:45,708 [INFO] myLib.myGui.myLineEdit.myLib.myGui.myLineEdit: myLib.myGui.myLineEdit logger start
+2026-01-22 11:39:45,709 [INFO] myLib.myGui.myCheckBox.myLib.myGui.myCheckBox: myLib.myGui.myCheckBox logger start
+2026-01-22 11:39:45,710 [INFO] myLib.myGui.myRadioButton.myLib.myGui.myRadioButton: myLib.myGui.myRadioButton logger start
+2026-01-22 11:39:45,711 [INFO] record_Log: record_Log logger start
+2026-01-22 11:39:45,723 [INFO] myLib.myGui.AttitudeIndicator.myLib.myGui.AttitudeIndicator: myLib.myGui.AttitudeIndicator logger start
+2026-01-22 11:39:45,727 [INFO] myLib.myGui.pig_menu_manager.myLib.myGui.pig_menu_manager: myLib.myGui.pig_menu_manager logger start
+2026-01-22 11:39:45,732 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: myLib.mySerial.Connector logger start
+2026-01-22 11:39:45,739 [INFO] myLib.myGui.myComboBox.myLib.myGui.myComboBox: myLib.myGui.myComboBox logger start
+2026-01-22 11:39:45,740 [INFO] myLib.myGui.pig_parameters_widget.myLib.myGui.pig_parameters_widget: myLib.myGui.pig_parameters_widget logger start
+2026-01-22 11:39:45,742 [INFO] myLib.myGui.pig_W_A_calibration_parameter_widget.myLib.myGui.pig_W_A_calibration_parameter_widget: myLib.myGui.pig_W_A_calibration_parameter_widget logger start
+2026-01-22 11:39:45,744 [INFO] myLib.myGui.pig_version_widget.myLib.myGui.pig_version_widget: myLib.myGui.pig_version_widget logger start
+2026-01-22 11:39:45,745 [INFO] myLib.myGui.pig_configuration_widget.myLib.myGui.pig_configuration_widget: myLib.myGui.pig_configuration_widget logger start
+2026-01-22 11:39:45,754 [INFO] myLib.crcCalculator.crcLib.myLib.crcCalculator.crcLib: myLib.crcCalculator.crcLib logger start
+2026-01-22 11:39:48,305 [INFO] Main: Port Selected: COM33
+2026-01-22 11:39:48,306 [INFO] Main: Port Selected: COM33
+2026-01-22 11:39:49,605 [INFO] Main: Port Selected: COM19
+2026-01-22 11:39:50,115 [INFO] Main: Connecting to COM19 at 230400...
+2026-01-22 11:39:50,155 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM19 is connected
+2026-01-22 11:39:50,158 [INFO] main.drivers.HinsHybrid: HinsHybrid Reader Started.
+2026-01-22 11:39:50,790 [INFO] main.drivers.HinsHybrid: Buffers flushed.
+2026-01-22 11:39:52,058 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-22 11:39:52,958 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-22 11:39:52,959 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-22 11:39:52,959 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-22 11:39:53,065 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM19 is disconnected
+2026-01-22 12:04:26,715 [INFO] pigImu_Widget.pigImu_Widget: pigImu_Widget logger start
+2026-01-22 12:04:26,737 [INFO] myLib.myGui.graph.myLib.myGui.graph: myLib.myGui.graph logger start
+2026-01-22 12:04:33,902 [INFO] myLib.common.myLib.common: myLib.common logger start
+2026-01-22 12:04:33,919 [INFO] myLib.myGui.mygui_serial.myLib.myGui.mygui_serial: myLib.myGui.mygui_serial logger start
+2026-01-22 12:04:33,929 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: myLib.myGui.myLabel logger start
+2026-01-22 12:04:33,939 [INFO] myLib.myGui.myLineEdit.myLib.myGui.myLineEdit: myLib.myGui.myLineEdit logger start
+2026-01-22 12:04:33,947 [INFO] myLib.myGui.myCheckBox.myLib.myGui.myCheckBox: myLib.myGui.myCheckBox logger start
+2026-01-22 12:04:33,956 [INFO] myLib.myGui.myRadioButton.myLib.myGui.myRadioButton: myLib.myGui.myRadioButton logger start
+2026-01-22 12:04:33,964 [INFO] record_Log: record_Log logger start
+2026-01-22 12:04:34,086 [INFO] myLib.myGui.AttitudeIndicator.myLib.myGui.AttitudeIndicator: myLib.myGui.AttitudeIndicator logger start
+2026-01-22 12:04:34,106 [INFO] myLib.myGui.pig_menu_manager.myLib.myGui.pig_menu_manager: myLib.myGui.pig_menu_manager logger start
+2026-01-22 12:04:34,143 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: myLib.mySerial.Connector logger start
+2026-01-22 12:04:34,188 [INFO] myLib.myGui.myComboBox.myLib.myGui.myComboBox: myLib.myGui.myComboBox logger start
+2026-01-22 12:04:34,199 [INFO] myLib.myGui.pig_parameters_widget.myLib.myGui.pig_parameters_widget: myLib.myGui.pig_parameters_widget logger start
+2026-01-22 12:04:34,216 [INFO] myLib.myGui.pig_W_A_calibration_parameter_widget.myLib.myGui.pig_W_A_calibration_parameter_widget: myLib.myGui.pig_W_A_calibration_parameter_widget logger start
+2026-01-22 12:04:34,229 [INFO] myLib.myGui.pig_version_widget.myLib.myGui.pig_version_widget: myLib.myGui.pig_version_widget logger start
+2026-01-22 12:04:34,240 [INFO] myLib.myGui.pig_configuration_widget.myLib.myGui.pig_configuration_widget: myLib.myGui.pig_configuration_widget logger start
+2026-01-22 12:04:34,277 [INFO] myLib.crcCalculator.crcLib.myLib.crcCalculator.crcLib: myLib.crcCalculator.crcLib logger start
+2026-01-22 12:04:36,184 [INFO] Main: Port Selected: COM33
+2026-01-22 12:04:36,185 [INFO] Main: Port Selected: COM33
+2026-01-22 12:04:37,373 [INFO] Main: Port Selected: COM19
+2026-01-22 12:04:37,899 [INFO] Main: Connecting to COM19 at 230400...
+2026-01-22 12:04:37,940 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM19 is connected
+2026-01-22 12:04:37,945 [INFO] main.drivers.HinsHybrid: Hybrid Reader (Dispatcher) Started.
+2026-01-22 12:04:41,047 [WARNING] drivers.HinsGnss: GNSS Packet Validation Failed
+2026-01-22 12:04:41,555 [WARNING] drivers.HinsGnss: GNSS Packet Validation Failed
+2026-01-22 12:04:47,970 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-22 12:04:49,350 [INFO] Main: Restarting Hybrid Reader Thread...
+2026-01-22 12:04:49,352 [INFO] main.drivers.HinsHybrid: Hybrid Reader (Dispatcher) Started.
+2026-01-22 12:04:53,476 [WARNING] drivers.HinsGnss: GNSS Packet Validation Failed
+2026-01-22 12:05:01,640 [WARNING] drivers.HinsGnss: GNSS Packet Validation Failed
+2026-01-22 12:05:09,346 [WARNING] drivers.HinsGnss: GNSS Packet Validation Failed
+2026-01-22 12:05:12,067 [WARNING] drivers.HinsGnss: GNSS Packet Validation Failed
+2026-01-22 12:05:14,236 [WARNING] drivers.HinsGnss: GNSS Packet Validation Failed
+2026-01-22 12:05:17,877 [WARNING] drivers.HinsGnss: GNSS Packet Validation Failed
+2026-01-22 12:05:22,737 [WARNING] drivers.HinsGnss: GNSS Packet Validation Failed
+2026-01-22 12:05:23,398 [WARNING] drivers.HinsGnss: GNSS Packet Validation Failed
+2026-01-22 12:05:33,838 [WARNING] drivers.HinsGnss: GNSS Packet Validation Failed
+2026-01-22 12:05:36,887 [WARNING] drivers.HinsGnss: GNSS Packet Validation Failed
+2026-01-22 12:05:47,299 [WARNING] drivers.HinsGnss: GNSS Packet Validation Failed
+2026-01-22 12:05:57,409 [WARNING] drivers.HinsGnss: GNSS Packet Validation Failed
+2026-01-22 12:06:05,190 [WARNING] drivers.HinsGnss: GNSS Packet Validation Failed
+2026-01-22 12:06:06,838 [WARNING] drivers.HinsGnss: GNSS Packet Validation Failed
+2026-01-22 12:06:08,439 [WARNING] drivers.HinsGnss: GNSS Packet Validation Failed
+2026-01-22 12:06:15,139 [WARNING] drivers.HinsGnss: GNSS Packet Validation Failed
+2026-01-22 12:06:18,658 [WARNING] drivers.HinsGnss: GNSS Packet Validation Failed
+2026-01-22 12:06:26,269 [WARNING] drivers.HinsGnss: GNSS Packet Validation Failed
+2026-01-22 12:06:29,780 [WARNING] drivers.HinsGnss: GNSS Packet Validation Failed
+2026-01-22 12:06:35,658 [WARNING] drivers.HinsGnss: GNSS Packet Validation Failed
+2026-01-22 12:06:46,099 [WARNING] drivers.HinsGnss: GNSS Packet Validation Failed
+2026-01-22 12:06:53,850 [WARNING] drivers.HinsGnss: GNSS Packet Validation Failed
+2026-01-22 12:06:59,159 [WARNING] drivers.HinsGnss: GNSS Packet Validation Failed
+2026-01-22 12:07:09,700 [WARNING] drivers.HinsGnss: GNSS Packet Validation Failed
+2026-01-22 12:07:12,241 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.

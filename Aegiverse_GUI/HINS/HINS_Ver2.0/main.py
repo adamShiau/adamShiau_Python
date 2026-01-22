@@ -38,31 +38,30 @@ from myLib.myGui.pig_configuration_widget import pig_configuration_widget
 
 # 引用新架構 Drivers & Widgets
 from drivers.hins_hybrid_reader import HinsHybridReader
+from drivers.hins_fog_imu.hins_fog_imu_reader import HinsFogImuReader
+from drivers.hins_gnss_ins.hins_gnss_ins_reader import HinsGnssInsReader
 from drivers.hins_gnss_ins.hins_config_widget import HinsConfigWidget
-
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Aegiverse HINS GUI (Final Stable)")
+        self.setWindowTitle("Aegiverse HINS GUI")
         self.resize(1450, 800)
 
         # 1. 核心物件初始化
         self.connector = Connector()
+        # (A) 建立總機 (Active Thread)
         self.hybrid_reader = HinsHybridReader()  # 使用單一混合 Reader
-
-        # 為了相容舊代碼邏輯，將 fog/gnss 指向同一個 reader
-        self.fog_reader = self.hybrid_reader
-        self.gnss_reader = self.hybrid_reader
+        # (B) 建立分機 (Passive Processors)
+        self.fog_reader = HinsFogImuReader()
+        self.gnss_reader = HinsGnssInsReader()
+        # (C) 掛載：把分機交給總機管理
+        # 這一步會自動註冊 Decoder 到 Dispatcher
+        self.hybrid_reader.add_device(self.fog_reader)
+        self.hybrid_reader.add_device(self.gnss_reader)
 
         # 資料存檔管理員 (參考 common.py)
         self.imudata_file = cmn.data_manager(fnum=0)
-
-        # 定義 RCS 旋轉矩陣 (NED Frame definition, 參考舊 pigImu_Main.py)
-        # 矩陣: [0, -1, 0; 1, 0, 0; 0, 0, 1]
-        self.R_CS = [0, -1, 0,
-                     1, 0, 0,
-                     0, 0, 1]
 
         # 2. 建立繪圖資料緩衝區
         self.plot_buffer_size = 1000
@@ -79,14 +78,16 @@ class MainWindow(QMainWindow):
         self.pig_menu = pig_menu_manager(self.menuBar(), self)
 
         # 4. 初始化功能子視窗
-        self.pig_parameter_widget = pig_parameters_widget(self.hybrid_reader, "parameters_config")
-        self.cali_parameter_menu = pig_calibration_widget(self.hybrid_reader, None, "cali_config")
-        self.pig_configuration_menu = pig_configuration_widget(self.hybrid_reader)
+        # 注意：使用 fog_reader 傳入，因為它才有 dump_fog_parameters 等特定指令
+        self.pig_parameter_widget = pig_parameters_widget(self.fog_reader, "parameters_config")
+        self.cali_parameter_menu = pig_calibration_widget(self.fog_reader, None, "cali_config")
+        self.pig_configuration_menu = pig_configuration_widget(self.fog_reader)
+        # 版本讀取統一走 hybrid 或 fog 都可以，因為底層都是 call connector
         self.pig_version_menu = VersionTable()
-        self.hins_config_widget = HinsConfigWidget(self.hybrid_reader)
+        # GNSS 設定視窗使用 gnss_reader
+        self.hins_config_widget = HinsConfigWidget(self.gnss_reader)
 
-        # 5. [安全機制] 繪圖 Timer (10Hz)
-        # 改名為 update_gui_periodic，表示它負責更新所有介面
+        # 5. GUI Timer
         ''' 5.1. 建立一個計時器物件 '''
         self.gui_timer = QTimer()
         ''' 5.2. 設定鬧鐘響的時候要執行哪個函式 '''
@@ -112,8 +113,11 @@ class MainWindow(QMainWindow):
         # 綁定 Save RadioButton 點擊事件 -> 觸發開檔/關檔
         self.central_widget.save_block.rb.clicked.connect(self.toggle_save_data)
 
-        # 數據流 (只進 Buffer)
-        self.hybrid_reader.data_ready_qt.connect(self.collect_fog_data)
+        # 數據流 (只進 Buffer)，數據流從 FogReader 發出的
+        self.fog_reader.data_ready_qt.connect(self.collect_fog_data)
+
+        # RCS Checkbox 直接控制 FogReader 的模式
+        self.central_widget.save_block.rcs_cb.clicked.connect(self.on_rcs_changed)
 
         # 連接圖表 Checkbox
         self.central_widget.plot1_lineName.cb1.clicked.connect(self.central_widget.plot1LineNameOneVisible)
@@ -127,10 +131,14 @@ class MainWindow(QMainWindow):
         self.central_widget.plot1_unit_rb.rb1.clicked.connect(self.plotTitleChanged)
         self.central_widget.plot1_unit_rb.rb2.clicked.connect(self.plotTitleChanged)
 
+    def on_rcs_changed(self):
+        is_checked = self.central_widget.save_block.rcs_cb.isChecked()
+        # 直接告訴 FogReader 切換模式，Main 不需要知道矩陣運算
+        self.fog_reader.set_rcs_mode(is_checked)
+
     def collect_fog_data(self, new_data_dict):
         """ 極速收集數據 (無阻塞) """
         try:
-
             # --- 存檔 (Save) ---
             # 檢查 Save RadioButton 是否勾選 且 檔案已開啟
             if self.central_widget.save_block.rb.isChecked() and self.imudata_file.isOpenFile():
@@ -147,6 +155,7 @@ class MainWindow(QMainWindow):
                 fmt = "%.3f,%.5f,%.5f,%.5f,%.5f,%.5f,%.5f,%.3f,%.3f,%.3f,%.3f,%.5f,%.5f,%.5f"
                 self.imudata_file.saveData(save_list, fmt)
 
+            # 存入繪圖 Buffer
             for key in self.data_buffer.keys():
                 if key in new_data_dict:
                     val = new_data_dict[key][0]
@@ -333,6 +342,7 @@ class MainWindow(QMainWindow):
             self.central_widget.setBtnEnable(True)
             self.pig_menu.setEnable(True)
 
+            # 設定 connector 給 hybrid (它會自動分給 sub-readers)
             self.hybrid_reader.set_connector(self.connector)
             self.hybrid_reader.start()  # 第一次啟動執行緒
         else:
@@ -362,26 +372,21 @@ class MainWindow(QMainWindow):
         for key in self.data_buffer:
             self.data_buffer[key] = []
 
-        # 2. 檢查並重啟 Reader 執行緒
+        # 2. 啟動總機 Thread
         self.hybrid_reader.is_run = True
         if not self.hybrid_reader.isRunning():
-            logger.info("Restarting Reader Thread...")
+            logger.info("Restarting Hybrid Reader Thread...")
             self.hybrid_reader.start()
 
-        # 3. [新增關鍵步驟]：先清空底層殘留數據，再送讀取指令
-        # 這會確保我們讀到的第一筆資料就是現在產生的
+        # 3. 清空緩衝 (總機會幫大家清空 decoder)
         self.hybrid_reader.flush_buffers()
 
-        # 4. 發送讀取指令
-        self.hybrid_reader.read_imu()
+        # 4. 發送讀取指令 (透過 FogReader 封裝好的方法)
+        self.fog_reader.read_imu()
 
     def stop_reading(self):
-        # 1. 發送停止讀取指令
-        self.hybrid_reader.stop_imu()
-
-        # 2. 選擇性：您可以選擇讓 Thread 繼續跑 (監聽其他指令)，或者殺死它
-        # 為了避免 Serial Buffer 堆積，建議讓 Thread 繼續跑，只是不解析數據
-        # 如果您一定要在這裡 stop thread，下次 start_reading 就必須執行上面的修復邏輯
+        # 透過 FogReader 發送停止
+        self.fog_reader.stop_imu()
         self.hybrid_reader.stop()
         self.hybrid_reader.wait()
 

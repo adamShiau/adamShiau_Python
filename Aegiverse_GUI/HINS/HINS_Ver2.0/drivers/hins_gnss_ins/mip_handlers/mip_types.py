@@ -26,3 +26,20 @@ class MIP_CONSTANTS:
         0x01: "PULL_DOWN",  # 假設 1 是 Push Pull (範例)
         0x02: "PULL_UP",
     }
+    # Port ID 對照表 (0x7F, 0x02)
+    PORT_MAP = {
+        0: "ALL (MAIN)",
+        1: "MAIN",
+        17: "UART 1",
+        18: "UART 2",
+        19: "UART 3",
+        33: "USB 1",
+        34: "USB 2",
+    }
+    # Protocol Bitfield 對照表
+    PROTOCOL_BITS = {
+        0: "MIP",
+        8: "NMEA",
+        9: "RTCM",
+        24: "SPARTN",
+    }

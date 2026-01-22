@@ -94,7 +94,43 @@ class HinsConfigWidget(QWidget):
 
         uart_group.setLayout(uart_layout)
         layout.addWidget(uart_group)
-        # --- Comm Port 控制區結束 ---
+        # --- UART2 Baud Rate 控制區 控制區結束 ---
+
+        # --- Interface Control 控制區 (0x7F, 0x02) ---
+        if_group = QGroupBox("Interface Control (0x7F, 0x02)")
+        if_layout = QGridLayout()
+        if_layout.setColumnStretch(0, 1)
+        if_layout.setColumnStretch(1, 1)
+
+        # 1. 先實例化按鈕
+        self.btn_read_if = QPushButton("Read UART2 Interface")
+        self.btn_set_if_mip = QPushButton("Set UART2 MIP")
+
+        # 2. 連接訊號 (確保只連線這一次)
+        self.btn_read_if.clicked.connect(lambda: self.send_cmd("READ_IF_UART2"))
+        self.btn_set_if_mip.clicked.connect(lambda: self.send_cmd("SET_UART2_MIP"))
+
+        self.le_port = QLineEdit();
+        self.le_port.setReadOnly(True)
+        self.le_in_proto = QLineEdit();
+        self.le_in_proto.setReadOnly(True)
+        self.le_out_proto = QLineEdit();
+        self.le_out_proto.setReadOnly(True)
+
+        # 3. 佈局放置
+        if_layout.addWidget(self.btn_read_if, 0, 0)
+        if_layout.addWidget(self.btn_set_if_mip, 0, 1)
+
+        if_layout.addWidget(QLabel("Port:"), 1, 0)
+        if_layout.addWidget(self.le_port, 1, 1)
+        if_layout.addWidget(QLabel("Protocols Incoming:"), 2, 0)
+        if_layout.addWidget(self.le_in_proto, 2, 1)
+        if_layout.addWidget(QLabel("Protocols Outgoing:"), 3, 0)
+        if_layout.addWidget(self.le_out_proto, 3, 1)
+
+        if_group.setLayout(if_layout)
+        layout.addWidget(if_group)
+        # --- Interface Control 控制區 (0x7F, 0x02) 結束---
 
         # --- 2. 系統回應區 (修正：恢復原本的 Command 顯示器) ---
         status_group = QGroupBox("System Status (ACK/NACK)")
@@ -152,7 +188,11 @@ class HinsConfigWidget(QWidget):
             "SET_UART2_BR_230400": [0xBC, 0xCB, 0x97, 0x0E, 0x75, 0x65, 0x01, 0x08, 0x08, 0x09, 0x01, 0x12, 0x00, 0x03,
                                     0x84, 0x00, 0x8E, 0x15, 0x51, 0x52],
             "SET_UART2_BR_115200": [0xBC, 0xCB, 0x97, 0x0E, 0x75, 0x65, 0x01, 0x08, 0x08, 0x09, 0x01, 0x12, 0x00, 0x01,
-                                    0xC2, 0x00, 0xCA, 0x8B, 0x51, 0x52]
+                                    0xC2, 0x00, 0xCA, 0x8B, 0x51, 0x52],
+            "READ_IF_UART2": [0xBC, 0xCB, 0x97, 0x0A, 0x75, 0x65, 0x7F, 0x04, 0x04, 0x02, 0x02, 0x12, 0x77, 0xA5, 0x51,
+                              0x52],
+            "SET_UART2_MIP": [0xBC, 0xCB, 0x97, 0x12, 0x75, 0x65, 0x7F, 0x0C, 0x0C, 0x02, 0x01, 0x12, 0x00, 0x00,
+                                 0x00, 0x01, 0x00, 0x00, 0x00, 0x01, 0x88, 0x21, 0x51, 0x52]
         }
 
         if cmd_name in cmd_map:
@@ -230,9 +270,14 @@ class HinsConfigWidget(QWidget):
                 self.le_feature.setText(field.get('feature'))
                 self.le_behavior.setText(field.get('behavior'))
                 self.le_pin_mode.setText(str(field.get('pin_mode')))
-            # --- 新增：處理 UART 波特率回傳 (0x01, 0x09) ---
+            # --- 處理 UART 波特率回傳 (0x01, 0x09) ---
             elif desc_set == '0x1' and f_type == 'BAUD_RATE':
                 self.le_baud_rate.setText(str(field.get('baud_rate')))
+            # 處理 Interface Control (0x7F)
+            elif desc_set == '0x7f' and f_type == 'INTERFACE_CTRL':
+                self.le_port.setText(field.get('port'))
+                self.le_in_proto.setText(field.get('incoming'))
+                self.le_out_proto.setText(field.get('outgoing'))
             elif f_type == "ACK":
                 err_code = field.get('error_code')
                 if err_code == 0:

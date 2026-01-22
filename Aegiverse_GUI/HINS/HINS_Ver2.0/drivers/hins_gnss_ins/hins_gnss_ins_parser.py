@@ -1,15 +1,19 @@
 # drivers/hins_gnss_ins/hins_gnss_ins_parser.py
 # -*- coding:UTF-8 -*-
-from .mip_handlers.base_set_0x01 import BaseSet0x01
-from .mip_handlers.system_set_0x0c import SystemSet0x0C
+from .mip_handlers import MIP_SET_REGISTRY
+# from .mip_handlers.base_set_0x01 import BaseSet0x01
+# from .mip_handlers.threeDM_set_0x0c import ThreeDMSet0x0C
+# from .mip_handlers.system_set_0x7f import SystemSet0x7F
 
 
 class HinsGnssInsParser:
     def __init__(self):
-        self.handlers = {
-            0x01: BaseSet0x01(),
-            0x0C: SystemSet0x0C(),
-        }
+        self.handlers = MIP_SET_REGISTRY
+        # self.handlers = {
+        #     0x01: BaseSet0x01(),
+        #     0x0C: ThreeDMSet0x0C(),
+        #     0x7F: SystemSet0x7F()
+        # }
 
     def parse(self, packet: list):
         """

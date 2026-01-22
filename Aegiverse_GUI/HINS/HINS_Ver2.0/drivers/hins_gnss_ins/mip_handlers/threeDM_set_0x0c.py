@@ -1,7 +1,7 @@
 from .mip_types import MIP_CONSTANTS
 
 
-class SystemSet0x0C:
+class ThreeDMSet0x0C:
     def __init__(self):
         # 註冊此 Set 下的 Field Descriptor 處理函式
         self.field_map = {

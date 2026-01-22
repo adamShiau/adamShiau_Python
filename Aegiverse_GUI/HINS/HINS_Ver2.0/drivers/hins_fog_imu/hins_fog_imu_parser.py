@@ -30,7 +30,7 @@ class HinsFogImuParser:
                 POS_TIME=4,  # Header 4 bytes
                 sf_a=1,
                 sf_b=0,
-                PRINT=0
+                PRINT=1
             )
 
             # results tuple 順序:

@@ -6,6 +6,7 @@ import logging.handlers
 from datetime import datetime
 import numpy as np
 
+
 # --- 1. 系統 Log 設定 ---
 if not os.path.exists('./logs'):
     os.makedirs('./logs')
@@ -36,8 +37,9 @@ from myLib.myGui.pig_version_widget import VersionTable
 from myLib.myGui.pig_configuration_widget import pig_configuration_widget
 
 # 引用新架構 Drivers & Widgets
-from drivers.hins_gnss_ins.hins_gnss_ins_reader import HinsGnssInsReader
-from drivers.hins_fog_imu.hins_fog_imu_reader import HinsFogImuReader
+# from drivers.hins_gnss_ins.hins_gnss_ins_reader import HinsGnssInsReader
+# from drivers.hins_fog_imu.hins_fog_imu_reader import HinsFogImuReader
+from drivers.hins_hybrid_reader import HinsHybridReader
 from drivers.hins_gnss_ins.hins_config_widget import HinsConfigWidget
 
 
@@ -49,8 +51,14 @@ class MainWindow(QMainWindow):
 
         # 1. 核心物件初始化
         self.connector = Connector()
-        self.fog_reader = HinsFogImuReader()
-        self.gnss_reader = HinsGnssInsReader()
+        self.hybrid_reader = HinsHybridReader()
+        # [修改] 讓所有功能都依賴這個 Reader
+        # 因為它同時擁有 write_fog_cmd (給 FOG 用) 和 write_raw (給 GNSS 用)
+        self.fog_reader = self.hybrid_reader
+        self.gnss_reader = self.hybrid_reader
+
+        # self.fog_reader = HinsFogImuReader()
+        # self.gnss_reader = HinsGnssInsReader()
 
         # 2. 建立繪圖資料緩衝區
         self.plot_buffer_size = 3000
@@ -69,12 +77,17 @@ class MainWindow(QMainWindow):
         self.cali_parameter_menu = pig_calibration_widget(self.fog_reader, None, "cali_config")
         self.pig_configuration_menu = pig_configuration_widget(self.fog_reader)
         self.pig_version_menu = VersionTable()
-        self.hins_config_widget = HinsConfigWidget(self.gnss_reader)
+        self.hins_config_widget = HinsConfigWidget(self.hybrid_reader)
 
         # 5. [安全機制] 繪圖 Timer (解決崩潰問題)
+        # 5.1. 建立一個計時器物件
         self.plot_timer = QTimer()
+        # 5.2. 設定鬧鐘響的時候要執行哪個函式
+        # 這裡綁定的是 self.update_plots (負責畫圖的函式)
         self.plot_timer.timeout.connect(self.update_plots)
-        self.plot_timer.start(100)  # 10fps，保證流暢且不崩潰
+        # 5.3. 啟動計時器，設定間隔為 100 毫秒 (ms)
+        # 1000ms = 1秒，所以 100ms = 每秒執行 10 次 (10 FPS)
+        self.plot_timer.start(100)
 
         # 6. 訊號連接
         self.connect_signals()
@@ -154,21 +167,25 @@ class MainWindow(QMainWindow):
             self.pig_menu.setEnable(True)
 
             # 設定 Connector
-            self.fog_reader.set_connector(self.connector)
+            self.hybrid_reader.set_connector(self.connector)
+            self.hybrid_reader.start()
+            # self.fog_reader.set_connector(self.connector)
             # self.gnss_reader.set_connector(self.connector)
 
             # 同時啟動兩個 Reader (但在 Step 1 已移除 print，所以不會卡)
-            self.fog_reader.start()
-            self.gnss_reader.start()
+            # self.fog_reader.start()
+            # self.gnss_reader.start()
         else:
             QMessageBox.critical(self, "Connection Error", "無法連接 Serial Port")
 
     def disconnect_serial(self):
         self.stop_reading()
-        self.fog_reader.stop()
-        self.gnss_reader.stop()
-        self.fog_reader.wait()
-        self.gnss_reader.wait()
+        self.hybrid_reader.stop()
+        self.hybrid_reader.wait()
+        # self.fog_reader.stop()
+        # self.gnss_reader.stop()
+        # self.fog_reader.wait()
+        # self.gnss_reader.wait()
 
         self.connector.disconnectConn()
         self.central_widget.usb.updateStatusLabel(False)

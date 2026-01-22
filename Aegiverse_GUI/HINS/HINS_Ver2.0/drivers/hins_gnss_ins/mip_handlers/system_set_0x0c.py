@@ -31,9 +31,8 @@ class SystemSet0x0C:
             "pin_id": pin,
             "feature": MIP_CONSTANTS.FEATURE_MAP.get(feature, f"UNKNOWN({hex(feature)})"),
             "behavior": MIP_CONSTANTS.BEHAVIOR_MAP.get(behavior, f"UNKNOWN({hex(behavior)})"),
-            "pin_state": MIP_CONSTANTS.PIN_MODE_MAP.get(pin_mode_val, f"UNKNOWN({hex(pin_mode_val)})"),
-            "raw_values": {"feature": hex(feature), "behavior": hex(behavior)},
-            "raw_pin_mode": pin_mode_val
+            "pin_mode": MIP_CONSTANTS.PIN_MODE_MAP.get(pin_mode_val, f"UNKNOWN({hex(pin_mode_val)})"),
+            # "raw_values": {"feature": hex(feature), "behavior": hex(behavior)},
         }
 
     def _parse_ack_nack(self, data):

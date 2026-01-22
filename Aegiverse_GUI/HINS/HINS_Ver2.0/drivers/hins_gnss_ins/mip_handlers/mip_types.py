@@ -7,18 +7,22 @@ class MIP_CONSTANTS:
         0x03: "ENCODER",
         0x04: "TIMESTAMP",
         0x05: "UART",
-        0x06: "EVENT",
     }
 
     # GPIO Behavior Enum
     BEHAVIOR_MAP = {
-        0x00: "NONE",
-        0x01: "INPUT",
-        0x02: "OUTPUT",
-        0x11: "UART1_TX",
-        0x12: "UART1_RX",
-        0x21: "UART2_TX",
-        0x22: "UART2_RX",
-        0x10: "PPS_OUTPUT",
-        0x20: "PPS_INPUT",
+        0x00: "UNUSED",
+        0x01: "GPIO_INPUT",
+        0x02: "GPIO_OUTPUT_LOW",
+        0x21: "UART_PORT2_TX",
+        0x22: "UART_PORT2_RX",
+        0x31: "UART_PORT3_TX",
+        0x32: "UART_PORT3_RX",
+
+    }
+    # GPIO Pin Mode Enum
+    PIN_MODE_MAP = {
+        0x00: "OPEN_DRAIN",  # 您提到網頁說 0 是 Open Drain
+        0x01: "PULL_DOWN",  # 假設 1 是 Push Pull (範例)
+        0x02: "PULL_UP",
     }

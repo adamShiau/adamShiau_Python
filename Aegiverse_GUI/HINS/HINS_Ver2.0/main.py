@@ -345,6 +345,8 @@ class MainWindow(QMainWindow):
         self.central_widget.usb.addPortItems(num, ports)
         if num > 0: self.on_port_selected()
 
+        # main.py
+
     def connect_serial(self):
         port = self.central_widget.usb.selectPort()
         baud = 230400
@@ -358,9 +360,19 @@ class MainWindow(QMainWindow):
             self.central_widget.setBtnEnable(True)
             self.pig_menu.setEnable(True)
 
-            # 設定 connector 給 hybrid (它會自動分給 sub-readers)
+            # --- [關鍵修正開始] ---
+            # 1. 設定 connector 給 hybrid (總機)
             self.hybrid_reader.set_connector(self.connector)
-            self.hybrid_reader.start()  # 第一次啟動執行緒
+
+            # 2. [新增] 明確設定 connector 給分機 (GNSS Reader)
+            # 這會觸發 HinsGnssInsReader 內的 flushInputBuffer，清除殘留垃圾
+            self.gnss_reader.set_connector(self.connector)
+
+            # 3. [建議] 雖然 fog_reader 沒用到，但也同步更新比較保險
+            self.fog_reader.set_connector(self.connector)
+            # --- [關鍵修正結束] ---
+
+            self.hybrid_reader.start()  # 啟動執行緒
         else:
             QMessageBox.critical(self, "Connection Error", "無法連接 Serial Port")
 

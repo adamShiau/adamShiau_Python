@@ -24,15 +24,16 @@ class SystemSet0x0C:
         pin = data[0]
         feature = data[1]
         behavior = data[2]
-        value = data[3]
+        pin_mode_val = data[3]
 
         return {
             "type": "GPIO_CONF",
             "pin_id": pin,
             "feature": MIP_CONSTANTS.FEATURE_MAP.get(feature, f"UNKNOWN({hex(feature)})"),
             "behavior": MIP_CONSTANTS.BEHAVIOR_MAP.get(behavior, f"UNKNOWN({hex(behavior)})"),
-            "pin_state": value,
-            "raw_values": {"feature": hex(feature), "behavior": hex(behavior)}
+            "pin_state": MIP_CONSTANTS.PIN_MODE_MAP.get(pin_mode_val, f"UNKNOWN({hex(pin_mode_val)})"),
+            "raw_values": {"feature": hex(feature), "behavior": hex(behavior)},
+            "raw_pin_mode": pin_mode_val
         }
 
     def _parse_ack_nack(self, data):

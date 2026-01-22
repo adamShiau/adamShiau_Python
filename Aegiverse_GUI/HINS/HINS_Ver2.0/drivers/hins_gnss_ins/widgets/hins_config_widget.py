@@ -12,7 +12,7 @@ class HinsConfigWidget(QWidget):
         super().__init__()
         self.reader = reader
         self.setWindowTitle("HINS GNSS/INS Configuration")
-        self.resize(750, 650)
+        self.resize(750, 800)
         self.setup_ui()
 
         # 連接 Reader 的解析訊號 (接收 Dict 用於填寫欄位)
@@ -23,22 +23,31 @@ class HinsConfigWidget(QWidget):
     def setup_ui(self):
         layout = QVBoxLayout(self)
 
-        # --- 1. GPIO 控制區 ---
+        # --- GPIO 控制區 ---
         gpio_group = QGroupBox("GPIO Configuration (0x0C, 0x41)")
         gpio_layout = QGridLayout()
+        gpio_layout.setColumnStretch(0, 1)
+        gpio_layout.setColumnStretch(1, 1)
 
-        # [修正] 核心邏輯：將網格分為 3 欄，按鈕各佔 1 欄，標籤佔 1 欄，輸入框跨 2 欄
+        # 第一排：Read 按鈕
         self.btn_read_gpio1 = QPushButton("Read GPIO 1")
         self.btn_read_gpio1.clicked.connect(lambda: self.send_cmd("READ_GP1"))
-
         self.btn_read_gpio2 = QPushButton("Read GPIO 2")
         self.btn_read_gpio2.clicked.connect(lambda: self.send_cmd("READ_GP2"))
 
-        # 放置按鈕：佔據第 0 列。按鈕 1 在左，按鈕 2 在右。
-        # 讓按鈕均勻分佈在 Grid 的左右兩側
+        # 第二排：Set 按鈕
+        self.btn_set_gpio1 = QPushButton("Set GPIO 1 (UART2 Tx)")
+        self.btn_set_gpio1.clicked.connect(lambda: self.send_cmd("SET_GP1_UART_TX"))
+        self.btn_set_gpio2 = QPushButton("Set GPIO 2 (UART2 Rx)")
+        self.btn_set_gpio2.clicked.connect(lambda: self.send_cmd("SET_GP2_UART_RX"))
+
+        # 放置按鈕
         gpio_layout.addWidget(self.btn_read_gpio1, 0, 0)
         gpio_layout.addWidget(self.btn_read_gpio2, 0, 1)
+        gpio_layout.addWidget(self.btn_set_gpio1, 1, 0)
+        gpio_layout.addWidget(self.btn_set_gpio2, 1, 1)
 
+        # 放置顯示欄位 (從第 2 列開始)
         self.le_pin_id = QLineEdit();
         self.le_pin_id.setReadOnly(True)
         self.le_feature = QLineEdit();
@@ -48,21 +57,44 @@ class HinsConfigWidget(QWidget):
         self.le_pin_mode = QLineEdit();
         self.le_pin_mode.setReadOnly(True)
 
-        # 放置欄位：標籤在第 0 欄，輸入框在第 1 欄，並讓輸入框跨越 1 欄 (維持整齊寬度)
-        gpio_layout.addWidget(QLabel("Pin ID:"), 1, 0)
-        gpio_layout.addWidget(self.le_pin_id, 1, 1)
-
-        gpio_layout.addWidget(QLabel("Feature:"), 2, 0)
-        gpio_layout.addWidget(self.le_feature, 2, 1)
-
-        gpio_layout.addWidget(QLabel("Behavior:"), 3, 0)
-        gpio_layout.addWidget(self.le_behavior, 3, 1)
-
-        gpio_layout.addWidget(QLabel("Pin Mode:"), 4, 0)
-        gpio_layout.addWidget(self.le_pin_mode, 4, 1)
+        gpio_layout.addWidget(QLabel("Pin ID:"), 2, 0)
+        gpio_layout.addWidget(self.le_pin_id, 2, 1)
+        gpio_layout.addWidget(QLabel("Feature:"), 3, 0)
+        gpio_layout.addWidget(self.le_feature, 3, 1)
+        gpio_layout.addWidget(QLabel("Behavior:"), 4, 0)
+        gpio_layout.addWidget(self.le_behavior, 4, 1)
+        gpio_layout.addWidget(QLabel("Pin Mode:"), 5, 0)
+        gpio_layout.addWidget(self.le_pin_mode, 5, 1)
 
         gpio_group.setLayout(gpio_layout)
         layout.addWidget(gpio_group)
+
+        # --- UART2 Baud Rate 控制區 (0x01, 0x09) ---
+        uart_group = QGroupBox("UART2 Configuration (0x01, 0x09)")
+        uart_layout = QGridLayout()
+        uart_layout.setColumnStretch(0, 1)  # 左欄權重
+        uart_layout.setColumnStretch(1, 1)  # 右欄權重
+
+        self.btn_read_uart2_br = QPushButton("Read UART2 BR")
+        self.btn_set_br_230400 = QPushButton("Set UART2 BR=230400")
+        self.btn_set_br_115200 = QPushButton("Set UART2 BR=115200")
+        self.le_baud_rate = QLineEdit();
+        self.le_baud_rate.setReadOnly(True)
+
+        self.btn_read_uart2_br.clicked.connect(lambda: self.send_cmd("READ_UART2_BR"))
+        self.btn_set_br_230400.clicked.connect(lambda: self.send_cmd("SET_UART2_BR_230400"))
+        self.btn_set_br_115200.clicked.connect(lambda: self.send_cmd("SET_UART2_BR_115200"))
+
+        # 佈局：Read 在上，兩個 Set 在下並排
+        uart_layout.addWidget(self.btn_read_uart2_br, 0, 0)
+        uart_layout.addWidget(QLabel("Current Baud:"), 0, 1, Qt.AlignRight)
+        uart_layout.addWidget(self.le_baud_rate, 0, 2)  # 佔據第三列
+        uart_layout.addWidget(self.btn_set_br_230400, 1, 0)
+        uart_layout.addWidget(self.btn_set_br_115200, 1, 1)
+
+        uart_group.setLayout(uart_layout)
+        layout.addWidget(uart_group)
+        # --- Comm Port 控制區結束 ---
 
         # --- 2. 系統回應區 (修正：恢復原本的 Command 顯示器) ---
         status_group = QGroupBox("System Status (ACK/NACK)")
@@ -109,8 +141,18 @@ class HinsConfigWidget(QWidget):
         cmd_map = {
             "READ_GP1": [0xBC, 0xCB, 0x97, 0x0A, 0x75, 0x65, 0x0C, 0x04, 0x04, 0x41, 0x02, 0x01, 0x32, 0x9F, 0x51,
                          0x52],
-            # --- [新增 GPIO 2 指令] ---
-            "READ_GP2": [0xBC, 0xCB, 0x97, 0x0A, 0x75, 0x65, 0x0C, 0x04, 0x04, 0x41, 0x02, 0x02, 0x33, 0xA0, 0x51, 0x52]
+            "READ_GP2": [0xBC, 0xCB, 0x97, 0x0A, 0x75, 0x65, 0x0C, 0x04, 0x04, 0x41, 0x02, 0x02, 0x33, 0xA0, 0x51,
+                         0x52],
+            "SET_GP1_UART_TX": [0xBC, 0xCB, 0x97, 0x0D, 0x75, 0x65, 0x0C, 0x07, 0x07, 0x41, 0x01, 0x01, 0x05, 0x21,
+                                0x00, 0x5D, 0xAE, 0x51, 0x52],
+            "SET_GP2_UART_RX": [0xBC, 0xCB, 0x97, 0x0D, 0x75, 0x65, 0x0C, 0x07, 0x07, 0x41, 0x01, 0x02, 0x05, 0x22,
+                                0x02, 0x61, 0xB6, 0x51, 0x52],
+            "READ_UART2_BR": [0xBC, 0xCB, 0x97, 0x0A, 0x75, 0x65, 0x01, 0x04, 0x04, 0x09, 0x02, 0x12, 0x00, 0xC6, 0x51,
+                              0x52],
+            "SET_UART2_BR_230400": [0xBC, 0xCB, 0x97, 0x0E, 0x75, 0x65, 0x01, 0x08, 0x08, 0x09, 0x01, 0x12, 0x00, 0x03,
+                                    0x84, 0x00, 0x8E, 0x15, 0x51, 0x52],
+            "SET_UART2_BR_115200": [0xBC, 0xCB, 0x97, 0x0E, 0x75, 0x65, 0x01, 0x08, 0x08, 0x09, 0x01, 0x12, 0x00, 0x01,
+                                    0xC2, 0x00, 0xCA, 0x8B, 0x51, 0x52]
         }
 
         if cmd_name in cmd_map:
@@ -188,6 +230,9 @@ class HinsConfigWidget(QWidget):
                 self.le_feature.setText(field.get('feature'))
                 self.le_behavior.setText(field.get('behavior'))
                 self.le_pin_mode.setText(str(field.get('pin_mode')))
+            # --- 新增：處理 UART 波特率回傳 (0x01, 0x09) ---
+            elif desc_set == '0x1' and f_type == 'BAUD_RATE':
+                self.le_baud_rate.setText(str(field.get('baud_rate')))
             elif f_type == "ACK":
                 err_code = field.get('error_code')
                 if err_code == 0:

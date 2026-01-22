@@ -27,8 +27,17 @@ class HinsConfigWidget(QWidget):
         gpio_group = QGroupBox("GPIO Configuration (0x0C, 0x41)")
         gpio_layout = QGridLayout()
 
+        # [修正] 核心邏輯：將網格分為 3 欄，按鈕各佔 1 欄，標籤佔 1 欄，輸入框跨 2 欄
         self.btn_read_gpio1 = QPushButton("Read GPIO 1")
         self.btn_read_gpio1.clicked.connect(lambda: self.send_cmd("READ_GP1"))
+
+        self.btn_read_gpio2 = QPushButton("Read GPIO 2")
+        self.btn_read_gpio2.clicked.connect(lambda: self.send_cmd("READ_GP2"))
+
+        # 放置按鈕：佔據第 0 列。按鈕 1 在左，按鈕 2 在右。
+        # 讓按鈕均勻分佈在 Grid 的左右兩側
+        gpio_layout.addWidget(self.btn_read_gpio1, 0, 0)
+        gpio_layout.addWidget(self.btn_read_gpio2, 0, 1)
 
         self.le_pin_id = QLineEdit();
         self.le_pin_id.setReadOnly(True)
@@ -39,30 +48,35 @@ class HinsConfigWidget(QWidget):
         self.le_pin_mode = QLineEdit();
         self.le_pin_mode.setReadOnly(True)
 
-        gpio_layout.addWidget(self.btn_read_gpio1, 0, 0, 1, 2)
-        gpio_layout.addWidget(QLabel("Pin ID:"), 1, 0);
+        # 放置欄位：標籤在第 0 欄，輸入框在第 1 欄，並讓輸入框跨越 1 欄 (維持整齊寬度)
+        gpio_layout.addWidget(QLabel("Pin ID:"), 1, 0)
         gpio_layout.addWidget(self.le_pin_id, 1, 1)
-        gpio_layout.addWidget(QLabel("Feature:"), 2, 0);
+
+        gpio_layout.addWidget(QLabel("Feature:"), 2, 0)
         gpio_layout.addWidget(self.le_feature, 2, 1)
-        gpio_layout.addWidget(QLabel("Behavior:"), 3, 0);
+
+        gpio_layout.addWidget(QLabel("Behavior:"), 3, 0)
         gpio_layout.addWidget(self.le_behavior, 3, 1)
-        gpio_layout.addWidget(QLabel("Pin Mode:"), 4, 0);
+
+        gpio_layout.addWidget(QLabel("Pin Mode:"), 4, 0)
         gpio_layout.addWidget(self.le_pin_mode, 4, 1)
 
         gpio_group.setLayout(gpio_layout)
         layout.addWidget(gpio_group)
 
-        # --- 2. 系統回應區 ---
+        # --- 2. 系統回應區 (修正：恢復原本的 Command 顯示器) ---
         status_group = QGroupBox("System Status (ACK/NACK)")
         status_layout = QFormLayout()
         self.le_last_cmd = QLineEdit();
-        self.le_ack_status = QLineEdit()
+        self.le_last_cmd.setReadOnly(True)
+        self.le_ack_status = QLineEdit();
+        self.le_ack_status.setReadOnly(True)
         status_layout.addRow("Last Command:", self.le_last_cmd)
         status_layout.addRow("ACK Status:", self.le_ack_status)
         status_group.setLayout(status_layout)
         layout.addWidget(status_group)
 
-        # --- 3. 原始數據監控 ---
+        # --- 3. 原始數據監控 (Raw Monitor) ---
         raw_group = QGroupBox("Raw Monitor")
         raw_layout = QVBoxLayout()
         tool_layout = QHBoxLayout()
@@ -93,7 +107,10 @@ class HinsConfigWidget(QWidget):
     def send_cmd(self, cmd_name):
         """ 發送指令：清空緩衝 -> 發送 -> 同步讀取解析 """
         cmd_map = {
-            "READ_GP1": [0xBC, 0xCB, 0x97, 0x0A, 0x75, 0x65, 0x0C, 0x04, 0x04, 0x41, 0x02, 0x01, 0x32, 0x9F, 0x51, 0x52]
+            "READ_GP1": [0xBC, 0xCB, 0x97, 0x0A, 0x75, 0x65, 0x0C, 0x04, 0x04, 0x41, 0x02, 0x01, 0x32, 0x9F, 0x51,
+                         0x52],
+            # --- [新增 GPIO 2 指令] ---
+            "READ_GP2": [0xBC, 0xCB, 0x97, 0x0A, 0x75, 0x65, 0x0C, 0x04, 0x04, 0x41, 0x02, 0x02, 0x33, 0xA0, 0x51, 0x52]
         }
 
         if cmd_name in cmd_map:
@@ -101,12 +118,9 @@ class HinsConfigWidget(QWidget):
             conn = getattr(self.reader, '_connector', None)
 
             if conn:
-                # --- Step 1: 發送前清空 Buffer (Flush) ---
                 pre_n = conn.readInputBuffer()
-                if pre_n > 0:
-                    conn.readBinaryList(pre_n)
+                if pre_n > 0: conn.readBinaryList(pre_n)
 
-                # --- Step 2: 發送指令 ---
                 hex_str = " ".join([f"{b:02X}" for b in cmd_bytes])
                 self.append_console(
                     f"[{QDateTime.currentDateTime().toString('HH:mm:ss.zzz')}] TX [{cmd_name}]: {hex_str}", "#569CD6")
@@ -114,13 +128,13 @@ class HinsConfigWidget(QWidget):
                 self.le_ack_status.setText("Sending...")
                 self.le_last_cmd.setText(cmd_name)
 
-                # --- Step 3: 同步讀取並觸發解析 ---
                 time.sleep(0.2)
                 post_n = conn.readInputBuffer()
                 if post_n > 0:
                     raw_data = conn.readBinaryList(post_n)
-                    # 這裡會觸發下面帶有顏色解析邏輯的 on_raw_data_received
                     self.on_raw_data_received(raw_data)
+                    # 關鍵：將數據餵給 Reader 解析引擎，ACK 才會變 OK
+                    self.reader.handle_packet(raw_data)
 
     @Slot(list)
     def on_raw_data_received(self, packet: list):

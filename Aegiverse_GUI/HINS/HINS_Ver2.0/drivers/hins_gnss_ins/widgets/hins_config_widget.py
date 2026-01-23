@@ -132,6 +132,30 @@ class HinsConfigWidget(QWidget):
         layout.addWidget(if_group)
         # --- Interface Control 控制區 (0x7F, 0x02) 結束---
 
+        # --- System Commands 區塊  ---
+        sys_group = QGroupBox("System Commands")
+        sys_layout = QHBoxLayout()  # 使用橫向佈局讓按鈕並排
+
+        self.btn_idle = QPushButton("IDLE")
+        self.btn_resume = QPushButton("RESUME")
+        self.btn_save = QPushButton("SAVE")
+
+        # 設定按鈕樣式 (可選，讓 SAVE 看起來比較重要)
+        self.btn_save.setStyleSheet("background-color: #2D5A27; color: white; font-weight: bold;")
+
+        # 連接訊號
+        self.btn_idle.clicked.connect(lambda: self.send_cmd("SET_TO_IDLE"))
+        self.btn_resume.clicked.connect(lambda: self.send_cmd("RESUME"))
+        self.btn_save.clicked.connect(lambda: self.send_cmd("SAVE_SETTINGS"))
+
+        sys_layout.addWidget(self.btn_idle)
+        sys_layout.addWidget(self.btn_resume)
+        sys_layout.addWidget(self.btn_save)
+
+        sys_group.setLayout(sys_layout)
+        layout.addWidget(sys_group)
+        # --- System Commands 區塊 結束 ---
+
         # --- 2. 系統回應區 (修正：恢復原本的 Command 顯示器) ---
         status_group = QGroupBox("System Status (ACK/NACK)")
         status_layout = QFormLayout()
@@ -192,7 +216,10 @@ class HinsConfigWidget(QWidget):
             "READ_IF_UART2": [0xBC, 0xCB, 0x97, 0x0A, 0x75, 0x65, 0x7F, 0x04, 0x04, 0x02, 0x02, 0x12, 0x77, 0xA5, 0x51,
                               0x52],
             "SET_UART2_MIP": [0xBC, 0xCB, 0x97, 0x12, 0x75, 0x65, 0x7F, 0x0C, 0x0C, 0x02, 0x01, 0x12, 0x00, 0x00,
-                                 0x00, 0x01, 0x00, 0x00, 0x00, 0x01, 0x88, 0x21, 0x51, 0x52]
+                                 0x00, 0x01, 0x00, 0x00, 0x00, 0x01, 0x88, 0x21, 0x51, 0x52],
+            "SET_TO_IDLE": [0xBC, 0xCB, 0x97, 0x08, 0x75, 0x65, 0x01, 0x02, 0x02, 0x02, 0xE1, 0xC7, 0x51, 0x52],
+            "RESUME": [0xBC, 0xCB, 0x97, 0x08, 0x75, 0x65, 0x01, 0x02, 0x02, 0x06, 0xE5, 0xCB, 0x51, 0x52],
+            "SAVE_SETTINGS": [0xBC, 0xCB, 0x97, 0x09, 0x75, 0x65, 0x0C, 0x03, 0x03, 0x30, 0x03, 0x1F, 0x45, 0x51, 0x52]
         }
 
         if cmd_name in cmd_map:
@@ -214,7 +241,7 @@ class HinsConfigWidget(QWidget):
                 post_n = conn.readInputBuffer()
                 if post_n > 0:
                     raw_data = conn.readBinaryList(post_n)
-                    self.on_raw_data_received(raw_data)
+                    # self.on_raw_data_received(raw_data)
                     # 關鍵：將數據餵給 Reader 解析引擎，ACK 才會變 OK
                     self.reader.handle_packet(raw_data)
 

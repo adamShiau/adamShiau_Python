@@ -5,8 +5,11 @@ class ThreeDMSet0x0C:
     def __init__(self):
         # 註冊此 Set 下的 Field Descriptor 處理函式
         self.field_map = {
-            0xC1: self._parse_gpio_config,  # GPIO Config Response (0x41 -> 0xC1)
-            0xF1: self._parse_ack_nack,  # ACK/NACK Field
+            0xC1: self._parse_gpio_config,
+            0x8F: self._parse_message_format,  # Message Format Response [cite: 12]
+            0x85: self._parse_stream_control,  # 文件指定的 Data Stream Control Response
+            0x91: self._parse_stream_control,  # 備用的標準回傳 Descriptor
+            0xF1: self._parse_ack_nack,
         }
 
     def parse_field(self, f_desc, data):
@@ -33,6 +36,28 @@ class ThreeDMSet0x0C:
             "behavior": MIP_CONSTANTS.BEHAVIOR_MAP.get(behavior, f"UNKNOWN({hex(behavior)})"),
             "pin_mode": MIP_CONSTANTS.PIN_MODE_MAP.get(pin_mode_val, f"UNKNOWN({hex(pin_mode_val)})"),
             # "raw_values": {"feature": hex(feature), "behavior": hex(behavior)},
+        }
+
+    def _parse_message_format(self, data):
+        """ 解析 0x0C, 0x8F (Message Format Response)  """
+        if len(data) < 2: return {"type": "MSG_FORMAT", "error": "Short Data"}
+        return {
+            "type": "MSG_FORMAT",
+            "desc_set": hex(data[0]),
+            "num_descriptors": data[1]
+        }
+
+    def _parse_stream_control(self, data):
+        """ 解析 0x0C, 0x85 (Data Stream Control Response)  """
+        # 根據文件，Response Length 為 4
+        # Payload 包含: Desc Set (u8), Enabled (bool)
+        if len(data) < 2:
+            return {"type": "STREAM_CTRL", "error": "Length mismatch"}
+
+        return {
+            "type": "STREAM_CTRL",
+            "desc_set": hex(data[0]),      # 傳回對應的 Descriptor Set
+            "enabled": bool(data[1]),      # 串流是否啟動
         }
 
     def _parse_ack_nack(self, data):

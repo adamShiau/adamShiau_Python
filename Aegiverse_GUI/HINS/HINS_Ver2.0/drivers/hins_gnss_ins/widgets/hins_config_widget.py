@@ -156,6 +156,32 @@ class HinsConfigWidget(QWidget):
         layout.addWidget(sys_group)
         # --- System Commands 區塊 結束 ---
 
+        # --- Data Stream Control 區塊 (0x0C, 0x0F & 0x11) ---
+        stream_group = QGroupBox("Data Stream Control")
+        stream_layout = QHBoxLayout()
+
+        self.btn_set_data = QPushButton("Set Data")
+        self.btn_stream_on = QPushButton("Stream ON")
+        self.btn_stream_off = QPushButton("Stream OFF")
+
+        # 樣式設定
+        self.btn_stream_on.setStyleSheet("background-color: #1E4620; color: white;")
+        self.btn_stream_off.setStyleSheet("background-color: #5F2120; color: white;")
+
+        # 訊號連接
+        self.btn_set_data.clicked.connect(lambda: self.send_cmd("SET_DATA"))
+        self.btn_stream_on.clicked.connect(lambda: self.send_cmd("STREAM_ON"))
+        self.btn_stream_off.clicked.connect(lambda: self.send_cmd("STREAM_OFF"))
+
+        stream_layout.addWidget(self.btn_set_data)
+        stream_layout.addWidget(self.btn_stream_on)
+        stream_layout.addWidget(self.btn_stream_off)
+        stream_group.setLayout(stream_layout)
+
+        # 插入到 Layout 中 (例如在 gpio_group 之後)
+        layout.insertWidget(1, stream_group)
+        # --- Data Stream Control 區塊 (0x0C, 0x0F & 0x11) 結束---
+
         # --- 2. 系統回應區 (修正：恢復原本的 Command 顯示器) ---
         status_group = QGroupBox("System Status (ACK/NACK)")
         status_layout = QFormLayout()
@@ -219,7 +245,13 @@ class HinsConfigWidget(QWidget):
                                  0x00, 0x01, 0x00, 0x00, 0x00, 0x01, 0x88, 0x21, 0x51, 0x52],
             "SET_TO_IDLE": [0xBC, 0xCB, 0x97, 0x08, 0x75, 0x65, 0x01, 0x02, 0x02, 0x02, 0xE1, 0xC7, 0x51, 0x52],
             "RESUME": [0xBC, 0xCB, 0x97, 0x08, 0x75, 0x65, 0x01, 0x02, 0x02, 0x06, 0xE5, 0xCB, 0x51, 0x52],
-            "SAVE_SETTINGS": [0xBC, 0xCB, 0x97, 0x09, 0x75, 0x65, 0x0C, 0x03, 0x03, 0x30, 0x03, 0x1F, 0x45, 0x51, 0x52]
+            "SAVE_SETTINGS": [0xBC, 0xCB, 0x97, 0x09, 0x75, 0x65, 0x0C, 0x03, 0x03, 0x30, 0x03, 0x1F, 0x45, 0x51, 0x52],
+            "SET_DATA": [0xBC, 0xCB, 0x97, 0x11, 0x75, 0x65, 0x0C, 0x0B, 0x0B, 0x0F, 0x01, 0x82, 0x02, 0xD3, 0x00, 0x64,
+                         0x49, 0x00, 0x64, 0x74, 0x78, 0x51, 0x52],
+            "STREAM_ON": [0xBC, 0xCB, 0x97, 0x0B, 0x75, 0x65, 0x0C, 0x05, 0x05, 0x11, 0x01, 0x82, 0x01, 0x85, 0x1C,
+                          0x51, 0x52],
+            "STREAM_OFF": [0xBC, 0xCB, 0x97, 0x0B, 0x75, 0x65, 0x0C, 0x05, 0x05, 0x11, 0x01, 0x82, 0x00, 0x84, 0x1B,
+                           0x51, 0x52]
         }
 
         if cmd_name in cmd_map:
@@ -305,6 +337,11 @@ class HinsConfigWidget(QWidget):
                 self.le_port.setText(field.get('port'))
                 self.le_in_proto.setText(field.get('incoming'))
                 self.le_out_proto.setText(field.get('outgoing'))
+            elif desc_set == '0xc' and f_type == 'STREAM_CTRL':
+                status = "ON" if field.get('enabled') else "OFF"
+                self.le_ack_status.setText(f"Stream {field.get('desc_set')}: {status}")
+            elif desc_set == '0xc' and f_type == 'MSG_FORMAT':
+                self.le_ack_status.setText(f"Format Set: {field.get('desc_set')}")
             elif f_type == "ACK":
                 err_code = field.get('error_code')
                 if err_code == 0:

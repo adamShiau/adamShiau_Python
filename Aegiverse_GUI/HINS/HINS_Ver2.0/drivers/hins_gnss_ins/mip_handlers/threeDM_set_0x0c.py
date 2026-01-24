@@ -1,4 +1,5 @@
 from .mip_types import MIP_CONSTANTS
+import struct # 確保有匯入 struct
 
 
 class ThreeDMSet0x0C:
@@ -6,9 +7,10 @@ class ThreeDMSet0x0C:
         # 註冊此 Set 下的 Field Descriptor 處理函式
         self.field_map = {
             0xC1: self._parse_gpio_config,
-            0x8F: self._parse_message_format,  # Message Format Response [cite: 12]
-            0x85: self._parse_stream_control,  # 文件指定的 Data Stream Control Response
-            0x91: self._parse_stream_control,  # 備用的標準回傳 Descriptor
+            0x8F: self._parse_message_format,
+            0x85: self._parse_stream_control,
+            0x91: self._parse_stream_control,
+            0xB3: self._parse_sensor_to_vehicle_dcm,  # 新增 DCM 解析
             0xF1: self._parse_ack_nack,
         }
 
@@ -19,6 +21,17 @@ class ThreeDMSet0x0C:
         # 若無對應 Handler，回傳 Raw Hex
         return {"descriptor": hex(f_desc), "raw": data.hex()}
 
+    def _parse_sensor_to_vehicle_dcm(self, data):
+        """ 解析 0x0C, 0xB3 (DCM Response)  """
+        if len(data) < 36:
+            return {"type": "SENS_VEH_DCM", "error": "Length mismatch"}
+
+        # 讀取 9 個 float
+        values = struct.unpack('>9f', data[:36])
+        return {
+            "type": "SENS_VEH_DCM",
+            "matrix": [values[0:3], values[3:6], values[6:9]]
+        }
     def _parse_gpio_config(self, data):
         """ 解析 0x0C, 0xC1 (GPIO Configuration) """
         if len(data) < 4:

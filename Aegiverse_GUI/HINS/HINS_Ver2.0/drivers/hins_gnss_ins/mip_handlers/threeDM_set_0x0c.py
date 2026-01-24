@@ -22,15 +22,15 @@ class ThreeDMSet0x0C:
         return {"descriptor": hex(f_desc), "raw": data.hex()}
 
     def _parse_sensor_to_vehicle_dcm(self, data):
-        """ 解析 0x0C, 0xB3 (DCM Response)  """
-        # --- 新增註解：確保輸入為 bytes 以供 struct.unpack 使用 ---
+        """ 解析 0x0C, 0xB3 (DCM Response) """
+        # --- 新增註解：確保輸入為 bytes 以供 struct.unpack 使用，防止 list 導致報錯 ---
         if isinstance(data, list):
             data = bytes(data)
 
         if len(data) < 36:
             return {"type": "SENS_VEH_DCM", "error": "Length mismatch"}
 
-        # 讀取 9 個 float
+        # [cite_start]讀取 9 個 float [cite: 15, 41]
         values = struct.unpack('>9f', data[:36])
         return {
             "type": "SENS_VEH_DCM",

@@ -286,7 +286,8 @@ class HinsConfigWidget(QWidget):
             "STREAM_ON": [0xBC, 0xCB, 0x97, 0x0B, 0x75, 0x65, 0x0C, 0x05, 0x05, 0x11, 0x01, 0x82, 0x01, 0x85, 0x1C,
                           0x51, 0x52],
             "STREAM_OFF": [0xBC, 0xCB, 0x97, 0x0B, 0x75, 0x65, 0x0C, 0x05, 0x05, 0x11, 0x01, 0x82, 0x00, 0x84, 0x1B,
-                           0x51, 0x52]
+                           0x51, 0x52],
+            "READ_DCM": [0xBC, 0xCB, 0x97, 0x09, 0x75, 0x65, 0x0C, 0x03, 0x03, 0x33, 0x02, 0x21, 0x4A, 0x51, 0x52],
         }
 
         if cmd_name in cmd_map:
@@ -360,13 +361,9 @@ class HinsConfigWidget(QWidget):
             # --- 新增註解：將 ACK 判斷獨立出來，確保 Read DCM (0x33) 的 ACK 也能觸發 ---
             if f_type == "ACK":
                 err_code = field.get('error_code')
-                if err_code == 0:
-                    self.le_ack_status.setStyleSheet("color: green; font-weight: bold;")
-                    self.le_ack_status.setText("OK")
-                else:
-                    self.le_ack_status.setStyleSheet("color: red; font-weight: bold;")
-                    self.le_ack_status.setText(f"Error {err_code}")
-                continue  # 處理完 ACK 繼續處理下一個 field
+                self.le_ack_status.setText("OK" if err_code == 0 else f"Error {err_code}")
+                self.le_ack_status.setStyleSheet(f"color: {'green' if err_code == 0 else 'red'}; font-weight: bold;")
+                continue
 
             if desc_set == '0xc' and f_type == 'GPIO_CONF':
                 print('field:', field)

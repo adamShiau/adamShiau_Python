@@ -4,7 +4,8 @@ import sys
 import time
 import struct
 from PySide6.QtWidgets import (QWidget, QVBoxLayout, QPushButton, QGroupBox, QApplication,
-                               QGridLayout, QLabel, QLineEdit, QFormLayout, QTextEdit, QHBoxLayout)
+                               QGridLayout, QLabel, QLineEdit, QFormLayout, QTextEdit,
+                               QHBoxLayout, QScrollArea) # 確保這裡有 QScrollArea
 from PySide6.QtCore import Slot, Qt, QDateTime
 
 
@@ -22,33 +23,32 @@ class HinsConfigWidget(QWidget):
         self.reader.raw_ack_qt.connect(self.on_raw_data_received)
 
     def setup_ui(self):
-        layout = QVBoxLayout(self)
+        # 主佈局改為橫向排列 (左邊設定，右邊 Console)
+        main_h_layout = QHBoxLayout(self)
 
-        # --- GPIO 控制區 ---
+        # --- 左側：參數設定捲動區 (防止內容過長擋住螢幕) ---
+        left_scroll = QScrollArea()
+        left_scroll.setWidgetResizable(True)
+        left_container = QWidget()
+        left_layout = QVBoxLayout(left_container)
+
+        # 1. GPIO 控制區 (維持原排版)
         gpio_group = QGroupBox("GPIO Configuration (0x0C, 0x41)")
         gpio_layout = QGridLayout()
-        gpio_layout.setColumnStretch(0, 1)
-        gpio_layout.setColumnStretch(1, 1)
-
-        # 第一排：Read 按鈕
         self.btn_read_gpio1 = QPushButton("Read GPIO 1")
         self.btn_read_gpio1.clicked.connect(lambda: self.send_cmd("READ_GP1"))
         self.btn_read_gpio2 = QPushButton("Read GPIO 2")
         self.btn_read_gpio2.clicked.connect(lambda: self.send_cmd("READ_GP2"))
-
-        # 第二排：Set 按鈕
         self.btn_set_gpio1 = QPushButton("Set GPIO 1 (UART2 Tx)")
         self.btn_set_gpio1.clicked.connect(lambda: self.send_cmd("SET_GP1_UART_TX"))
         self.btn_set_gpio2 = QPushButton("Set GPIO 2 (UART2 Rx)")
         self.btn_set_gpio2.clicked.connect(lambda: self.send_cmd("SET_GP2_UART_RX"))
 
-        # 放置按鈕
         gpio_layout.addWidget(self.btn_read_gpio1, 0, 0)
         gpio_layout.addWidget(self.btn_read_gpio2, 0, 1)
         gpio_layout.addWidget(self.btn_set_gpio1, 1, 0)
         gpio_layout.addWidget(self.btn_set_gpio2, 1, 1)
 
-        # 放置顯示欄位 (從第 2 列開始)
         self.le_pin_id = QLineEdit();
         self.le_pin_id.setReadOnly(True)
         self.le_feature = QLineEdit();
@@ -57,196 +57,146 @@ class HinsConfigWidget(QWidget):
         self.le_behavior.setReadOnly(True)
         self.le_pin_mode = QLineEdit();
         self.le_pin_mode.setReadOnly(True)
-
-        gpio_layout.addWidget(QLabel("Pin ID:"), 2, 0)
+        gpio_layout.addWidget(QLabel("Pin ID:"), 2, 0);
         gpio_layout.addWidget(self.le_pin_id, 2, 1)
-        gpio_layout.addWidget(QLabel("Feature:"), 3, 0)
+        gpio_layout.addWidget(QLabel("Feature:"), 3, 0);
         gpio_layout.addWidget(self.le_feature, 3, 1)
-        gpio_layout.addWidget(QLabel("Behavior:"), 4, 0)
+        gpio_layout.addWidget(QLabel("Behavior:"), 4, 0);
         gpio_layout.addWidget(self.le_behavior, 4, 1)
-        gpio_layout.addWidget(QLabel("Pin Mode:"), 5, 0)
+        gpio_layout.addWidget(QLabel("Pin Mode:"), 5, 0);
         gpio_layout.addWidget(self.le_pin_mode, 5, 1)
-
         gpio_group.setLayout(gpio_layout)
-        layout.addWidget(gpio_group)
+        left_layout.addWidget(gpio_group)
 
-        # --- UART2 Baud Rate 控制區 (0x01, 0x09) ---
+        # 2. Data Stream Control (收緊排版)
+        stream_group = QGroupBox("Data Stream Control (0x0C, 0x0F/0x11)")
+        stream_grid = QGridLayout()
+        self.btn_set_data = QPushButton("Set Data")
+        self.btn_stream_on = QPushButton("Stream ON");
+        self.btn_stream_on.setStyleSheet("background-color: #1E4620; color: white;")
+        self.btn_stream_off = QPushButton("Stream OFF");
+        self.btn_stream_off.setStyleSheet("background-color: #5F2120; color: white;")
+        self.btn_set_data.clicked.connect(lambda: self.send_cmd("SET_DATA"))
+        self.btn_stream_on.clicked.connect(lambda: self.send_cmd("STREAM_ON"))
+        self.btn_stream_off.clicked.connect(lambda: self.send_cmd("STREAM_OFF"))
+        # 限制按鈕寬度
+        for btn in [self.btn_set_data, self.btn_stream_on, self.btn_stream_off]: btn.setMaximumWidth(120)
+        stream_grid.addWidget(self.btn_set_data, 0, 0)
+        stream_grid.addWidget(self.btn_stream_on, 0, 1)
+        stream_grid.addWidget(self.btn_stream_off, 0, 2)
+        stream_group.setLayout(stream_grid)
+        left_layout.addWidget(stream_group)
+
+        # 3. UART2 Configuration (已移除 115200)
         uart_group = QGroupBox("UART2 Configuration (0x01, 0x09)")
         uart_layout = QGridLayout()
-        uart_layout.setColumnStretch(0, 1)  # 左欄權重
-        uart_layout.setColumnStretch(1, 1)  # 右欄權重
-
         self.btn_read_uart2_br = QPushButton("Read UART2 BR")
         self.btn_set_br_230400 = QPushButton("Set UART2 BR=230400")
-        self.btn_set_br_115200 = QPushButton("Set UART2 BR=115200")
         self.le_baud_rate = QLineEdit();
         self.le_baud_rate.setReadOnly(True)
-
         self.btn_read_uart2_br.clicked.connect(lambda: self.send_cmd("READ_UART2_BR"))
         self.btn_set_br_230400.clicked.connect(lambda: self.send_cmd("SET_UART2_BR_230400"))
-        self.btn_set_br_115200.clicked.connect(lambda: self.send_cmd("SET_UART2_BR_115200"))
-
-        # 佈局：Read 在上，兩個 Set 在下並排
         uart_layout.addWidget(self.btn_read_uart2_br, 0, 0)
         uart_layout.addWidget(QLabel("Current Baud:"), 0, 1, Qt.AlignRight)
-        uart_layout.addWidget(self.le_baud_rate, 0, 2)  # 佔據第三列
+        uart_layout.addWidget(self.le_baud_rate, 0, 2)
         uart_layout.addWidget(self.btn_set_br_230400, 1, 0)
-        uart_layout.addWidget(self.btn_set_br_115200, 1, 1)
-
         uart_group.setLayout(uart_layout)
-        layout.addWidget(uart_group)
-        # --- UART2 Baud Rate 控制區 控制區結束 ---
+        left_layout.addWidget(uart_group)
 
-        # --- Interface Control 控制區 (0x7F, 0x02) ---
+        # 4. Interface Control (補回顯示欄位)
         if_group = QGroupBox("Interface Control (0x7F, 0x02)")
         if_layout = QGridLayout()
-        if_layout.setColumnStretch(0, 1)
-        if_layout.setColumnStretch(1, 1)
-
-        # 1. 先實例化按鈕
         self.btn_read_if = QPushButton("Read UART2 Interface")
         self.btn_set_if_mip = QPushButton("Set UART2 MIP")
-
-        # 2. 連接訊號 (確保只連線這一次)
         self.btn_read_if.clicked.connect(lambda: self.send_cmd("READ_IF_UART2"))
         self.btn_set_if_mip.clicked.connect(lambda: self.send_cmd("SET_UART2_MIP"))
-
         self.le_port = QLineEdit();
         self.le_port.setReadOnly(True)
         self.le_in_proto = QLineEdit();
         self.le_in_proto.setReadOnly(True)
         self.le_out_proto = QLineEdit();
         self.le_out_proto.setReadOnly(True)
-
-        # 3. 佈局放置
-        if_layout.addWidget(self.btn_read_if, 0, 0)
+        if_layout.addWidget(self.btn_read_if, 0, 0);
         if_layout.addWidget(self.btn_set_if_mip, 0, 1)
-
-        if_layout.addWidget(QLabel("Port:"), 1, 0)
+        if_layout.addWidget(QLabel("Port:"), 1, 0);
         if_layout.addWidget(self.le_port, 1, 1)
-        if_layout.addWidget(QLabel("Protocols Incoming:"), 2, 0)
+        if_layout.addWidget(QLabel("Incoming Proto:"), 2, 0);
         if_layout.addWidget(self.le_in_proto, 2, 1)
-        if_layout.addWidget(QLabel("Protocols Outgoing:"), 3, 0)
+        if_layout.addWidget(QLabel("Outgoing Proto:"), 3, 0);
         if_layout.addWidget(self.le_out_proto, 3, 1)
-
         if_group.setLayout(if_layout)
-        layout.addWidget(if_group)
-        # --- Interface Control 控制區 (0x7F, 0x02) 結束---
+        left_layout.addWidget(if_group)
 
-        # --- Frame Transformation (0x0C, 0x33) ---
+        # 5. DCM Transformation (0x33)
         dcm_group = QGroupBox("Sensor-to-Vehicle DCM (0x33)")
         dcm_layout = QVBoxLayout()
-
-        btn_layout = QHBoxLayout()
-        self.btn_read_dcm = QPushButton("Read DCM")
+        dcm_btn_layout = QHBoxLayout()
+        self.btn_read_dcm = QPushButton("Read DCM");
         self.btn_set_dcm = QPushButton("Set DCM")
         self.btn_set_dcm.setStyleSheet("background-color: #2D5A27; color: white;")
-
-        btn_layout.addWidget(self.btn_read_dcm)
-        btn_layout.addWidget(self.btn_set_dcm)
-
-        # 建立 3x3 輸入矩陣
-        self.matrix_grid = QGridLayout()
+        dcm_btn_layout.addWidget(self.btn_read_dcm);
+        dcm_btn_layout.addWidget(self.btn_set_dcm)
+        self.btn_read_dcm.clicked.connect(lambda: self.send_cmd("READ_DCM"))
+        self.btn_set_dcm.clicked.connect(self.send_set_dcm_payload)
+        self.matrix_grid = QGridLayout();
         self.matrix_cells = []
         for r in range(3):
             row_cells = []
             for c in range(3):
-                le = QLineEdit("0.0")  # 預設值
-                le.setFixedWidth(80)
-                # 設定成只允許輸入數字與小數點
-                self.matrix_grid.addWidget(le, r, c)
+                le = QLineEdit("0.0");
+                le.setFixedWidth(75);
+                le.setAlignment(Qt.AlignCenter)
+                self.matrix_grid.addWidget(le, r, c);
                 row_cells.append(le)
             self.matrix_cells.append(row_cells)
-
-        self.btn_read_dcm.clicked.connect(lambda: self.send_cmd("READ_DCM"))
-        self.btn_set_dcm.clicked.connect(self.send_set_dcm_payload)  # 呼叫專門組裝函數
-
-        dcm_layout.addLayout(btn_layout)
+        dcm_layout.addLayout(dcm_btn_layout);
         dcm_layout.addLayout(self.matrix_grid)
         dcm_group.setLayout(dcm_layout)
-        layout.addWidget(dcm_group)
-        # --- Frame Transformation (0x0C, 0x33) 結束---
+        left_layout.addWidget(dcm_group)
 
-        # --- System Commands 區塊  ---
-        sys_group = QGroupBox("System Commands")
-        sys_layout = QHBoxLayout()  # 使用橫向佈局讓按鈕並排
-
-        self.btn_idle = QPushButton("IDLE")
-        self.btn_resume = QPushButton("RESUME")
+        # 6. System Commands & Status
+        sys_group = QGroupBox("System Control")
+        sys_v_layout = QVBoxLayout()
+        sys_h_layout = QHBoxLayout()
+        self.btn_idle = QPushButton("IDLE");
+        self.btn_resume = QPushButton("RESUME");
         self.btn_save = QPushButton("SAVE")
-
-        # 設定按鈕樣式 (可選，讓 SAVE 看起來比較重要)
         self.btn_save.setStyleSheet("background-color: #2D5A27; color: white; font-weight: bold;")
-
-        # 連接訊號
         self.btn_idle.clicked.connect(lambda: self.send_cmd("SET_TO_IDLE"))
         self.btn_resume.clicked.connect(lambda: self.send_cmd("RESUME"))
         self.btn_save.clicked.connect(lambda: self.send_cmd("SAVE_SETTINGS"))
+        sys_h_layout.addWidget(self.btn_idle);
+        sys_h_layout.addWidget(self.btn_resume);
+        sys_h_layout.addWidget(self.btn_save)
+        sys_v_layout.addLayout(sys_h_layout)
 
-        sys_layout.addWidget(self.btn_idle)
-        sys_layout.addWidget(self.btn_resume)
-        sys_layout.addWidget(self.btn_save)
-
-        sys_group.setLayout(sys_layout)
-        layout.addWidget(sys_group)
-        # --- System Commands 區塊 結束 ---
-
-        # --- Data Stream Control 區塊 (0x0C, 0x0F & 0x11) ---
-        stream_group = QGroupBox("Data Stream Control")
-        stream_layout = QHBoxLayout()
-
-        self.btn_set_data = QPushButton("Set Data")
-        self.btn_stream_on = QPushButton("Stream ON")
-        self.btn_stream_off = QPushButton("Stream OFF")
-
-        # 樣式設定
-        self.btn_stream_on.setStyleSheet("background-color: #1E4620; color: white;")
-        self.btn_stream_off.setStyleSheet("background-color: #5F2120; color: white;")
-
-        # 訊號連接
-        self.btn_set_data.clicked.connect(lambda: self.send_cmd("SET_DATA"))
-        self.btn_stream_on.clicked.connect(lambda: self.send_cmd("STREAM_ON"))
-        self.btn_stream_off.clicked.connect(lambda: self.send_cmd("STREAM_OFF"))
-
-        stream_layout.addWidget(self.btn_set_data)
-        stream_layout.addWidget(self.btn_stream_on)
-        stream_layout.addWidget(self.btn_stream_off)
-        stream_group.setLayout(stream_layout)
-
-        # 插入到 Layout 中 (例如在 gpio_group 之後)
-        layout.insertWidget(1, stream_group)
-        # --- Data Stream Control 區塊 (0x0C, 0x0F & 0x11) 結束---
-
-        # --- 2. 系統回應區 (修正：恢復原本的 Command 顯示器) ---
-        status_group = QGroupBox("System Status (ACK/NACK)")
-        status_layout = QFormLayout()
+        status_form = QFormLayout()
         self.le_last_cmd = QLineEdit();
         self.le_last_cmd.setReadOnly(True)
         self.le_ack_status = QLineEdit();
         self.le_ack_status.setReadOnly(True)
-        status_layout.addRow("Last Command:", self.le_last_cmd)
-        status_layout.addRow("ACK Status:", self.le_ack_status)
-        status_group.setLayout(status_layout)
-        layout.addWidget(status_group)
+        status_form.addRow("Last CMD:", self.le_last_cmd);
+        status_form.addRow("ACK Status:", self.le_ack_status)
+        sys_v_layout.addLayout(status_form)
+        sys_group.setLayout(sys_v_layout);
+        left_layout.addWidget(sys_group)
 
-        # --- 3. 原始數據監控 (Raw Monitor) ---
+        left_scroll.setWidget(left_container)
+        main_h_layout.addWidget(left_scroll, 45)  # 左側權重 45%
+
+        # --- 右側：Raw Monitor ---
         raw_group = QGroupBox("Raw Monitor")
-        raw_layout = QVBoxLayout()
-        tool_layout = QHBoxLayout()
-        self.btn_clear = QPushButton("Clear Console")
-        self.btn_clear.setFixedWidth(100)
-        self.btn_clear.clicked.connect(self.clear_console)
-        tool_layout.addStretch();
-        tool_layout.addWidget(self.btn_clear)
-
+        raw_v_layout = QVBoxLayout()
         self.console_te = QTextEdit();
         self.console_te.setReadOnly(True)
         self.console_te.setStyleSheet(
             "background-color: #1E1E1E; color: #D4D4D4; font-family: Consolas; font-size: 10pt;")
-        raw_layout.addLayout(tool_layout);
-        raw_layout.addWidget(self.console_te)
-        raw_group.setLayout(raw_layout)
-        layout.addWidget(raw_group)
+        self.btn_clear = QPushButton("Clear Console");
+        self.btn_clear.clicked.connect(self.clear_console)
+        raw_v_layout.addWidget(self.console_te);
+        raw_v_layout.addWidget(self.btn_clear)
+        raw_group.setLayout(raw_v_layout)
+        main_h_layout.addWidget(raw_group, 55)  # 右側權重 55%
 
     def clear_console(self):
         self.console_te.clear()

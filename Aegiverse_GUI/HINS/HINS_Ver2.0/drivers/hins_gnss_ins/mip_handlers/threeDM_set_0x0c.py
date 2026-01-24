@@ -23,6 +23,10 @@ class ThreeDMSet0x0C:
 
     def _parse_sensor_to_vehicle_dcm(self, data):
         """ 解析 0x0C, 0xB3 (DCM Response)  """
+        # --- 新增註解：確保輸入為 bytes 以供 struct.unpack 使用 ---
+        if isinstance(data, list):
+            data = bytes(data)
+
         if len(data) < 36:
             return {"type": "SENS_VEH_DCM", "error": "Length mismatch"}
 

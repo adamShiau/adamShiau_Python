@@ -357,6 +357,17 @@ class HinsConfigWidget(QWidget):
 
         for field in fields:
             f_type = field.get("type")
+            # --- 新增註解：將 ACK 判斷獨立出來，確保 Read DCM (0x33) 的 ACK 也能觸發 ---
+            if f_type == "ACK":
+                err_code = field.get('error_code')
+                if err_code == 0:
+                    self.le_ack_status.setStyleSheet("color: green; font-weight: bold;")
+                    self.le_ack_status.setText("OK")
+                else:
+                    self.le_ack_status.setStyleSheet("color: red; font-weight: bold;")
+                    self.le_ack_status.setText(f"Error {err_code}")
+                continue  # 處理完 ACK 繼續處理下一個 field
+
             if desc_set == '0xc' and f_type == 'GPIO_CONF':
                 print('field:', field)
                 print(f"DEBUG: Processing field type: {field.get('type')}")  # 加入這行檢查
@@ -364,6 +375,12 @@ class HinsConfigWidget(QWidget):
                 self.le_feature.setText(field.get('feature'))
                 self.le_behavior.setText(field.get('behavior'))
                 self.le_pin_mode.setText(str(field.get('pin_mode')))
+            # --- 新增註解：處理 DCM 回傳數據顯示 ---
+            elif desc_set == '0xc' and f_type == 'SENS_VEH_DCM':
+                m = field.get('matrix', [])
+                for r in range(3):
+                    for c in range(3):
+                        self.matrix_cells[r][c].setText(f"{m[r][c]:.4f}")
             # --- 處理 UART 波特率回傳 (0x01, 0x09) ---
             elif desc_set == '0x1' and f_type == 'BAUD_RATE':
                 self.le_baud_rate.setText(str(field.get('baud_rate')))
@@ -377,14 +394,14 @@ class HinsConfigWidget(QWidget):
                 self.le_ack_status.setText(f"Stream {field.get('desc_set')}: {status}")
             elif desc_set == '0xc' and f_type == 'MSG_FORMAT':
                 self.le_ack_status.setText(f"Format Set: {field.get('desc_set')}")
-            elif f_type == "ACK":
-                err_code = field.get('error_code')
-                if err_code == 0:
-                    self.le_ack_status.setStyleSheet("color: green; font-weight: bold;")
-                    self.le_ack_status.setText("OK")
-                else:
-                    self.le_ack_status.setStyleSheet("color: red; font-weight: bold;")
-                    self.le_ack_status.setText(f"Error {err_code}")
+            # elif f_type == "ACK":
+            #     err_code = field.get('error_code')
+            #     if err_code == 0:
+            #         self.le_ack_status.setStyleSheet("color: green; font-weight: bold;")
+            #         self.le_ack_status.setText("OK")
+            #     else:
+            #         self.le_ack_status.setStyleSheet("color: red; font-weight: bold;")
+            #         self.le_ack_status.setText(f"Error {err_code}")
 
     def calculate_checksum(self, data):
         """ MIP Fletcher Checksum (16-bit)  """
@@ -420,7 +437,7 @@ class HinsConfigWidget(QWidget):
 
         # 5. 計算 Checksum (針對 Header 之後的所有內容)
         # 注意：MIP 標準 Checksum 通常包含 Header 部分
-        ck = calculate_checksum(full_packet_no_checksum)
+        ck = self.calculate_checksum(full_packet_no_checksum)
 
         # 6. 加上 Sync Bytes (BC CB 97 0A... 視您的設備標頭而定)
         # 這裡使用您提供的 Read 指令標頭結構

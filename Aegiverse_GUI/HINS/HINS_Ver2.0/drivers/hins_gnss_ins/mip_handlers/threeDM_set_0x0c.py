@@ -71,3 +71,4 @@ class ThreeDMSet0x0C:
             "error_code": data[1],
             "status": "OK" if data[1] == 0x00 else "ERROR"
         }
+

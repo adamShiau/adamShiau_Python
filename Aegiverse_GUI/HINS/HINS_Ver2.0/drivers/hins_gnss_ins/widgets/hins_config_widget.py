@@ -2,6 +2,7 @@
 # -*- coding:UTF-8 -*-
 import sys
 import time
+import struct
 from PySide6.QtWidgets import (QWidget, QVBoxLayout, QPushButton, QGroupBox, QApplication,
                                QGridLayout, QLabel, QLineEdit, QFormLayout, QTextEdit, QHBoxLayout)
 from PySide6.QtCore import Slot, Qt, QDateTime
@@ -131,6 +132,40 @@ class HinsConfigWidget(QWidget):
         if_group.setLayout(if_layout)
         layout.addWidget(if_group)
         # --- Interface Control 控制區 (0x7F, 0x02) 結束---
+
+        # --- Frame Transformation (0x0C, 0x33) ---
+        dcm_group = QGroupBox("Sensor-to-Vehicle DCM (0x33)")
+        dcm_layout = QVBoxLayout()
+
+        btn_layout = QHBoxLayout()
+        self.btn_read_dcm = QPushButton("Read DCM")
+        self.btn_set_dcm = QPushButton("Set DCM")
+        self.btn_set_dcm.setStyleSheet("background-color: #2D5A27; color: white;")
+
+        btn_layout.addWidget(self.btn_read_dcm)
+        btn_layout.addWidget(self.btn_set_dcm)
+
+        # 建立 3x3 輸入矩陣
+        self.matrix_grid = QGridLayout()
+        self.matrix_cells = []
+        for r in range(3):
+            row_cells = []
+            for c in range(3):
+                le = QLineEdit("0.0")  # 預設值
+                le.setFixedWidth(80)
+                # 設定成只允許輸入數字與小數點
+                self.matrix_grid.addWidget(le, r, c)
+                row_cells.append(le)
+            self.matrix_cells.append(row_cells)
+
+        self.btn_read_dcm.clicked.connect(lambda: self.send_cmd("READ_DCM"))
+        self.btn_set_dcm.clicked.connect(self.send_set_dcm_payload)  # 呼叫專門組裝函數
+
+        dcm_layout.addLayout(btn_layout)
+        dcm_layout.addLayout(self.matrix_grid)
+        dcm_group.setLayout(dcm_layout)
+        layout.addWidget(dcm_group)
+        # --- Frame Transformation (0x0C, 0x33) 結束---
 
         # --- System Commands 區塊  ---
         sys_group = QGroupBox("System Commands")
@@ -350,6 +385,50 @@ class HinsConfigWidget(QWidget):
                 else:
                     self.le_ack_status.setStyleSheet("color: red; font-weight: bold;")
                     self.le_ack_status.setText(f"Error {err_code}")
+
+    def calculate_checksum(self, data):
+        """ MIP Fletcher Checksum (16-bit)  """
+        ck1 = 0
+        ck2 = 0
+        for b in data:
+            ck1 = (ck1 + b) & 0xFF
+            ck2 = (ck2 + ck1) & 0xFF
+        return [ck1, ck2]
+
+    def send_set_dcm_payload(self):
+        # 1. 取得 UI 上的矩陣數值
+        try:
+            matrix_values = []
+            for r in range(3):
+                for c in range(3):
+                    matrix_values.append(float(self.matrix_cells[r][c].text()))
+        except ValueError:
+            self.append_console("Error: Invalid DCM Matrix input", "red")
+            return
+
+        # 2. 建構 MIP Header 與 Payload
+        # [75, 65] Header, [0C] Set, [27] Total Length
+        # Field: [27] Length, [33] Descriptor, [01] Write Function
+        header = [0x75, 0x65, 0x0C, 0x27, 0x27, 0x33, 0x01]
+
+        # 3. 將 9 個 float 轉為 Big-Endian Bytes (36 bytes)
+        # 對應 endian.h 的 write_be_f32 邏輯
+        float_payload = struct.pack('>9f', *matrix_values)
+
+        # 4. 組合封包 (不含最後 2 byte checksum)
+        full_packet_no_checksum = header + list(float_payload)
+
+        # 5. 計算 Checksum (針對 Header 之後的所有內容)
+        # 注意：MIP 標準 Checksum 通常包含 Header 部分
+        ck = calculate_checksum(full_packet_no_checksum)
+
+        # 6. 加上 Sync Bytes (BC CB 97 0A... 視您的設備標頭而定)
+        # 這裡使用您提供的 Read 指令標頭結構
+        sync = [0xBC, 0xCB, 0x97, 0x2D]  # 0x2D 是總長度 (45 bytes)
+        final_packet = sync + full_packet_no_checksum + ck + [0x51, 0x52]
+
+        self.reader.write_raw(final_packet)
+        self.append_console(f"TX [SET_DCM]: {' '.join([f'{b:02X}' for b in final_packet])}", "#569CD6")
 
 
 # ==========================================

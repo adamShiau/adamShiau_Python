@@ -563,3 +563,6 @@
 2026-01-24 22:14:25,136 [INFO] Main: Restarting Hybrid Reader Thread...
 2026-01-24 22:14:25,151 [INFO] main.drivers.HinsHybrid: Hybrid Reader (Dispatcher) Started.
 2026-01-24 22:14:42,596 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-24 22:15:09,191 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-24 22:15:09,192 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-24 22:15:09,301 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM8 is disconnected

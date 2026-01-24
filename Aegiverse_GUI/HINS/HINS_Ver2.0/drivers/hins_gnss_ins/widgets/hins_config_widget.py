@@ -255,7 +255,10 @@ class HinsConfigWidget(QWidget):
                 self.le_ack_status.setText("Sending...")
                 self.le_last_cmd.setText(cmd_name)
 
-                time.sleep(0.2)
+                QApplication.processEvents()
+
+                wait_time = 3.0 if cmd_name == "SAVE_SETTINGS" else 0.2
+                time.sleep(wait_time)
                 post_n = conn.readInputBuffer()
                 if post_n > 0:
                     raw_data = conn.readBinaryList(post_n)
@@ -376,12 +379,10 @@ class HinsConfigWidget(QWidget):
 
             # --- 發送數據 ---
             self.reader.write_raw(final)
-
-            # ==========================================
-            #   修正重點：在此處更新 Last Command 顯示
-            # ==========================================
             self.le_last_cmd.setText("SET_DCM")
             self.le_ack_status.setText("Sending...")
+
+            QApplication.processEvents()
 
             # --- 原始 Log 顯示與同步解析邏輯 ---
             hex_str = " ".join([f"{b:02X}" for b in final])

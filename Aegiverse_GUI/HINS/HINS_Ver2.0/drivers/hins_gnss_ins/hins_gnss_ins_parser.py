@@ -9,11 +9,6 @@ from .mip_handlers import MIP_SET_REGISTRY
 class HinsGnssInsParser:
     def __init__(self):
         self.handlers = MIP_SET_REGISTRY
-        # self.handlers = {
-        #     0x01: BaseSet0x01(),
-        #     0x0C: ThreeDMSet0x0C(),
-        #     0x7F: SystemSet0x7F()
-        # }
 
     def parse(self, packet: list):
         """

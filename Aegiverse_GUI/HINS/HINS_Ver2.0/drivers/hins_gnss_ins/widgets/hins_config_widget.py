@@ -209,6 +209,61 @@ class HinsConfigWidget(QWidget):
         ant_group.setLayout(ant_v_layout)
         left_layout.addWidget(ant_group)
 
+        # --- 7. Frame Configuration (0x13, 0x01) ---
+        frame_group = QGroupBox("Frame Configuration (0x13, 0x01)")
+        frame_v_layout = QVBoxLayout()
+
+        # 第一排：按鈕與 Tracking
+        ctrl_h_layout = QHBoxLayout()
+        self.btn_read_frame = QPushButton("Read Frame 1")
+        self.btn_set_frame = QPushButton("Set Frame 1")
+        self.btn_set_frame.setStyleSheet("background-color: #2D5A27; color: white;")
+        self.chk_tracking = QPushButton("Tracking: OFF")
+        self.chk_tracking.setCheckable(True)
+        self.chk_tracking.clicked.connect(
+            lambda: self.chk_tracking.setText(f"Tracking: {'ON' if self.chk_tracking.isChecked() else 'OFF'}"))
+
+        ctrl_h_layout.addWidget(self.btn_read_frame)
+        ctrl_h_layout.addWidget(self.btn_set_frame)
+        ctrl_h_layout.addWidget(self.chk_tracking)
+        frame_v_layout.addLayout(ctrl_h_layout)
+
+        # 排版輔助函式：建立緊湊的 XYZ 輸入列
+        def create_compact_row(label_text, inputs_list):
+            row = QHBoxLayout()
+            row.setSpacing(2)  # 縮小元件間距
+            row.addWidget(QLabel(label_text))
+            for axis, le in zip(['X:', 'Y:', 'Z:'] if 'Trans' in label_text else ['R:', 'P:', 'Y:'], inputs_list):
+                lbl = QLabel(axis)
+                lbl.setFixedWidth(15)
+                lbl.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
+                le.setFixedWidth(60)
+                le.setAlignment(Qt.AlignCenter)
+                row.addWidget(lbl)
+                row.addWidget(le)
+                row.addSpacing(10)  # 每組軸之間的間隔
+            row.addStretch()
+            return row
+
+        self.le_trans_x = QLineEdit("0.0");
+        self.le_trans_y = QLineEdit("0.0");
+        self.le_trans_z = QLineEdit("0.0")
+        self.le_rot_r = QLineEdit("0.0");
+        self.le_rot_p = QLineEdit("0.0");
+        self.le_rot_y = QLineEdit("0.0")
+
+        frame_v_layout.addLayout(
+            create_compact_row("Translation (m):", [self.le_trans_x, self.le_trans_y, self.le_trans_z]))
+        frame_v_layout.addLayout(create_compact_row("Rotation (rad): ", [self.le_rot_r, self.le_rot_p, self.le_rot_y]))
+
+        frame_group.setLayout(frame_v_layout)
+        # 確保插入在 System Control 之前
+        left_layout.insertWidget(left_layout.count() - 1, frame_group)
+
+        # 連結按鈕
+        self.btn_read_frame.clicked.connect(lambda: self.send_cmd("READ_FRAME1"))
+        self.btn_set_frame.clicked.connect(self.send_set_frame_config)
+
         # 6. System Commands & Status
         sys_group = QGroupBox("System Control")
         sys_v_layout = QVBoxLayout()
@@ -297,6 +352,8 @@ class HinsConfigWidget(QWidget):
                           0x52],
             "READ_ANT2": [0xBC, 0xCB, 0x97, 0x0A, 0x75, 0x65, 0x0D, 0x04, 0x04, 0x54, 0x02, 0x02, 0x47, 0xDF, 0x51,
                           0x52],
+            "READ_FRAME1": [0xBC, 0xCB, 0x97, 0x0B, 0x75, 0x65, 0x13, 0x05, 0x05, 0x01, 0x02, 0x01, 0x01, 0xFC, 0x0E,
+                            0x51, 0x52]
         }
 
         if cmd_name in cmd_map:
@@ -410,6 +467,32 @@ class HinsConfigWidget(QWidget):
                 if ant_id in self.ant_inputs and len(offsets) == 3:
                     for i in range(3):
                         self.ant_inputs[ant_id][i].setText(f"{offsets[i]:.3f}")
+            elif desc_set == '0x13' and f_type == 'FRAME_CONFIG':
+                trans = field.get('translation', [0, 0, 0])
+                rot = field.get('rotation', [0, 0, 0])
+
+                # 更新 Translation 欄位
+                self.le_trans_x.setText(f"{trans[0]:.3f}")
+                self.le_trans_y.setText(f"{trans[1]:.3f}")
+                self.le_trans_z.setText(f"{trans[2]:.3f}")
+
+                # 更新 Rotation 欄位
+                self.le_rot_r.setText(f"{rot[0]:.3f}")
+                self.le_rot_p.setText(f"{rot[1]:.3f}")
+                self.le_rot_y.setText(f"{rot[2]:.3f}")
+
+                # 更新 Tracking 狀態
+                is_tracking = field.get('tracking', False)
+                self.chk_tracking.setChecked(is_tracking)
+                self.chk_tracking.setText(f"Tracking: {'ON' if is_tracking else 'OFF'}")
+                # ... (設定 Translation/Rotation 數值) ...
+                # is_tracking = field.get('tracking', False)
+                # self.chk_tracking.setChecked(is_tracking)
+                # self.chk_tracking.setText(f"Tracking: {'ON' if is_tracking else 'OFF'}")
+                # # 建議也給 Tracking 按鈕一點顏色區分
+                # color = "#0078D4" if is_tracking else "#FFFFFF"
+                # self.chk_tracking.setStyleSheet(
+                #     f"background-color: {color}; color: {'white' if is_tracking else 'black'};")
 
 
     def calculate_checksum(self, data):
@@ -458,6 +541,48 @@ class HinsConfigWidget(QWidget):
 
         except ValueError:
             self.append_console("Error: Invalid Matrix input", "red")
+
+    def send_set_frame_config(self):
+        """ 動態產生 Frame Configuration (0x13, 0x01) 寫入封包 """
+        try:
+            trans = [float(self.le_trans_x.text()), float(self.le_trans_y.text()), float(self.le_trans_z.text())]
+            rot = [float(self.le_rot_r.text()), float(self.le_rot_p.text()), float(self.le_rot_y.text())]
+            tracking = 1 if self.chk_tracking.isChecked() else 0
+
+            # MIP Field 組裝:
+            # Field Len | Desc | Func(1) | FrameID(1) | Format(1) | Track(1) | Trans(12) | Rot(16)
+            # 總 Field 長度 = 1 + 1 + 1 + 1 + 1 + 12 + 16 = 33 (0x21) bytes
+            field_data = [0x22, 0x01, 0x01, 0x01, 0x01, tracking]
+            trans_bytes = list(struct.pack('>3f', *trans))
+            # Euler 格式：Roll, Pitch, Yaw, 加上一個 0.0 padding [cite: 5]
+            rot_bytes = list(struct.pack('>4f', rot[0], rot[1], rot[2], 0.0))
+
+            mip_payload = field_data + trans_bytes + rot_bytes
+
+            # 加上 MIP Header: 75 65 13 (Set) + PayloadLen
+            full_mip = [0x75, 0x65, 0x13, len(mip_payload)] + mip_payload
+            ck = self.calculate_checksum(full_mip)
+
+            # 封裝 V1 Protocol: BC CB 97 + TotalLen
+            total_v1_len = len(full_mip) + 2
+            final_packet = [0xBC, 0xCB, 0x97, total_v1_len] + full_mip + ck + [0x51, 0x52]
+
+            self.le_last_cmd.setText("SET_FRAME_1")
+            self.le_ack_status.setText("Sending...")
+
+            self.reader.write_raw(final_packet)
+            self.append_console(f"TX [SET_FRAME_1]: {' '.join([f'{b:02X}' for b in final_packet])}", "#569CD6")
+
+            # 觸發同步讀取以更新 ACK 狀態
+            time.sleep(0.2)
+            conn = getattr(self.reader, '_connector', None)
+            if conn:
+                n = conn.readInputBuffer()
+                if n > 0: self.reader.handle_packet(conn.readBinaryList(n))
+
+        except ValueError:
+            self.append_console("Error: Invalid Frame Configuration input", "red")
+
 
     def send_set_antenna_offset(self, ant_id):
         """ 動態產生 Vector3f 寫入封包 (修正長度計算問題) """

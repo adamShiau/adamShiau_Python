@@ -162,32 +162,6 @@ class HinsConfigWidget(QWidget):
         dcm_group.setLayout(dcm_layout)
         left_layout.addWidget(dcm_group)
 
-        # 6. System Commands & Status
-        sys_group = QGroupBox("System Control")
-        sys_v_layout = QVBoxLayout()
-        sys_h_layout = QHBoxLayout()
-        self.btn_idle = QPushButton("IDLE");
-        self.btn_resume = QPushButton("RESUME");
-        self.btn_save = QPushButton("SAVE")
-        self.btn_save.setStyleSheet("background-color: #2D5A27; color: white; font-weight: bold;")
-        self.btn_idle.clicked.connect(lambda: self.send_cmd("SET_TO_IDLE"))
-        self.btn_resume.clicked.connect(lambda: self.send_cmd("RESUME"))
-        self.btn_save.clicked.connect(lambda: self.send_cmd("SAVE_SETTINGS"))
-        sys_h_layout.addWidget(self.btn_idle);
-        sys_h_layout.addWidget(self.btn_resume);
-        sys_h_layout.addWidget(self.btn_save)
-        sys_v_layout.addLayout(sys_h_layout)
-
-        status_form = QFormLayout()
-        self.le_last_cmd = QLineEdit();
-        self.le_last_cmd.setReadOnly(True)
-        self.le_ack_status = QLineEdit();
-        self.le_ack_status.setReadOnly(True)
-        status_form.addRow("Last CMD:", self.le_last_cmd);
-        status_form.addRow("ACK Status:", self.le_ack_status)
-        sys_v_layout.addLayout(status_form)
-        sys_group.setLayout(sys_v_layout);
-        left_layout.addWidget(sys_group)
         # --- 新增天線區塊：GNSS Multi-Antenna Offset (0x0D, 0x54) ---
         ant_group = QGroupBox("GNSS Multi-Antenna Offset (0x0D, 0x54) [Unit: m]")
         ant_v_layout = QVBoxLayout()
@@ -224,7 +198,7 @@ class HinsConfigWidget(QWidget):
             btn_set = QPushButton(f"Set Ant {ant_id}")
             btn_set.setStyleSheet("background-color: #2D5A27; color: white;")
 
-            # 連結新增的方法
+            # 連結方法
             btn_read.clicked.connect(lambda _, aid=ant_id: self.send_cmd(f"READ_ANT{aid}"))
             btn_set.clicked.connect(lambda _, aid=ant_id: self.send_set_antenna_offset(aid))
 
@@ -234,6 +208,33 @@ class HinsConfigWidget(QWidget):
 
         ant_group.setLayout(ant_v_layout)
         left_layout.addWidget(ant_group)
+
+        # 6. System Commands & Status
+        sys_group = QGroupBox("System Control")
+        sys_v_layout = QVBoxLayout()
+        sys_h_layout = QHBoxLayout()
+        self.btn_idle = QPushButton("IDLE");
+        self.btn_resume = QPushButton("RESUME");
+        self.btn_save = QPushButton("SAVE")
+        self.btn_save.setStyleSheet("background-color: #2D5A27; color: white; font-weight: bold;")
+        self.btn_idle.clicked.connect(lambda: self.send_cmd("SET_TO_IDLE"))
+        self.btn_resume.clicked.connect(lambda: self.send_cmd("RESUME"))
+        self.btn_save.clicked.connect(lambda: self.send_cmd("SAVE_SETTINGS"))
+        sys_h_layout.addWidget(self.btn_idle);
+        sys_h_layout.addWidget(self.btn_resume);
+        sys_h_layout.addWidget(self.btn_save)
+        sys_v_layout.addLayout(sys_h_layout)
+
+        status_form = QFormLayout()
+        self.le_last_cmd = QLineEdit();
+        self.le_last_cmd.setReadOnly(True)
+        self.le_ack_status = QLineEdit();
+        self.le_ack_status.setReadOnly(True)
+        status_form.addRow("Last CMD:", self.le_last_cmd);
+        status_form.addRow("ACK Status:", self.le_ack_status)
+        sys_v_layout.addLayout(status_form)
+        sys_group.setLayout(sys_v_layout);
+        left_layout.addWidget(sys_group)
 
         left_scroll.setWidget(left_container)
         main_h_layout.addWidget(left_scroll, 45)  # 左側權重 45%

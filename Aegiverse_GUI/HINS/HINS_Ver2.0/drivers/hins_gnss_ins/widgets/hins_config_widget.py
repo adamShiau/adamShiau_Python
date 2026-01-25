@@ -87,6 +87,30 @@ class HinsConfigWidget(QWidget):
         stream_group.setLayout(stream_grid)
         left_layout.addWidget(stream_group)
 
+        # --- 新增 Aiding Measurement Control (0x0D, 0x50) ---
+        aiding_group = QGroupBox("Aiding Measurement Control (0x0D, 0x50) -- EXTERNAL_HEADING")
+        aiding_layout = QHBoxLayout()
+
+        self.btn_read_ext_heading = QPushButton("Read Status")
+        self.btn_set_ext_heading = QPushButton("Enable Aiding")
+        self.btn_set_ext_heading.setStyleSheet("background-color: #2D5A27; color: white;")
+
+        # 狀態顯示標籤
+        self.lbl_ext_heading_status = QLabel("Status: Unknown")
+        self.lbl_ext_heading_status.setFixedWidth(120)
+
+        # 連結指令
+        self.btn_read_ext_heading.clicked.connect(lambda: self.send_cmd("READ_EXT_HEADING"))
+        self.btn_set_ext_heading.clicked.connect(lambda: self.send_cmd("SET_EXT_HEADING_ENABLE"))
+
+        aiding_layout.addWidget(self.btn_read_ext_heading)
+        aiding_layout.addWidget(self.btn_set_ext_heading)
+        aiding_layout.addWidget(self.lbl_ext_heading_status)
+        aiding_group.setLayout(aiding_layout)
+
+        # 插入在 System Control 之前
+        left_layout.insertWidget(left_layout.count() - 1, aiding_group)
+
         # 3. UART2 Configuration (已移除 115200)
         uart_group = QGroupBox("UART2 Configuration (0x01, 0x09)")
         uart_layout = QGridLayout()
@@ -353,7 +377,11 @@ class HinsConfigWidget(QWidget):
             "READ_ANT2": [0xBC, 0xCB, 0x97, 0x0A, 0x75, 0x65, 0x0D, 0x04, 0x04, 0x54, 0x02, 0x02, 0x47, 0xDF, 0x51,
                           0x52],
             "READ_FRAME1": [0xBC, 0xCB, 0x97, 0x0B, 0x75, 0x65, 0x13, 0x05, 0x05, 0x01, 0x02, 0x01, 0x01, 0xFC, 0x0E,
-                            0x51, 0x52]
+                            0x51, 0x52],
+            "SET_EXT_HEADING_ENABLE": [0xBC, 0xCB, 0x97, 0x0C, 0x75, 0x65, 0x0D, 0x06, 0x06, 0x50, 0x01, 0x00, 0x05,
+                                       0x01, 0x4A, 0x74, 0x51, 0x52],
+            "READ_EXT_HEADING": [0xBC, 0xCB, 0x97, 0x0B, 0x75, 0x65, 0x0D, 0x05, 0x05, 0x50, 0x02, 0x00, 0x05, 0x48,
+                                 0x22, 0x51, 0x52]
         }
 
         if cmd_name in cmd_map:
@@ -485,14 +513,15 @@ class HinsConfigWidget(QWidget):
                 is_tracking = field.get('tracking', False)
                 self.chk_tracking.setChecked(is_tracking)
                 self.chk_tracking.setText(f"Tracking: {'ON' if is_tracking else 'OFF'}")
-                # ... (設定 Translation/Rotation 數值) ...
-                # is_tracking = field.get('tracking', False)
-                # self.chk_tracking.setChecked(is_tracking)
-                # self.chk_tracking.setText(f"Tracking: {'ON' if is_tracking else 'OFF'}")
-                # # 建議也給 Tracking 按鈕一點顏色區分
-                # color = "#0078D4" if is_tracking else "#FFFFFF"
-                # self.chk_tracking.setStyleSheet(
-                #     f"background-color: {color}; color: {'white' if is_tracking else 'black'};")
+            elif desc_set == '0xd' and f_type == 'AIDING_CONTROL':
+                source = field.get('source')
+                is_enabled = field.get('enabled')
+                if source == "EXTERNAL_HEADING":
+                    status_text = "ENABLED" if is_enabled else "DISABLED"
+                    self.lbl_ext_heading_status.setText(f"Status: {status_text}")
+                    color = "green" if is_enabled else "red"
+                    self.lbl_ext_heading_status.setStyleSheet(f"color: {color}; font-weight: bold;")
+
 
 
     def calculate_checksum(self, data):

@@ -7,6 +7,7 @@ class FilterSet0x0D:
         # 註冊解析 0x0D, 0xD4 (Antenna Offset Response)
         self.field_map = {
             0xD4: self._parse_antenna_offset,
+            0xD0: self._parse_aiding_control,
             0xF1: self._parse_ack_nack
         }
 
@@ -52,4 +53,27 @@ class FilterSet0x0D:
             "cmd_echo": hex(data[0]),
             "error_code": data[1],
             "status": "OK" if data[1] == 0x00 else "ERROR"
+        }
+
+    def _parse_aiding_control(self, data):
+        """ 解析 0x0D, 0xD0 數據 (Aiding Source u16 + Enable bool)  """
+        if len(data) < 3:
+            return {"type": "AIDING_CONTROL", "error": "Length mismatch"}
+
+        # Aiding Source 為 u16 (2 bytes), Enable 為 bool (1 byte)
+        source_val = struct.unpack('>H', data[0:2])[0]
+        enabled = bool(data[2])
+
+        # 映射表，對應 EXTERNAL_HEADING 為 5
+        source_map = {
+            0: "GNSS_POS_VEL",
+            1: "GNSS_HEADING",
+            5: "EXTERNAL_HEADING",
+            # ... 其他可根據需求擴充
+        }
+
+        return {
+            "type": "AIDING_CONTROL",
+            "source": source_map.get(source_val, f"UNKNOWN({source_val})"),
+            "enabled": enabled
         }

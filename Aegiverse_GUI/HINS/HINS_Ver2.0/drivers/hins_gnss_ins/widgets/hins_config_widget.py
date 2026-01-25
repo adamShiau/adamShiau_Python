@@ -181,21 +181,33 @@ class HinsConfigWidget(QWidget):
         sys_group.setLayout(sys_v_layout);
         left_layout.addWidget(sys_group)
         # --- 新增天線區塊：GNSS Multi-Antenna Offset (0x0D, 0x54) ---
-        ant_group = QGroupBox("GNSS Multi-Antenna Offset (0x0D, 0x54)")
+        ant_group = QGroupBox("GNSS Multi-Antenna Offset (0x0D, 0x54) [Unit: m]")
         ant_v_layout = QVBoxLayout()
         self.ant_inputs = {}
 
         for ant_id in [1, 2]:
             row_layout = QHBoxLayout()
+            row_layout.setSpacing(5)
             row_layout.addWidget(QLabel(f"Ant {ant_id}:"))
 
             axes_controls = []
             for axis in ['X', 'Y', 'Z']:
+                # 軸標籤：設定固定寬度並靠右，確保緊貼輸入框
+                lbl = QLabel(f"{axis}:")
+                lbl.setFixedWidth(15)
+                lbl.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
+
                 le = QLineEdit("0.000")
                 le.setFixedWidth(60)
                 le.setAlignment(Qt.AlignCenter)
-                row_layout.addWidget(QLabel(axis))
+
+                row_layout.addWidget(lbl)
                 row_layout.addWidget(le)
+
+                # 在 Z 軸輸入框後方多加一點間隔，避免連到後面的按鈕
+                if axis != 'Z':
+                    row_layout.addSpacing(10)
+
                 axes_controls.append(le)
 
             self.ant_inputs[ant_id] = axes_controls

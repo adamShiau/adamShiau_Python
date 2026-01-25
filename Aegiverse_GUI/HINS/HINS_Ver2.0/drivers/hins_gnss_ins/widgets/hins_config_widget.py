@@ -5,7 +5,7 @@ import time
 import struct
 from PySide6.QtWidgets import (QWidget, QVBoxLayout, QPushButton, QGroupBox, QApplication,
                                QGridLayout, QLabel, QLineEdit, QFormLayout, QTextEdit,
-                               QHBoxLayout, QScrollArea) # 確保這裡有 QScrollArea
+                               QHBoxLayout, QScrollArea, QComboBox)
 from PySide6.QtCore import Slot, Qt, QDateTime
 
 
@@ -14,7 +14,7 @@ class HinsConfigWidget(QWidget):
         super().__init__()
         self.reader = reader
         self.setWindowTitle("HINS GNSS/INS Configuration")
-        self.resize(1200, 1000)
+        self.resize(1400, 1000)
         self.setup_ui()
 
         # 連接 Reader 的解析訊號 (接收 Dict 用於填寫欄位)
@@ -150,6 +150,39 @@ class HinsConfigWidget(QWidget):
         if_layout.addWidget(self.le_out_proto, 3, 1)
         if_group.setLayout(if_layout)
         left_layout.addWidget(if_group)
+
+        # --- 8. PPS Source Control (0x0C, 0x28) ---
+        pps_group = QGroupBox("PPS Source Control (0x0C, 0x28)")
+        pps_layout = QHBoxLayout()
+
+        self.btn_read_pps = QPushButton("Read PPS")
+        self.btn_read_pps.clicked.connect(lambda: self.send_cmd("READ_PPS"))
+
+        # 建立選單
+        self.combo_pps_source = QComboBox()
+        self.combo_pps_source.addItem("ANT1 (Receiver 1)", 1)
+        self.combo_pps_source.addItem("ANT2 (Receiver 2)", 2)
+        self.combo_pps_source.addItem("OSC (Generated)", 4)
+
+        self.btn_set_pps = QPushButton("Set PPS Source")
+        self.btn_set_pps.setStyleSheet("background-color: #2D5A27; color: white;")
+        self.btn_set_pps.clicked.connect(self.on_set_pps_clicked)
+
+        self.le_pps_status = QLineEdit()
+        self.le_pps_status.setReadOnly(True)
+        self.le_pps_status.setFixedWidth(150)
+        self.le_pps_status.setAlignment(Qt.AlignCenter)
+
+        pps_layout.addWidget(self.btn_read_pps)
+        pps_layout.addWidget(QLabel("Source:"))
+        pps_layout.addWidget(self.combo_pps_source)
+        pps_layout.addWidget(self.btn_set_pps)
+        pps_layout.addWidget(QLabel("Current:"))
+        pps_layout.addWidget(self.le_pps_status)
+        pps_group.setLayout(pps_layout)
+
+        # 插入在 System Control 之前
+        left_layout.insertWidget(left_layout.count() - 1, pps_group)
 
         # 5. DCM Transformation (0x33)
         dcm_group = QGroupBox("Sensor-to-Vehicle DCM (0x33)")
@@ -381,7 +414,14 @@ class HinsConfigWidget(QWidget):
             "SET_EXT_HEADING_ENABLE": [0xBC, 0xCB, 0x97, 0x0C, 0x75, 0x65, 0x0D, 0x06, 0x06, 0x50, 0x01, 0x00, 0x05,
                                        0x01, 0x4A, 0x74, 0x51, 0x52],
             "READ_EXT_HEADING": [0xBC, 0xCB, 0x97, 0x0B, 0x75, 0x65, 0x0D, 0x05, 0x05, 0x50, 0x02, 0x00, 0x05, 0x48,
-                                 0x22, 0x51, 0x52]
+                                 0x22, 0x51, 0x52],
+            "READ_PPS": [0xBC, 0xCB, 0x97, 0x09, 0x75, 0x65, 0x0C, 0x03, 0x03, 0x28, 0x02, 0x16, 0x34, 0x51, 0x52],
+            "SET_PPS_ANT1": [0xBC, 0xCB, 0x97, 0x0A, 0x75, 0x65, 0x0C, 0x04, 0x04, 0x28, 0x01, 0x01, 0x18, 0x52, 0x51,
+                             0x52],
+            "SET_PPS_ANT2": [0xBC, 0xCB, 0x97, 0x0A, 0x75, 0x65, 0x0C, 0x04, 0x04, 0x28, 0x01, 0x02, 0x19, 0x53, 0x51,
+                             0x52],
+            "SET_PPS_OSC": [0xBC, 0xCB, 0x97, 0x0A, 0x75, 0x65, 0x0C, 0x04, 0x04, 0x28, 0x01, 0x04, 0x1B, 0x55, 0x51,
+                            0x52],
         }
 
         if cmd_name in cmd_map:
@@ -521,6 +561,15 @@ class HinsConfigWidget(QWidget):
                     self.lbl_ext_heading_status.setText(f"Status: {status_text}")
                     color = "green" if is_enabled else "red"
                     self.lbl_ext_heading_status.setStyleSheet(f"color: {color}; font-weight: bold;")
+            elif desc_set == '0xc' and f_type == 'PPS_SOURCE':
+                source_name = field.get('source_name', 'Unknown')
+                self.le_pps_status.setText(source_name)
+                # 同步下拉選單位置
+                val = field.get('source_val')
+                idx = self.combo_pps_source.findData(val)
+                if idx >= 0:
+                    self.combo_pps_source.setCurrentIndex(idx)
+                # [cite_end]
 
 
 
@@ -532,6 +581,21 @@ class HinsConfigWidget(QWidget):
             ck1 = (ck1 + b) & 0xFF
             ck2 = (ck2 + ck1) & 0xFF
         return [ck1, ck2]
+
+    def on_set_pps_clicked(self):
+        """ 根據選單選擇發送對應的 PPS 指令 """
+        source_val = self.combo_pps_source.currentData()
+
+        # 指令映射
+        pps_cmds = {
+            1: "SET_PPS_ANT1",
+            2: "SET_PPS_ANT2",
+            4: "SET_PPS_OSC"
+        }
+
+        cmd_key = pps_cmds.get(source_val)
+        if cmd_key:
+            self.send_cmd(cmd_key)
 
 
     def send_set_dcm_payload(self):

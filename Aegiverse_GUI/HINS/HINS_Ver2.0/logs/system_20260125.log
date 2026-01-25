@@ -697,3 +697,6 @@
 2026-01-25 11:59:14,703 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
 2026-01-25 11:59:14,705 [INFO] main.drivers.HinsHybrid: Hybrid Reader (Dispatcher) Started.
 2026-01-25 11:59:19,744 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-25 12:02:03,255 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-25 12:02:03,258 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-25 12:02:03,365 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM8 is disconnected

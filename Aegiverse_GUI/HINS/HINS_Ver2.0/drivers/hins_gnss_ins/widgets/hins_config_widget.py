@@ -130,6 +130,14 @@ class HinsConfigWidget(QWidget):
         # 5. DCM Transformation (0x33)
         dcm_group = QGroupBox("Sensor-to-Vehicle DCM (0x33)")
         dcm_layout = QVBoxLayout()
+
+        # --- 新增：座標轉換關係式標籤 ---
+        # 使用 LaTeX 呈現：Vehicle = Matrix * Sensor
+        formula_label = QLabel("Coordinate Transformation: <b>Vehicle Frame = [DCM] × Sensor Frame</b>")
+        formula_label.setStyleSheet("color: #00008B; font-size: 10pt; margin: 5px;")
+        formula_label.setAlignment(Qt.AlignCenter)
+        dcm_layout.addWidget(formula_label)
+
         dcm_btn_layout = QHBoxLayout()
         self.btn_read_dcm = QPushButton("Read DCM");
         self.btn_set_dcm = QPushButton("Set DCM")

@@ -1318,3 +1318,336 @@
 2026-01-25 20:53:14,861 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
 2026-01-25 20:53:14,862 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
 2026-01-25 20:53:14,972 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM8 is disconnected
+2026-01-25 20:54:40,238 [INFO] pigImu_Widget.pigImu_Widget: pigImu_Widget logger start
+2026-01-25 20:54:40,262 [INFO] myLib.myGui.graph.myLib.myGui.graph: myLib.myGui.graph logger start
+2026-01-25 20:54:40,975 [INFO] myLib.common.myLib.common: myLib.common logger start
+2026-01-25 20:54:40,976 [INFO] myLib.myGui.mygui_serial.myLib.myGui.mygui_serial: myLib.myGui.mygui_serial logger start
+2026-01-25 20:54:40,977 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: myLib.myGui.myLabel logger start
+2026-01-25 20:54:40,978 [INFO] myLib.myGui.myLineEdit.myLib.myGui.myLineEdit: myLib.myGui.myLineEdit logger start
+2026-01-25 20:54:40,978 [INFO] myLib.myGui.myCheckBox.myLib.myGui.myCheckBox: myLib.myGui.myCheckBox logger start
+2026-01-25 20:54:40,979 [INFO] myLib.myGui.myRadioButton.myLib.myGui.myRadioButton: myLib.myGui.myRadioButton logger start
+2026-01-25 20:54:40,981 [INFO] record_Log: record_Log logger start
+2026-01-25 20:54:40,991 [INFO] myLib.myGui.AttitudeIndicator.myLib.myGui.AttitudeIndicator: myLib.myGui.AttitudeIndicator logger start
+2026-01-25 20:54:40,994 [INFO] myLib.myGui.pig_menu_manager.myLib.myGui.pig_menu_manager: myLib.myGui.pig_menu_manager logger start
+2026-01-25 20:54:40,997 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: myLib.mySerial.Connector logger start
+2026-01-25 20:54:41,005 [INFO] myLib.myGui.myComboBox.myLib.myGui.myComboBox: myLib.myGui.myComboBox logger start
+2026-01-25 20:54:41,005 [INFO] drivers.hins_fog_imu.widgets.pig_parameters_widget.drivers.hins_fog_imu.widgets.pig_parameters_widget: drivers.hins_fog_imu.widgets.pig_parameters_widget logger start
+2026-01-25 20:54:41,007 [INFO] drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget.drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget: drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget logger start
+2026-01-25 20:54:41,008 [INFO] drivers.hins_fog_imu.widgets.pig_version_widget.drivers.hins_fog_imu.widgets.pig_version_widget: drivers.hins_fog_imu.widgets.pig_version_widget logger start
+2026-01-25 20:54:41,009 [INFO] drivers.hins_fog_imu.widgets.pig_configuration_widget.drivers.hins_fog_imu.widgets.pig_configuration_widget: drivers.hins_fog_imu.widgets.pig_configuration_widget logger start
+2026-01-25 20:54:41,015 [INFO] myLib.crcCalculator.crcLib.myLib.crcCalculator.crcLib: myLib.crcCalculator.crcLib logger start
+2026-01-25 20:54:42,467 [INFO] Main: Port Selected: COM3
+2026-01-25 20:54:42,468 [INFO] Main: Port Selected: COM3
+2026-01-25 20:54:44,282 [INFO] Main: Port Selected: COM8
+2026-01-25 20:54:44,871 [INFO] Main: Connecting to COM8 at 230400...
+2026-01-25 20:54:44,875 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM8 is connected
+2026-01-25 20:54:44,877 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-01-25 20:54:44,877 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-01-25 20:54:44,878 [INFO] main.drivers.HinsHybrid: Hybrid Reader (Dispatcher) Started.
+2026-01-25 20:56:36,518 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-25 20:56:38,800 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-25 20:56:38,802 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-25 20:56:38,914 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM8 is disconnected
+2026-01-25 21:00:31,180 [INFO] Main: Connecting to COM8 at 230400...
+2026-01-25 21:00:31,185 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM8 is connected
+2026-01-25 21:00:31,186 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-01-25 21:00:31,187 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-01-25 21:00:31,188 [INFO] main.drivers.HinsHybrid: Hybrid Reader (Dispatcher) Started.
+2026-01-25 21:00:33,307 [INFO] Main: Restarting Hybrid Reader Thread...
+2026-01-25 21:00:33,308 [INFO] main.drivers.HinsHybrid: Hybrid Reader (Dispatcher) Started.
+2026-01-25 21:01:13,929 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-25 21:01:31,105 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-25 21:01:31,106 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-25 21:01:31,216 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM8 is disconnected
+2026-01-25 21:06:19,968 [INFO] Main: Connecting to COM8 at 230400...
+2026-01-25 21:06:19,973 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM8 is connected
+2026-01-25 21:06:19,974 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-01-25 21:06:19,974 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-01-25 21:06:19,975 [INFO] main.drivers.HinsHybrid: Hybrid Reader (Dispatcher) Started.
+2026-01-25 21:06:20,955 [INFO] Main: Restarting Hybrid Reader Thread...
+2026-01-25 21:06:20,957 [INFO] main.drivers.HinsHybrid: Hybrid Reader (Dispatcher) Started.
+2026-01-25 21:06:45,857 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-25 21:08:11,791 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-25 21:08:11,792 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-25 21:08:11,909 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM8 is disconnected
+2026-01-25 21:08:12,382 [INFO] Main: Connecting to COM8 at 230400...
+2026-01-25 21:08:12,387 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM8 is connected
+2026-01-25 21:08:12,388 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-01-25 21:08:12,388 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-01-25 21:08:12,392 [INFO] main.drivers.HinsHybrid: Hybrid Reader (Dispatcher) Started.
+2026-01-25 21:08:13,513 [INFO] Main: Restarting Hybrid Reader Thread...
+2026-01-25 21:08:13,514 [INFO] main.drivers.HinsHybrid: Hybrid Reader (Dispatcher) Started.
+2026-01-25 21:08:45,067 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-25 21:08:45,861 [INFO] Main: Restarting Hybrid Reader Thread...
+2026-01-25 21:08:45,878 [INFO] main.drivers.HinsHybrid: Hybrid Reader (Dispatcher) Started.
+2026-01-25 21:08:49,132 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-25 21:08:50,279 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-25 21:08:50,280 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-25 21:08:50,397 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM8 is disconnected
+2026-01-25 21:16:44,578 [INFO] Main: Connecting to COM8 at 230400...
+2026-01-25 21:16:44,584 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM8 is connected
+2026-01-25 21:16:44,585 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-01-25 21:16:44,586 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-01-25 21:16:44,589 [INFO] main.drivers.HinsHybrid: Hybrid Reader (Dispatcher) Started.
+2026-01-25 21:16:45,538 [INFO] Main: Restarting Hybrid Reader Thread...
+2026-01-25 21:16:45,539 [INFO] main.drivers.HinsHybrid: Hybrid Reader (Dispatcher) Started.
+2026-01-25 21:17:03,602 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-25 21:17:06,075 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-25 21:17:06,076 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-25 21:17:06,184 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM8 is disconnected
+2026-01-25 21:20:42,624 [INFO] pigImu_Widget.pigImu_Widget: pigImu_Widget logger start
+2026-01-25 21:20:42,649 [INFO] myLib.myGui.graph.myLib.myGui.graph: myLib.myGui.graph logger start
+2026-01-25 21:20:43,362 [INFO] myLib.common.myLib.common: myLib.common logger start
+2026-01-25 21:20:43,363 [INFO] myLib.myGui.mygui_serial.myLib.myGui.mygui_serial: myLib.myGui.mygui_serial logger start
+2026-01-25 21:20:43,365 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: myLib.myGui.myLabel logger start
+2026-01-25 21:20:43,365 [INFO] myLib.myGui.myLineEdit.myLib.myGui.myLineEdit: myLib.myGui.myLineEdit logger start
+2026-01-25 21:20:43,366 [INFO] myLib.myGui.myCheckBox.myLib.myGui.myCheckBox: myLib.myGui.myCheckBox logger start
+2026-01-25 21:20:43,367 [INFO] myLib.myGui.myRadioButton.myLib.myGui.myRadioButton: myLib.myGui.myRadioButton logger start
+2026-01-25 21:20:43,368 [INFO] record_Log: record_Log logger start
+2026-01-25 21:20:43,378 [INFO] myLib.myGui.AttitudeIndicator.myLib.myGui.AttitudeIndicator: myLib.myGui.AttitudeIndicator logger start
+2026-01-25 21:20:43,380 [INFO] myLib.myGui.pig_menu_manager.myLib.myGui.pig_menu_manager: myLib.myGui.pig_menu_manager logger start
+2026-01-25 21:20:43,385 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: myLib.mySerial.Connector logger start
+2026-01-25 21:20:43,392 [INFO] myLib.myGui.myComboBox.myLib.myGui.myComboBox: myLib.myGui.myComboBox logger start
+2026-01-25 21:20:43,392 [INFO] drivers.hins_fog_imu.widgets.pig_parameters_widget.drivers.hins_fog_imu.widgets.pig_parameters_widget: drivers.hins_fog_imu.widgets.pig_parameters_widget logger start
+2026-01-25 21:20:43,394 [INFO] drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget.drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget: drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget logger start
+2026-01-25 21:20:43,395 [INFO] drivers.hins_fog_imu.widgets.pig_version_widget.drivers.hins_fog_imu.widgets.pig_version_widget: drivers.hins_fog_imu.widgets.pig_version_widget logger start
+2026-01-25 21:20:43,396 [INFO] drivers.hins_fog_imu.widgets.pig_configuration_widget.drivers.hins_fog_imu.widgets.pig_configuration_widget: drivers.hins_fog_imu.widgets.pig_configuration_widget logger start
+2026-01-25 21:20:43,402 [INFO] myLib.crcCalculator.crcLib.myLib.crcCalculator.crcLib: myLib.crcCalculator.crcLib logger start
+2026-01-25 21:20:45,319 [INFO] Main: Port Selected: COM3
+2026-01-25 21:20:45,320 [INFO] Main: Port Selected: COM3
+2026-01-25 21:20:46,915 [INFO] Main: Port Selected: COM8
+2026-01-25 21:20:47,415 [INFO] Main: Connecting to COM8 at 230400...
+2026-01-25 21:20:47,421 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM8 is connected
+2026-01-25 21:20:47,422 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-01-25 21:20:47,423 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-01-25 21:20:47,425 [INFO] main.drivers.HinsHybrid: Hybrid Reader (Dispatcher) Started.
+2026-01-25 21:21:09,838 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-25 21:21:21,688 [INFO] Main: Restarting Hybrid Reader Thread...
+2026-01-25 21:21:21,696 [INFO] main.drivers.HinsHybrid: Hybrid Reader (Dispatcher) Started.
+2026-01-25 21:24:29,206 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-25 21:24:30,660 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-25 21:24:30,662 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-25 21:24:30,768 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM8 is disconnected
+2026-01-25 21:25:10,928 [INFO] pigImu_Widget.pigImu_Widget: pigImu_Widget logger start
+2026-01-25 21:25:10,953 [INFO] myLib.myGui.graph.myLib.myGui.graph: myLib.myGui.graph logger start
+2026-01-25 21:25:11,698 [INFO] myLib.common.myLib.common: myLib.common logger start
+2026-01-25 21:25:11,699 [INFO] myLib.myGui.mygui_serial.myLib.myGui.mygui_serial: myLib.myGui.mygui_serial logger start
+2026-01-25 21:25:11,700 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: myLib.myGui.myLabel logger start
+2026-01-25 21:25:11,701 [INFO] myLib.myGui.myLineEdit.myLib.myGui.myLineEdit: myLib.myGui.myLineEdit logger start
+2026-01-25 21:25:11,702 [INFO] myLib.myGui.myCheckBox.myLib.myGui.myCheckBox: myLib.myGui.myCheckBox logger start
+2026-01-25 21:25:11,702 [INFO] myLib.myGui.myRadioButton.myLib.myGui.myRadioButton: myLib.myGui.myRadioButton logger start
+2026-01-25 21:25:11,703 [INFO] record_Log: record_Log logger start
+2026-01-25 21:25:11,715 [INFO] myLib.myGui.AttitudeIndicator.myLib.myGui.AttitudeIndicator: myLib.myGui.AttitudeIndicator logger start
+2026-01-25 21:25:11,717 [INFO] myLib.myGui.pig_menu_manager.myLib.myGui.pig_menu_manager: myLib.myGui.pig_menu_manager logger start
+2026-01-25 21:25:11,722 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: myLib.mySerial.Connector logger start
+2026-01-25 21:25:11,729 [INFO] myLib.myGui.myComboBox.myLib.myGui.myComboBox: myLib.myGui.myComboBox logger start
+2026-01-25 21:25:11,729 [INFO] drivers.hins_fog_imu.widgets.pig_parameters_widget.drivers.hins_fog_imu.widgets.pig_parameters_widget: drivers.hins_fog_imu.widgets.pig_parameters_widget logger start
+2026-01-25 21:25:11,732 [INFO] drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget.drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget: drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget logger start
+2026-01-25 21:25:11,733 [INFO] drivers.hins_fog_imu.widgets.pig_version_widget.drivers.hins_fog_imu.widgets.pig_version_widget: drivers.hins_fog_imu.widgets.pig_version_widget logger start
+2026-01-25 21:25:11,735 [INFO] drivers.hins_fog_imu.widgets.pig_configuration_widget.drivers.hins_fog_imu.widgets.pig_configuration_widget: drivers.hins_fog_imu.widgets.pig_configuration_widget logger start
+2026-01-25 21:25:11,740 [INFO] myLib.crcCalculator.crcLib.myLib.crcCalculator.crcLib: myLib.crcCalculator.crcLib logger start
+2026-01-25 21:25:13,201 [INFO] Main: Port Selected: COM3
+2026-01-25 21:25:13,203 [INFO] Main: Port Selected: COM3
+2026-01-25 21:25:14,711 [INFO] Main: Port Selected: COM8
+2026-01-25 21:25:15,215 [INFO] Main: Connecting to COM8 at 230400...
+2026-01-25 21:25:15,221 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM8 is connected
+2026-01-25 21:25:15,222 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-01-25 21:25:15,223 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-01-25 21:25:15,224 [INFO] main.drivers.HinsHybrid: Hybrid Reader (Dispatcher) Started.
+2026-01-25 21:28:04,538 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-25 21:28:05,484 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-25 21:28:05,485 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-25 21:28:05,591 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM8 is disconnected
+2026-01-25 21:32:05,939 [INFO] pigImu_Widget.pigImu_Widget: pigImu_Widget logger start
+2026-01-25 21:32:05,965 [INFO] myLib.myGui.graph.myLib.myGui.graph: myLib.myGui.graph logger start
+2026-01-25 21:32:06,681 [INFO] myLib.common.myLib.common: myLib.common logger start
+2026-01-25 21:32:06,682 [INFO] myLib.myGui.mygui_serial.myLib.myGui.mygui_serial: myLib.myGui.mygui_serial logger start
+2026-01-25 21:32:06,684 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: myLib.myGui.myLabel logger start
+2026-01-25 21:32:06,684 [INFO] myLib.myGui.myLineEdit.myLib.myGui.myLineEdit: myLib.myGui.myLineEdit logger start
+2026-01-25 21:32:06,685 [INFO] myLib.myGui.myCheckBox.myLib.myGui.myCheckBox: myLib.myGui.myCheckBox logger start
+2026-01-25 21:32:06,686 [INFO] myLib.myGui.myRadioButton.myLib.myGui.myRadioButton: myLib.myGui.myRadioButton logger start
+2026-01-25 21:32:06,687 [INFO] record_Log: record_Log logger start
+2026-01-25 21:32:06,698 [INFO] myLib.myGui.AttitudeIndicator.myLib.myGui.AttitudeIndicator: myLib.myGui.AttitudeIndicator logger start
+2026-01-25 21:32:06,700 [INFO] myLib.myGui.pig_menu_manager.myLib.myGui.pig_menu_manager: myLib.myGui.pig_menu_manager logger start
+2026-01-25 21:32:06,703 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: myLib.mySerial.Connector logger start
+2026-01-25 21:32:06,710 [INFO] myLib.myGui.myComboBox.myLib.myGui.myComboBox: myLib.myGui.myComboBox logger start
+2026-01-25 21:32:06,711 [INFO] drivers.hins_fog_imu.widgets.pig_parameters_widget.drivers.hins_fog_imu.widgets.pig_parameters_widget: drivers.hins_fog_imu.widgets.pig_parameters_widget logger start
+2026-01-25 21:32:06,713 [INFO] drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget.drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget: drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget logger start
+2026-01-25 21:32:06,715 [INFO] drivers.hins_fog_imu.widgets.pig_version_widget.drivers.hins_fog_imu.widgets.pig_version_widget: drivers.hins_fog_imu.widgets.pig_version_widget logger start
+2026-01-25 21:32:06,716 [INFO] drivers.hins_fog_imu.widgets.pig_configuration_widget.drivers.hins_fog_imu.widgets.pig_configuration_widget: drivers.hins_fog_imu.widgets.pig_configuration_widget logger start
+2026-01-25 21:32:06,721 [INFO] myLib.crcCalculator.crcLib.myLib.crcCalculator.crcLib: myLib.crcCalculator.crcLib logger start
+2026-01-25 21:32:08,328 [INFO] Main: Port Selected: COM3
+2026-01-25 21:32:08,329 [INFO] Main: Port Selected: COM3
+2026-01-25 21:32:09,909 [INFO] Main: Port Selected: COM8
+2026-01-25 21:32:10,480 [INFO] Main: Connecting to COM8 at 230400...
+2026-01-25 21:32:10,485 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM8 is connected
+2026-01-25 21:32:10,486 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-01-25 21:32:10,486 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-01-25 21:32:10,488 [INFO] main.drivers.HinsHybrid: Hybrid Reader (Dispatcher) Started.
+2026-01-25 21:32:35,365 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-25 21:33:28,817 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-25 21:33:28,818 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-25 21:33:28,920 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM8 is disconnected
+2026-01-25 21:34:44,967 [INFO] Main: Connecting to COM8 at 230400...
+2026-01-25 21:34:44,973 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM8 is connected
+2026-01-25 21:34:44,973 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-01-25 21:34:44,974 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-01-25 21:34:44,975 [INFO] main.drivers.HinsHybrid: Hybrid Reader (Dispatcher) Started.
+2026-01-25 21:34:45,813 [INFO] Main: Restarting Hybrid Reader Thread...
+2026-01-25 21:34:45,825 [INFO] main.drivers.HinsHybrid: Hybrid Reader (Dispatcher) Started.
+2026-01-25 21:35:50,405 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-25 21:35:52,341 [INFO] Main: Restarting Hybrid Reader Thread...
+2026-01-25 21:35:52,349 [INFO] main.drivers.HinsHybrid: Hybrid Reader (Dispatcher) Started.
+2026-01-25 21:36:36,969 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-25 21:36:37,936 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-25 21:36:37,937 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-25 21:36:38,043 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM8 is disconnected
+2026-01-25 21:39:02,202 [INFO] Main: Connecting to COM8 at 230400...
+2026-01-25 21:39:02,208 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM8 is connected
+2026-01-25 21:39:02,209 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-01-25 21:39:02,209 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-01-25 21:39:02,211 [INFO] main.drivers.HinsHybrid: Hybrid Reader (Dispatcher) Started.
+2026-01-25 21:39:03,005 [INFO] Main: Restarting Hybrid Reader Thread...
+2026-01-25 21:39:03,007 [INFO] main.drivers.HinsHybrid: Hybrid Reader (Dispatcher) Started.
+2026-01-25 21:39:51,976 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-25 21:40:04,356 [INFO] Main: Restarting Hybrid Reader Thread...
+2026-01-25 21:40:04,367 [INFO] main.drivers.HinsHybrid: Hybrid Reader (Dispatcher) Started.
+2026-01-25 21:49:28,943 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-25 21:49:29,617 [INFO] Main: Restarting Hybrid Reader Thread...
+2026-01-25 21:49:29,639 [INFO] main.drivers.HinsHybrid: Hybrid Reader (Dispatcher) Started.
+2026-01-25 22:02:13,024 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-25 22:02:13,799 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-25 22:02:13,799 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-25 22:02:13,910 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM8 is disconnected
+2026-01-25 23:34:13,105 [INFO] Main: Connecting to COM8 at 230400...
+2026-01-25 23:34:13,105 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM8 is connected
+2026-01-25 23:34:13,105 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-01-25 23:34:13,117 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-01-25 23:34:13,117 [INFO] main.drivers.HinsHybrid: Hybrid Reader (Dispatcher) Started.
+2026-01-25 23:34:13,866 [INFO] Main: Restarting Hybrid Reader Thread...
+2026-01-25 23:34:13,866 [INFO] main.drivers.HinsHybrid: Hybrid Reader (Dispatcher) Started.
+2026-01-25 23:34:15,263 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-25 23:34:18,103 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-25 23:34:18,103 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-25 23:34:18,214 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM8 is disconnected
+2026-01-25 23:34:19,107 [INFO] Main: Connecting to COM8 at 230400...
+2026-01-25 23:34:19,118 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM8 is connected
+2026-01-25 23:34:19,122 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-01-25 23:34:19,122 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-01-25 23:34:19,122 [INFO] main.drivers.HinsHybrid: Hybrid Reader (Dispatcher) Started.
+2026-01-25 23:34:19,919 [INFO] Main: Restarting Hybrid Reader Thread...
+2026-01-25 23:34:19,935 [INFO] main.drivers.HinsHybrid: Hybrid Reader (Dispatcher) Started.
+2026-01-25 23:34:21,200 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-25 23:34:22,212 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-25 23:34:22,228 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-25 23:34:22,340 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM8 is disconnected
+2026-01-25 23:34:32,498 [INFO] Main: Connecting to COM8 at 230400...
+2026-01-25 23:34:32,498 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM8 is connected
+2026-01-25 23:34:32,498 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-01-25 23:34:32,508 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-01-25 23:34:32,508 [INFO] main.drivers.HinsHybrid: Hybrid Reader (Dispatcher) Started.
+2026-01-25 23:34:33,175 [INFO] Main: Restarting Hybrid Reader Thread...
+2026-01-25 23:34:33,175 [INFO] main.drivers.HinsHybrid: Hybrid Reader (Dispatcher) Started.
+2026-01-25 23:34:45,135 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-25 23:35:18,183 [INFO] pigImu_Widget.pigImu_Widget: pigImu_Widget logger start
+2026-01-25 23:35:18,209 [INFO] myLib.myGui.graph.myLib.myGui.graph: myLib.myGui.graph logger start
+2026-01-25 23:35:28,746 [INFO] myLib.common.myLib.common: myLib.common logger start
+2026-01-25 23:35:28,768 [INFO] myLib.myGui.mygui_serial.myLib.myGui.mygui_serial: myLib.myGui.mygui_serial logger start
+2026-01-25 23:35:28,782 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: myLib.myGui.myLabel logger start
+2026-01-25 23:35:28,795 [INFO] myLib.myGui.myLineEdit.myLib.myGui.myLineEdit: myLib.myGui.myLineEdit logger start
+2026-01-25 23:35:28,809 [INFO] myLib.myGui.myCheckBox.myLib.myGui.myCheckBox: myLib.myGui.myCheckBox logger start
+2026-01-25 23:35:28,819 [INFO] myLib.myGui.myRadioButton.myLib.myGui.myRadioButton: myLib.myGui.myRadioButton logger start
+2026-01-25 23:35:28,835 [INFO] record_Log: record_Log logger start
+2026-01-25 23:35:29,000 [INFO] myLib.myGui.AttitudeIndicator.myLib.myGui.AttitudeIndicator: myLib.myGui.AttitudeIndicator logger start
+2026-01-25 23:35:29,035 [INFO] myLib.myGui.pig_menu_manager.myLib.myGui.pig_menu_manager: myLib.myGui.pig_menu_manager logger start
+2026-01-25 23:35:29,103 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: myLib.mySerial.Connector logger start
+2026-01-25 23:35:29,172 [INFO] myLib.myGui.myComboBox.myLib.myGui.myComboBox: myLib.myGui.myComboBox logger start
+2026-01-25 23:35:29,184 [INFO] drivers.hins_fog_imu.widgets.pig_parameters_widget.drivers.hins_fog_imu.widgets.pig_parameters_widget: drivers.hins_fog_imu.widgets.pig_parameters_widget logger start
+2026-01-25 23:35:29,204 [INFO] drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget.drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget: drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget logger start
+2026-01-25 23:35:29,220 [INFO] drivers.hins_fog_imu.widgets.pig_version_widget.drivers.hins_fog_imu.widgets.pig_version_widget: drivers.hins_fog_imu.widgets.pig_version_widget logger start
+2026-01-25 23:35:29,237 [INFO] drivers.hins_fog_imu.widgets.pig_configuration_widget.drivers.hins_fog_imu.widgets.pig_configuration_widget: drivers.hins_fog_imu.widgets.pig_configuration_widget logger start
+2026-01-25 23:35:29,306 [INFO] myLib.crcCalculator.crcLib.myLib.crcCalculator.crcLib: myLib.crcCalculator.crcLib logger start
+2026-01-25 23:35:31,760 [INFO] Main: Port Selected: COM3
+2026-01-25 23:35:31,763 [INFO] Main: Port Selected: COM3
+2026-01-25 23:35:35,295 [INFO] Main: Port Selected: COM8
+2026-01-25 23:35:35,828 [INFO] Main: Connecting to COM8 at 230400...
+2026-01-25 23:35:35,832 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM8 is connected
+2026-01-25 23:35:35,833 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-01-25 23:35:35,834 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-01-25 23:35:35,837 [INFO] main.drivers.HinsHybrid: Hybrid Reader (Dispatcher) Started.
+2026-01-25 23:36:37,817 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-25 23:36:39,903 [INFO] Main: Restarting Hybrid Reader Thread...
+2026-01-25 23:36:39,905 [INFO] main.drivers.HinsHybrid: Hybrid Reader (Dispatcher) Started.
+2026-01-25 23:36:46,525 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-25 23:36:59,034 [INFO] Main: Restarting Hybrid Reader Thread...
+2026-01-25 23:36:59,036 [INFO] main.drivers.HinsHybrid: Hybrid Reader (Dispatcher) Started.
+2026-01-25 23:37:11,934 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-25 23:37:13,534 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-25 23:37:13,535 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-25 23:37:13,646 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM8 is disconnected
+2026-01-25 23:44:38,348 [INFO] pigImu_Widget.pigImu_Widget: pigImu_Widget logger start
+2026-01-25 23:44:38,376 [INFO] myLib.myGui.graph.myLib.myGui.graph: myLib.myGui.graph logger start
+2026-01-25 23:44:39,268 [INFO] myLib.common.myLib.common: myLib.common logger start
+2026-01-25 23:44:39,269 [INFO] myLib.myGui.mygui_serial.myLib.myGui.mygui_serial: myLib.myGui.mygui_serial logger start
+2026-01-25 23:44:39,270 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: myLib.myGui.myLabel logger start
+2026-01-25 23:44:39,272 [INFO] myLib.myGui.myLineEdit.myLib.myGui.myLineEdit: myLib.myGui.myLineEdit logger start
+2026-01-25 23:44:39,274 [INFO] myLib.myGui.myCheckBox.myLib.myGui.myCheckBox: myLib.myGui.myCheckBox logger start
+2026-01-25 23:44:39,275 [INFO] myLib.myGui.myRadioButton.myLib.myGui.myRadioButton: myLib.myGui.myRadioButton logger start
+2026-01-25 23:44:39,276 [INFO] record_Log: record_Log logger start
+2026-01-25 23:44:39,289 [INFO] myLib.myGui.AttitudeIndicator.myLib.myGui.AttitudeIndicator: myLib.myGui.AttitudeIndicator logger start
+2026-01-25 23:44:39,293 [INFO] myLib.myGui.pig_menu_manager.myLib.myGui.pig_menu_manager: myLib.myGui.pig_menu_manager logger start
+2026-01-25 23:44:39,299 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: myLib.mySerial.Connector logger start
+2026-01-25 23:44:39,308 [INFO] myLib.myGui.myComboBox.myLib.myGui.myComboBox: myLib.myGui.myComboBox logger start
+2026-01-25 23:44:39,309 [INFO] drivers.hins_fog_imu.widgets.pig_parameters_widget.drivers.hins_fog_imu.widgets.pig_parameters_widget: drivers.hins_fog_imu.widgets.pig_parameters_widget logger start
+2026-01-25 23:44:39,312 [INFO] drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget.drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget: drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget logger start
+2026-01-25 23:44:39,314 [INFO] drivers.hins_fog_imu.widgets.pig_version_widget.drivers.hins_fog_imu.widgets.pig_version_widget: drivers.hins_fog_imu.widgets.pig_version_widget logger start
+2026-01-25 23:44:39,315 [INFO] drivers.hins_fog_imu.widgets.pig_configuration_widget.drivers.hins_fog_imu.widgets.pig_configuration_widget: drivers.hins_fog_imu.widgets.pig_configuration_widget logger start
+2026-01-25 23:44:39,322 [INFO] myLib.crcCalculator.crcLib.myLib.crcCalculator.crcLib: myLib.crcCalculator.crcLib logger start
+2026-01-25 23:44:40,804 [INFO] Main: Port Selected: COM3
+2026-01-25 23:44:40,805 [INFO] Main: Port Selected: COM3
+2026-01-25 23:44:42,726 [INFO] Main: Port Selected: COM8
+2026-01-25 23:44:43,221 [INFO] Main: Connecting to COM8 at 230400...
+2026-01-25 23:44:43,226 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM8 is connected
+2026-01-25 23:44:43,228 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-01-25 23:44:43,229 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-01-25 23:44:43,230 [INFO] main.drivers.HinsHybrid: Hybrid Reader (Dispatcher) Started.
+2026-01-25 23:44:56,513 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-25 23:45:35,467 [INFO] Main: Restarting Hybrid Reader Thread...
+2026-01-25 23:45:35,477 [INFO] main.drivers.HinsHybrid: Hybrid Reader (Dispatcher) Started.
+2026-01-25 23:45:36,637 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-25 23:45:38,963 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-25 23:45:38,964 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-25 23:45:39,074 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM8 is disconnected
+2026-01-25 23:45:59,641 [INFO] Main: Connecting to COM8 at 230400...
+2026-01-25 23:45:59,647 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM8 is connected
+2026-01-25 23:45:59,648 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-01-25 23:45:59,648 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-01-25 23:45:59,649 [INFO] main.drivers.HinsHybrid: Hybrid Reader (Dispatcher) Started.
+2026-01-25 23:46:20,207 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-25 23:46:20,208 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-25 23:46:20,324 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM8 is disconnected
+2026-01-25 23:46:29,475 [INFO] Main: Connecting to COM8 at 230400...
+2026-01-25 23:46:29,479 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM8 is connected
+2026-01-25 23:46:29,481 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-01-25 23:46:29,482 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-01-25 23:46:29,483 [INFO] main.drivers.HinsHybrid: Hybrid Reader (Dispatcher) Started.
+2026-01-25 23:46:30,353 [INFO] Main: Restarting Hybrid Reader Thread...
+2026-01-25 23:46:30,370 [INFO] main.drivers.HinsHybrid: Hybrid Reader (Dispatcher) Started.
+2026-01-25 23:46:53,921 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-25 23:46:54,800 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-25 23:46:54,800 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-25 23:46:54,914 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM8 is disconnected
+2026-01-25 23:46:59,301 [INFO] Main: Connecting to COM8 at 230400...
+2026-01-25 23:46:59,305 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM8 is connected
+2026-01-25 23:46:59,306 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-01-25 23:46:59,307 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-01-25 23:46:59,308 [INFO] main.drivers.HinsHybrid: Hybrid Reader (Dispatcher) Started.
+2026-01-25 23:47:00,063 [INFO] Main: Restarting Hybrid Reader Thread...
+2026-01-25 23:47:00,085 [INFO] main.drivers.HinsHybrid: Hybrid Reader (Dispatcher) Started.
+2026-01-25 23:47:10,105 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-25 23:47:14,898 [INFO] Main: Restarting Hybrid Reader Thread...
+2026-01-25 23:47:14,899 [INFO] main.drivers.HinsHybrid: Hybrid Reader (Dispatcher) Started.
+2026-01-25 23:47:20,373 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-25 23:47:26,074 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-25 23:47:26,075 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-25 23:47:26,179 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM8 is disconnected

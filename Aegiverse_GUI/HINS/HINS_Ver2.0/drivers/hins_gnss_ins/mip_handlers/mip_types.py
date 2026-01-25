@@ -36,6 +36,9 @@ class MIP_CONSTANTS:
         33: "USB 1",
         34: "USB 2",
     }
+
+    FILTER_ANTENNA_OFFSET = 0x54  # GNSS Multi-Antenna Offset
+
     # Protocol Bitfield 對照表
     PROTOCOL_BITS = {
         0: "MIP",

@@ -14,7 +14,7 @@ class HinsConfigWidget(QWidget):
         super().__init__()
         self.reader = reader
         self.setWindowTitle("HINS GNSS/INS Configuration")
-        self.resize(750, 800)
+        self.resize(1200, 1000)
         self.setup_ui()
 
         # 連接 Reader 的解析訊號 (接收 Dict 用於填寫欄位)
@@ -180,6 +180,40 @@ class HinsConfigWidget(QWidget):
         sys_v_layout.addLayout(status_form)
         sys_group.setLayout(sys_v_layout);
         left_layout.addWidget(sys_group)
+        # --- 新增天線區塊：GNSS Multi-Antenna Offset (0x0D, 0x54) ---
+        ant_group = QGroupBox("GNSS Multi-Antenna Offset (0x0D, 0x54)")
+        ant_v_layout = QVBoxLayout()
+        self.ant_inputs = {}
+
+        for ant_id in [1, 2]:
+            row_layout = QHBoxLayout()
+            row_layout.addWidget(QLabel(f"Ant {ant_id}:"))
+
+            axes_controls = []
+            for axis in ['X', 'Y', 'Z']:
+                le = QLineEdit("0.000")
+                le.setFixedWidth(60)
+                le.setAlignment(Qt.AlignCenter)
+                row_layout.addWidget(QLabel(axis))
+                row_layout.addWidget(le)
+                axes_controls.append(le)
+
+            self.ant_inputs[ant_id] = axes_controls
+
+            btn_read = QPushButton(f"Read Ant {ant_id}")
+            btn_set = QPushButton(f"Set Ant {ant_id}")
+            btn_set.setStyleSheet("background-color: #2D5A27; color: white;")
+
+            # 連結新增的方法
+            btn_read.clicked.connect(lambda _, aid=ant_id: self.send_cmd(f"READ_ANT{aid}"))
+            btn_set.clicked.connect(lambda _, aid=ant_id: self.send_set_antenna_offset(aid))
+
+            row_layout.addWidget(btn_read)
+            row_layout.addWidget(btn_set)
+            ant_v_layout.addLayout(row_layout)
+
+        ant_group.setLayout(ant_v_layout)
+        left_layout.addWidget(ant_group)
 
         left_scroll.setWidget(left_container)
         main_h_layout.addWidget(left_scroll, 45)  # 左側權重 45%
@@ -238,6 +272,10 @@ class HinsConfigWidget(QWidget):
             "STREAM_OFF": [0xBC, 0xCB, 0x97, 0x0B, 0x75, 0x65, 0x0C, 0x05, 0x05, 0x11, 0x01, 0x82, 0x00, 0x84, 0x1B,
                            0x51, 0x52],
             "READ_DCM": [0xBC, 0xCB, 0x97, 0x09, 0x75, 0x65, 0x0C, 0x03, 0x03, 0x33, 0x02, 0x21, 0x4A, 0x51, 0x52],
+            "READ_ANT1": [0xBC, 0xCB, 0x97, 0x0A, 0x75, 0x65, 0x0D, 0x04, 0x04, 0x54, 0x02, 0x01, 0x46, 0xDE, 0x51,
+                          0x52],
+            "READ_ANT2": [0xBC, 0xCB, 0x97, 0x0A, 0x75, 0x65, 0x0D, 0x04, 0x04, 0x54, 0x02, 0x02, 0x47, 0xDF, 0x51,
+                          0x52],
         }
 
         if cmd_name in cmd_map:
@@ -344,14 +382,14 @@ class HinsConfigWidget(QWidget):
                 self.le_ack_status.setText(f"Stream {field.get('desc_set')}: {status}")
             elif desc_set == '0xc' and f_type == 'MSG_FORMAT':
                 self.le_ack_status.setText(f"Format Set: {field.get('desc_set')}")
-            # elif f_type == "ACK":
-            #     err_code = field.get('error_code')
-            #     if err_code == 0:
-            #         self.le_ack_status.setStyleSheet("color: green; font-weight: bold;")
-            #         self.le_ack_status.setText("OK")
-            #     else:
-            #         self.le_ack_status.setStyleSheet("color: red; font-weight: bold;")
-            #         self.le_ack_status.setText(f"Error {err_code}")
+            # --- 新增：處理天線 Offset 回讀顯示 (0x0D, 0xD4) ---
+            elif desc_set == '0xd' and f_type == 'ANTENNA_OFFSET':
+                ant_id = field.get('receiver_id')
+                offsets = field.get('offset', [])
+                if ant_id in self.ant_inputs and len(offsets) == 3:
+                    for i in range(3):
+                        self.ant_inputs[ant_id][i].setText(f"{offsets[i]:.3f}")
+
 
     def calculate_checksum(self, data):
         """ MIP Fletcher Checksum (16-bit)  """
@@ -361,6 +399,7 @@ class HinsConfigWidget(QWidget):
             ck1 = (ck1 + b) & 0xFF
             ck2 = (ck2 + ck1) & 0xFF
         return [ck1, ck2]
+
 
     def send_set_dcm_payload(self):
         """ 動態產生 DCM 寫入封包 """
@@ -399,6 +438,47 @@ class HinsConfigWidget(QWidget):
         except ValueError:
             self.append_console("Error: Invalid Matrix input", "red")
 
+    def send_set_antenna_offset(self, ant_id):
+        """ 動態產生 Vector3f 寫入封包 (修正長度計算問題) """
+        try:
+            # 1. 取得 UI 數值
+            vals = [float(le.text()) for le in self.ant_inputs[ant_id]]
+
+            # 2. 組裝 MIP 部分 (完全對應您的真實指令格式)
+            # 75 65 0D (Header) + 10 (Payload Len) + 10 (Field Len) + 54 (Desc) + 01 (Func) + ID
+            mip_header = [0x75, 0x65, 0x0D, 0x10, 0x10, 0x54, 0x01, ant_id]
+            payload = list(struct.pack('>3f', *vals))
+            full_no_ck = mip_header + payload
+
+            # 3. 計算 Fletcher Checksum
+            ck = self.calculate_checksum(full_no_ck)
+
+            # 4. 關鍵修正：動態計算 Sync Header 的長度欄位
+            # 這會自動根據資料量算出 22 (0x16)
+            total_payload_len = len(full_no_ck) + len(ck)
+
+            sync = [0xBC, 0xCB, 0x97, total_payload_len]
+            final = sync + full_no_ck + ck + [0x51, 0x52]
+
+            # 5. 更新 UI 與發送
+            self.le_last_cmd.setText(f"SET_ANT_{ant_id}")
+            self.le_ack_status.setText("Sending...")
+            QApplication.processEvents()
+
+            self.reader.write_raw(final)
+            hex_str = " ".join([f"{b:02X}" for b in final])
+            self.append_console(
+                f"[{QDateTime.currentDateTime().toString('HH:mm:ss.zzz')}] TX [SET_ANT_{ant_id}]: {hex_str}", "#569CD6")
+
+            # 6. 同步讀取解析
+            time.sleep(0.2)
+            conn = getattr(self.reader, '_connector', None)
+            if conn:
+                n = conn.readInputBuffer()
+                if n > 0:
+                    self.reader.handle_packet(conn.readBinaryList(n))
+        except ValueError:
+            self.append_console("Error: Invalid Antenna Offset input", "red")
 
 # ==========================================
 #   UI 預覽測試區塊 (Layout Preview Only)

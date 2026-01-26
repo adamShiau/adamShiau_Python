@@ -45,6 +45,7 @@ from drivers.hins_gnss_ins.hins_gnss_ins_reader import HinsGnssInsReader
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
+        self.GUI_VERSION = "HINS_Ver2.0"
         self.setWindowTitle("Aegiverse HINS GUI")
         self.resize(1450, 800)
 
@@ -424,7 +425,7 @@ class MainWindow(QMainWindow):
 
     def show_version_menu(self):
         ver_str = self.fog_reader.getVersion(2)
-        self.pig_version_menu.ViewVersion(ver_str, "HINS-FINAL-ARCH")
+        self.pig_version_menu.ViewVersion(ver_str, self.GUI_VERSION)
         self.pig_version_menu.show()
 
     def show_configuration_menu(self):

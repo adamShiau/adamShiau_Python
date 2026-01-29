@@ -258,6 +258,7 @@ class pigImuReader(QThread):
 
     def readIMU(self):
         self.flushInputBuffer("None")
+        print('read')
         self.writeImuCmd(5, 2, 2)
 
     def stopIMU(self):

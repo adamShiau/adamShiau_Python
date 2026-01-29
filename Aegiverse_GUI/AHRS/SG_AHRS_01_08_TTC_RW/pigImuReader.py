@@ -311,9 +311,11 @@ class pigImuReader(QThread):
     def readIMU(self):
         self.flushInputBuffer()
         self.writeImuCmd(self.__startCmd[0], self.__startCmd[1], self.__startCmd[2])
+        print('readIMU')
 
     def stopIMU(self):
         self.writeImuCmd(self.__stopCmd[0], self.__stopCmd[1], self.__stopCmd[2])
+        print('stopIMU')
 
     # 使用此設定reader層或是再底層發生錯誤
     def occurredErr(self):

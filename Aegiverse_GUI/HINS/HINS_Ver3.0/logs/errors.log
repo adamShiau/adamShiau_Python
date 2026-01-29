@@ -1,0 +1,409 @@
+2025-12-26 20:18:12 - main.myLib.mySerial.Connector - ERROR - dump_SN_parameters parse error: unexpected ACK frame: {'type': 162, 'cmd': 102, 'status': 3, 'len': 0, 'payload': b''}
+2025-12-26 20:18:27 - main.myLib.mySerial.Connector - ERROR - dump_fog_parameters parse error: unexpected ACK frame: {'type': 162, 'cmd': 102, 'status': 3, 'len': 0, 'payload': b''}
+2025-12-27 18:37:23 - main.myLib.mySerial.Connector - ERROR - IOError, the device: COM8 can not be found or can not be configured!
+2025-12-27 18:37:23 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2025-12-27 18:37:23 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2025-12-27 18:37:23 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2025-12-27 18:37:23 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (OSError(9, '控制代碼無效。', None, 6)).(The error occurred while clearing buffer, line 396.)
+2025-12-27 18:37:25 - main.myLib.myGui.mygui_serial - ERROR - Stop when timeout or error occurs.(發生Timeout且超時或是錯誤導致GUI的停止運行)
+2025-12-27 22:44:37 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 1
+2025-12-27 22:44:37 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 2
+2025-12-27 22:44:37 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 3
+2025-12-27 22:44:37 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 4
+2025-12-27 22:44:37 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 5
+2025-12-27 22:44:37 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 6
+2025-12-27 22:44:37 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 7
+2025-12-27 22:44:37 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 8
+2025-12-27 22:44:37 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 9
+2025-12-27 22:44:37 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 10
+2025-12-27 22:44:37 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 11
+2025-12-27 22:44:37 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 12
+2025-12-27 22:44:37 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 13
+2025-12-27 22:44:37 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 14
+2025-12-27 22:44:37 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 15
+2025-12-27 22:44:37 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 16
+2025-12-27 22:44:37 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 17
+2025-12-27 22:44:37 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 18
+2025-12-27 22:44:37 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 19
+2025-12-27 22:44:37 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 20
+2025-12-27 22:44:37 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 21
+2025-12-27 22:44:37 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 22
+2025-12-27 22:44:37 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 23
+2025-12-27 22:44:37 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 24
+2025-12-27 22:44:37 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 25
+2025-12-27 22:44:37 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 26
+2025-12-27 22:44:37 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 27
+2025-12-27 22:44:37 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 28
+2025-12-27 22:44:37 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 29
+2025-12-27 22:44:37 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 30
+2025-12-27 22:44:37 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 31
+2025-12-27 22:44:37 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 32
+2025-12-27 22:44:37 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 33
+2025-12-27 22:44:37 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 34
+2025-12-27 22:44:37 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 35
+2025-12-27 22:44:37 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 36
+2025-12-27 22:44:37 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 37
+2025-12-27 22:44:37 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 38
+2025-12-27 22:44:37 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 39
+2025-12-27 22:44:37 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 40
+2025-12-27 22:44:37 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 41
+2025-12-27 22:44:37 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 42
+2025-12-27 22:44:37 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 43
+2025-12-27 22:44:37 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 44
+2025-12-27 22:44:37 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 45
+2025-12-27 22:44:37 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 46
+2025-12-27 22:44:37 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 47
+2025-12-27 22:44:38 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 48
+2025-12-27 22:44:38 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 49
+2025-12-27 22:44:38 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 50
+2025-12-27 22:44:38 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 51
+2025-12-27 22:44:38 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 52
+2025-12-27 22:44:38 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 53
+2025-12-27 22:44:38 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 54
+2025-12-27 22:44:38 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 55
+2025-12-27 22:44:38 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 56
+2025-12-27 22:44:38 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 57
+2025-12-27 22:44:38 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 58
+2025-12-27 22:44:38 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 59
+2025-12-27 22:44:38 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 60
+2025-12-27 22:44:38 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 61
+2025-12-27 22:44:38 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 62
+2025-12-27 22:44:38 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 63
+2025-12-27 22:44:38 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 64
+2025-12-27 22:44:38 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 65
+2025-12-27 22:44:38 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 66
+2025-12-27 22:44:38 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 67
+2025-12-27 22:44:38 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 68
+2025-12-27 22:44:38 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 69
+2025-12-27 22:44:38 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 70
+2025-12-27 22:44:38 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 71
+2025-12-27 22:44:38 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 72
+2025-12-27 22:44:38 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 73
+2025-12-27 22:44:38 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 74
+2025-12-27 22:44:38 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 75
+2025-12-27 22:44:38 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 76
+2025-12-27 22:44:38 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 77
+2025-12-27 22:44:38 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 78
+2025-12-27 22:44:38 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 79
+2025-12-27 22:44:38 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 80
+2025-12-27 22:44:38 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 81
+2025-12-27 22:44:38 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 82
+2025-12-27 22:44:38 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 83
+2025-12-27 22:44:38 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 84
+2025-12-27 22:44:38 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 85
+2025-12-27 22:44:38 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 86
+2025-12-27 22:44:38 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 87
+2025-12-27 22:44:38 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 88
+2025-12-27 22:44:38 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 89
+2025-12-27 22:44:38 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 90
+2025-12-27 22:44:38 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 91
+2025-12-27 22:44:38 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 92
+2025-12-27 22:44:38 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 93
+2025-12-27 22:44:38 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 94
+2025-12-27 22:44:38 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 95
+2025-12-27 22:44:38 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 96
+2025-12-27 22:44:38 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 97
+2025-12-27 22:44:39 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 98
+2025-12-27 22:44:39 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 99
+2025-12-27 22:44:39 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 100
+2025-12-27 22:44:39 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 101
+2025-12-27 22:44:39 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 102
+2025-12-27 22:44:39 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 103
+2025-12-27 22:44:39 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 104
+2025-12-27 22:44:39 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 105
+2025-12-27 22:44:39 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 106
+2025-12-27 22:44:39 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 107
+2025-12-27 22:44:39 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 108
+2025-12-27 22:44:39 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 109
+2025-12-27 22:44:39 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 110
+2025-12-27 22:44:39 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 111
+2025-12-27 22:44:39 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 112
+2025-12-27 22:44:39 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 113
+2025-12-27 22:44:39 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 114
+2025-12-27 22:44:39 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 115
+2025-12-27 22:44:39 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 116
+2025-12-27 22:44:39 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 117
+2025-12-27 22:44:39 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 118
+2025-12-27 22:44:39 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 119
+2025-12-27 22:44:39 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 120
+2025-12-27 22:44:39 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 121
+2025-12-27 22:44:39 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 122
+2025-12-27 22:44:39 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 123
+2025-12-27 22:44:39 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 124
+2025-12-27 22:44:39 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 125
+2025-12-27 22:44:39 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 126
+2025-12-27 22:44:39 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 127
+2025-12-27 22:44:39 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 128
+2025-12-27 22:44:39 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 129
+2025-12-27 22:44:39 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 130
+2025-12-27 22:44:39 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 131
+2025-12-27 22:44:39 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 132
+2025-12-27 22:44:39 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 133
+2025-12-27 22:44:39 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 134
+2025-12-27 22:44:39 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 135
+2025-12-27 22:44:39 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 136
+2025-12-27 22:44:39 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 137
+2025-12-27 22:44:39 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 138
+2025-12-27 22:44:39 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 139
+2025-12-27 22:44:39 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 140
+2025-12-27 22:44:39 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 141
+2025-12-27 22:44:39 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 142
+2025-12-27 22:44:39 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 143
+2025-12-27 22:44:39 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 144
+2025-12-27 22:44:39 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 145
+2025-12-27 22:44:39 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 146
+2025-12-27 22:44:39 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 147
+2025-12-27 22:44:40 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 148
+2025-12-27 22:44:40 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 149
+2025-12-27 22:44:40 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 150
+2025-12-27 22:44:40 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 151
+2025-12-27 22:44:40 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 152
+2025-12-27 22:44:40 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 153
+2025-12-27 22:44:40 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 154
+2025-12-27 22:44:40 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 155
+2025-12-27 22:44:40 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 156
+2025-12-27 22:44:40 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 157
+2025-12-27 22:44:40 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 158
+2025-12-27 22:44:40 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 159
+2025-12-27 22:44:40 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 160
+2025-12-27 22:44:40 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 161
+2025-12-27 22:44:40 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 162
+2025-12-27 22:44:40 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 163
+2025-12-27 22:44:40 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 164
+2025-12-27 22:44:40 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 165
+2025-12-27 22:44:40 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 166
+2025-12-27 22:44:40 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 167
+2025-12-27 22:44:40 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 168
+2025-12-27 22:44:40 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 169
+2025-12-27 22:44:40 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 170
+2025-12-27 22:44:40 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 171
+2025-12-27 22:44:40 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 172
+2025-12-27 22:44:40 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 173
+2025-12-27 22:44:40 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 174
+2025-12-27 22:44:40 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 175
+2025-12-27 22:44:40 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 176
+2025-12-27 22:44:40 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 177
+2025-12-27 22:44:40 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 178
+2025-12-27 22:44:40 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 179
+2025-12-27 22:44:40 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 180
+2025-12-27 22:44:40 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 181
+2025-12-27 22:44:40 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 182
+2025-12-27 22:44:40 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 183
+2025-12-27 22:44:40 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 184
+2025-12-27 22:44:40 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 185
+2025-12-27 22:44:40 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 186
+2025-12-27 22:44:40 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 187
+2025-12-27 22:44:40 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 188
+2025-12-27 22:44:40 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 189
+2025-12-27 22:44:40 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 190
+2025-12-27 22:44:40 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 191
+2025-12-27 22:44:40 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 192
+2025-12-27 22:44:40 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 193
+2025-12-27 22:44:40 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 194
+2025-12-27 22:44:40 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 195
+2025-12-27 22:44:40 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 196
+2025-12-27 22:44:40 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 197
+2025-12-27 22:44:41 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 198
+2025-12-27 22:44:41 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 199
+2025-12-27 22:44:41 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 200
+2025-12-27 22:44:41 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 201
+2025-12-27 22:44:41 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 202
+2025-12-27 22:44:41 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 203
+2025-12-27 22:44:41 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 204
+2025-12-27 22:44:41 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 205
+2025-12-27 22:44:41 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 206
+2025-12-27 22:44:41 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 207
+2025-12-27 22:44:41 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 208
+2025-12-27 22:44:41 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 209
+2025-12-27 22:44:41 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 210
+2025-12-27 22:44:41 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 211
+2025-12-27 22:44:41 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 212
+2025-12-27 22:44:41 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 213
+2025-12-27 22:44:41 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 214
+2025-12-27 22:44:41 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 215
+2025-12-27 22:44:41 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 216
+2025-12-27 22:44:41 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 217
+2025-12-28 22:44:57 - main.myLib.mySerial.Connector - ERROR - IOError, the device: COM8 can not be found or can not be configured!
+2025-12-28 22:44:57 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2025-12-28 22:44:57 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2025-12-28 22:44:57 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2025-12-28 22:44:58 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (OSError(9, '控制代碼無效。', None, 6)).(The error occurred while clearing buffer, line 399.)
+2025-12-28 22:45:00 - main.myLib.myGui.mygui_serial - ERROR - Stop when timeout or error occurs.(發生Timeout且超時或是錯誤導致GUI的停止運行)
+2025-12-29 00:46:56 - main.myLib.mySerial.Connector - ERROR - dump_configuration timeout while waiting ACK/RESULT
+2025-12-29 00:53:18 - main.myLib.mySerial.Connector - ERROR - serial read timeout: check if the input power is ON, close the GUI and re-excute.
+2025-12-29 00:53:18 - main.myLib.mySerial.getData - ERROR - alignHeader_4B Error
+2025-12-29 00:53:18 - main.myLib.mySerial.Connector - ERROR - Other exceptional events occurred. The error is ''NoneType' object has no attribute 'hEvent''
+2025-12-29 00:53:18 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2025-12-29 00:53:18 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2025-12-29 00:53:18 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2025-12-29 00:53:18 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (OSError(9, '控制代碼無效。', None, 6)).(The error occurred while clearing buffer, line 399.)
+2025-12-29 00:53:21 - main.myLib.myGui.mygui_serial - ERROR - Stop when timeout or error occurs.(發生Timeout且超時或是錯誤導致GUI的停止運行)
+2025-12-29 10:27:03 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (OSError(9, '控制代碼無效。', None, 6)).(An error occurred during the data retrieval process, line 478.)
+2025-12-29 10:27:03 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2025-12-29 10:27:03 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2025-12-29 10:27:03 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2025-12-29 10:27:03 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (OSError(9, '控制代碼無效。', None, 6)).(The error occurred while clearing buffer, line 399.)
+2025-12-29 10:27:05 - main.myLib.myGui.mygui_serial - ERROR - Stop when timeout or error occurs.(發生Timeout且超時或是錯誤導致GUI的停止運行)
+2025-12-29 10:52:55 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (OSError(9, '控制代碼無效。', None, 6)).(An error occurred during the data retrieval process, line 478.)
+2025-12-29 10:52:55 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2025-12-29 10:52:55 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2025-12-29 10:52:55 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2025-12-29 10:52:55 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (OSError(9, '控制代碼無效。', None, 6)).(The error occurred while clearing buffer, line 399.)
+2025-12-29 10:52:58 - main.myLib.myGui.mygui_serial - ERROR - Stop when timeout or error occurs.(發生Timeout且超時或是錯誤導致GUI的停止運行)
+2025-12-31 12:32:22 - main.myLib.mySerial.Connector - ERROR - serial read timeout: check if the input power is ON, close the GUI and re-excute.
+2025-12-31 12:32:22 - main.pigImuReader - ERROR - TypeError — can only concatenate list (not "bool") to list.(An error occurred during the data retrieval process, line 323.)
+2025-12-31 12:32:22 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2025-12-31 12:32:22 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2025-12-31 12:32:22 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2025-12-31 12:32:22 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (PermissionError(13, '存取被拒。', None, 5)).(The error occurred while clearing buffer, line 399.)
+2025-12-31 12:34:04 - main.myLib.myGui.mygui_serial - ERROR - Stop when timeout or error occurs.(發生Timeout且超時或是錯誤導致GUI的停止運行)
+2025-12-31 15:04:00 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (PermissionError(13, '存取被拒。', None, 5)).(The error occurred while clearing buffer, line 399.)
+2025-12-31 15:04:02 - main.myLib.myGui.mygui_serial - ERROR - Stop when timeout or error occurs.(發生Timeout且超時或是錯誤導致GUI的停止運行)
+2025-12-31 15:04:02 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2025-12-31 15:04:02 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2025-12-31 15:04:02 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2025-12-31 15:04:02 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (PermissionError(13, '存取被拒。', None, 5)).(An error occurred during the data retrieval process, line 475.)
+2025-12-31 15:04:02 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2025-12-31 15:04:02 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2025-12-31 15:04:02 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2025-12-31 15:04:02 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (PermissionError(13, '存取被拒。', None, 5)).(The error occurred while clearing buffer, line 399.)
+2025-12-31 15:04:04 - main.myLib.myGui.mygui_serial - ERROR - Stop when timeout or error occurs.(發生Timeout且超時或是錯誤導致GUI的停止運行)
+2025-12-31 15:04:21 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (OSError(9, '控制代碼無效。', None, 6)).(An error occurred during the data retrieval process, line 478.)
+2025-12-31 15:04:21 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2025-12-31 15:04:21 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2025-12-31 15:04:21 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2025-12-31 15:04:22 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (OSError(9, '控制代碼無效。', None, 6)).(The error occurred while clearing buffer, line 399.)
+2025-12-31 15:04:24 - main.myLib.myGui.mygui_serial - ERROR - Stop when timeout or error occurs.(發生Timeout且超時或是錯誤導致GUI的停止運行)
+2025-12-31 17:01:00 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (OSError(9, '控制代碼無效。', None, 6)).(An error occurred during the data retrieval process, line 478.)
+2025-12-31 17:01:00 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2025-12-31 17:01:00 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2025-12-31 17:01:00 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2025-12-31 17:01:00 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (OSError(9, '控制代碼無效。', None, 6)).(The error occurred while clearing buffer, line 399.)
+2025-12-31 17:01:02 - main.myLib.myGui.mygui_serial - ERROR - Stop when timeout or error occurs.(發生Timeout且超時或是錯誤導致GUI的停止運行)
+2025-12-31 17:01:43 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (OSError(9, '控制代碼無效。', None, 6)).(An error occurred during the data retrieval process, line 478.)
+2025-12-31 17:01:43 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2025-12-31 17:01:43 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2025-12-31 17:01:43 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2025-12-31 17:01:43 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (OSError(9, '控制代碼無效。', None, 6)).(The error occurred while clearing buffer, line 399.)
+2025-12-31 17:01:45 - main.myLib.myGui.mygui_serial - ERROR - Stop when timeout or error occurs.(發生Timeout且超時或是錯誤導致GUI的停止運行)
+2025-12-31 18:09:40 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (PermissionError(13, '存取被拒。', None, 5)).(An error occurred during the data retrieval process, line 475.)
+2025-12-31 18:09:40 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2025-12-31 18:09:40 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2025-12-31 18:09:40 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2025-12-31 18:09:40 - main.myLib.myGui.mygui_serial - ERROR - Exception — unsupported operand type(s) for +: 'NoneType' and 'datetime.timedelta', line 344.)
+2025-12-31 18:09:40 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (PermissionError(13, '存取被拒。', None, 5)).(The error occurred while clearing buffer, line 399.)
+2025-12-31 18:09:59 - main.myLib.myGui.mygui_serial - ERROR - Stop when timeout or error occurs.(發生Timeout且超時或是錯誤導致GUI的停止運行)
+2025-12-31 19:42:53 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (OSError(9, '控制代碼無效。', None, 6)).(An error occurred during the data retrieval process, line 478.)
+2025-12-31 19:42:53 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2025-12-31 19:42:53 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2025-12-31 19:42:53 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2025-12-31 19:42:54 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (OSError(9, '控制代碼無效。', None, 6)).(The error occurred while clearing buffer, line 399.)
+2025-12-31 19:42:56 - main.myLib.myGui.mygui_serial - ERROR - Stop when timeout or error occurs.(發生Timeout且超時或是錯誤導致GUI的停止運行)
+2025-12-31 19:43:20 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (PermissionError(13, '存取被拒。', None, 5)).(An error occurred during the data retrieval process, line 478.)
+2025-12-31 19:43:20 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2025-12-31 19:43:20 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2025-12-31 19:43:20 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2025-12-31 19:43:20 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (PermissionError(13, '存取被拒。', None, 5)).(The error occurred while clearing buffer, line 399.)
+2025-12-31 19:43:21 - main.myLib.myGui.mygui_serial - ERROR - Stop when timeout or error occurs.(發生Timeout且超時或是錯誤導致GUI的停止運行)
+2025-12-31 19:44:15 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (OSError(9, '控制代碼無效。', None, 6)).(An error occurred during the data retrieval process, line 478.)
+2025-12-31 19:44:15 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2025-12-31 19:44:15 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2025-12-31 19:44:15 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2025-12-31 19:44:15 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (OSError(9, '控制代碼無效。', None, 6)).(The error occurred while clearing buffer, line 399.)
+2025-12-31 19:44:17 - main.myLib.myGui.mygui_serial - ERROR - Stop when timeout or error occurs.(發生Timeout且超時或是錯誤導致GUI的停止運行)
+2026-01-01 22:23:52 - main.myLib.mySerial.Connector - ERROR - serial read timeout: check if the input power is ON, close the GUI and re-excute.
+2026-01-01 22:23:52 - main.myLib.mySerial.getData - ERROR - alignHeader_4B Error
+2026-01-01 22:23:52 - main.myLib.mySerial.Connector - ERROR - Other exceptional events occurred. The error is ''NoneType' object has no attribute 'hEvent''
+2026-01-01 22:23:52 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2026-01-01 22:23:52 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2026-01-01 22:23:52 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2026-01-01 22:23:52 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (OSError(9, '控制代碼無效。', None, 6)).(The error occurred while clearing buffer, line 399.)
+2026-01-01 22:23:54 - main.myLib.myGui.mygui_serial - ERROR - Stop when timeout or error occurs.(發生Timeout且超時或是錯誤導致GUI的停止運行)
+2026-01-04 01:49:14 - main.myLib.mySerial.Connector - ERROR - IOError, the device: COM8 can not be found or can not be configured!
+2026-01-04 01:49:14 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2026-01-04 01:49:14 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2026-01-04 01:49:14 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2026-01-04 01:49:14 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (OSError(9, '控制代碼無效。', None, 6)).(The error occurred while clearing buffer, line 399.)
+2026-01-04 01:49:17 - main.myLib.myGui.mygui_serial - ERROR - Stop when timeout or error occurs.(發生Timeout且超時或是錯誤導致GUI的停止運行)
+2026-01-10 20:24:02 - main.myLib.crcCalculator.crcLib - WARNING - crc fail: 1
+2026-01-12 09:45:02 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (OSError(9, '控制代碼無效。', None, 6)).(An error occurred during the data retrieval process, line 478.)
+2026-01-12 09:45:02 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2026-01-12 09:45:02 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2026-01-12 09:45:02 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2026-01-12 09:45:02 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (OSError(9, '控制代碼無效。', None, 6)).(The error occurred while clearing buffer, line 399.)
+2026-01-12 09:45:04 - main.myLib.myGui.mygui_serial - ERROR - Stop when timeout or error occurs.(發生Timeout且超時或是錯誤導致GUI的停止運行)
+2026-01-14 11:46:49 - main.myLib.mySerial.Connector - ERROR - dump_SN_parameters parse error: unexpected ACK frame: {'type': 162, 'cmd': 102, 'status': 3, 'len': 0, 'payload': b''}
+2026-01-14 11:47:05 - main.myLib.mySerial.Connector - ERROR - dump_SN_parameters parse error: unexpected ACK frame: {'type': 162, 'cmd': 129, 'status': 3, 'len': 0, 'payload': b''}
+2026-01-14 16:12:36 - main.myLib.mySerial.Connector - ERROR - IOError, the device: COM23 can not be found or can not be configured!
+2026-01-14 16:12:36 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2026-01-14 16:12:36 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2026-01-14 16:12:36 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2026-01-14 16:12:36 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (OSError(9, '控制代碼無效。', None, 6)).(The error occurred while clearing buffer, line 399.)
+2026-01-14 16:12:39 - main.myLib.myGui.mygui_serial - ERROR - Stop when timeout or error occurs.(發生Timeout且超時或是錯誤導致GUI的停止運行)
+2026-01-14 16:24:28 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (OSError(9, '控制代碼無效。', None, 6)).(An error occurred during the data retrieval process, line 478.)
+2026-01-14 16:24:28 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2026-01-14 16:24:28 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2026-01-14 16:24:28 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2026-01-14 16:24:28 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (OSError(9, '控制代碼無效。', None, 6)).(The error occurred while clearing buffer, line 399.)
+2026-01-14 16:24:31 - main.myLib.myGui.mygui_serial - ERROR - Stop when timeout or error occurs.(發生Timeout且超時或是錯誤導致GUI的停止運行)
+2026-01-14 16:27:02 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (OSError(9, '控制代碼無效。', None, 6)).(An error occurred during the data retrieval process, line 478.)
+2026-01-14 16:27:02 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2026-01-14 16:27:02 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2026-01-14 16:27:02 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2026-01-14 16:27:02 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (OSError(9, '控制代碼無效。', None, 6)).(The error occurred while clearing buffer, line 399.)
+2026-01-14 16:27:04 - main.myLib.myGui.mygui_serial - ERROR - Stop when timeout or error occurs.(發生Timeout且超時或是錯誤導致GUI的停止運行)
+2026-01-14 19:05:13 - main.myLib.mySerial.Connector - ERROR - dump_SN_parameters parse error: unexpected ACK frame: {'type': 162, 'cmd': 130, 'status': 0, 'len': 8, 'payload': b'adam1227'}
+2026-01-14 19:05:17 - main.myLib.mySerial.Connector - ERROR - dump_SN_parameters parse error: unexpected ACK frame: {'type': 162, 'cmd': 130, 'status': 0, 'len': 8, 'payload': b'adam1227'}
+2026-01-14 19:07:23 - main.myLib.mySerial.Connector - ERROR - dump_fog_parameters parse error: unexpected ACK frame: {'type': 162, 'cmd': 102, 'status': 0, 'len': 343, 'payload': b'{"0":163,"1":9000,"2":-8192,"3":0,"4":51,"5":5,"6":6,"7":16384,"8":1,"9":5,"10":0,"11":72,"12":1143111680,"13":-1,"14":-1,"15":-1,"16":-1,"17":0,"18":953267991,"19":-1,"20":-1,"21":-1,"22":-1,"23":1112014848,"24":1092616192,"25":0,"26":0,"27":0,"28":0,"29":0,"30":0,"31":0,"32":1065353216,"33":0,"34":0,"35":-1,"36":-1,"37":-1,"38":-1,"39":-1}'}
+2026-01-14 19:07:27 - main.myLib.mySerial.Connector - ERROR - dump_fog_parameters parse error: unexpected ACK frame: {'type': 162, 'cmd': 102, 'status': 0, 'len': 343, 'payload': b'{"0":163,"1":9000,"2":-8192,"3":0,"4":51,"5":5,"6":6,"7":16384,"8":1,"9":5,"10":0,"11":72,"12":1143111680,"13":-1,"14":-1,"15":-1,"16":-1,"17":0,"18":953267991,"19":-1,"20":-1,"21":-1,"22":-1,"23":1112014848,"24":1092616192,"25":0,"26":0,"27":0,"28":0,"29":0,"30":0,"31":0,"32":1065353216,"33":0,"34":0,"35":-1,"36":-1,"37":-1,"38":-1,"39":-1}'}
+2026-01-14 20:32:52 - main.myLib.mySerial.Connector - ERROR - dump_fog_parameters parse error: unexpected ACK frame: {'type': 162, 'cmd': 102, 'status': 0, 'len': 343, 'payload': b'{"0":163,"1":9000,"2":-8192,"3":0,"4":51,"5":5,"6":6,"7":16384,"8":1,"9":5,"10":0,"11":72,"12":1143111680,"13":-1,"14":-1,"15":-1,"16":-1,"17":0,"18":953267991,"19":-1,"20":-1,"21":-1,"22":-1,"23":1112014848,"24":1092616192,"25":0,"26":0,"27":0,"28":0,"29":0,"30":0,"31":0,"32":1065353216,"33":0,"34":0,"35":-1,"36":-1,"37":-1,"38":-1,"39":-1}'}
+2026-01-14 20:33:21 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (OSError(22, '因為執行緒結束或應用程式要求，所以已中止 I/O 操作。', None, 995)).(An error occurred during the data retrieval process, line 478.)
+2026-01-14 20:33:21 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2026-01-14 20:33:21 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2026-01-14 20:33:21 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2026-01-14 20:33:21 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (PermissionError(13, '裝置無法辨識命令。', None, 22)).(The error occurred while clearing buffer, line 399.)
+2026-01-14 20:33:24 - main.myLib.myGui.mygui_serial - ERROR - Stop when timeout or error occurs.(發生Timeout且超時或是錯誤導致GUI的停止運行)
+2026-01-14 20:33:26 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (PermissionError(13, '裝置無法辨識命令。', None, 22)).(The error occurred while clearing buffer, line 399.)
+2026-01-14 20:33:26 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2026-01-14 20:33:26 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2026-01-14 20:33:26 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2026-01-14 20:33:26 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (PermissionError(13, '裝置無法辨識命令。', None, 22)).(An error occurred during the data retrieval process, line 475.)
+2026-01-14 20:33:26 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2026-01-14 20:33:26 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2026-01-14 20:33:26 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2026-01-14 20:33:26 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (PermissionError(13, '裝置無法辨識命令。', None, 22)).(The error occurred while clearing buffer, line 399.)
+2026-01-14 20:33:28 - main.myLib.myGui.mygui_serial - ERROR - Stop when timeout or error occurs.(發生Timeout且超時或是錯誤導致GUI的停止運行)
+2026-01-15 17:17:54 - main.myLib.mySerial.Connector - ERROR - IOError, the device: COM19 can not be found or can not be configured!
+2026-01-15 17:17:54 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2026-01-15 17:17:54 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2026-01-15 17:17:54 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2026-01-15 17:17:54 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (OSError(9, '控制代碼無效。', None, 6)).(The error occurred while clearing buffer, line 399.)
+2026-01-15 17:17:57 - main.myLib.myGui.mygui_serial - ERROR - Stop when timeout or error occurs.(發生Timeout且超時或是錯誤導致GUI的停止運行)
+2026-01-15 20:21:29 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (OSError(9, '控制代碼無效。', None, 6)).(An error occurred during the data retrieval process, line 478.)
+2026-01-15 20:21:29 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2026-01-15 20:21:29 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2026-01-15 20:21:29 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2026-01-15 20:21:30 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (OSError(9, '控制代碼無效。', None, 6)).(The error occurred while clearing buffer, line 399.)
+2026-01-15 20:21:33 - main.myLib.myGui.mygui_serial - ERROR - Stop when timeout or error occurs.(發生Timeout且超時或是錯誤導致GUI的停止運行)
+2026-01-15 20:22:11 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (OSError(9, '控制代碼無效。', None, 6)).(An error occurred during the data retrieval process, line 478.)
+2026-01-15 20:22:11 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2026-01-15 20:22:11 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2026-01-15 20:22:11 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2026-01-15 20:22:12 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (OSError(9, '控制代碼無效。', None, 6)).(The error occurred while clearing buffer, line 399.)
+2026-01-15 20:22:20 - main.myLib.myGui.mygui_serial - ERROR - Stop when timeout or error occurs.(發生Timeout且超時或是錯誤導致GUI的停止運行)
+2026-01-17 08:32:10 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (OSError(9, '控制代碼無效。', None, 6)).(An error occurred during the data retrieval process, line 478.)
+2026-01-17 08:32:10 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2026-01-17 08:32:10 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2026-01-17 08:32:10 - main.myLib.mySerial.Connector - ERROR - The device can not be found or can not be configured.
+2026-01-17 08:32:10 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (OSError(9, '控制代碼無效。', None, 6)).(The error occurred while clearing buffer, line 399.)
+2026-01-17 08:32:12 - main.myLib.myGui.mygui_serial - ERROR - Stop when timeout or error occurs.(發生Timeout且超時或是錯誤導致GUI的停止運行)
+2026-01-17 22:32:13 - main.myLib.mySerial.Connector - ERROR - IOError, the device: COM7 can not be found or can not be configured!
+2026-01-17 22:32:13 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2026-01-17 22:32:13 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2026-01-17 22:32:13 - main.myLib.mySerial.Connector - ERROR - Port not open, please check!
+2026-01-17 22:32:13 - main.pigImuReader - ERROR - SerialException — ClearCommError failed (OSError(9, '控制代碼無效。', None, 6)).(The error occurred while clearing buffer, line 399.)
+2026-01-17 22:32:15 - main.myLib.myGui.mygui_serial - ERROR - Stop when timeout or error occurs.(發生Timeout且超時或是錯誤導致GUI的停止運行)
+2026-01-17 22:34:18 - main.myLib.mySerial.Connector - ERROR - serial read timeout: check if the input power is ON, close the GUI and re-excute.
+2026-01-17 22:34:18 - main.myLib.mySerial.getData - ERROR - alignHeader_4B Error
+2026-01-17 22:34:43 - main.myLib.mySerial.Connector - ERROR - serial read timeout: check if the input power is ON, close the GUI and re-excute.
+2026-01-17 22:34:46 - main.myLib.myGui.mygui_serial - ERROR - Stop when timeout or error occurs.(發生Timeout且超時或是錯誤導致GUI的停止運行)

@@ -1,0 +1,1304 @@
+2026-01-30 10:48:34,464 [INFO] pigImu_Widget.pigImu_Widget: pigImu_Widget logger start
+2026-01-30 10:48:34,487 [INFO] myLib.myGui.graph.myLib.myGui.graph: myLib.myGui.graph logger start
+2026-01-30 10:48:42,548 [INFO] myLib.common.myLib.common: myLib.common logger start
+2026-01-30 10:48:42,564 [INFO] myLib.myGui.mygui_serial.myLib.myGui.mygui_serial: myLib.myGui.mygui_serial logger start
+2026-01-30 10:48:42,575 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: myLib.myGui.myLabel logger start
+2026-01-30 10:48:42,584 [INFO] myLib.myGui.myLineEdit.myLib.myGui.myLineEdit: myLib.myGui.myLineEdit logger start
+2026-01-30 10:48:42,594 [INFO] myLib.myGui.myCheckBox.myLib.myGui.myCheckBox: myLib.myGui.myCheckBox logger start
+2026-01-30 10:48:42,606 [INFO] myLib.myGui.myRadioButton.myLib.myGui.myRadioButton: myLib.myGui.myRadioButton logger start
+2026-01-30 10:48:42,619 [INFO] record_Log: record_Log logger start
+2026-01-30 10:48:42,756 [INFO] myLib.myGui.AttitudeIndicator.myLib.myGui.AttitudeIndicator: myLib.myGui.AttitudeIndicator logger start
+2026-01-30 10:48:42,781 [INFO] myLib.myGui.pig_menu_manager.myLib.myGui.pig_menu_manager: myLib.myGui.pig_menu_manager logger start
+2026-01-30 10:48:42,838 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: myLib.mySerial.Connector logger start
+2026-01-30 10:48:42,887 [INFO] myLib.myGui.myComboBox.myLib.myGui.myComboBox: myLib.myGui.myComboBox logger start
+2026-01-30 10:48:42,898 [INFO] drivers.hins_fog_imu.widgets.pig_parameters_widget.drivers.hins_fog_imu.widgets.pig_parameters_widget: drivers.hins_fog_imu.widgets.pig_parameters_widget logger start
+2026-01-30 10:48:42,913 [INFO] drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget.drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget: drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget logger start
+2026-01-30 10:48:42,928 [INFO] drivers.hins_fog_imu.widgets.pig_version_widget.drivers.hins_fog_imu.widgets.pig_version_widget: drivers.hins_fog_imu.widgets.pig_version_widget logger start
+2026-01-30 10:48:42,941 [INFO] drivers.hins_fog_imu.widgets.pig_configuration_widget.drivers.hins_fog_imu.widgets.pig_configuration_widget: drivers.hins_fog_imu.widgets.pig_configuration_widget logger start
+2026-01-30 10:48:42,992 [INFO] myLib.crcCalculator.crcLib.myLib.crcCalculator.crcLib: myLib.crcCalculator.crcLib logger start
+2026-01-30 14:15:47,648 [INFO] pigImu_Widget.pigImu_Widget: pigImu_Widget logger start
+2026-01-30 14:15:47,670 [INFO] myLib.myGui.graph.myLib.myGui.graph: myLib.myGui.graph logger start
+2026-01-30 14:15:56,173 [INFO] myLib.common.myLib.common: myLib.common logger start
+2026-01-30 14:15:56,189 [INFO] myLib.myGui.mygui_serial.myLib.myGui.mygui_serial: myLib.myGui.mygui_serial logger start
+2026-01-30 14:15:56,199 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: myLib.myGui.myLabel logger start
+2026-01-30 14:15:56,209 [INFO] myLib.myGui.myLineEdit.myLib.myGui.myLineEdit: myLib.myGui.myLineEdit logger start
+2026-01-30 14:15:56,219 [INFO] myLib.myGui.myCheckBox.myLib.myGui.myCheckBox: myLib.myGui.myCheckBox logger start
+2026-01-30 14:15:56,229 [INFO] myLib.myGui.myRadioButton.myLib.myGui.myRadioButton: myLib.myGui.myRadioButton logger start
+2026-01-30 14:15:56,240 [INFO] record_Log: record_Log logger start
+2026-01-30 14:15:56,372 [INFO] myLib.myGui.AttitudeIndicator.myLib.myGui.AttitudeIndicator: myLib.myGui.AttitudeIndicator logger start
+2026-01-30 14:15:56,394 [INFO] myLib.myGui.pig_menu_manager.myLib.myGui.pig_menu_manager: myLib.myGui.pig_menu_manager logger start
+2026-01-30 14:15:56,448 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: myLib.mySerial.Connector logger start
+2026-01-30 14:15:56,500 [INFO] myLib.myGui.myComboBox.myLib.myGui.myComboBox: myLib.myGui.myComboBox logger start
+2026-01-30 14:15:56,512 [INFO] drivers.hins_fog_imu.widgets.pig_parameters_widget.drivers.hins_fog_imu.widgets.pig_parameters_widget: drivers.hins_fog_imu.widgets.pig_parameters_widget logger start
+2026-01-30 14:15:56,528 [INFO] drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget.drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget: drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget logger start
+2026-01-30 14:15:56,542 [INFO] drivers.hins_fog_imu.widgets.pig_version_widget.drivers.hins_fog_imu.widgets.pig_version_widget: drivers.hins_fog_imu.widgets.pig_version_widget logger start
+2026-01-30 14:15:56,554 [INFO] drivers.hins_fog_imu.widgets.pig_configuration_widget.drivers.hins_fog_imu.widgets.pig_configuration_widget: drivers.hins_fog_imu.widgets.pig_configuration_widget logger start
+2026-01-30 14:15:56,604 [INFO] myLib.crcCalculator.crcLib.myLib.crcCalculator.crcLib: myLib.crcCalculator.crcLib logger start
+2026-01-30 14:15:58,618 [INFO] Main: Port Selected: COM19
+2026-01-30 14:15:58,619 [INFO] Main: Port Selected: COM19
+2026-01-30 14:16:02,545 [INFO] Main: Port Selected: COM7
+2026-01-30 14:16:03,904 [INFO] Main: Port Selected: COM19
+2026-01-30 14:16:04,277 [INFO] Main: Connecting to COM19 at 230400...
+2026-01-30 14:16:04,317 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM19 is connected
+2026-01-30 14:16:04,319 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-01-30 14:16:04,320 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-01-30 14:16:04,322 [INFO] main.drivers.HinsHybrid: Hybrid Reader (Dispatcher) Started.
+2026-01-30 14:16:36,260 [INFO] pigImu_Widget.pigImu_Widget: pigImu_Widget logger start
+2026-01-30 14:16:36,282 [INFO] myLib.myGui.graph.myLib.myGui.graph: myLib.myGui.graph logger start
+2026-01-30 14:16:36,897 [INFO] myLib.common.myLib.common: myLib.common logger start
+2026-01-30 14:16:36,898 [INFO] myLib.myGui.mygui_serial.myLib.myGui.mygui_serial: myLib.myGui.mygui_serial logger start
+2026-01-30 14:16:36,899 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: myLib.myGui.myLabel logger start
+2026-01-30 14:16:36,900 [INFO] myLib.myGui.myLineEdit.myLib.myGui.myLineEdit: myLib.myGui.myLineEdit logger start
+2026-01-30 14:16:36,901 [INFO] myLib.myGui.myCheckBox.myLib.myGui.myCheckBox: myLib.myGui.myCheckBox logger start
+2026-01-30 14:16:36,902 [INFO] myLib.myGui.myRadioButton.myLib.myGui.myRadioButton: myLib.myGui.myRadioButton logger start
+2026-01-30 14:16:36,903 [INFO] record_Log: record_Log logger start
+2026-01-30 14:16:36,914 [INFO] myLib.myGui.AttitudeIndicator.myLib.myGui.AttitudeIndicator: myLib.myGui.AttitudeIndicator logger start
+2026-01-30 14:16:36,916 [INFO] myLib.myGui.pig_menu_manager.myLib.myGui.pig_menu_manager: myLib.myGui.pig_menu_manager logger start
+2026-01-30 14:16:36,920 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: myLib.mySerial.Connector logger start
+2026-01-30 14:16:36,926 [INFO] myLib.myGui.myComboBox.myLib.myGui.myComboBox: myLib.myGui.myComboBox logger start
+2026-01-30 14:16:36,927 [INFO] drivers.hins_fog_imu.widgets.pig_parameters_widget.drivers.hins_fog_imu.widgets.pig_parameters_widget: drivers.hins_fog_imu.widgets.pig_parameters_widget logger start
+2026-01-30 14:16:36,928 [INFO] drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget.drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget: drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget logger start
+2026-01-30 14:16:36,929 [INFO] drivers.hins_fog_imu.widgets.pig_version_widget.drivers.hins_fog_imu.widgets.pig_version_widget: drivers.hins_fog_imu.widgets.pig_version_widget logger start
+2026-01-30 14:16:36,930 [INFO] drivers.hins_fog_imu.widgets.pig_configuration_widget.drivers.hins_fog_imu.widgets.pig_configuration_widget: drivers.hins_fog_imu.widgets.pig_configuration_widget logger start
+2026-01-30 14:16:36,935 [INFO] myLib.crcCalculator.crcLib.myLib.crcCalculator.crcLib: myLib.crcCalculator.crcLib logger start
+2026-01-30 14:16:42,894 [INFO] Main: Port Selected: COM19
+2026-01-30 14:16:42,895 [INFO] Main: Port Selected: COM19
+2026-01-30 14:16:59,128 [INFO] Main: Port Selected: COM7
+2026-01-30 14:16:59,129 [INFO] Main: Port Selected: COM19
+2026-01-30 14:16:59,129 [INFO] Main: Port Selected: COM19
+2026-01-30 14:17:01,596 [INFO] Main: Connecting to COM19 at 230400...
+2026-01-30 14:17:01,637 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM19 is connected
+2026-01-30 14:17:01,638 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-01-30 14:17:01,639 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-01-30 14:17:01,641 [INFO] main.drivers.HinsHybrid: Hybrid Reader (Dispatcher) Started.
+2026-01-30 14:17:03,795 [ERROR] myLib.mySerial.Connector.myLib.mySerial.Connector: getVersion parse error: checksum mismatch: calc=0x3625, recv(le)=0x4800, recv(be)=0x0048
+2026-01-30 14:17:28,689 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: set CUTOFF : 650
+2026-01-30 14:17:29,327 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: set BIAS T1 : 50
+2026-01-30 14:17:29,545 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: set BIAS T2 : 10
+2026-01-30 14:17:29,750 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: set BIAS SF SLOPE1 : 0
+2026-01-30 14:17:29,953 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: set BIAS SF OFFSET1 : 0
+2026-01-30 14:17:30,155 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: set BIAS SF SLOPE2 : 0
+2026-01-30 14:17:30,373 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: set BIAS SF OFFSET2 : 0
+2026-01-30 14:17:30,577 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: set BIAS SF SLOPE3 : 0
+2026-01-30 14:17:30,782 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: set BIAS SF OFFSET3 : 0
+2026-01-30 14:17:31,409 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: set ACC SF SLOPE1 : 0
+2026-01-30 14:17:31,626 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: set ACC SF OFFSET1 : 0
+2026-01-30 14:18:29,557 [ERROR] myLib.mySerial.Connector.myLib.mySerial.Connector: getVersion timeout while waiting ACK/RESULT
+2026-01-30 14:18:40,079 [INFO] pigImu_Widget.pigImu_Widget: pigImu_Widget logger start
+2026-01-30 14:18:40,103 [INFO] myLib.myGui.graph.myLib.myGui.graph: myLib.myGui.graph logger start
+2026-01-30 14:18:40,734 [INFO] myLib.common.myLib.common: myLib.common logger start
+2026-01-30 14:18:40,735 [INFO] myLib.myGui.mygui_serial.myLib.myGui.mygui_serial: myLib.myGui.mygui_serial logger start
+2026-01-30 14:18:40,736 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: myLib.myGui.myLabel logger start
+2026-01-30 14:18:40,737 [INFO] myLib.myGui.myLineEdit.myLib.myGui.myLineEdit: myLib.myGui.myLineEdit logger start
+2026-01-30 14:18:40,738 [INFO] myLib.myGui.myCheckBox.myLib.myGui.myCheckBox: myLib.myGui.myCheckBox logger start
+2026-01-30 14:18:40,738 [INFO] myLib.myGui.myRadioButton.myLib.myGui.myRadioButton: myLib.myGui.myRadioButton logger start
+2026-01-30 14:18:40,739 [INFO] record_Log: record_Log logger start
+2026-01-30 14:18:40,750 [INFO] myLib.myGui.AttitudeIndicator.myLib.myGui.AttitudeIndicator: myLib.myGui.AttitudeIndicator logger start
+2026-01-30 14:18:40,754 [INFO] myLib.myGui.pig_menu_manager.myLib.myGui.pig_menu_manager: myLib.myGui.pig_menu_manager logger start
+2026-01-30 14:18:40,758 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: myLib.mySerial.Connector logger start
+2026-01-30 14:18:40,763 [INFO] myLib.myGui.myComboBox.myLib.myGui.myComboBox: myLib.myGui.myComboBox logger start
+2026-01-30 14:18:40,764 [INFO] drivers.hins_fog_imu.widgets.pig_parameters_widget.drivers.hins_fog_imu.widgets.pig_parameters_widget: drivers.hins_fog_imu.widgets.pig_parameters_widget logger start
+2026-01-30 14:18:40,765 [INFO] drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget.drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget: drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget logger start
+2026-01-30 14:18:40,766 [INFO] drivers.hins_fog_imu.widgets.pig_version_widget.drivers.hins_fog_imu.widgets.pig_version_widget: drivers.hins_fog_imu.widgets.pig_version_widget logger start
+2026-01-30 14:18:40,767 [INFO] drivers.hins_fog_imu.widgets.pig_configuration_widget.drivers.hins_fog_imu.widgets.pig_configuration_widget: drivers.hins_fog_imu.widgets.pig_configuration_widget logger start
+2026-01-30 14:18:40,772 [INFO] myLib.crcCalculator.crcLib.myLib.crcCalculator.crcLib: myLib.crcCalculator.crcLib logger start
+2026-01-30 14:18:42,241 [INFO] Main: Port Selected: COM19
+2026-01-30 14:18:42,242 [INFO] Main: Port Selected: COM19
+2026-01-30 14:18:45,056 [INFO] Main: Connecting to COM19 at 230400...
+2026-01-30 14:18:45,097 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM19 is connected
+2026-01-30 14:18:45,098 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-01-30 14:18:45,099 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-01-30 14:18:45,101 [INFO] main.drivers.HinsHybrid: Hybrid Reader (Dispatcher) Started.
+2026-01-30 14:19:21,942 [ERROR] myLib.mySerial.Connector.myLib.mySerial.Connector: dump_fog_parameters timeout while waiting ACK/RESULT
+2026-01-30 14:19:28,310 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-30 14:19:28,313 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-30 14:19:28,418 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM19 is disconnected
+2026-01-30 14:20:17,652 [INFO] pigImu_Widget.pigImu_Widget: pigImu_Widget logger start
+2026-01-30 14:20:17,673 [INFO] myLib.myGui.graph.myLib.myGui.graph: myLib.myGui.graph logger start
+2026-01-30 14:20:18,284 [INFO] myLib.common.myLib.common: myLib.common logger start
+2026-01-30 14:20:18,285 [INFO] myLib.myGui.mygui_serial.myLib.myGui.mygui_serial: myLib.myGui.mygui_serial logger start
+2026-01-30 14:20:18,286 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: myLib.myGui.myLabel logger start
+2026-01-30 14:20:18,287 [INFO] myLib.myGui.myLineEdit.myLib.myGui.myLineEdit: myLib.myGui.myLineEdit logger start
+2026-01-30 14:20:18,287 [INFO] myLib.myGui.myCheckBox.myLib.myGui.myCheckBox: myLib.myGui.myCheckBox logger start
+2026-01-30 14:20:18,288 [INFO] myLib.myGui.myRadioButton.myLib.myGui.myRadioButton: myLib.myGui.myRadioButton logger start
+2026-01-30 14:20:18,289 [INFO] record_Log: record_Log logger start
+2026-01-30 14:20:18,299 [INFO] myLib.myGui.AttitudeIndicator.myLib.myGui.AttitudeIndicator: myLib.myGui.AttitudeIndicator logger start
+2026-01-30 14:20:18,301 [INFO] myLib.myGui.pig_menu_manager.myLib.myGui.pig_menu_manager: myLib.myGui.pig_menu_manager logger start
+2026-01-30 14:20:18,305 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: myLib.mySerial.Connector logger start
+2026-01-30 14:20:18,311 [INFO] myLib.myGui.myComboBox.myLib.myGui.myComboBox: myLib.myGui.myComboBox logger start
+2026-01-30 14:20:18,312 [INFO] drivers.hins_fog_imu.widgets.pig_parameters_widget.drivers.hins_fog_imu.widgets.pig_parameters_widget: drivers.hins_fog_imu.widgets.pig_parameters_widget logger start
+2026-01-30 14:20:18,313 [INFO] drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget.drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget: drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget logger start
+2026-01-30 14:20:18,314 [INFO] drivers.hins_fog_imu.widgets.pig_version_widget.drivers.hins_fog_imu.widgets.pig_version_widget: drivers.hins_fog_imu.widgets.pig_version_widget logger start
+2026-01-30 14:20:18,315 [INFO] drivers.hins_fog_imu.widgets.pig_configuration_widget.drivers.hins_fog_imu.widgets.pig_configuration_widget: drivers.hins_fog_imu.widgets.pig_configuration_widget logger start
+2026-01-30 14:20:18,320 [INFO] myLib.crcCalculator.crcLib.myLib.crcCalculator.crcLib: myLib.crcCalculator.crcLib logger start
+2026-01-30 14:20:19,623 [INFO] Main: Port Selected: COM33
+2026-01-30 14:20:19,624 [INFO] Main: Port Selected: COM33
+2026-01-30 14:20:38,752 [INFO] Main: Port Selected: COM16
+2026-01-30 14:20:38,753 [INFO] Main: Port Selected: COM33
+2026-01-30 14:20:38,753 [INFO] Main: Port Selected: COM33
+2026-01-30 14:20:47,954 [INFO] Main: Port Selected: COM16
+2026-01-30 14:20:47,955 [INFO] Main: Port Selected: COM33
+2026-01-30 14:20:47,956 [INFO] Main: Port Selected: COM33
+2026-01-30 14:20:49,142 [INFO] Main: Port Selected: COM19
+2026-01-30 14:20:49,668 [INFO] Main: Connecting to COM19 at 230400...
+2026-01-30 14:20:49,954 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM19 is connected
+2026-01-30 14:20:49,956 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-01-30 14:20:49,956 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-01-30 14:20:49,958 [INFO] main.drivers.HinsHybrid: Hybrid Reader (Dispatcher) Started.
+2026-01-30 14:21:09,477 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-30 14:21:09,479 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-30 14:21:09,596 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM19 is disconnected
+2026-01-30 14:24:50,045 [INFO] Main: Port Selected: COM7
+2026-01-30 14:24:50,046 [INFO] Main: Port Selected: COM19
+2026-01-30 14:24:50,047 [INFO] Main: Port Selected: COM19
+2026-01-30 14:24:51,750 [INFO] Main: Connecting to COM19 at 230400...
+2026-01-30 14:24:51,791 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM19 is connected
+2026-01-30 14:24:51,792 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-01-30 14:24:51,793 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-01-30 14:24:51,794 [INFO] main.drivers.HinsHybrid: Hybrid Reader (Dispatcher) Started.
+2026-01-30 14:24:58,671 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: set CUTOFF : 650
+2026-01-30 14:24:59,276 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: set BIAS T1 : 50
+2026-01-30 14:24:59,428 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: set BIAS T2 : 10
+2026-01-30 14:24:59,580 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: set BIAS SF SLOPE1 : 0
+2026-01-30 14:24:59,732 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: set BIAS SF SLOPE2 : 0
+2026-01-30 14:24:59,884 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: set BIAS SF SLOPE3 : 0
+2026-01-30 14:25:00,036 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: set BIAS SF OFFSET1 : 0
+2026-01-30 14:25:00,187 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: set BIAS SF OFFSET2 : 0
+2026-01-30 14:25:00,339 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: set BIAS SF OFFSET3 : 0
+2026-01-30 14:25:00,792 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: set ACC SF SLOPE1 : 0
+2026-01-30 14:25:00,944 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: set ACC SF OFFSET1 : 0
+2026-01-30 14:25:05,530 [ERROR] myLib.mySerial.Connector.myLib.mySerial.Connector: getVersion parse error: unexpected ACK frame: {'type': 161, 'cmd': 8, 'status': 0, 'len': 0, 'payload': b''}
+2026-01-30 14:25:24,199 [ERROR] myLib.mySerial.Connector.myLib.mySerial.Connector: getVersion parse error: unexpected ACK frame: {'type': 161, 'cmd': 63, 'status': 0, 'len': 0, 'payload': b''}
+2026-01-30 14:26:17,922 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-30 14:26:17,924 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-30 14:26:18,037 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM19 is disconnected
+2026-01-30 14:28:40,428 [INFO] pigImu_Widget.pigImu_Widget: pigImu_Widget logger start
+2026-01-30 14:28:40,448 [INFO] myLib.myGui.graph.myLib.myGui.graph: myLib.myGui.graph logger start
+2026-01-30 14:28:41,054 [INFO] myLib.common.myLib.common: myLib.common logger start
+2026-01-30 14:28:41,055 [INFO] myLib.myGui.mygui_serial.myLib.myGui.mygui_serial: myLib.myGui.mygui_serial logger start
+2026-01-30 14:28:41,056 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: myLib.myGui.myLabel logger start
+2026-01-30 14:28:41,056 [INFO] myLib.myGui.myLineEdit.myLib.myGui.myLineEdit: myLib.myGui.myLineEdit logger start
+2026-01-30 14:28:41,057 [INFO] myLib.myGui.myCheckBox.myLib.myGui.myCheckBox: myLib.myGui.myCheckBox logger start
+2026-01-30 14:28:41,058 [INFO] myLib.myGui.myRadioButton.myLib.myGui.myRadioButton: myLib.myGui.myRadioButton logger start
+2026-01-30 14:28:41,058 [INFO] record_Log: record_Log logger start
+2026-01-30 14:28:41,069 [INFO] myLib.myGui.AttitudeIndicator.myLib.myGui.AttitudeIndicator: myLib.myGui.AttitudeIndicator logger start
+2026-01-30 14:28:41,071 [INFO] myLib.myGui.pig_menu_manager.myLib.myGui.pig_menu_manager: myLib.myGui.pig_menu_manager logger start
+2026-01-30 14:28:41,075 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: myLib.mySerial.Connector logger start
+2026-01-30 14:28:41,080 [INFO] myLib.myGui.myComboBox.myLib.myGui.myComboBox: myLib.myGui.myComboBox logger start
+2026-01-30 14:28:41,081 [INFO] drivers.hins_fog_imu.widgets.pig_parameters_widget.drivers.hins_fog_imu.widgets.pig_parameters_widget: drivers.hins_fog_imu.widgets.pig_parameters_widget logger start
+2026-01-30 14:28:41,082 [INFO] drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget.drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget: drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget logger start
+2026-01-30 14:28:41,083 [INFO] drivers.hins_fog_imu.widgets.pig_version_widget.drivers.hins_fog_imu.widgets.pig_version_widget: drivers.hins_fog_imu.widgets.pig_version_widget logger start
+2026-01-30 14:28:41,084 [INFO] drivers.hins_fog_imu.widgets.pig_configuration_widget.drivers.hins_fog_imu.widgets.pig_configuration_widget: drivers.hins_fog_imu.widgets.pig_configuration_widget logger start
+2026-01-30 14:28:41,088 [INFO] myLib.crcCalculator.crcLib.myLib.crcCalculator.crcLib: myLib.crcCalculator.crcLib logger start
+2026-01-30 14:28:42,368 [INFO] Main: Port Selected: COM19
+2026-01-30 14:28:42,369 [INFO] Main: Port Selected: COM19
+2026-01-30 14:28:44,053 [INFO] Main: Connecting to COM19 at 230400...
+2026-01-30 14:28:44,095 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM19 is connected
+2026-01-30 14:28:44,097 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-01-30 14:28:44,097 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-01-30 14:28:44,099 [INFO] main.drivers.HinsHybrid: Hybrid Reader (Dispatcher) Started.
+2026-01-30 14:28:57,554 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-30 14:28:58,806 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-30 14:28:58,808 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-30 14:28:58,915 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM19 is disconnected
+2026-01-30 14:29:57,112 [INFO] pigImu_Widget.pigImu_Widget: pigImu_Widget logger start
+2026-01-30 14:29:57,135 [INFO] myLib.myGui.graph.myLib.myGui.graph: myLib.myGui.graph logger start
+2026-01-30 14:29:57,756 [INFO] myLib.common.myLib.common: myLib.common logger start
+2026-01-30 14:29:57,757 [INFO] myLib.myGui.mygui_serial.myLib.myGui.mygui_serial: myLib.myGui.mygui_serial logger start
+2026-01-30 14:29:57,758 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: myLib.myGui.myLabel logger start
+2026-01-30 14:29:57,759 [INFO] myLib.myGui.myLineEdit.myLib.myGui.myLineEdit: myLib.myGui.myLineEdit logger start
+2026-01-30 14:29:57,760 [INFO] myLib.myGui.myCheckBox.myLib.myGui.myCheckBox: myLib.myGui.myCheckBox logger start
+2026-01-30 14:29:57,760 [INFO] myLib.myGui.myRadioButton.myLib.myGui.myRadioButton: myLib.myGui.myRadioButton logger start
+2026-01-30 14:29:57,762 [INFO] record_Log: record_Log logger start
+2026-01-30 14:29:57,772 [INFO] myLib.myGui.AttitudeIndicator.myLib.myGui.AttitudeIndicator: myLib.myGui.AttitudeIndicator logger start
+2026-01-30 14:29:57,774 [INFO] myLib.myGui.pig_menu_manager.myLib.myGui.pig_menu_manager: myLib.myGui.pig_menu_manager logger start
+2026-01-30 14:29:57,778 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: myLib.mySerial.Connector logger start
+2026-01-30 14:29:57,783 [INFO] myLib.myGui.myComboBox.myLib.myGui.myComboBox: myLib.myGui.myComboBox logger start
+2026-01-30 14:29:57,784 [INFO] drivers.hins_fog_imu.widgets.pig_parameters_widget.drivers.hins_fog_imu.widgets.pig_parameters_widget: drivers.hins_fog_imu.widgets.pig_parameters_widget logger start
+2026-01-30 14:29:57,786 [INFO] drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget.drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget: drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget logger start
+2026-01-30 14:29:57,787 [INFO] drivers.hins_fog_imu.widgets.pig_version_widget.drivers.hins_fog_imu.widgets.pig_version_widget: drivers.hins_fog_imu.widgets.pig_version_widget logger start
+2026-01-30 14:29:57,788 [INFO] drivers.hins_fog_imu.widgets.pig_configuration_widget.drivers.hins_fog_imu.widgets.pig_configuration_widget: drivers.hins_fog_imu.widgets.pig_configuration_widget logger start
+2026-01-30 14:29:57,792 [INFO] myLib.crcCalculator.crcLib.myLib.crcCalculator.crcLib: myLib.crcCalculator.crcLib logger start
+2026-01-30 14:29:58,963 [INFO] Main: Port Selected: COM19
+2026-01-30 14:29:58,964 [INFO] Main: Port Selected: COM19
+2026-01-30 14:30:00,602 [INFO] Main: Connecting to COM19 at 230400...
+2026-01-30 14:30:00,643 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM19 is connected
+2026-01-30 14:30:00,644 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-01-30 14:30:00,644 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-01-30 14:30:00,646 [INFO] main.drivers.HinsHybrid: Hybrid Reader (Dispatcher) Started.
+2026-01-30 14:30:07,645 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-30 14:30:08,965 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-30 14:30:08,967 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-30 14:30:09,077 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM19 is disconnected
+2026-01-30 14:41:28,821 [INFO] pigImu_Widget.pigImu_Widget: pigImu_Widget logger start
+2026-01-30 14:41:28,843 [INFO] myLib.myGui.graph.myLib.myGui.graph: myLib.myGui.graph logger start
+2026-01-30 14:41:29,472 [INFO] myLib.common.myLib.common: myLib.common logger start
+2026-01-30 14:41:29,473 [INFO] myLib.myGui.mygui_serial.myLib.myGui.mygui_serial: myLib.myGui.mygui_serial logger start
+2026-01-30 14:41:29,474 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: myLib.myGui.myLabel logger start
+2026-01-30 14:41:29,474 [INFO] myLib.myGui.myLineEdit.myLib.myGui.myLineEdit: myLib.myGui.myLineEdit logger start
+2026-01-30 14:41:29,475 [INFO] myLib.myGui.myCheckBox.myLib.myGui.myCheckBox: myLib.myGui.myCheckBox logger start
+2026-01-30 14:41:29,476 [INFO] myLib.myGui.myRadioButton.myLib.myGui.myRadioButton: myLib.myGui.myRadioButton logger start
+2026-01-30 14:41:29,477 [INFO] record_Log: record_Log logger start
+2026-01-30 14:41:29,488 [INFO] myLib.myGui.AttitudeIndicator.myLib.myGui.AttitudeIndicator: myLib.myGui.AttitudeIndicator logger start
+2026-01-30 14:41:29,490 [INFO] myLib.myGui.pig_menu_manager.myLib.myGui.pig_menu_manager: myLib.myGui.pig_menu_manager logger start
+2026-01-30 14:41:29,494 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: myLib.mySerial.Connector logger start
+2026-01-30 14:41:29,500 [INFO] myLib.myGui.myComboBox.myLib.myGui.myComboBox: myLib.myGui.myComboBox logger start
+2026-01-30 14:41:29,501 [INFO] drivers.hins_fog_imu.widgets.pig_parameters_widget.drivers.hins_fog_imu.widgets.pig_parameters_widget: drivers.hins_fog_imu.widgets.pig_parameters_widget logger start
+2026-01-30 14:41:29,502 [INFO] drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget.drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget: drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget logger start
+2026-01-30 14:41:29,503 [INFO] drivers.hins_fog_imu.widgets.pig_version_widget.drivers.hins_fog_imu.widgets.pig_version_widget: drivers.hins_fog_imu.widgets.pig_version_widget logger start
+2026-01-30 14:41:29,504 [INFO] drivers.hins_fog_imu.widgets.pig_configuration_widget.drivers.hins_fog_imu.widgets.pig_configuration_widget: drivers.hins_fog_imu.widgets.pig_configuration_widget logger start
+2026-01-30 14:41:29,514 [INFO] myLib.crcCalculator.crcLib.myLib.crcCalculator.crcLib: myLib.crcCalculator.crcLib logger start
+2026-01-30 14:45:57,367 [INFO] pigImu_Widget.pigImu_Widget: pigImu_Widget logger start
+2026-01-30 14:45:57,389 [INFO] myLib.myGui.graph.myLib.myGui.graph: myLib.myGui.graph logger start
+2026-01-30 14:45:58,012 [INFO] myLib.common.myLib.common: myLib.common logger start
+2026-01-30 14:45:58,013 [INFO] myLib.myGui.mygui_serial.myLib.myGui.mygui_serial: myLib.myGui.mygui_serial logger start
+2026-01-30 14:45:58,014 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: myLib.myGui.myLabel logger start
+2026-01-30 14:45:58,015 [INFO] myLib.myGui.myLineEdit.myLib.myGui.myLineEdit: myLib.myGui.myLineEdit logger start
+2026-01-30 14:45:58,015 [INFO] myLib.myGui.myCheckBox.myLib.myGui.myCheckBox: myLib.myGui.myCheckBox logger start
+2026-01-30 14:45:58,016 [INFO] myLib.myGui.myRadioButton.myLib.myGui.myRadioButton: myLib.myGui.myRadioButton logger start
+2026-01-30 14:45:58,018 [INFO] record_Log: record_Log logger start
+2026-01-30 14:45:58,028 [INFO] myLib.myGui.AttitudeIndicator.myLib.myGui.AttitudeIndicator: myLib.myGui.AttitudeIndicator logger start
+2026-01-30 14:45:58,031 [INFO] myLib.myGui.pig_menu_manager.myLib.myGui.pig_menu_manager: myLib.myGui.pig_menu_manager logger start
+2026-01-30 14:45:58,035 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: myLib.mySerial.Connector logger start
+2026-01-30 14:45:58,040 [INFO] myLib.myGui.myComboBox.myLib.myGui.myComboBox: myLib.myGui.myComboBox logger start
+2026-01-30 14:45:58,041 [INFO] drivers.hins_fog_imu.widgets.pig_parameters_widget.drivers.hins_fog_imu.widgets.pig_parameters_widget: drivers.hins_fog_imu.widgets.pig_parameters_widget logger start
+2026-01-30 14:45:58,043 [INFO] drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget.drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget: drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget logger start
+2026-01-30 14:45:58,044 [INFO] drivers.hins_fog_imu.widgets.pig_version_widget.drivers.hins_fog_imu.widgets.pig_version_widget: drivers.hins_fog_imu.widgets.pig_version_widget logger start
+2026-01-30 14:45:58,044 [INFO] drivers.hins_fog_imu.widgets.pig_configuration_widget.drivers.hins_fog_imu.widgets.pig_configuration_widget: drivers.hins_fog_imu.widgets.pig_configuration_widget logger start
+2026-01-30 14:45:58,050 [INFO] myLib.crcCalculator.crcLib.myLib.crcCalculator.crcLib: myLib.crcCalculator.crcLib logger start
+2026-01-30 14:45:58,259 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: class connector's destructor called!
+2026-01-30 14:48:51,122 [INFO] pigImu_Widget.pigImu_Widget: pigImu_Widget logger start
+2026-01-30 14:48:51,143 [INFO] myLib.myGui.graph.myLib.myGui.graph: myLib.myGui.graph logger start
+2026-01-30 14:48:51,779 [INFO] myLib.common.myLib.common: myLib.common logger start
+2026-01-30 14:48:51,780 [INFO] myLib.myGui.mygui_serial.myLib.myGui.mygui_serial: myLib.myGui.mygui_serial logger start
+2026-01-30 14:48:51,781 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: myLib.myGui.myLabel logger start
+2026-01-30 14:48:51,782 [INFO] myLib.myGui.myLineEdit.myLib.myGui.myLineEdit: myLib.myGui.myLineEdit logger start
+2026-01-30 14:48:51,783 [INFO] myLib.myGui.myCheckBox.myLib.myGui.myCheckBox: myLib.myGui.myCheckBox logger start
+2026-01-30 14:48:51,783 [INFO] myLib.myGui.myRadioButton.myLib.myGui.myRadioButton: myLib.myGui.myRadioButton logger start
+2026-01-30 14:48:51,784 [INFO] record_Log: record_Log logger start
+2026-01-30 14:48:51,794 [INFO] myLib.myGui.AttitudeIndicator.myLib.myGui.AttitudeIndicator: myLib.myGui.AttitudeIndicator logger start
+2026-01-30 14:48:51,796 [INFO] myLib.myGui.pig_menu_manager.myLib.myGui.pig_menu_manager: myLib.myGui.pig_menu_manager logger start
+2026-01-30 14:48:51,800 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: myLib.mySerial.Connector logger start
+2026-01-30 14:48:51,805 [INFO] myLib.myGui.myComboBox.myLib.myGui.myComboBox: myLib.myGui.myComboBox logger start
+2026-01-30 14:48:51,806 [INFO] drivers.hins_fog_imu.widgets.pig_parameters_widget.drivers.hins_fog_imu.widgets.pig_parameters_widget: drivers.hins_fog_imu.widgets.pig_parameters_widget logger start
+2026-01-30 14:48:51,807 [INFO] drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget.drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget: drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget logger start
+2026-01-30 14:48:51,808 [INFO] drivers.hins_fog_imu.widgets.pig_version_widget.drivers.hins_fog_imu.widgets.pig_version_widget: drivers.hins_fog_imu.widgets.pig_version_widget logger start
+2026-01-30 14:48:51,809 [INFO] drivers.hins_fog_imu.widgets.pig_configuration_widget.drivers.hins_fog_imu.widgets.pig_configuration_widget: drivers.hins_fog_imu.widgets.pig_configuration_widget logger start
+2026-01-30 14:48:51,816 [INFO] myLib.crcCalculator.crcLib.myLib.crcCalculator.crcLib: myLib.crcCalculator.crcLib logger start
+2026-01-30 14:49:09,703 [INFO] Main: Port Selected: COM33
+2026-01-30 14:49:09,704 [INFO] Main: Port Selected: COM33
+2026-01-30 14:49:11,155 [INFO] Main: Port Selected: COM19
+2026-01-30 14:49:12,016 [INFO] Main: Connecting to COM19 at 230400...
+2026-01-30 14:49:12,057 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM19 is connected
+2026-01-30 14:49:12,059 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-01-30 14:49:12,059 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-01-30 14:49:12,061 [INFO] main.drivers.HinsHybrid: Hybrid Reader (Dispatcher) Started.
+2026-01-30 14:49:37,351 [INFO] pigImu_Widget.pigImu_Widget: pigImu_Widget logger start
+2026-01-30 14:49:37,373 [INFO] myLib.myGui.graph.myLib.myGui.graph: myLib.myGui.graph logger start
+2026-01-30 14:49:38,019 [INFO] myLib.common.myLib.common: myLib.common logger start
+2026-01-30 14:49:38,019 [INFO] myLib.myGui.mygui_serial.myLib.myGui.mygui_serial: myLib.myGui.mygui_serial logger start
+2026-01-30 14:49:38,020 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: myLib.myGui.myLabel logger start
+2026-01-30 14:49:38,021 [INFO] myLib.myGui.myLineEdit.myLib.myGui.myLineEdit: myLib.myGui.myLineEdit logger start
+2026-01-30 14:49:38,021 [INFO] myLib.myGui.myCheckBox.myLib.myGui.myCheckBox: myLib.myGui.myCheckBox logger start
+2026-01-30 14:49:38,022 [INFO] myLib.myGui.myRadioButton.myLib.myGui.myRadioButton: myLib.myGui.myRadioButton logger start
+2026-01-30 14:49:38,023 [INFO] record_Log: record_Log logger start
+2026-01-30 14:49:38,035 [INFO] myLib.myGui.AttitudeIndicator.myLib.myGui.AttitudeIndicator: myLib.myGui.AttitudeIndicator logger start
+2026-01-30 14:49:38,037 [INFO] myLib.myGui.pig_menu_manager.myLib.myGui.pig_menu_manager: myLib.myGui.pig_menu_manager logger start
+2026-01-30 14:49:38,041 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: myLib.mySerial.Connector logger start
+2026-01-30 14:49:38,047 [INFO] myLib.myGui.myComboBox.myLib.myGui.myComboBox: myLib.myGui.myComboBox logger start
+2026-01-30 14:49:38,048 [INFO] drivers.hins_fog_imu.widgets.pig_parameters_widget.drivers.hins_fog_imu.widgets.pig_parameters_widget: drivers.hins_fog_imu.widgets.pig_parameters_widget logger start
+2026-01-30 14:49:38,050 [INFO] drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget.drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget: drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget logger start
+2026-01-30 14:49:38,051 [INFO] drivers.hins_fog_imu.widgets.pig_version_widget.drivers.hins_fog_imu.widgets.pig_version_widget: drivers.hins_fog_imu.widgets.pig_version_widget logger start
+2026-01-30 14:49:38,052 [INFO] drivers.hins_fog_imu.widgets.pig_configuration_widget.drivers.hins_fog_imu.widgets.pig_configuration_widget: drivers.hins_fog_imu.widgets.pig_configuration_widget logger start
+2026-01-30 14:49:38,057 [INFO] myLib.crcCalculator.crcLib.myLib.crcCalculator.crcLib: myLib.crcCalculator.crcLib logger start
+2026-01-30 14:49:39,293 [INFO] Main: Port Selected: COM33
+2026-01-30 14:49:39,294 [INFO] Main: Port Selected: COM33
+2026-01-30 14:49:40,303 [INFO] Main: Port Selected: COM19
+2026-01-30 14:49:42,542 [INFO] Main: Connecting to COM19 at 230400...
+2026-01-30 14:49:42,583 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM19 is connected
+2026-01-30 14:49:42,585 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-01-30 14:49:42,585 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-01-30 14:49:42,587 [INFO] main.drivers.HinsHybrid: Hybrid Reader (Dispatcher) Started.
+2026-01-30 14:49:43,639 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-30 14:49:45,184 [INFO] Main: Restarting Hybrid Reader Thread...
+2026-01-30 14:49:45,199 [INFO] main.drivers.HinsHybrid: Hybrid Reader (Dispatcher) Started.
+2026-01-30 14:49:45,406 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 2885, Recv: 1EBE
+2026-01-30 14:49:45,504 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 55E5, Recv: 49F1
+2026-01-30 14:49:45,605 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 531A, Recv: 4946
+2026-01-30 14:49:45,705 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: B9CE, Recv: AEE2
+2026-01-30 14:49:45,804 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: A11E, Recv: 9416
+2026-01-30 14:49:45,909 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 724D, Recv: CAFE
+2026-01-30 14:49:46,006 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 1D81, Recv: 1081
+2026-01-30 14:49:46,104 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: EDDD, Recv: E3FF
+2026-01-30 14:49:46,204 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 614C, Recv: 5556
+2026-01-30 14:49:46,303 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 5FB5, Recv: 53C4
+2026-01-30 14:49:46,404 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 7FD6, Recv: 7502
+2026-01-30 14:49:46,630 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-30 14:49:52,864 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-30 14:49:54,221 [INFO] Main: Restarting Hybrid Reader Thread...
+2026-01-30 14:49:54,239 [INFO] main.drivers.HinsHybrid: Hybrid Reader (Dispatcher) Started.
+2026-01-30 14:49:54,451 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 53F9, Recv: 46ED
+2026-01-30 14:49:54,549 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 0667, Recv: FA7D
+2026-01-30 14:49:54,650 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 11A4, Recv: 06CB
+2026-01-30 14:49:54,750 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 8CEF, Recv: 810B
+2026-01-30 14:49:54,850 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 253B, Recv: 1951
+2026-01-30 14:49:54,949 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 1E70, Recv: 1393
+2026-01-30 14:49:55,053 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: F341, Recv: E749
+2026-01-30 14:49:55,149 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: C93D, Recv: C076
+2026-01-30 14:49:55,249 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 60CA, Recv: 54D7
+2026-01-30 14:49:55,350 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 9030, Recv: 8436
+2026-01-30 14:49:55,450 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 6260, Recv: 5894
+2026-01-30 14:49:55,549 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: A123, Recv: 952E
+2026-01-30 14:49:55,652 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 7D06, Recv: 7334
+2026-01-30 14:49:55,749 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: ECD5, Recv: E203
+2026-01-30 14:49:55,849 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 24A2, Recv: 19C5
+2026-01-30 14:49:55,950 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: A84E, Recv: 9E7D
+2026-01-30 14:49:56,049 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 9853, Recv: 8B4C
+2026-01-30 14:49:56,149 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: A8B6, Recv: 9DCF
+2026-01-30 14:49:56,251 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 122B, Recv: 0643
+2026-01-30 14:49:56,350 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 4998, Recv: 3DA7
+2026-01-30 14:49:56,450 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: C051, Recv: B56B
+2026-01-30 14:49:56,549 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 8CA3, Recv: 80B2
+2026-01-30 14:49:56,651 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 6FD9, Recv: 64F0
+2026-01-30 14:49:56,750 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 2A93, Recv: 1C7E
+2026-01-30 14:49:56,852 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 7005, Recv: 6523
+2026-01-30 14:49:56,950 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 8D24, Recv: 835A
+2026-01-30 14:49:57,050 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 25AE, Recv: 19BD
+2026-01-30 14:49:57,150 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: BDE6, Recv: B1E6
+2026-01-30 14:49:57,250 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: CE8D, Recv: C4B7
+2026-01-30 14:49:57,350 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: A1DB, Recv: 970B
+2026-01-30 14:49:57,452 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 76B7, Recv: 6BD5
+2026-01-30 14:49:57,549 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: BCCF, Recv: B1EE
+2026-01-30 14:49:57,650 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 47F4, Recv: 3D26
+2026-01-30 14:49:57,750 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: BD66, Recv: B27F
+2026-01-30 14:49:57,849 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 5D71, Recv: 5296
+2026-01-30 14:49:57,949 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 3259, Recv: 288E
+2026-01-30 14:49:58,052 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 89F0, Recv: 7E18
+2026-01-30 14:49:58,149 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 0C6A, Recv: 0190
+2026-01-30 14:49:58,249 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 5277, Recv: 479E
+2026-01-30 14:49:58,349 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: FC8C, Recv: F1A1
+2026-01-30 14:49:58,449 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: D39F, Recv: C9C9
+2026-01-30 14:49:58,549 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: C0A0, Recv: B5BF
+2026-01-30 14:49:58,651 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 6DEA, Recv: 6430
+2026-01-30 14:49:58,750 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 90CE, Recv: 85ED
+2026-01-30 14:49:58,849 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 3CFB, Recv: 3010
+2026-01-30 14:49:58,950 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 49EE, Recv: 3E0D
+2026-01-30 14:49:59,049 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 98C4, Recv: 8CD4
+2026-01-30 14:49:59,149 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: E9D7, Recv: DFF7
+2026-01-30 14:49:59,252 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 1572, Recv: 0988
+2026-01-30 14:49:59,350 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 6D25, Recv: 6353
+2026-01-30 14:49:59,451 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: B44A, Recv: A961
+2026-01-30 14:49:59,550 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 44F1, Recv: 37EE
+2026-01-30 14:49:59,650 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 9FEA, Recv: 9517
+2026-01-30 14:49:59,750 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 6F4E, Recv: 6471
+2026-01-30 14:49:59,852 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 317F, Recv: 26A0
+2026-01-30 14:49:59,950 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 3C37, Recv: 3157
+2026-01-30 14:50:00,049 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 6497, Recv: 59BA
+2026-01-30 14:50:00,149 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: D587, Recv: CA9D
+2026-01-30 14:50:00,249 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 09CC, Recv: FDE6
+2026-01-30 14:50:00,350 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 339E, Recv: 29DA
+2026-01-30 14:50:00,452 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: FDDD, Recv: F302
+2026-01-30 14:50:00,550 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: F73D, Recv: EC53
+2026-01-30 14:50:00,650 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: AC82, Recv: A2AA
+2026-01-30 14:50:00,751 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: F8C5, Recv: EDDF
+2026-01-30 14:50:00,851 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 6FBE, Recv: 65F1
+2026-01-30 14:50:00,950 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 6A2E, Recv: 5E3A
+2026-01-30 14:50:01,051 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 7DD5, Recv: 72F3
+2026-01-30 14:50:01,150 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: ED10, Recv: E21F
+2026-01-30 14:50:01,251 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 6F62, Recv: 636E
+2026-01-30 14:50:01,350 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 44A4, Recv: 38B4
+2026-01-30 14:50:01,450 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 20BB, Recv: 14D2
+2026-01-30 14:50:01,550 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 0E68, Recv: 0281
+2026-01-30 14:50:01,652 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: DE34, Recv: D34D
+2026-01-30 14:50:01,750 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 7E43, Recv: 7365
+2026-01-30 14:50:01,850 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 0028, Recv: F329
+2026-01-30 14:50:01,951 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 1017, Recv: 053B
+2026-01-30 14:50:02,050 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 3EFD, Recv: 31FB
+2026-01-30 14:50:02,150 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 4CC0, Recv: 41DD
+2026-01-30 14:50:02,251 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 3794, Recv: 2BA6
+2026-01-30 14:50:02,351 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 580E, Recv: 4D2F
+2026-01-30 14:50:02,450 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 4F58, Recv: 4362
+2026-01-30 14:50:02,550 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 3551, Recv: 2962
+2026-01-30 14:50:02,649 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: B8D4, Recv: ADE8
+2026-01-30 14:50:02,749 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 6F85, Recv: 64A5
+2026-01-30 14:50:02,852 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 0531, Recv: F830
+2026-01-30 14:50:02,951 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 9395, Recv: 88AA
+2026-01-30 14:50:03,050 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: B872, Recv: AC7C
+2026-01-30 14:50:03,150 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 63BB, Recv: 58D3
+2026-01-30 14:50:03,249 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: D16B, Recv: C686
+2026-01-30 14:50:03,350 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 171D, Recv: 0C3E
+2026-01-30 14:50:03,452 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 14E1, Recv: 08EF
+2026-01-30 14:50:03,550 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 7B57, Recv: 6D3E
+2026-01-30 14:50:03,650 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 52FA, Recv: 482D
+2026-01-30 14:50:03,750 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 1C16, Recv: 102E
+2026-01-30 14:50:03,850 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: DA10, Recv: CF23
+2026-01-30 14:50:03,951 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 9E93, Recv: 9298
+2026-01-30 14:50:04,053 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 2BBA, Recv: 20E1
+2026-01-30 14:50:04,149 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 32F0, Recv: 2713
+2026-01-30 14:50:04,250 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 1317, Recv: 072A
+2026-01-30 14:50:04,349 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: FAEF, Recv: EEEB
+2026-01-30 14:50:04,449 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 7939, Recv: 6E57
+2026-01-30 14:50:04,549 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 8C5A, Recv: 7F50
+2026-01-30 14:50:04,653 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 8BAC, Recv: 80BF
+2026-01-30 14:50:04,751 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 88E2, Recv: 7CE9
+2026-01-30 14:50:04,851 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: E18F, Recv: D8D4
+2026-01-30 14:50:04,950 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 5930, Recv: 4F6F
+2026-01-30 14:50:05,051 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 79C3, Recv: 6FFE
+2026-01-30 14:50:05,150 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: BB18, Recv: B14A
+2026-01-30 14:50:05,253 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 689D, Recv: 5CAF
+2026-01-30 14:50:05,350 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 269F, Recv: 1BC9
+2026-01-30 14:50:05,451 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 6D62, Recv: 6285
+2026-01-30 14:50:05,550 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 50CB, Recv: 45F7
+2026-01-30 14:50:05,650 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: BAA6, Recv: B0DD
+2026-01-30 14:50:05,750 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 51CF, Recv: 46F9
+2026-01-30 14:50:05,852 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 7A31, Recv: 6F59
+2026-01-30 14:50:05,950 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 5EBE, Recv: 53E1
+2026-01-30 14:50:06,051 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: E8C3, Recv: DCD0
+2026-01-30 14:50:06,149 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 6686, Recv: 5DCB
+2026-01-30 14:50:06,251 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: BFAC, Recv: B3B7
+2026-01-30 14:50:06,353 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 18E3, Recv: 0D0F
+2026-01-30 14:50:06,452 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 774D, Recv: 6C70
+2026-01-30 14:50:06,551 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: A0D0, Recv: 95F5
+2026-01-30 14:50:06,650 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: F748, Recv: ED6F
+2026-01-30 14:50:06,751 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 7BFE, Recv: 701F
+2026-01-30 14:50:06,851 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 8DB0, Recv: 83E6
+2026-01-30 14:50:06,950 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: F168, Recv: E9BD
+2026-01-30 14:50:07,053 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: EF01, Recv: E537
+2026-01-30 14:50:07,150 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 3802, Recv: 2E3D
+2026-01-30 14:50:07,250 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: C051, Recv: B684
+2026-01-30 14:50:07,351 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 8DCC, Recv: 82ED
+2026-01-30 14:50:07,450 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: A519, Recv: 9C60
+2026-01-30 14:50:07,550 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 0BC2, Recv: 00F4
+2026-01-30 14:50:07,652 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 675E, Recv: 5EA6
+2026-01-30 14:50:07,750 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: E863, Recv: DD84
+2026-01-30 14:50:07,850 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 2FF4, Recv: 2418
+2026-01-30 14:50:07,950 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: B478, Recv: A995
+2026-01-30 14:50:08,050 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 37D1, Recv: 2CF9
+2026-01-30 14:50:08,150 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: F447, Recv: E95A
+2026-01-30 14:50:08,253 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: F7CC, Recv: EDF4
+2026-01-30 14:50:08,350 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 1029, Recv: 043B
+2026-01-30 14:50:08,450 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 733B, Recv: 6746
+2026-01-30 14:50:08,550 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 1F2F, Recv: 1231
+2026-01-30 14:50:08,650 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 1A71, Recv: 0E7E
+2026-01-30 14:50:08,749 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: B668, Recv: AB81
+2026-01-30 14:50:08,854 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 830D, Recv: 782C
+2026-01-30 14:50:08,950 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 4EA4, Recv: 43C6
+2026-01-30 14:50:09,122 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-30 14:50:10,153 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-30 14:50:10,154 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-30 14:50:10,259 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM19 is disconnected
+2026-01-30 14:50:31,794 [INFO] pigImu_Widget.pigImu_Widget: pigImu_Widget logger start
+2026-01-30 14:50:31,815 [INFO] myLib.myGui.graph.myLib.myGui.graph: myLib.myGui.graph logger start
+2026-01-30 14:50:32,434 [INFO] myLib.common.myLib.common: myLib.common logger start
+2026-01-30 14:50:32,435 [INFO] myLib.myGui.mygui_serial.myLib.myGui.mygui_serial: myLib.myGui.mygui_serial logger start
+2026-01-30 14:50:32,436 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: myLib.myGui.myLabel logger start
+2026-01-30 14:50:32,437 [INFO] myLib.myGui.myLineEdit.myLib.myGui.myLineEdit: myLib.myGui.myLineEdit logger start
+2026-01-30 14:50:32,438 [INFO] myLib.myGui.myCheckBox.myLib.myGui.myCheckBox: myLib.myGui.myCheckBox logger start
+2026-01-30 14:50:32,438 [INFO] myLib.myGui.myRadioButton.myLib.myGui.myRadioButton: myLib.myGui.myRadioButton logger start
+2026-01-30 14:50:32,439 [INFO] record_Log: record_Log logger start
+2026-01-30 14:50:32,450 [INFO] myLib.myGui.AttitudeIndicator.myLib.myGui.AttitudeIndicator: myLib.myGui.AttitudeIndicator logger start
+2026-01-30 14:50:32,452 [INFO] myLib.myGui.pig_menu_manager.myLib.myGui.pig_menu_manager: myLib.myGui.pig_menu_manager logger start
+2026-01-30 14:50:32,456 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: myLib.mySerial.Connector logger start
+2026-01-30 14:50:32,463 [INFO] myLib.myGui.myComboBox.myLib.myGui.myComboBox: myLib.myGui.myComboBox logger start
+2026-01-30 14:50:32,464 [INFO] drivers.hins_fog_imu.widgets.pig_parameters_widget.drivers.hins_fog_imu.widgets.pig_parameters_widget: drivers.hins_fog_imu.widgets.pig_parameters_widget logger start
+2026-01-30 14:50:32,466 [INFO] drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget.drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget: drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget logger start
+2026-01-30 14:50:32,467 [INFO] drivers.hins_fog_imu.widgets.pig_version_widget.drivers.hins_fog_imu.widgets.pig_version_widget: drivers.hins_fog_imu.widgets.pig_version_widget logger start
+2026-01-30 14:50:32,468 [INFO] drivers.hins_fog_imu.widgets.pig_configuration_widget.drivers.hins_fog_imu.widgets.pig_configuration_widget: drivers.hins_fog_imu.widgets.pig_configuration_widget logger start
+2026-01-30 14:50:32,475 [INFO] myLib.crcCalculator.crcLib.myLib.crcCalculator.crcLib: myLib.crcCalculator.crcLib logger start
+2026-01-30 14:50:53,433 [INFO] Main: Port Selected: COM33
+2026-01-30 14:50:53,434 [INFO] Main: Port Selected: COM33
+2026-01-30 14:50:54,489 [INFO] Main: Port Selected: COM19
+2026-01-30 14:50:54,997 [INFO] Main: Connecting to COM19 at 230400...
+2026-01-30 14:50:55,037 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM19 is connected
+2026-01-30 14:50:55,039 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-01-30 14:50:55,039 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-01-30 14:50:55,041 [INFO] main.drivers.HinsHybrid: Hybrid Reader (Dispatcher) Started.
+2026-01-30 14:50:55,875 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-30 14:50:57,990 [INFO] Main: Restarting Hybrid Reader Thread...
+2026-01-30 14:50:58,008 [INFO] main.drivers.HinsHybrid: Hybrid Reader (Dispatcher) Started.
+2026-01-30 14:50:58,214 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 207B, Recv: 1378
+2026-01-30 14:50:58,312 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 0B6D, Recv: 0098
+2026-01-30 14:50:58,413 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: B202, Recv: A82F
+2026-01-30 14:50:58,513 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 55C5, Recv: 49D6
+2026-01-30 14:50:58,612 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 4478, Recv: 376F
+2026-01-30 14:50:58,713 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 508B, Recv: 46C3
+2026-01-30 14:50:58,815 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 314A, Recv: 2674
+2026-01-30 14:50:58,914 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 6BA1, Recv: 61D2
+2026-01-30 14:50:59,013 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 431B, Recv: 3732
+2026-01-30 14:50:59,112 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 403B, Recv: 3782
+2026-01-30 14:50:59,213 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 8C4C, Recv: 8172
+2026-01-30 14:50:59,312 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 7B08, Recv: 702B
+2026-01-30 14:50:59,414 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 6A26, Recv: 5F45
+2026-01-30 14:50:59,512 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 47D4, Recv: 3BEC
+2026-01-30 14:50:59,613 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: F65C, Recv: EC83
+2026-01-30 14:50:59,712 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: D522, Recv: CA3B
+2026-01-30 14:50:59,813 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: BDB4, Recv: B3E2
+2026-01-30 14:50:59,912 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 7C99, Recv: 71B9
+2026-01-30 14:51:00,015 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 7E85, Recv: 7297
+2026-01-30 14:51:00,112 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: B420, Recv: AA4C
+2026-01-30 14:51:00,212 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 073A, Recv: FB50
+2026-01-30 14:51:00,312 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 2498, Recv: 18A7
+2026-01-30 14:51:00,412 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 0D46, Recv: 0155
+2026-01-30 14:51:00,513 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 2F1C, Recv: 2331
+2026-01-30 14:51:00,616 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 1AFA, Recv: 0F1C
+2026-01-30 14:51:00,713 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 4486, Recv: 38A0
+2026-01-30 14:51:00,812 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 3B73, Recv: 3097
+2026-01-30 14:51:00,912 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 1701, Recv: 0C2C
+2026-01-30 14:51:01,014 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 7876, Recv: 6D9A
+2026-01-30 14:51:01,114 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: B6D3, Recv: ABE8
+2026-01-30 14:51:01,215 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: A87C, Recv: 9EA7
+2026-01-30 14:51:01,313 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 6D08, Recv: 6341
+2026-01-30 14:51:01,414 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 9AB7, Recv: 90F1
+2026-01-30 14:51:01,514 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: BEE9, Recv: B307
+2026-01-30 14:51:01,613 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 9491, Recv: 889A
+2026-01-30 14:51:01,713 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 468E, Recv: 3A9B
+2026-01-30 14:51:01,815 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 1273, Recv: 0575
+2026-01-30 14:51:01,913 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: B50B, Recv: AA1F
+2026-01-30 14:51:02,014 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 3D3A, Recv: 303A
+2026-01-30 14:51:02,114 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 0EE3, Recv: 02F3
+2026-01-30 14:51:02,213 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: C06A, Recv: B470
+2026-01-30 14:51:02,314 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: BBAE, Recv: B0CF
+2026-01-30 14:51:02,416 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: DB26, Recv: D040
+2026-01-30 14:51:02,514 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: F9D7, Recv: EDE0
+2026-01-30 14:51:02,612 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 5E51, Recv: 536D
+2026-01-30 14:51:02,713 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 343F, Recv: 273A
+2026-01-30 14:51:02,812 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: FEFD, Recv: F203
+2026-01-30 14:51:02,913 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 863C, Recv: 7A41
+2026-01-30 14:51:03,014 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 22DC, Recv: 15E1
+2026-01-30 14:51:03,113 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 3500, Recv: 2B35
+2026-01-30 14:51:03,213 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 273C, Recv: 1B56
+2026-01-30 14:51:03,313 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 83C9, Recv: 78E6
+2026-01-30 14:51:03,413 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 26A9, Recv: 1ABE
+2026-01-30 14:51:03,512 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 0CF8, Recv: FEF2
+2026-01-30 14:51:03,615 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: B3D5, Recv: A8EE
+2026-01-30 14:51:03,712 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: BAF5, Recv: ADEF
+2026-01-30 14:51:03,813 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: A9E8, Recv: 9E02
+2026-01-30 14:51:03,913 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: FDCF, Recv: F1D4
+2026-01-30 14:51:04,014 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 2984, Recv: 1C85
+2026-01-30 14:51:04,113 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: BAC5, Recv: AFDE
+2026-01-30 14:51:04,214 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 1EDC, Recv: 11E0
+2026-01-30 14:51:04,313 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: F4E2, Recv: E9FE
+2026-01-30 14:51:04,412 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: F848, Recv: ED5F
+2026-01-30 14:51:04,513 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 712C, Recv: 6426
+2026-01-30 14:51:04,614 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 0D91, Recv: 019E
+2026-01-30 14:51:04,713 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 53A7, Recv: 47BD
+2026-01-30 14:51:04,815 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 55A1, Recv: 49B3
+2026-01-30 14:51:04,913 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: A844, Recv: 9D64
+2026-01-30 14:51:05,013 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 6022, Recv: 5437
+2026-01-30 14:51:05,112 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 20BF, Recv: 15E6
+2026-01-30 14:51:05,212 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 5D90, Recv: 51A3
+2026-01-30 14:51:05,313 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 2848, Recv: 1C5E
+2026-01-30 14:51:05,416 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 8EB3, Recv: 82C6
+2026-01-30 14:51:05,513 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: FECF, Recv: F3E9
+2026-01-30 14:51:05,614 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: A32F, Recv: 9735
+2026-01-30 14:51:05,713 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 9E97, Recv: 93B7
+2026-01-30 14:51:05,813 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: C028, Recv: B434
+2026-01-30 14:51:05,913 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 8D2D, Recv: 8248
+2026-01-30 14:51:06,016 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 99DB, Recv: 8DEB
+2026-01-30 14:51:06,114 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 063D, Recv: FA52
+2026-01-30 14:51:06,212 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 7D43, Recv: 7154
+2026-01-30 14:51:06,314 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 329F, Recv: 26B6
+2026-01-30 14:51:06,414 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 70B0, Recv: 65D2
+2026-01-30 14:51:06,513 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 7A13, Recv: 6E23
+2026-01-30 14:51:06,616 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 8B90, Recv: 80A8
+2026-01-30 14:51:06,713 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 2953, Recv: 1C53
+2026-01-30 14:51:06,812 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 85E0, Recv: 77C4
+2026-01-30 14:51:06,916 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: CA0B, Recv: BF27
+2026-01-30 14:51:07,014 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: AC0F, Recv: A01F
+2026-01-30 14:51:07,115 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 55EE, Recv: 48E3
+2026-01-30 14:51:07,215 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 14E5, Recv: 08FB
+2026-01-30 14:51:07,314 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: D832, Recv: CC38
+2026-01-30 14:51:07,414 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 8735, Recv: 7C53
+2026-01-30 14:51:07,514 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 2A86, Recv: 1C79
+2026-01-30 14:51:07,612 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 8E57, Recv: 836F
+2026-01-30 14:51:07,714 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 4597, Recv: 39AD
+2026-01-30 14:51:07,815 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: CCFC, Recv: C116
+2026-01-30 14:51:07,913 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 0B89, Recv: FF9F
+2026-01-30 14:51:08,012 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: C50B, Recv: BA27
+2026-01-30 14:51:08,114 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 6B38, Recv: 616E
+2026-01-30 14:51:08,213 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 544F, Recv: 4977
+2026-01-30 14:51:08,313 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: C974, Recv: BE8E
+2026-01-30 14:51:08,415 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 812F, Recv: 7427
+2026-01-30 14:51:08,513 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: DE1A, Recv: D335
+2026-01-30 14:51:08,612 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 11B8, Recv: 05CC
+2026-01-30 14:51:08,712 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 26E7, Recv: 1AFA
+2026-01-30 14:51:08,813 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: F50A, Recv: EA23
+2026-01-30 14:51:08,913 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 2A06, Recv: 1E1C
+2026-01-30 14:51:09,015 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: A62E, Recv: 9A3F
+2026-01-30 14:51:09,113 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 4090, Recv: 35B1
+2026-01-30 14:51:09,215 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: B0C2, Recv: A3B5
+2026-01-30 14:51:09,314 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 5CC6, Recv: 51EA
+2026-01-30 14:51:09,414 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: ACE0, Recv: A1F9
+2026-01-30 14:51:09,513 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: FC6E, Recv: F188
+2026-01-30 14:51:09,616 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 4472, Recv: 3884
+2026-01-30 14:51:09,714 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: B785, Recv: ADB6
+2026-01-30 14:51:09,814 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 7453, Recv: 6863
+2026-01-30 14:51:09,914 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: E37D, Recv: D9A5
+2026-01-30 14:51:10,014 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 7A6B, Recv: 6E7D
+2026-01-30 14:51:10,113 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: BF55, Recv: B57C
+2026-01-30 14:51:10,216 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 7337, Recv: 685F
+2026-01-30 14:51:10,314 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 75F2, Recv: 6B2E
+2026-01-30 14:51:10,415 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: B410, Recv: AA46
+2026-01-30 14:51:10,514 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 2EBE, Recv: 22DB
+2026-01-30 14:51:10,614 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: A5F1, Recv: 9B23
+2026-01-30 14:51:10,714 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 80E0, Recv: 73D9
+2026-01-30 14:51:10,815 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: E921, Recv: DE34
+2026-01-30 14:51:10,973 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-30 14:52:36,578 [INFO] pigImu_Widget.pigImu_Widget: pigImu_Widget logger start
+2026-01-30 14:52:36,600 [INFO] myLib.myGui.graph.myLib.myGui.graph: myLib.myGui.graph logger start
+2026-01-30 14:52:37,225 [INFO] myLib.common.myLib.common: myLib.common logger start
+2026-01-30 14:52:37,226 [INFO] myLib.myGui.mygui_serial.myLib.myGui.mygui_serial: myLib.myGui.mygui_serial logger start
+2026-01-30 14:52:37,227 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: myLib.myGui.myLabel logger start
+2026-01-30 14:52:37,227 [INFO] myLib.myGui.myLineEdit.myLib.myGui.myLineEdit: myLib.myGui.myLineEdit logger start
+2026-01-30 14:52:37,228 [INFO] myLib.myGui.myCheckBox.myLib.myGui.myCheckBox: myLib.myGui.myCheckBox logger start
+2026-01-30 14:52:37,229 [INFO] myLib.myGui.myRadioButton.myLib.myGui.myRadioButton: myLib.myGui.myRadioButton logger start
+2026-01-30 14:52:37,230 [INFO] record_Log: record_Log logger start
+2026-01-30 14:52:37,242 [INFO] myLib.myGui.AttitudeIndicator.myLib.myGui.AttitudeIndicator: myLib.myGui.AttitudeIndicator logger start
+2026-01-30 14:52:37,244 [INFO] myLib.myGui.pig_menu_manager.myLib.myGui.pig_menu_manager: myLib.myGui.pig_menu_manager logger start
+2026-01-30 14:52:37,248 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: myLib.mySerial.Connector logger start
+2026-01-30 14:52:37,253 [INFO] myLib.myGui.myComboBox.myLib.myGui.myComboBox: myLib.myGui.myComboBox logger start
+2026-01-30 14:52:37,254 [INFO] drivers.hins_fog_imu.widgets.pig_parameters_widget.drivers.hins_fog_imu.widgets.pig_parameters_widget: drivers.hins_fog_imu.widgets.pig_parameters_widget logger start
+2026-01-30 14:52:37,255 [INFO] drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget.drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget: drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget logger start
+2026-01-30 14:52:37,256 [INFO] drivers.hins_fog_imu.widgets.pig_version_widget.drivers.hins_fog_imu.widgets.pig_version_widget: drivers.hins_fog_imu.widgets.pig_version_widget logger start
+2026-01-30 14:52:37,257 [INFO] drivers.hins_fog_imu.widgets.pig_configuration_widget.drivers.hins_fog_imu.widgets.pig_configuration_widget: drivers.hins_fog_imu.widgets.pig_configuration_widget logger start
+2026-01-30 14:52:37,263 [INFO] myLib.crcCalculator.crcLib.myLib.crcCalculator.crcLib: myLib.crcCalculator.crcLib logger start
+2026-01-30 14:52:38,448 [INFO] Main: Port Selected: COM33
+2026-01-30 14:52:38,449 [INFO] Main: Port Selected: COM33
+2026-01-30 14:52:39,855 [INFO] Main: Port Selected: COM19
+2026-01-30 14:52:40,393 [INFO] Main: Connecting to COM19 at 230400...
+2026-01-30 14:52:40,434 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM19 is connected
+2026-01-30 14:52:40,436 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-01-30 14:52:40,436 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-01-30 14:52:40,438 [INFO] main.drivers.HinsHybrid: Hybrid Reader (Dispatcher) Started.
+2026-01-30 14:52:41,741 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: B88C, Recv: AC8B
+2026-01-30 14:52:41,838 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: E92A, Recv: DC18
+2026-01-30 14:52:41,938 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: D16C, Recv: C67A
+2026-01-30 14:52:42,037 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 3C05, Recv: 3013
+2026-01-30 14:52:42,138 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 2B9F, Recv: 1E99
+2026-01-30 14:52:42,238 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: E0D7, Recv: D5ED
+2026-01-30 14:52:42,342 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: C685, Recv: B864
+2026-01-30 14:52:42,438 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 7A50, Recv: 6E4D
+2026-01-30 14:52:42,537 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: DA34, Recv: CF4E
+2026-01-30 14:52:42,638 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 7FD3, Recv: 74F1
+2026-01-30 14:52:42,738 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: D7CC, Recv: CCDE
+2026-01-30 14:52:42,839 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: CC46, Recv: C04A
+2026-01-30 14:52:42,940 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 2A95, Recv: 1FB7
+2026-01-30 14:52:43,038 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: D6D5, Recv: CAE0
+2026-01-30 14:52:43,138 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 8787, Recv: 7B8B
+2026-01-30 14:52:43,238 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: C70C, Recv: BB0E
+2026-01-30 14:52:43,337 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 9790, Recv: 8CAB
+2026-01-30 14:52:43,440 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: AB13, Recv: 9F14
+2026-01-30 14:52:43,537 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 5A8A, Recv: 50BE
+2026-01-30 14:52:43,637 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 371C, Recv: 2C42
+2026-01-30 14:52:43,737 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: EB2F, Recv: DF2C
+2026-01-30 14:52:43,837 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 6176, Recv: 5470
+2026-01-30 14:52:43,939 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: EAAD, Recv: E0D4
+2026-01-30 14:52:44,038 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 290E, Recv: 1D1E
+2026-01-30 14:52:44,138 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: A2D2, Recv: 96D5
+2026-01-30 14:52:44,238 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 70A4, Recv: 66D0
+2026-01-30 14:52:44,338 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 885C, Recv: 7E93
+2026-01-30 14:52:44,438 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: A5F4, Recv: 9B25
+2026-01-30 14:52:44,539 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 767C, Recv: 6B9D
+2026-01-30 14:52:44,637 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 87DD, Recv: 7BEA
+2026-01-30 14:52:44,737 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 4C8B, Recv: 41AC
+2026-01-30 14:52:44,838 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 0830, Recv: FC4D
+2026-01-30 14:52:44,937 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 3776, Recv: 2C95
+2026-01-30 14:52:45,038 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 96F6, Recv: 8A01
+2026-01-30 14:52:45,141 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: DF5F, Recv: D250
+2026-01-30 14:52:45,237 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 1D81, Recv: 118F
+2026-01-30 14:52:45,337 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: DE02, Recv: D211
+2026-01-30 14:52:45,438 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 1AEA, Recv: 0F0C
+2026-01-30 14:52:45,537 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: EC0B, Recv: E00E
+2026-01-30 14:52:45,637 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 8316, Recv: 782B
+2026-01-30 14:52:45,741 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: F889, Recv: ED9B
+2026-01-30 14:52:45,839 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: BB37, Recv: AF3C
+2026-01-30 14:52:45,939 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: D323, Recv: C832
+2026-01-30 14:52:46,037 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 00B7, Recv: F4CA
+2026-01-30 14:52:46,138 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: C72B, Recv: BC40
+2026-01-30 14:52:46,238 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 52F7, Recv: 4714
+2026-01-30 14:52:46,340 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: D3CE, Recv: C6C0
+2026-01-30 14:52:46,439 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 9D75, Recv: 9398
+2026-01-30 14:52:46,538 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 980E, Recv: 8B02
+2026-01-30 14:52:46,638 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: 619A, Recv: 55A0
+2026-01-30 14:52:46,738 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: AD38, Recv: A13C
+2026-01-30 14:52:46,838 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: EDB5, Recv: E2CB
+2026-01-30 14:52:46,999 [WARNING] drivers.HinsMonitor.Validator: Checksum Error! Calc: D2D6, Recv: C7EC
+2026-01-30 14:52:47,089 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-30 14:55:10,390 [INFO] pigImu_Widget.pigImu_Widget: pigImu_Widget logger start
+2026-01-30 14:55:10,413 [INFO] myLib.myGui.graph.myLib.myGui.graph: myLib.myGui.graph logger start
+2026-01-30 14:55:11,020 [INFO] myLib.common.myLib.common: myLib.common logger start
+2026-01-30 14:55:11,021 [INFO] myLib.myGui.mygui_serial.myLib.myGui.mygui_serial: myLib.myGui.mygui_serial logger start
+2026-01-30 14:55:11,022 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: myLib.myGui.myLabel logger start
+2026-01-30 14:55:11,022 [INFO] myLib.myGui.myLineEdit.myLib.myGui.myLineEdit: myLib.myGui.myLineEdit logger start
+2026-01-30 14:55:11,023 [INFO] myLib.myGui.myCheckBox.myLib.myGui.myCheckBox: myLib.myGui.myCheckBox logger start
+2026-01-30 14:55:11,023 [INFO] myLib.myGui.myRadioButton.myLib.myGui.myRadioButton: myLib.myGui.myRadioButton logger start
+2026-01-30 14:55:11,024 [INFO] record_Log: record_Log logger start
+2026-01-30 14:55:11,036 [INFO] myLib.myGui.AttitudeIndicator.myLib.myGui.AttitudeIndicator: myLib.myGui.AttitudeIndicator logger start
+2026-01-30 14:55:11,038 [INFO] myLib.myGui.pig_menu_manager.myLib.myGui.pig_menu_manager: myLib.myGui.pig_menu_manager logger start
+2026-01-30 14:55:11,042 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: myLib.mySerial.Connector logger start
+2026-01-30 14:55:11,047 [INFO] myLib.myGui.myComboBox.myLib.myGui.myComboBox: myLib.myGui.myComboBox logger start
+2026-01-30 14:55:11,048 [INFO] drivers.hins_fog_imu.widgets.pig_parameters_widget.drivers.hins_fog_imu.widgets.pig_parameters_widget: drivers.hins_fog_imu.widgets.pig_parameters_widget logger start
+2026-01-30 14:55:11,050 [INFO] drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget.drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget: drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget logger start
+2026-01-30 14:55:11,051 [INFO] drivers.hins_fog_imu.widgets.pig_version_widget.drivers.hins_fog_imu.widgets.pig_version_widget: drivers.hins_fog_imu.widgets.pig_version_widget logger start
+2026-01-30 14:55:11,052 [INFO] drivers.hins_fog_imu.widgets.pig_configuration_widget.drivers.hins_fog_imu.widgets.pig_configuration_widget: drivers.hins_fog_imu.widgets.pig_configuration_widget logger start
+2026-01-30 14:55:11,058 [INFO] myLib.crcCalculator.crcLib.myLib.crcCalculator.crcLib: myLib.crcCalculator.crcLib logger start
+2026-01-30 14:55:12,211 [INFO] Main: Port Selected: COM33
+2026-01-30 14:55:12,212 [INFO] Main: Port Selected: COM33
+2026-01-30 14:55:13,522 [INFO] Main: Port Selected: COM19
+2026-01-30 14:55:14,016 [INFO] Main: Connecting to COM19 at 230400...
+2026-01-30 14:55:14,056 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM19 is connected
+2026-01-30 14:55:14,058 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-01-30 14:55:14,058 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-01-30 14:55:14,060 [INFO] main.drivers.HinsHybrid: Hybrid Reader (Dispatcher) Started.
+2026-01-30 14:55:14,909 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-30 14:55:17,113 [INFO] Main: Restarting Hybrid Reader Thread...
+2026-01-30 14:55:17,126 [INFO] main.drivers.HinsHybrid: Hybrid Reader (Dispatcher) Started.
+2026-01-30 14:55:17,337 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 54 BB 90 BF ED F1 7A B9 7C B3 90 BF F5 CE 8C F1 99 E3 1B 41 04 00 01 00 01 00 01 89 36
+2026-01-30 14:55:17,355 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 14:55:17,356 [ERROR] drivers.HinsMonitor.Parser: Parse error: unpack requires a buffer of 32 bytes
+2026-01-30 14:55:17,434 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 54 BB 90 BF AA F2 A5 B9 F5 B0 90 BF 5C 35 F3 57 9A E3 1B 41 04 00 01 00 01 00 01 84 4C
+2026-01-30 14:55:17,436 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 14:55:17,436 [ERROR] drivers.HinsMonitor.Parser: Parse error: unpack requires a buffer of 32 bytes
+2026-01-30 14:55:17,535 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 C4 C0 90 BF 3F 7C E4 B9 7C B2 90 BF F0 AC 59 BE 9A E3 1B 41 04 00 01 00 01 00 01 B8 61
+2026-01-30 14:55:17,536 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 14:55:17,537 [ERROR] drivers.HinsMonitor.Parser: Parse error: unpack requires a buffer of 32 bytes
+2026-01-30 14:55:17,636 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 C4 C0 90 BF 5E F8 FC B9 F4 B0 90 BF 56 13 C0 24 9B E3 1B 41 04 00 01 00 01 00 01 7C 38
+2026-01-30 14:55:17,638 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 14:55:17,639 [ERROR] drivers.HinsMonitor.Parser: Parse error: unpack requires a buffer of 32 bytes
+2026-01-30 14:55:17,736 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 C1 C5 90 BF 28 AE 07 BA CB B4 90 BF BD 79 26 8B 9B E3 1B 41 04 00 01 00 01 00 01 7F 0A
+2026-01-30 14:55:17,737 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 14:55:17,738 [ERROR] drivers.HinsMonitor.Parser: Parse error: unpack requires a buffer of 32 bytes
+2026-01-30 14:55:17,835 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 C1 C5 90 BF 68 07 11 BA A0 B3 90 BF 51 F1 8C F1 9B E3 1B 41 04 00 01 00 01 00 01 CE 31
+2026-01-30 14:55:17,837 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 14:55:17,837 [ERROR] drivers.HinsMonitor.Parser: Parse error: unpack requires a buffer of 32 bytes
+2026-01-30 14:55:17,937 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 05 CB 90 BF BC D8 26 BA 2A B6 90 BF B8 57 F3 57 9C E3 1B 41 04 00 01 00 01 00 01 7A 53
+2026-01-30 14:55:17,939 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 14:55:17,940 [ERROR] drivers.HinsMonitor.Parser: Parse error: unpack requires a buffer of 32 bytes
+2026-01-30 14:55:18,035 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 05 CB 90 BF B0 CE 35 BA 4B B4 90 BF 1E BE 59 BE 9C E3 1B 41 04 00 01 00 01 00 01 2C 8B
+2026-01-30 14:55:18,036 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 14:55:18,037 [ERROR] drivers.HinsMonitor.Parser: Parse error: unpack requires a buffer of 32 bytes
+2026-01-30 14:55:18,136 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 C4 D0 90 BF EB 84 4F BA D3 B6 90 BF B3 35 C0 24 9D E3 1B 41 04 00 01 00 01 00 01 5F CC
+2026-01-30 14:55:18,137 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 14:55:18,138 [ERROR] drivers.HinsMonitor.Parser: Parse error: unpack requires a buffer of 32 bytes
+2026-01-30 14:55:18,236 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 C4 D0 90 BF 45 88 6B BA 53 B3 90 BF 19 9C 26 8B 9D E3 1B 41 04 00 01 00 01 00 01 F0 6E
+2026-01-30 14:55:18,238 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 14:55:18,238 [ERROR] drivers.HinsMonitor.Parser: Parse error: unpack requires a buffer of 32 bytes
+2026-01-30 14:55:18,336 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 29 D6 90 BF EF 64 82 BA 90 B5 90 BF AD 13 8D F1 9D E3 1B 41 04 00 01 00 01 00 01 0F 9E
+2026-01-30 14:55:18,337 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 14:55:18,338 [ERROR] drivers.HinsMonitor.Parser: Parse error: unpack requires a buffer of 32 bytes
+2026-01-30 14:55:18,435 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 29 D6 90 BF 4B FF 89 BA A9 B3 90 BF 14 7A F3 57 9E E3 1B 41 04 00 01 00 01 00 01 BF 2A
+2026-01-30 14:55:18,436 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 14:55:18,436 [ERROR] drivers.HinsMonitor.Parser: Parse error: unpack requires a buffer of 32 bytes
+2026-01-30 14:55:18,537 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 68 DC 90 BF 31 AB 95 BA FD B6 90 BF 7A E0 59 BE 9E E3 1B 41 04 00 01 00 01 00 01 92 DB
+2026-01-30 14:55:18,546 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 14:55:18,547 [ERROR] drivers.HinsMonitor.Parser: Parse error: unpack requires a buffer of 32 bytes
+2026-01-30 14:55:18,635 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 68 DC 90 BF B1 9E 9E BA C0 B4 90 BF 0F 58 C0 24 9F E3 1B 41 04 00 01 00 01 00 01 AA A8
+2026-01-30 14:55:18,636 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 14:55:18,636 [ERROR] drivers.HinsMonitor.Parser: Parse error: unpack requires a buffer of 32 bytes
+2026-01-30 14:55:18,736 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 E8 E1 90 BF F2 5F AF BA 10 B6 90 BF 75 BE 26 8B 9F E3 1B 41 04 00 01 00 01 00 01 2D 20
+2026-01-30 14:55:18,738 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 14:55:18,738 [ERROR] drivers.HinsMonitor.Parser: Parse error: unpack requires a buffer of 32 bytes
+2026-01-30 14:55:18,835 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 E8 E1 90 BF 20 48 BA BA 56 B3 90 BF DB 24 8D F1 9F E3 1B 41 04 00 01 00 01 00 01 2B BC
+2026-01-30 14:55:18,836 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 14:55:18,837 [ERROR] drivers.HinsMonitor.Parser: Parse error: unpack requires a buffer of 32 bytes
+2026-01-30 14:55:18,936 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 E3 E7 90 BF 28 94 C8 BA BE B5 90 BF 42 8B F3 57 A0 E3 1B 41 04 00 01 00 01 00 01 93 BF
+2026-01-30 14:55:18,937 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 14:55:18,938 [ERROR] drivers.HinsMonitor.Parser: Parse error: unpack requires a buffer of 32 bytes
+2026-01-30 14:55:19,036 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 E3 E7 90 BF 9E 7D D3 BA 04 B3 90 BF D6 02 5A BE A0 E3 1B 41 04 00 01 00 01 00 01 1A 91
+2026-01-30 14:55:19,038 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 14:55:19,039 [ERROR] drivers.HinsMonitor.Parser: Parse error: unpack requires a buffer of 32 bytes
+2026-01-30 14:55:19,137 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 1B EE 90 BF D1 15 DB BA 56 B7 90 BF 3D 69 C0 24 A1 E3 1B 41 04 00 01 00 01 00 01 1D 86
+2026-01-30 14:55:19,138 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 14:55:19,139 [ERROR] drivers.HinsMonitor.Parser: Parse error: unpack requires a buffer of 32 bytes
+2026-01-30 14:55:19,235 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 1B EE 90 BF CD 01 EA BA 9B B3 90 BF D1 E0 26 8B A1 E3 1B 41 04 00 01 00 01 00 01 2D B4
+2026-01-30 14:55:19,236 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 14:55:19,237 [ERROR] drivers.HinsMonitor.Parser: Parse error: unpack requires a buffer of 32 bytes
+2026-01-30 14:55:19,335 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 89 F3 90 BF 83 BD F2 BA DA B6 90 BF 38 47 8D F1 A1 E3 1B 41 04 00 01 00 01 00 01 F7 8B
+2026-01-30 14:55:19,335 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 14:55:19,337 [ERROR] drivers.HinsMonitor.Parser: Parse error: unpack requires a buffer of 32 bytes
+2026-01-30 14:55:19,435 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 89 F3 90 BF F6 06 00 BB 86 B3 90 BF 9E AD F3 57 A2 E3 1B 41 04 00 01 00 01 00 01 04 7D
+2026-01-30 14:55:19,436 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 14:55:19,437 [ERROR] drivers.HinsMonitor.Parser: Parse error: unpack requires a buffer of 32 bytes
+2026-01-30 14:55:19,536 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 08 F9 90 BF 16 BD 05 BB 29 B6 90 BF 32 25 5A BE A2 E3 1B 41 04 00 01 00 01 00 01 E5 1B
+2026-01-30 14:55:19,537 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 14:55:19,537 [ERROR] drivers.HinsMonitor.Parser: Parse error: unpack requires a buffer of 32 bytes
+2026-01-30 14:55:19,635 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 08 F9 90 BF 25 61 09 BB 57 B4 90 BF 99 8B C0 24 A3 E3 1B 41 04 00 01 00 01 00 01 62 C4
+2026-01-30 14:55:19,645 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 14:55:19,646 [ERROR] drivers.HinsMonitor.Parser: Parse error: unpack requires a buffer of 32 bytes
+2026-01-30 14:55:19,737 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 37 FE 90 BF 9E FF 12 BB B7 B4 90 BF 2D 03 27 8B A3 E3 1B 41 04 00 01 00 01 00 01 F0 D6
+2026-01-30 14:55:19,749 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 14:55:19,750 [ERROR] drivers.HinsMonitor.Parser: Parse error: unpack requires a buffer of 32 bytes
+2026-01-30 14:55:19,835 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 37 FE 90 BF E3 C2 1C BB D6 AF 90 BF 94 69 8D F1 A3 E3 1B 41 04 00 01 00 01 00 01 B5 23
+2026-01-30 14:55:19,837 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 14:55:19,837 [ERROR] drivers.HinsMonitor.Parser: Parse error: unpack requires a buffer of 32 bytes
+2026-01-30 14:55:19,935 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 9F 03 91 BF 4E 65 21 BB EC B2 90 BF 28 E1 F3 57 A4 E3 1B 41 04 00 01 00 01 00 01 28 D3
+2026-01-30 14:55:19,937 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 14:55:19,937 [ERROR] drivers.HinsMonitor.Parser: Parse error: unpack requires a buffer of 32 bytes
+2026-01-30 14:55:20,035 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 9F 03 91 BF EC 3C 26 BB 81 B0 90 BF 8E 47 5A BE A4 E3 1B 41 04 00 01 00 01 00 01 CF 70
+2026-01-30 14:55:20,037 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 14:55:20,037 [ERROR] drivers.HinsMonitor.Parser: Parse error: unpack requires a buffer of 32 bytes
+2026-01-30 14:55:20,135 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 0C 0A 91 BF 1C A2 2C BB BB B3 90 BF F5 AD C0 24 A5 E3 1B 41 04 00 01 00 01 00 01 B6 59
+2026-01-30 14:55:20,136 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 14:55:20,137 [ERROR] drivers.HinsMonitor.Parser: Parse error: unpack requires a buffer of 32 bytes
+2026-01-30 14:55:20,235 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 0C 0A 91 BF 52 7E 31 BB 4D B1 90 BF 89 25 27 8B A5 E3 1B 41 04 00 01 00 01 00 01 37 81
+2026-01-30 14:55:20,237 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 14:55:20,237 [ERROR] drivers.HinsMonitor.Parser: Parse error: unpack requires a buffer of 32 bytes
+2026-01-30 14:55:20,338 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 0E 0F 91 BF 4D A3 38 BB BC B2 90 BF F0 8B 8D F1 A5 E3 1B 41 04 00 01 00 01 00 01 6E 69
+2026-01-30 14:55:20,339 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 14:55:20,340 [ERROR] drivers.HinsMonitor.Parser: Parse error: unpack requires a buffer of 32 bytes
+2026-01-30 14:55:20,436 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 0E 0F 91 BF 1B 50 3E BB E6 AF 90 BF 84 03 F4 57 A6 E3 1B 41 04 00 01 00 01 00 01 F0 79
+2026-01-30 14:55:20,437 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 14:55:20,438 [ERROR] drivers.HinsMonitor.Parser: Parse error: unpack requires a buffer of 32 bytes
+2026-01-30 14:55:20,535 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 39 15 91 BF 24 5C 41 BB 8B B4 90 BF EB 69 5A BE A6 E3 1B 41 04 00 01 00 01 00 01 7D EC
+2026-01-30 14:55:20,536 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 14:55:20,536 [ERROR] drivers.HinsMonitor.Parser: Parse error: unpack requires a buffer of 32 bytes
+2026-01-30 14:55:20,634 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 39 15 91 BF 94 84 42 BB F7 B3 90 BF 7F E1 C0 24 A7 E3 1B 41 04 00 01 00 01 00 01 5A B0
+2026-01-30 14:55:20,636 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 14:55:20,636 [ERROR] drivers.HinsMonitor.Parser: Parse error: unpack requires a buffer of 32 bytes
+2026-01-30 14:55:20,734 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 81 1B 91 BF 94 CB 48 BB 1B B7 90 BF E5 47 27 8B A7 E3 1B 41 04 00 01 00 01 00 01 B7 0D
+2026-01-30 14:55:20,735 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 14:55:20,736 [ERROR] drivers.HinsMonitor.Parser: Parse error: unpack requires a buffer of 32 bytes
+2026-01-30 14:55:20,835 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 81 1B 91 BF 96 4B 4E BB 5B B4 90 BF 4C AE 8D F1 A7 E3 1B 41 04 00 01 00 01 00 01 16 E4
+2026-01-30 14:55:20,846 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 14:55:20,847 [ERROR] drivers.HinsMonitor.Parser: Parse error: unpack requires a buffer of 32 bytes
+2026-01-30 14:55:20,937 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 13 21 91 BF B1 DA 57 BB 26 B5 90 BF E0 25 F4 57 A8 E3 1B 41 04 00 01 00 01 00 01 06 B9
+2026-01-30 14:55:20,939 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 14:55:20,939 [ERROR] drivers.HinsMonitor.Parser: Parse error: unpack requires a buffer of 32 bytes
+2026-01-30 14:55:21,035 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 13 21 91 BF FE FC 60 BB 95 B0 90 BF 47 8C 5A BE A8 E3 1B 41 04 00 01 00 01 00 01 83 DD
+2026-01-30 14:55:21,037 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 14:55:21,038 [ERROR] drivers.HinsMonitor.Parser: Parse error: unpack requires a buffer of 32 bytes
+2026-01-30 14:55:21,134 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 FD 26 91 BF 9B FC 65 BB FF B3 90 BF DB 03 C1 24 A9 E3 1B 41 04 00 01 00 01 00 01 5A E1
+2026-01-30 14:55:21,136 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 14:55:21,136 [ERROR] drivers.HinsMonitor.Parser: Parse error: unpack requires a buffer of 32 bytes
+2026-01-30 14:55:21,235 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 FD 26 91 BF 45 2B 69 BB 67 B2 90 BF 41 6A 27 8B A9 E3 1B 41 04 00 01 00 01 00 01 38 C9
+2026-01-30 14:55:21,237 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 14:55:21,238 [ERROR] drivers.HinsMonitor.Parser: Parse error: unpack requires a buffer of 32 bytes
+2026-01-30 14:55:21,336 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 94 2D 91 BF 29 47 6E BB 70 B6 90 BF D6 E1 8D F1 A9 E3 1B 41 04 00 01 00 01 00 01 C0 DF
+2026-01-30 14:55:21,337 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 14:55:21,337 [ERROR] drivers.HinsMonitor.Parser: Parse error: unpack requires a buffer of 32 bytes
+2026-01-30 14:55:21,494 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-30 14:55:23,774 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-30 14:55:23,776 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-30 14:55:23,884 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM19 is disconnected
+2026-01-30 15:01:32,491 [INFO] pigImu_Widget.pigImu_Widget: pigImu_Widget logger start
+2026-01-30 15:01:32,512 [INFO] myLib.myGui.graph.myLib.myGui.graph: myLib.myGui.graph logger start
+2026-01-30 15:01:33,129 [INFO] myLib.common.myLib.common: myLib.common logger start
+2026-01-30 15:01:33,130 [INFO] myLib.myGui.mygui_serial.myLib.myGui.mygui_serial: myLib.myGui.mygui_serial logger start
+2026-01-30 15:01:33,131 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: myLib.myGui.myLabel logger start
+2026-01-30 15:01:33,132 [INFO] myLib.myGui.myLineEdit.myLib.myGui.myLineEdit: myLib.myGui.myLineEdit logger start
+2026-01-30 15:01:33,132 [INFO] myLib.myGui.myCheckBox.myLib.myGui.myCheckBox: myLib.myGui.myCheckBox logger start
+2026-01-30 15:01:33,133 [INFO] myLib.myGui.myRadioButton.myLib.myGui.myRadioButton: myLib.myGui.myRadioButton logger start
+2026-01-30 15:01:33,134 [INFO] record_Log: record_Log logger start
+2026-01-30 15:01:33,145 [INFO] myLib.myGui.AttitudeIndicator.myLib.myGui.AttitudeIndicator: myLib.myGui.AttitudeIndicator logger start
+2026-01-30 15:01:33,147 [INFO] myLib.myGui.pig_menu_manager.myLib.myGui.pig_menu_manager: myLib.myGui.pig_menu_manager logger start
+2026-01-30 15:01:33,151 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: myLib.mySerial.Connector logger start
+2026-01-30 15:01:33,157 [INFO] myLib.myGui.myComboBox.myLib.myGui.myComboBox: myLib.myGui.myComboBox logger start
+2026-01-30 15:01:33,158 [INFO] drivers.hins_fog_imu.widgets.pig_parameters_widget.drivers.hins_fog_imu.widgets.pig_parameters_widget: drivers.hins_fog_imu.widgets.pig_parameters_widget logger start
+2026-01-30 15:01:33,160 [INFO] drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget.drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget: drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget logger start
+2026-01-30 15:01:33,161 [INFO] drivers.hins_fog_imu.widgets.pig_version_widget.drivers.hins_fog_imu.widgets.pig_version_widget: drivers.hins_fog_imu.widgets.pig_version_widget logger start
+2026-01-30 15:01:33,161 [INFO] drivers.hins_fog_imu.widgets.pig_configuration_widget.drivers.hins_fog_imu.widgets.pig_configuration_widget: drivers.hins_fog_imu.widgets.pig_configuration_widget logger start
+2026-01-30 15:01:33,167 [INFO] myLib.crcCalculator.crcLib.myLib.crcCalculator.crcLib: myLib.crcCalculator.crcLib logger start
+2026-01-30 15:01:34,418 [INFO] Main: Port Selected: COM33
+2026-01-30 15:01:34,418 [INFO] Main: Port Selected: COM33
+2026-01-30 15:01:35,967 [INFO] Main: Port Selected: COM19
+2026-01-30 15:01:36,461 [INFO] Main: Connecting to COM19 at 230400...
+2026-01-30 15:01:36,502 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM19 is connected
+2026-01-30 15:01:36,504 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-01-30 15:01:36,504 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-01-30 15:01:36,506 [INFO] main.drivers.HinsHybrid: Hybrid Reader (Dispatcher) Started.
+2026-01-30 15:01:38,725 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 02 01 00 E4 69 53 BF 2F 9E 6B 3B 82 55 54 BF D9 29 9D 62 8F E9 1B 41 04 00 01 00 01 00 01 16 1B
+2026-01-30 15:01:38,726 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 15:01:38,726 [ERROR] drivers.HinsMonitor.Parser: Parse error: unpack requires a buffer of 32 bytes
+2026-01-30 15:01:38,823 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 02 01 00 E4 69 53 BF DC D5 B3 3B 90 D1 54 BF 3F 90 03 C9 8F E9 1B 41 04 00 01 00 01 00 01 66 A8
+2026-01-30 15:01:38,824 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 15:01:38,824 [ERROR] drivers.HinsMonitor.Parser: Parse error: unpack requires a buffer of 32 bytes
+2026-01-30 15:01:38,922 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 02 01 00 5B 62 53 BF 8A DD F1 3B 16 46 55 BF D3 07 6A 2F 90 E9 1B 41 04 00 01 00 01 00 01 9F 60
+2026-01-30 15:01:38,923 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 15:01:38,923 [ERROR] drivers.HinsMonitor.Parser: Parse error: unpack requires a buffer of 32 bytes
+2026-01-30 15:01:39,024 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 02 01 00 5B 62 53 BF 61 F1 17 3C 21 C2 55 BF 3A 6E D0 95 90 E9 1B 41 04 00 01 00 01 00 01 D2 C5
+2026-01-30 15:01:39,034 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 15:01:39,035 [ERROR] drivers.HinsMonitor.Parser: Parse error: unpack requires a buffer of 32 bytes
+2026-01-30 15:01:39,122 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 02 01 00 99 5D 53 BF A7 F2 36 3C 64 39 56 BF CE E5 36 FC 90 E9 1B 41 04 00 01 00 01 00 01 04 50
+2026-01-30 15:01:39,123 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 15:01:39,124 [ERROR] drivers.HinsMonitor.Parser: Parse error: unpack requires a buffer of 32 bytes
+2026-01-30 15:01:39,222 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 02 01 00 99 5D 53 BF B9 F4 55 3C 6C B5 56 BF 35 4C 9D 62 91 E9 1B 41 04 00 01 00 01 00 01 57 AE
+2026-01-30 15:01:39,223 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 15:01:39,223 [ERROR] drivers.HinsMonitor.Parser: Parse error: unpack requires a buffer of 32 bytes
+2026-01-30 15:01:39,325 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 02 01 00 CF 58 53 BF C3 F7 74 3C AE 2C 57 BF 9B B2 03 C9 91 E9 1B 41 04 00 01 00 01 00 01 07 76
+2026-01-30 15:01:39,326 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 15:01:39,327 [ERROR] drivers.HinsMonitor.Parser: Parse error: unpack requires a buffer of 32 bytes
+2026-01-30 15:01:39,423 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 02 01 00 CF 58 53 BF 17 FE 89 3C C0 A8 57 BF 02 19 6A 2F 92 E9 1B 41 04 00 01 00 01 00 01 A1 1C
+2026-01-30 15:01:39,424 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 15:01:39,425 [ERROR] drivers.HinsMonitor.Parser: Parse error: unpack requires a buffer of 32 bytes
+2026-01-30 15:01:39,523 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 02 01 00 4B 53 53 BF 9D 80 99 3C 50 1F 58 BF 68 7F D0 95 92 E9 1B 41 04 00 01 00 01 00 01 D0 D7
+2026-01-30 15:01:39,524 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 15:01:39,524 [ERROR] drivers.HinsMonitor.Parser: Parse error: unpack requires a buffer of 32 bytes
+2026-01-30 15:01:39,622 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 02 01 00 4B 53 53 BF 14 03 A9 3C 64 9B 58 BF FC F6 36 FC 92 E9 1B 41 04 00 01 00 01 00 01 42 7E
+2026-01-30 15:01:39,623 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 15:01:39,624 [ERROR] drivers.HinsMonitor.Parser: Parse error: unpack requires a buffer of 32 bytes
+2026-01-30 15:01:39,721 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 02 01 00 C7 51 53 BF 82 84 B8 3C EB 15 59 BF 63 5D 9D 62 93 E9 1B 41 04 00 01 00 01 00 01 58 F4
+2026-01-30 15:01:39,722 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 15:01:39,723 [ERROR] drivers.HinsMonitor.Parser: Parse error: unpack requires a buffer of 32 bytes
+2026-01-30 15:01:39,822 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 02 01 00 C7 51 53 BF 9D 05 C8 3C F4 91 59 BF F7 D4 03 C9 93 E9 1B 41 04 00 01 00 01 00 01 61 5A
+2026-01-30 15:01:39,823 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 15:01:39,824 [ERROR] drivers.HinsMonitor.Parser: Parse error: unpack requires a buffer of 32 bytes
+2026-01-30 15:01:39,925 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 02 01 00 EC 4F 53 BF 21 86 D7 3C 1D 0C 5A BF 8C 4C 6A 2F 94 E9 1B 41 04 00 01 00 01 00 01 18 55
+2026-01-30 15:01:39,927 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 15:01:39,928 [ERROR] drivers.HinsMonitor.Parser: Parse error: unpack requires a buffer of 32 bytes
+2026-01-30 15:01:40,023 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 02 01 00 EC 4F 53 BF 8D 06 E7 3C 20 88 5A BF F2 B2 D0 95 94 E9 1B 41 04 00 01 00 01 00 01 2B CE
+2026-01-30 15:01:40,024 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 15:01:40,025 [ERROR] drivers.HinsMonitor.Parser: Parse error: unpack requires a buffer of 32 bytes
+2026-01-30 15:01:40,122 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 02 01 00 8F 47 53 BF B0 87 F6 3C CC FB 5A BF 87 2A 37 FC 94 E9 1B 41 04 00 01 00 01 00 01 73 D9
+2026-01-30 15:01:40,128 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 15:01:40,129 [ERROR] drivers.HinsMonitor.Parser: Parse error: unpack requires a buffer of 32 bytes
+2026-01-30 15:01:40,222 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 02 01 00 8F 47 53 BF 60 04 03 3D D5 77 5B BF ED 90 9D 62 95 E9 1B 41 04 00 01 00 01 00 01 CD 8F
+2026-01-30 15:01:40,223 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 15:01:40,224 [ERROR] drivers.HinsMonitor.Parser: Parse error: unpack requires a buffer of 32 bytes
+2026-01-30 15:01:40,322 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 02 01 00 00 40 53 BF 94 C4 0A 3D 49 EC 5B BF 81 08 04 C9 95 E9 1B 41 04 00 01 00 01 00 01 F5 A4
+2026-01-30 15:01:40,324 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 15:01:40,325 [ERROR] drivers.HinsMonitor.Parser: Parse error: unpack requires a buffer of 32 bytes
+2026-01-30 15:01:40,422 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 02 01 00 00 40 53 BF 47 84 12 3D 44 68 5C BF E8 6E 6A 2F 96 E9 1B 41 04 00 01 00 01 00 01 82 E9
+2026-01-30 15:01:40,423 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 15:01:40,424 [ERROR] drivers.HinsMonitor.Parser: Parse error: unpack requires a buffer of 32 bytes
+2026-01-30 15:01:40,525 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 02 01 00 A8 38 53 BF C8 43 1A 3D E4 DC 5C BF 7C E6 D0 95 96 E9 1B 41 04 00 01 00 01 00 01 56 B4
+2026-01-30 15:01:40,527 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 15:01:40,527 [ERROR] drivers.HinsMonitor.Parser: Parse error: unpack requires a buffer of 32 bytes
+2026-01-30 15:01:40,623 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 02 01 00 A8 38 53 BF F4 02 22 3D D7 58 5D BF E3 4C 37 FC 96 E9 1B 41 04 00 01 00 01 00 01 54 38
+2026-01-30 15:01:40,624 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 15:01:40,624 [ERROR] drivers.HinsMonitor.Parser: Parse error: unpack requires a buffer of 32 bytes
+2026-01-30 15:01:40,722 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 02 01 00 90 38 53 BF 30 C2 29 3D B3 D4 5D BF 77 C4 9D 62 97 E9 1B 41 04 00 01 00 01 00 01 70 70
+2026-01-30 15:01:40,724 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 15:01:40,724 [ERROR] drivers.HinsMonitor.Parser: Parse error: unpack requires a buffer of 32 bytes
+2026-01-30 15:01:40,822 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 02 01 00 90 38 53 BF EC 80 31 3D 9F 50 5E BF DD 2A 04 C9 97 E9 1B 41 04 00 01 00 01 00 01 F5 3A
+2026-01-30 15:01:40,823 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 15:01:40,824 [ERROR] drivers.HinsMonitor.Parser: Parse error: unpack requires a buffer of 32 bytes
+2026-01-30 15:01:40,923 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 02 01 00 8A 37 53 BF 50 3F 39 3D 7F CB 5E BF 72 A2 6A 2F 98 E9 1B 41 04 00 01 00 01 00 01 4E 1E
+2026-01-30 15:01:40,925 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 15:01:40,926 [ERROR] drivers.HinsMonitor.Parser: Parse error: unpack requires a buffer of 32 bytes
+2026-01-30 15:01:41,024 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 02 01 00 8A 37 53 BF 5E FE 40 3D 70 47 5F BF D8 08 D1 95 98 E9 1B 41 04 00 01 00 01 00 01 29 9A
+2026-01-30 15:01:41,025 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 15:01:41,026 [ERROR] drivers.HinsMonitor.Parser: Parse error: unpack requires a buffer of 32 bytes
+2026-01-30 15:01:41,125 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 02 01 00 22 33 53 BF 17 BE 48 3D 03 BF 5F BF 6D 80 37 FC 98 E9 1B 41 04 00 01 00 01 00 01 23 A7
+2026-01-30 15:01:41,126 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 15:01:41,126 [ERROR] drivers.HinsMonitor.Parser: Parse error: unpack requires a buffer of 32 bytes
+2026-01-30 15:01:41,223 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 02 01 00 22 33 53 BF A5 7D 50 3D FC 3A 60 BF D3 E6 9D 62 99 E9 1B 41 04 00 01 00 01 00 01 86 3C
+2026-01-30 15:01:41,224 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 15:01:41,224 [ERROR] drivers.HinsMonitor.Parser: Parse error: unpack requires a buffer of 32 bytes
+2026-01-30 15:01:41,322 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 02 01 00 BC 31 53 BF C6 3C 58 3D 88 B5 60 BF 68 5E 04 C9 99 E9 1B 41 04 00 01 00 01 00 01 E8 B3
+2026-01-30 15:01:41,329 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 15:01:41,330 [ERROR] drivers.HinsMonitor.Parser: Parse error: unpack requires a buffer of 32 bytes
+2026-01-30 15:01:41,423 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 02 01 00 BC 31 53 BF 63 FB 5F 3D 72 31 61 BF CE C4 6A 2F 9A E9 1B 41 04 00 01 00 01 00 01 4B 81
+2026-01-30 15:01:41,424 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 15:01:41,425 [ERROR] drivers.HinsMonitor.Parser: Parse error: unpack requires a buffer of 32 bytes
+2026-01-30 15:01:41,522 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 02 01 00 26 29 53 BF D0 B9 67 3D C3 A4 61 BF 62 3C D1 95 9A E9 1B 41 04 00 01 00 01 00 01 7D FE
+2026-01-30 15:01:41,524 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 15:01:41,524 [ERROR] drivers.HinsMonitor.Parser: Parse error: unpack requires a buffer of 32 bytes
+2026-01-30 15:01:41,623 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 02 01 00 26 29 53 BF 09 78 6F 3D A7 20 62 BF C9 A2 37 FC 9A E9 1B 41 04 00 01 00 01 00 01 78 83
+2026-01-30 15:01:41,624 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 15:01:41,625 [ERROR] drivers.HinsMonitor.Parser: Parse error: unpack requires a buffer of 32 bytes
+2026-01-30 15:01:41,724 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 02 01 00 F9 21 53 BF 1E 36 77 3D 5B 95 62 BF 5D 1A 9E 62 9B E9 1B 41 04 00 01 00 01 00 01 21 B3
+2026-01-30 15:01:41,726 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 15:01:41,726 [ERROR] drivers.HinsMonitor.Parser: Parse error: unpack requires a buffer of 32 bytes
+2026-01-30 15:01:41,823 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 02 01 00 F9 21 53 BF 7B F4 7E 3D 41 11 63 BF C4 80 04 C9 9B E9 1B 41 04 00 01 00 01 00 01 40 6F
+2026-01-30 15:01:41,825 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 15:01:41,826 [ERROR] drivers.HinsMonitor.Parser: Parse error: unpack requires a buffer of 32 bytes
+2026-01-30 15:01:41,923 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 02 01 00 B6 0E 53 BF 94 59 83 3D E8 79 63 BF 58 F8 6A 2F 9C E9 1B 41 04 00 01 00 01 00 01 55 B8
+2026-01-30 15:01:41,924 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 15:01:41,924 [ERROR] drivers.HinsMonitor.Parser: Parse error: unpack requires a buffer of 32 bytes
+2026-01-30 15:01:42,023 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 02 01 00 B6 0E 53 BF E2 38 87 3D D2 F5 63 BF BF 5E D1 95 9C E9 1B 41 04 00 01 00 01 00 01 86 EE
+2026-01-30 15:01:42,024 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 15:01:42,025 [ERROR] drivers.HinsMonitor.Parser: Parse error: unpack requires a buffer of 32 bytes
+2026-01-30 15:01:42,122 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 02 01 00 EC 07 53 BF 2D 18 8B 3D F2 6A 64 BF 25 C5 37 FC 9C E9 1B 41 04 00 01 00 01 00 01 14 84
+2026-01-30 15:01:42,123 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 15:01:42,124 [ERROR] drivers.HinsMonitor.Parser: Parse error: unpack requires a buffer of 32 bytes
+2026-01-30 15:01:42,223 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 02 01 00 EC 07 53 BF 4B F7 8E 3D D5 E6 64 BF 8B 2B 9E 62 9D E9 1B 41 04 00 01 00 01 00 01 0D CC
+2026-01-30 15:01:42,224 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 15:01:42,225 [ERROR] drivers.HinsMonitor.Parser: Parse error: unpack requires a buffer of 32 bytes
+2026-01-30 15:01:42,324 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 02 01 00 03 03 53 BF 6F D6 92 3D D1 5D 65 BF 20 A3 04 C9 9D E9 1B 41 04 00 01 00 01 00 01 75 FB
+2026-01-30 15:01:42,325 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 15:01:42,326 [ERROR] drivers.HinsMonitor.Parser: Parse error: unpack requires a buffer of 32 bytes
+2026-01-30 15:01:42,423 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 02 01 00 03 03 53 BF 83 B5 96 3D B3 D9 65 BF 86 09 6B 2F 9E E9 1B 41 04 00 01 00 01 00 01 64 5F
+2026-01-30 15:01:42,424 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 15:01:42,424 [ERROR] drivers.HinsMonitor.Parser: Parse error: unpack requires a buffer of 32 bytes
+2026-01-30 15:01:42,524 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 02 01 00 A6 FB 52 BF B0 94 9A 3D 3C 4E 66 BF 1B 81 D1 95 9E E9 1B 41 04 00 01 00 01 00 01 E6 E7
+2026-01-30 15:01:42,530 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 15:01:42,531 [ERROR] drivers.HinsMonitor.Parser: Parse error: unpack requires a buffer of 32 bytes
+2026-01-30 15:01:42,623 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 02 01 00 A6 FB 52 BF 1A 74 9E 3D 29 CA 66 BF 81 E7 37 FC 9E E9 1B 41 04 00 01 00 01 00 01 36 E0
+2026-01-30 15:01:42,624 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 15:01:42,625 [ERROR] drivers.HinsMonitor.Parser: Parse error: unpack requires a buffer of 32 bytes
+2026-01-30 15:01:42,722 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 02 01 00 7E F5 52 BF 5C 53 A2 3D EA 3F 67 BF 15 5F 9E 62 9F E9 1B 41 04 00 01 00 01 00 01 3E 60
+2026-01-30 15:01:42,723 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 15:01:42,723 [ERROR] drivers.HinsMonitor.Parser: Parse error: unpack requires a buffer of 32 bytes
+2026-01-30 15:01:42,822 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 02 01 00 7E F5 52 BF 99 32 A6 3D D1 BB 67 BF 7C C5 04 C9 9F E9 1B 41 04 00 01 00 01 00 01 5B D5
+2026-01-30 15:01:42,823 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 15:01:42,823 [ERROR] drivers.HinsMonitor.Parser: Parse error: unpack requires a buffer of 32 bytes
+2026-01-30 15:01:43,011 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-30 15:07:39,722 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-30 15:07:39,723 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-30 15:07:39,829 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM19 is disconnected
+2026-01-30 15:10:41,116 [INFO] pigImu_Widget.pigImu_Widget: pigImu_Widget logger start
+2026-01-30 15:10:41,138 [INFO] myLib.myGui.graph.myLib.myGui.graph: myLib.myGui.graph logger start
+2026-01-30 15:10:41,762 [INFO] myLib.common.myLib.common: myLib.common logger start
+2026-01-30 15:10:41,763 [INFO] myLib.myGui.mygui_serial.myLib.myGui.mygui_serial: myLib.myGui.mygui_serial logger start
+2026-01-30 15:10:41,764 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: myLib.myGui.myLabel logger start
+2026-01-30 15:10:41,764 [INFO] myLib.myGui.myLineEdit.myLib.myGui.myLineEdit: myLib.myGui.myLineEdit logger start
+2026-01-30 15:10:41,765 [INFO] myLib.myGui.myCheckBox.myLib.myGui.myCheckBox: myLib.myGui.myCheckBox logger start
+2026-01-30 15:10:41,766 [INFO] myLib.myGui.myRadioButton.myLib.myGui.myRadioButton: myLib.myGui.myRadioButton logger start
+2026-01-30 15:10:41,767 [INFO] record_Log: record_Log logger start
+2026-01-30 15:10:41,778 [INFO] myLib.myGui.AttitudeIndicator.myLib.myGui.AttitudeIndicator: myLib.myGui.AttitudeIndicator logger start
+2026-01-30 15:10:41,780 [INFO] myLib.myGui.pig_menu_manager.myLib.myGui.pig_menu_manager: myLib.myGui.pig_menu_manager logger start
+2026-01-30 15:10:41,785 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: myLib.mySerial.Connector logger start
+2026-01-30 15:10:41,790 [INFO] myLib.myGui.myComboBox.myLib.myGui.myComboBox: myLib.myGui.myComboBox logger start
+2026-01-30 15:10:41,791 [INFO] drivers.hins_fog_imu.widgets.pig_parameters_widget.drivers.hins_fog_imu.widgets.pig_parameters_widget: drivers.hins_fog_imu.widgets.pig_parameters_widget logger start
+2026-01-30 15:10:41,793 [INFO] drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget.drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget: drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget logger start
+2026-01-30 15:10:41,794 [INFO] drivers.hins_fog_imu.widgets.pig_version_widget.drivers.hins_fog_imu.widgets.pig_version_widget: drivers.hins_fog_imu.widgets.pig_version_widget logger start
+2026-01-30 15:10:41,795 [INFO] drivers.hins_fog_imu.widgets.pig_configuration_widget.drivers.hins_fog_imu.widgets.pig_configuration_widget: drivers.hins_fog_imu.widgets.pig_configuration_widget logger start
+2026-01-30 15:10:41,801 [INFO] myLib.crcCalculator.crcLib.myLib.crcCalculator.crcLib: myLib.crcCalculator.crcLib logger start
+2026-01-30 15:10:42,928 [INFO] Main: Port Selected: COM33
+2026-01-30 15:10:42,929 [INFO] Main: Port Selected: COM33
+2026-01-30 15:10:44,216 [INFO] Main: Port Selected: COM19
+2026-01-30 15:10:44,756 [INFO] Main: Connecting to COM19 at 230400...
+2026-01-30 15:10:44,798 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM19 is connected
+2026-01-30 15:10:44,799 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-01-30 15:10:44,800 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-01-30 15:10:44,801 [INFO] main.drivers.HinsHybrid: Hybrid Reader (Dispatcher) Started.
+2026-01-30 15:10:45,752 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-30 15:10:48,212 [INFO] Main: Restarting Hybrid Reader Thread...
+2026-01-30 15:10:48,228 [INFO] main.drivers.HinsHybrid: Hybrid Reader (Dispatcher) Started.
+2026-01-30 15:10:48,366 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 70 65 B2 BF DD 89 B4 3D 0E AE BD BF C6 2A 7D 1F 86 EF 1B 41 04 00 01 00 01 00 01 B6 3E
+2026-01-30 15:10:48,368 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 15:10:48,460 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 1D F4 19 BF A4 46 83 3B AA FA 1A BF AC 6C 43 38 26 F2 1B 41 04 00 01 00 01 00 01 99 6B
+2026-01-30 15:10:48,460 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 15:10:48,559 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 66 EA 19 BF 4B 06 C5 3B 73 74 1B BF 12 D3 A9 9E 26 F2 1B 41 04 00 01 00 01 00 01 5E 27
+2026-01-30 15:10:48,560 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 15:10:48,659 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 66 EA 19 BF B6 62 03 3C F1 F7 1B BF A6 4A 10 05 27 F2 1B 41 04 00 01 00 01 00 01 3F AE
+2026-01-30 15:10:48,659 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 15:10:48,761 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 C9 DE 19 BF D5 42 24 3C D4 6F 1C BF 0D B1 76 6B 27 F2 1B 41 04 00 01 00 01 00 01 AC A0
+2026-01-30 15:10:48,762 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 15:10:48,859 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 C9 DE 19 BF 89 23 45 3C 57 F3 1C BF A1 28 DD D1 27 F2 1B 41 04 00 01 00 01 00 01 41 09
+2026-01-30 15:10:48,865 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 15:10:48,960 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 DA D8 19 BF 50 04 66 3C EB 70 1D BF 08 8F 43 38 28 F2 1B 41 04 00 01 00 01 00 01 C3 B3
+2026-01-30 15:10:48,973 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 15:10:49,059 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 DA D8 19 BF FE 72 83 3C 72 F4 1D BF 6E F5 A9 9E 28 F2 1B 41 04 00 01 00 01 00 01 9F FB
+2026-01-30 15:10:49,060 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 15:10:49,159 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 FA C6 19 BF BB E3 93 3C 18 66 1E BF D4 5B 10 05 29 F2 1B 41 04 00 01 00 01 00 01 9F 97
+2026-01-30 15:10:49,161 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 15:10:49,258 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 FA C6 19 BF 69 54 A4 3C 9D E9 1E BF 3B C2 76 6B 29 F2 1B 41 04 00 01 00 01 00 01 71 0A
+2026-01-30 15:10:49,260 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 15:10:49,361 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 92 BB 19 BF 01 C6 B4 3C C2 61 1F BF CF 39 DD D1 29 F2 1B 41 04 00 01 00 01 00 01 8E 29
+2026-01-30 15:10:49,363 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 15:10:49,459 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 92 BB 19 BF F6 37 C5 3C 52 E5 1F BF 36 A0 43 38 2A F2 1B 41 04 00 01 00 01 00 01 B5 F7
+2026-01-30 15:10:49,460 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 15:10:49,559 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 1F B4 19 BF A0 A8 D5 3C 64 61 20 BF CA 17 AA 9E 2A F2 1B 41 04 00 01 00 01 00 01 CD BC
+2026-01-30 15:10:49,560 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 15:10:49,659 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 1F B4 19 BF FC 19 E6 3C EF E4 20 BF 31 7E 10 05 2B F2 1B 41 04 00 01 00 01 00 01 55 5A
+2026-01-30 15:10:49,660 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 15:10:49,759 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 27 A5 19 BF 51 8C F6 3C 8A 59 21 BF C5 F5 76 6B 2B F2 1B 41 04 00 01 00 01 00 01 0E 71
+2026-01-30 15:10:49,760 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 15:10:49,858 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 27 A5 19 BF 3A 7F 03 3D 1B DD 21 BF 2B 5C DD D1 2B F2 1B 41 04 00 01 00 01 00 01 A7 11
+2026-01-30 15:10:49,859 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 15:10:49,962 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 E1 9D 19 BF 81 B8 0B 3D 69 59 22 BF 92 C2 43 38 2C F2 1B 41 04 00 01 00 01 00 01 47 0B
+2026-01-30 15:10:49,963 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 15:10:50,059 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 E1 9D 19 BF 3E F2 13 3D 05 DD 22 BF 26 3A AA 9E 2C F2 1B 41 04 00 01 00 01 00 01 3F C5
+2026-01-30 15:10:50,067 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 15:10:50,159 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 BE 94 19 BF 74 2B 1C 3D 75 57 23 BF 8D A0 10 05 2D F2 1B 41 04 00 01 00 01 00 01 11 46
+2026-01-30 15:10:50,161 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 15:10:50,259 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 BE 94 19 BF AD 64 24 3D 09 DB 23 BF 21 18 77 6B 2D F2 1B 41 04 00 01 00 01 00 01 7C 76
+2026-01-30 15:10:50,260 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 15:10:50,358 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 31 90 19 BF C3 9D 2C 3D 0D 5A 24 BF 87 7E DD D1 2D F2 1B 41 04 00 01 00 01 00 01 5E 86
+2026-01-30 15:10:50,360 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 15:10:50,459 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 31 90 19 BF 6C D6 34 3D 98 DD 24 BF 1C F6 43 38 2E F2 1B 41 04 00 01 00 01 00 01 31 22
+2026-01-30 15:10:50,460 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 15:10:50,561 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 00 7E 19 BF E7 0E 3D 3D EE 4E 25 BF 82 5C AA 9E 2E F2 1B 41 04 00 01 00 01 00 01 0B B3
+2026-01-30 15:10:50,562 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 15:10:50,659 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 00 7E 19 BF 1C 47 45 3D 72 D2 25 BF 17 D4 10 05 2F F2 1B 41 04 00 01 00 01 00 01 64 70
+2026-01-30 15:10:50,660 [INFO] drivers.HinsMonitor.Validator: Matched with % 256 logic!
+2026-01-30 15:10:50,869 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-30 15:11:38,990 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-30 15:11:38,991 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-30 15:11:39,108 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM19 is disconnected
+2026-01-30 15:25:49,295 [INFO] pigImu_Widget.pigImu_Widget: pigImu_Widget logger start
+2026-01-30 15:25:49,316 [INFO] myLib.myGui.graph.myLib.myGui.graph: myLib.myGui.graph logger start
+2026-01-30 15:25:49,946 [INFO] myLib.common.myLib.common: myLib.common logger start
+2026-01-30 15:25:49,947 [INFO] myLib.myGui.mygui_serial.myLib.myGui.mygui_serial: myLib.myGui.mygui_serial logger start
+2026-01-30 15:25:49,948 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: myLib.myGui.myLabel logger start
+2026-01-30 15:25:49,949 [INFO] myLib.myGui.myLineEdit.myLib.myGui.myLineEdit: myLib.myGui.myLineEdit logger start
+2026-01-30 15:25:49,950 [INFO] myLib.myGui.myCheckBox.myLib.myGui.myCheckBox: myLib.myGui.myCheckBox logger start
+2026-01-30 15:25:49,950 [INFO] myLib.myGui.myRadioButton.myLib.myGui.myRadioButton: myLib.myGui.myRadioButton logger start
+2026-01-30 15:25:49,951 [INFO] record_Log: record_Log logger start
+2026-01-30 15:25:49,962 [INFO] myLib.myGui.AttitudeIndicator.myLib.myGui.AttitudeIndicator: myLib.myGui.AttitudeIndicator logger start
+2026-01-30 15:25:49,965 [INFO] myLib.myGui.pig_menu_manager.myLib.myGui.pig_menu_manager: myLib.myGui.pig_menu_manager logger start
+2026-01-30 15:25:49,969 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: myLib.mySerial.Connector logger start
+2026-01-30 15:25:49,975 [INFO] myLib.myGui.myComboBox.myLib.myGui.myComboBox: myLib.myGui.myComboBox logger start
+2026-01-30 15:25:49,976 [INFO] drivers.hins_fog_imu.widgets.pig_parameters_widget.drivers.hins_fog_imu.widgets.pig_parameters_widget: drivers.hins_fog_imu.widgets.pig_parameters_widget logger start
+2026-01-30 15:25:49,977 [INFO] drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget.drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget: drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget logger start
+2026-01-30 15:25:49,978 [INFO] drivers.hins_fog_imu.widgets.pig_version_widget.drivers.hins_fog_imu.widgets.pig_version_widget: drivers.hins_fog_imu.widgets.pig_version_widget logger start
+2026-01-30 15:25:49,979 [INFO] drivers.hins_fog_imu.widgets.pig_configuration_widget.drivers.hins_fog_imu.widgets.pig_configuration_widget: drivers.hins_fog_imu.widgets.pig_configuration_widget logger start
+2026-01-30 15:25:49,985 [INFO] myLib.crcCalculator.crcLib.myLib.crcCalculator.crcLib: myLib.crcCalculator.crcLib logger start
+2026-01-30 15:25:51,264 [INFO] Main: Port Selected: COM33
+2026-01-30 15:25:51,265 [INFO] Main: Port Selected: COM33
+2026-01-30 15:25:52,400 [INFO] Main: Port Selected: COM19
+2026-01-30 15:25:52,880 [INFO] Main: Connecting to COM19 at 230400...
+2026-01-30 15:25:52,921 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM19 is connected
+2026-01-30 15:25:52,923 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-01-30 15:25:52,923 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-01-30 15:25:52,926 [INFO] main.drivers.HinsHybrid: Hybrid Reader (Dispatcher) Started.
+2026-01-30 15:25:54,491 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 A9 41 F8 3F D8 A4 89 3B 04 B8 F7 3F 78 36 07 2F 4E 00 1C 41 04 00 01 00 01 00 01 66 92
+2026-01-30 15:25:54,588 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 A5 41 F8 3F C9 17 D2 3B 8D 6F F7 3F 0C AE 6D 95 4E 00 1C 41 04 00 01 00 01 00 01 27 E7
+2026-01-30 15:25:54,689 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 A5 41 F8 3F CC 43 0D 3C 1D 27 F7 3F 73 14 D4 FB 4E 00 1C 41 04 00 01 00 01 00 01 74 1F
+2026-01-30 15:25:54,789 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 51 42 F8 3F 00 7C 31 3C 59 DF F6 3F 07 8C 3A 62 4F 00 1C 41 04 00 01 00 01 00 01 7F 7F
+2026-01-30 15:25:54,889 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 51 42 F8 3F 0B B6 55 3C E5 96 F6 3F 6E F2 A0 C8 4F 00 1C 41 04 00 01 00 01 00 01 C4 41
+2026-01-30 15:25:54,988 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 5C 3E F8 3F B0 ED 79 3C 81 4A F6 3F 02 6A 07 2F 50 00 1C 41 04 00 01 00 01 00 01 F6 15
+2026-01-30 15:25:55,090 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 5C 3E F8 3F 43 11 8F 3C 17 02 F6 3F 69 D0 6D 95 50 00 1C 41 04 00 01 00 01 00 01 AA D5
+2026-01-30 15:25:55,189 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 94 3F F8 3F E6 2B A1 3C E4 BA F5 3F FD 47 D4 FB 50 00 1C 41 04 00 01 00 01 00 01 0E 79
+2026-01-30 15:25:55,289 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 94 3F F8 3F 1C 47 B3 3C 78 72 F5 3F 63 AE 3A 62 51 00 1C 41 04 00 01 00 01 00 01 59 CA
+2026-01-30 15:25:55,389 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 BA 3E F8 3F F4 61 C5 3C 32 29 F5 3F CA 14 A1 C8 51 00 1C 41 04 00 01 00 01 00 01 8D 1C
+2026-01-30 15:25:55,488 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 BA 3E F8 3F CF 7D D7 3C C3 E0 F4 3F 5E 8C 07 2F 52 00 1C 41 04 00 01 00 01 00 01 B7 84
+2026-01-30 15:25:55,588 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 A8 3F F8 3F 11 9B E9 3C 3C 99 F4 3F C5 F2 6D 95 52 00 1C 41 04 00 01 00 01 00 01 E3 44
+2026-01-30 15:25:55,690 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 A8 3F F8 3F 16 B9 FB 3C C4 50 F4 3F 59 6A D4 FB 52 00 1C 41 04 00 01 00 01 00 01 30 FA
+2026-01-30 15:25:55,788 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 D1 3F F8 3F 4F EC 06 3D 6F 08 F4 3F BF D0 3A 62 53 00 1C 41 04 00 01 00 01 00 01 CE 05
+2026-01-30 15:25:55,888 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 D1 3F F8 3F 54 FC 0F 3D EE BF F3 3F 54 48 A1 C8 53 00 1C 41 04 00 01 00 01 00 01 FB 1D
+2026-01-30 15:25:55,988 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 82 3F F8 3F 31 0C 19 3D 20 77 F3 3F BA AE 07 2F 54 00 1C 41 04 00 01 00 01 00 01 27 16
+2026-01-30 15:25:56,088 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 82 3F F8 3F AD 1B 22 3D A5 2E F3 3F 21 15 6E 95 54 00 1C 41 04 00 01 00 01 00 01 92 AC
+2026-01-30 15:25:56,188 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 DB 3E F8 3F FF 2A 2B 3D 83 E5 F2 3F 87 7B D4 FB 54 00 1C 41 04 00 01 00 01 00 01 80 25
+2026-01-30 15:25:56,291 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 DB 3E F8 3F 80 3A 34 3D 07 9D F2 3F EE E1 3A 62 55 00 1C 41 04 00 01 00 01 00 01 F1 3F
+2026-01-30 15:25:56,389 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 41 39 F8 3F CA 49 3D 3D F3 4E F2 3F 82 59 A1 C8 55 00 1C 41 04 00 01 00 01 00 01 2A 61
+2026-01-30 15:25:56,488 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 41 39 F8 3F 03 59 46 3D 79 06 F2 3F E8 BF 07 2F 56 00 1C 41 04 00 01 00 01 00 01 54 1A
+2026-01-30 15:25:56,589 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 6A 36 F8 3F 84 68 4F 3D 26 BB F1 3F 7D 37 6E 95 56 00 1C 41 04 00 01 00 01 00 01 4E 8B
+2026-01-30 15:25:56,688 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 6A 36 F8 3F F9 77 58 3D AA 72 F1 3F E3 9D D4 FB 56 00 1C 41 04 00 01 00 01 00 01 AE 43
+2026-01-30 15:25:56,788 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 A5 35 F8 3F 78 87 61 3D 69 29 F1 3F 78 15 3B 62 57 00 1C 41 04 00 01 00 01 00 01 D2 58
+2026-01-30 15:25:56,889 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 A5 35 F8 3F 9E 97 6A 3D E8 E0 F0 3F DE 7B A1 C8 57 00 1C 41 04 00 01 00 01 00 01 DE 9D
+2026-01-30 15:25:56,988 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 95 34 F8 3F 8D A8 73 3D 51 97 F0 3F 44 E2 07 2F 58 00 1C 41 04 00 01 00 01 00 01 91 D1
+2026-01-30 15:25:57,088 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 95 34 F8 3F C2 B9 7C 3D C7 4E F0 3F D9 59 6E 95 58 00 1C 41 04 00 01 00 01 00 01 E6 A7
+2026-01-30 15:25:57,188 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 03 34 F8 3F A6 E5 82 3D A9 05 F0 3F 3F C0 D4 FB 58 00 1C 41 04 00 01 00 01 00 01 9C 39
+2026-01-30 15:25:57,288 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 03 34 F8 3F 71 6E 87 3D 1C BD EF 3F D4 37 3B 62 59 00 1C 41 04 00 01 00 01 00 01 FA 64
+2026-01-30 15:25:57,387 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 A9 31 F8 3F A8 F7 8B 3D 2E 72 EF 3F 3A 9E A1 C8 59 00 1C 41 04 00 01 00 01 00 01 C1 45
+2026-01-30 15:25:57,490 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 A9 31 F8 3F B6 80 90 3D 9E 29 EF 3F CF 15 08 2F 5A 00 1C 41 04 00 01 00 01 00 01 5F 3B
+2026-01-30 15:25:57,588 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 99 30 F8 3F D8 09 95 3D FC DF EE 3F 35 7C 6E 95 5A 00 1C 41 04 00 01 00 01 00 01 AA F5
+2026-01-30 15:25:57,689 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 99 30 F8 3F F1 92 99 3D 6A 97 EE 3F 9B E2 D4 FB 5A 00 1C 41 04 00 01 00 01 00 01 0E EC
+2026-01-30 15:25:57,788 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 ED 31 F8 3F 2D 1C 9E 3D 2A 50 EE 3F 30 5A 3B 62 5B 00 1C 41 04 00 01 00 01 00 01 83 32
+2026-01-30 15:25:57,888 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 ED 31 F8 3F 7A A5 A2 3D 95 07 EE 3F 96 C0 A1 C8 5B 00 1C 41 04 00 01 00 01 00 01 17 8A
+2026-01-30 15:25:57,989 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 9F 30 F8 3F B3 2E A7 3D B4 BD ED 3F 2B 38 08 2F 5C 00 1C 41 04 00 01 00 01 00 01 3F F1
+2026-01-30 15:25:58,090 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 9F 30 F8 3F A5 B7 AB 3D 25 75 ED 3F 91 9E 6E 95 5C 00 1C 41 04 00 01 00 01 00 01 7F A0
+2026-01-30 15:25:58,187 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 60 2F F8 3F A5 40 B0 3D 56 2B ED 3F 26 16 D5 FB 5C 00 1C 41 04 00 01 00 01 00 01 8E CD
+2026-01-30 15:25:58,288 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 60 2F F8 3F A9 C9 B4 3D C5 E2 EC 3F 8C 7C 3B 62 5D 00 1C 41 04 00 01 00 01 00 01 DE E8
+2026-01-30 15:25:58,388 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 90 30 F8 3F AB 52 B9 3D 65 9B EC 3F F2 E2 A1 C8 5D 00 1C 41 04 00 01 00 01 00 01 90 D5
+2026-01-30 15:25:58,489 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 90 30 F8 3F DF DB BD 3D D2 52 EC 3F 87 5A 08 2F 5E 00 1C 41 04 00 01 00 01 00 01 51 F5
+2026-01-30 15:25:58,589 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 E4 2E F8 3F 09 65 C2 3D 93 08 EC 3F ED C0 6E 95 5E 00 1C 41 04 00 01 00 01 00 01 6B 4B
+2026-01-30 15:25:58,690 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 E4 2E F8 3F 42 EE C6 3D 00 C0 EB 3F 82 38 D5 FB 5E 00 1C 41 04 00 01 00 01 00 01 2F C8
+2026-01-30 15:25:58,789 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 0D 2D F8 3F 5F 77 CB 3D 97 75 EB 3F E8 9E 3B 62 5F 00 1C 41 04 00 01 00 01 00 01 E8 55
+2026-01-30 15:25:58,839 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 40 12 02 E6 B9 BA 3E 48 3A DA 2E B8 40 95 A2 1B FE 81 FF 55 8C C2 F5 BD 5F 8F 42 BE 26 75 A2 3F
+2026-01-30 15:25:58,889 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 0D 2D F8 3F 94 00 D0 3D 04 2D EB 3F 7C 16 A2 C8 5F 00 1C 41 04 00 01 00 01 00 01 A9 8D
+2026-01-30 15:25:58,988 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 43 27 F8 3F E5 89 D4 3D A5 DE EA 3F E3 7C 08 2F 60 00 1C 41 04 00 01 00 01 00 01 A3 02
+2026-01-30 15:25:59,089 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 43 27 F8 3F 27 13 D9 3D 11 96 EA 3F 77 F4 6E 95 60 00 1C 41 04 00 01 00 01 00 01 70 5B
+2026-01-30 15:25:59,189 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 F7 25 F8 3F 3D 9C DD 3D 33 4C EA 3F DE 5A D5 FB 60 00 1C 41 04 00 01 00 01 00 01 37 29
+2026-01-30 15:25:59,290 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 F7 25 F8 3F B4 25 E2 3D 9C 03 EA 3F 44 C1 3B 62 61 00 1C 41 04 00 01 00 01 00 01 F7 5B
+2026-01-30 15:25:59,388 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 A3 28 F8 3F 02 AF E6 3D B3 BD E9 3F D9 38 A2 C8 61 00 1C 41 04 00 01 00 01 00 01 2B F7
+2026-01-30 15:25:59,488 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 A3 28 F8 3F 42 38 EB 3D 1F 75 E9 3F 3F 9F 08 2F 62 00 1C 41 04 00 01 00 01 00 01 B8 83
+2026-01-30 15:25:59,588 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 02 23 F8 3F B2 C1 EF 3D E7 26 E9 3F A5 05 6F 95 62 00 1C 41 04 00 01 00 01 00 01 21 0B
+2026-01-30 15:25:59,688 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 02 23 F8 3F 6B 4B F4 3D 4B DE E8 3F 0C 6C D5 FB 62 00 1C 41 04 00 01 00 01 00 01 1E DB
+2026-01-30 15:25:59,789 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 B9 26 F8 3F 3F D5 F8 3D 65 99 E8 3F A0 E3 3B 62 63 00 1C 41 04 00 01 00 01 00 01 E8 01
+2026-01-30 15:25:59,890 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 B9 26 F8 3F 29 5F FD 3D C6 50 E8 3F 07 4A A2 C8 63 00 1C 41 04 00 01 00 01 00 01 14 0B
+2026-01-30 15:25:59,988 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 E3 24 F8 3F 7F F4 00 3E 53 06 E8 3F 9B C1 08 2F 64 00 1C 41 04 00 01 00 01 00 01 47 9E
+2026-01-30 15:26:00,089 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 E3 24 F8 3F 75 39 03 3E B4 BD E7 3F 01 28 6F 95 64 00 1C 41 04 00 01 00 01 00 01 36 84
+2026-01-30 15:26:00,189 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 72 32 F8 3F 6C 7E 05 3E A4 82 E7 3F 96 9F D5 FB 64 00 1C 41 04 00 01 00 01 00 01 9E 2B
+2026-01-30 15:26:00,288 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 72 32 F8 3F 5C C3 07 3E 06 3A E7 3F FC 05 3C 62 65 00 1C 41 04 00 01 00 01 00 01 8A B1
+2026-01-30 15:26:00,389 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 58 2C F8 3F 85 08 0A 3E 47 EB E6 3F 91 7D A2 C8 65 00 1C 41 04 00 01 00 01 00 01 A5 A8
+2026-01-30 15:26:00,491 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 58 2C F8 3F 95 4D 0C 3E A5 A2 E6 3F F7 E3 08 2F 66 00 1C 41 04 00 01 00 01 00 01 AB A3
+2026-01-30 15:26:00,589 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 47 2D F8 3F 83 92 0E 3E F7 5A E6 3F 8C 5B 6F 95 66 00 1C 41 04 00 01 00 01 00 01 B4 C0
+2026-01-30 15:26:00,688 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 47 2D F8 3F 90 D7 10 3E 55 12 E6 3F F2 C1 D5 FB 66 00 1C 41 04 00 01 00 01 00 01 B6 71
+2026-01-30 15:26:00,789 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 6D 31 F8 3F C1 1C 13 3E D5 CD E5 3F 86 39 3C 62 67 00 1C 41 04 00 01 00 01 00 01 6E 5A
+2026-01-30 15:26:00,888 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 6D 31 F8 3F FC 61 15 3E 2E 85 E5 3F ED 9F A2 C8 67 00 1C 41 04 00 01 00 01 00 01 9A DD
+2026-01-30 15:26:00,988 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 21 33 F8 3F 43 A7 17 3E 39 3E E5 3F 81 17 09 2F 68 00 1C 41 04 00 01 00 01 00 01 7E C5
+2026-01-30 15:26:01,090 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 21 33 F8 3F 9E EC 19 3E 8D F5 E4 3F E8 7D 6F 95 68 00 1C 41 04 00 01 00 01 00 01 C3 A6
+2026-01-30 15:26:01,189 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 62 3D F8 3F 08 32 1C 3E 21 B7 E4 3F 4E E4 D5 FB 68 00 1C 41 04 00 01 00 01 00 01 B0 80
+2026-01-30 15:26:01,288 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 62 3D F8 3F 6A 77 1E 3E 75 6E E4 3F E3 5B 3C 62 69 00 1C 41 04 00 01 00 01 00 01 3F D7
+2026-01-30 15:26:01,389 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 47 3C F8 3F BE BC 20 3E AF 24 E4 3F 49 C2 A2 C8 69 00 1C 41 04 00 01 00 01 00 01 47 34
+2026-01-30 15:26:01,490 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 47 3C F8 3F EC 01 23 3E 0A DC E3 3F DD 39 09 2F 6A 00 1C 41 04 00 01 00 01 00 01 A9 6B
+2026-01-30 15:26:01,589 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 D4 32 F8 3F 02 47 25 3E F4 89 E3 3F 44 A0 6F 95 6A 00 1C 41 04 00 01 00 01 00 01 BB 97
+2026-01-30 15:26:01,690 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 D4 32 F8 3F 27 8C 27 3E 4F 41 E3 3F D8 17 D6 FB 6A 00 1C 41 04 00 01 00 01 00 01 12 E4
+2026-01-30 15:26:01,789 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 72 35 F8 3F 5D D1 29 3E 46 FB E2 3F 3F 7E 3C 62 6B 00 1C 41 04 00 01 00 01 00 01 7C DE
+2026-01-30 15:26:01,888 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 72 35 F8 3F A3 16 2C 3E 9E B2 E2 3F D3 F5 A2 C8 6B 00 1C 41 04 00 01 00 01 00 01 F0 DF
+2026-01-30 15:26:01,988 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 F7 37 F8 3F D8 5B 2E 3E 7C 6C E2 3F 39 5C 09 2F 6C 00 1C 41 04 00 01 00 01 00 01 27 39
+2026-01-30 15:26:02,089 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 F7 37 F8 3F 11 A1 30 3E D5 23 E2 3F CE D3 6F 95 6C 00 1C 41 04 00 01 00 01 00 01 90 32
+2026-01-30 15:26:02,189 [INFO] drivers.HinsMonitor.Reader: RX [MCU_MON]: EB 90 01 01 00 F4 36 F8 3F 53 E6 32 3E 2A DA E1 3F 34 3A D6 FB 6C 00 1C 41 04 00 01 00 01 00 01 BA 88
+2026-01-30 15:26:02,405 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-30 15:26:03,487 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-30 15:26:03,488 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-30 15:26:03,601 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM19 is disconnected
+2026-01-30 15:26:43,607 [INFO] pigImu_Widget.pigImu_Widget: pigImu_Widget logger start
+2026-01-30 15:26:43,628 [INFO] myLib.myGui.graph.myLib.myGui.graph: myLib.myGui.graph logger start
+2026-01-30 15:26:44,258 [INFO] myLib.common.myLib.common: myLib.common logger start
+2026-01-30 15:26:44,259 [INFO] myLib.myGui.mygui_serial.myLib.myGui.mygui_serial: myLib.myGui.mygui_serial logger start
+2026-01-30 15:26:44,260 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: myLib.myGui.myLabel logger start
+2026-01-30 15:26:44,260 [INFO] myLib.myGui.myLineEdit.myLib.myGui.myLineEdit: myLib.myGui.myLineEdit logger start
+2026-01-30 15:26:44,261 [INFO] myLib.myGui.myCheckBox.myLib.myGui.myCheckBox: myLib.myGui.myCheckBox logger start
+2026-01-30 15:26:44,262 [INFO] myLib.myGui.myRadioButton.myLib.myGui.myRadioButton: myLib.myGui.myRadioButton logger start
+2026-01-30 15:26:44,263 [INFO] record_Log: record_Log logger start
+2026-01-30 15:26:44,274 [INFO] myLib.myGui.AttitudeIndicator.myLib.myGui.AttitudeIndicator: myLib.myGui.AttitudeIndicator logger start
+2026-01-30 15:26:44,276 [INFO] myLib.myGui.pig_menu_manager.myLib.myGui.pig_menu_manager: myLib.myGui.pig_menu_manager logger start
+2026-01-30 15:26:44,280 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: myLib.mySerial.Connector logger start
+2026-01-30 15:26:44,285 [INFO] myLib.myGui.myComboBox.myLib.myGui.myComboBox: myLib.myGui.myComboBox logger start
+2026-01-30 15:26:44,286 [INFO] drivers.hins_fog_imu.widgets.pig_parameters_widget.drivers.hins_fog_imu.widgets.pig_parameters_widget: drivers.hins_fog_imu.widgets.pig_parameters_widget logger start
+2026-01-30 15:26:44,288 [INFO] drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget.drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget: drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget logger start
+2026-01-30 15:26:44,289 [INFO] drivers.hins_fog_imu.widgets.pig_version_widget.drivers.hins_fog_imu.widgets.pig_version_widget: drivers.hins_fog_imu.widgets.pig_version_widget logger start
+2026-01-30 15:26:44,290 [INFO] drivers.hins_fog_imu.widgets.pig_configuration_widget.drivers.hins_fog_imu.widgets.pig_configuration_widget: drivers.hins_fog_imu.widgets.pig_configuration_widget logger start
+2026-01-30 15:26:44,297 [INFO] myLib.crcCalculator.crcLib.myLib.crcCalculator.crcLib: myLib.crcCalculator.crcLib logger start
+2026-01-30 15:26:45,236 [INFO] Main: Port Selected: COM33
+2026-01-30 15:26:45,237 [INFO] Main: Port Selected: COM33
+2026-01-30 15:26:46,569 [INFO] Main: Port Selected: COM19
+2026-01-30 15:26:47,461 [INFO] Main: Connecting to COM19 at 230400...
+2026-01-30 15:26:47,502 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM19 is connected
+2026-01-30 15:26:47,503 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-01-30 15:26:47,504 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-01-30 15:26:47,506 [INFO] main.drivers.HinsHybrid: Hybrid Reader (Dispatcher) Started.
+2026-01-30 15:28:03,024 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-30 15:31:25,342 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-30 15:31:25,343 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-01-30 15:31:25,458 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM19 is disconnected
+2026-01-30 15:36:25,449 [INFO] pigImu_Widget.pigImu_Widget: pigImu_Widget logger start
+2026-01-30 15:36:25,471 [INFO] myLib.myGui.graph.myLib.myGui.graph: myLib.myGui.graph logger start
+2026-01-30 15:36:26,073 [INFO] myLib.common.myLib.common: myLib.common logger start
+2026-01-30 15:36:26,074 [INFO] myLib.myGui.mygui_serial.myLib.myGui.mygui_serial: myLib.myGui.mygui_serial logger start
+2026-01-30 15:36:26,075 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: myLib.myGui.myLabel logger start
+2026-01-30 15:36:26,076 [INFO] myLib.myGui.myLineEdit.myLib.myGui.myLineEdit: myLib.myGui.myLineEdit logger start
+2026-01-30 15:36:26,076 [INFO] myLib.myGui.myCheckBox.myLib.myGui.myCheckBox: myLib.myGui.myCheckBox logger start
+2026-01-30 15:36:26,077 [INFO] myLib.myGui.myRadioButton.myLib.myGui.myRadioButton: myLib.myGui.myRadioButton logger start
+2026-01-30 15:36:26,078 [INFO] record_Log: record_Log logger start
+2026-01-30 15:36:26,089 [INFO] myLib.myGui.AttitudeIndicator.myLib.myGui.AttitudeIndicator: myLib.myGui.AttitudeIndicator logger start
+2026-01-30 15:36:26,091 [INFO] myLib.myGui.pig_menu_manager.myLib.myGui.pig_menu_manager: myLib.myGui.pig_menu_manager logger start
+2026-01-30 15:36:26,095 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: myLib.mySerial.Connector logger start
+2026-01-30 15:36:26,100 [INFO] myLib.myGui.myComboBox.myLib.myGui.myComboBox: myLib.myGui.myComboBox logger start
+2026-01-30 15:36:26,101 [INFO] drivers.hins_fog_imu.widgets.pig_parameters_widget.drivers.hins_fog_imu.widgets.pig_parameters_widget: drivers.hins_fog_imu.widgets.pig_parameters_widget logger start
+2026-01-30 15:36:26,102 [INFO] drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget.drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget: drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget logger start
+2026-01-30 15:36:26,103 [INFO] drivers.hins_fog_imu.widgets.pig_version_widget.drivers.hins_fog_imu.widgets.pig_version_widget: drivers.hins_fog_imu.widgets.pig_version_widget logger start
+2026-01-30 15:36:26,104 [INFO] drivers.hins_fog_imu.widgets.pig_configuration_widget.drivers.hins_fog_imu.widgets.pig_configuration_widget: drivers.hins_fog_imu.widgets.pig_configuration_widget logger start
+2026-01-30 15:36:26,112 [INFO] myLib.crcCalculator.crcLib.myLib.crcCalculator.crcLib: myLib.crcCalculator.crcLib logger start
+2026-01-30 15:36:26,316 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: class connector's destructor called!
+2026-01-30 15:39:21,084 [INFO] pigImu_Widget.pigImu_Widget: pigImu_Widget logger start
+2026-01-30 15:39:21,106 [INFO] myLib.myGui.graph.myLib.myGui.graph: myLib.myGui.graph logger start
+2026-01-30 15:39:21,734 [INFO] myLib.common.myLib.common: myLib.common logger start
+2026-01-30 15:39:21,735 [INFO] myLib.myGui.mygui_serial.myLib.myGui.mygui_serial: myLib.myGui.mygui_serial logger start
+2026-01-30 15:39:21,735 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: myLib.myGui.myLabel logger start
+2026-01-30 15:39:21,736 [INFO] myLib.myGui.myLineEdit.myLib.myGui.myLineEdit: myLib.myGui.myLineEdit logger start
+2026-01-30 15:39:21,737 [INFO] myLib.myGui.myCheckBox.myLib.myGui.myCheckBox: myLib.myGui.myCheckBox logger start
+2026-01-30 15:39:21,737 [INFO] myLib.myGui.myRadioButton.myLib.myGui.myRadioButton: myLib.myGui.myRadioButton logger start
+2026-01-30 15:39:21,738 [INFO] record_Log: record_Log logger start
+2026-01-30 15:39:21,749 [INFO] myLib.myGui.AttitudeIndicator.myLib.myGui.AttitudeIndicator: myLib.myGui.AttitudeIndicator logger start
+2026-01-30 15:39:21,751 [INFO] myLib.myGui.pig_menu_manager.myLib.myGui.pig_menu_manager: myLib.myGui.pig_menu_manager logger start
+2026-01-30 15:39:21,756 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: myLib.mySerial.Connector logger start
+2026-01-30 15:39:21,762 [INFO] myLib.myGui.myComboBox.myLib.myGui.myComboBox: myLib.myGui.myComboBox logger start
+2026-01-30 15:39:21,763 [INFO] drivers.hins_fog_imu.widgets.pig_parameters_widget.drivers.hins_fog_imu.widgets.pig_parameters_widget: drivers.hins_fog_imu.widgets.pig_parameters_widget logger start
+2026-01-30 15:39:21,765 [INFO] drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget.drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget: drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget logger start
+2026-01-30 15:39:21,766 [INFO] drivers.hins_fog_imu.widgets.pig_version_widget.drivers.hins_fog_imu.widgets.pig_version_widget: drivers.hins_fog_imu.widgets.pig_version_widget logger start
+2026-01-30 15:39:21,766 [INFO] drivers.hins_fog_imu.widgets.pig_configuration_widget.drivers.hins_fog_imu.widgets.pig_configuration_widget: drivers.hins_fog_imu.widgets.pig_configuration_widget logger start
+2026-01-30 15:39:21,774 [INFO] myLib.crcCalculator.crcLib.myLib.crcCalculator.crcLib: myLib.crcCalculator.crcLib logger start
+2026-01-30 15:39:22,965 [INFO] Main: Port Selected: COM33
+2026-01-30 15:39:22,966 [INFO] Main: Port Selected: COM33
+2026-01-30 15:39:24,382 [INFO] Main: Port Selected: COM19
+2026-01-30 15:39:25,299 [INFO] Main: Connecting to COM19 at 230400...
+2026-01-30 15:39:25,340 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM19 is connected
+2026-01-30 15:39:25,342 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-01-30 15:39:25,343 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-01-30 15:39:25,345 [INFO] main.drivers.HinsHybrid: Hybrid Reader (Dispatcher) Started.
+2026-01-30 15:40:46,710 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.

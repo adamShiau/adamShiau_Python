@@ -37,10 +37,14 @@ from drivers.hins_fog_imu.widgets.pig_version_widget import VersionTable
 from drivers.hins_fog_imu.widgets.pig_configuration_widget import pig_configuration_widget
 from drivers.hins_gnss_ins.widgets.hins_config_widget import HinsConfigWidget
 
+# 引用 monitor Widget
+from drivers.hins_heading_monitor.widgets.monitor_graph_widget import MonitorGraphWidget
+
 # 引用新架構 Drivers
 from drivers.hins_hybrid_reader import HinsHybridReader
 from drivers.hins_fog_imu.hins_fog_imu_reader import HinsFogImuReader
 from drivers.hins_gnss_ins.hins_gnss_ins_reader import HinsGnssInsReader
+from drivers.hins_heading_monitor.hins_monitor_reader import HinsMonitorReader
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -56,10 +60,12 @@ class MainWindow(QMainWindow):
         # (B) 建立分機 (Passive Processors)
         self.fog_reader = HinsFogImuReader()
         self.gnss_reader = HinsGnssInsReader()
+        self.monitor_reader = HinsMonitorReader()
         # (C) 掛載：把分機交給總機管理
         # 這一步會自動註冊 Decoder 到 Dispatcher
         self.hybrid_reader.add_device(self.fog_reader)
         self.hybrid_reader.add_device(self.gnss_reader)
+        self.hybrid_reader.add_device(self.monitor_reader)
 
         # 資料存檔管理員 (參考 common.py)
         self.imudata_file = cmn.data_manager(fnum=0)
@@ -77,6 +83,7 @@ class MainWindow(QMainWindow):
         self.central_widget = pigImuWidget()
         self.setCentralWidget(self.central_widget)
         self.pig_menu = pig_menu_manager(self.menuBar(), self)
+        self.monitor_win = MonitorGraphWidget()
 
         # 4. 初始化功能子視窗
         # 注意：使用 fog_reader 傳入，因為它才有 dump_fog_parameters 等特定指令
@@ -107,6 +114,9 @@ class MainWindow(QMainWindow):
         self.central_widget.usb.bt_connect.clicked.connect(self.connect_serial)
         self.central_widget.usb.bt_disconnect.clicked.connect(self.disconnect_serial)
 
+        # 點擊 Monitor 按鈕顯示監控視窗
+        self.central_widget.monitor_bt.clicked.connect(self.show_monitor_window)
+
         # 讀取控制
         self.central_widget.read_bt.clicked.connect(self.start_reading)
         self.central_widget.stop_bt.clicked.connect(self.stop_reading)
@@ -133,6 +143,9 @@ class MainWindow(QMainWindow):
         # 數據流 (只進 Buffer)，數據流從 FogReader 發出的
         self.fog_reader.data_ready_qt.connect(self.collect_fog_data)
 
+        # [新增] 數據流連接：當 Monitor 數據解析完成時，更新圖表視窗
+        self.monitor_reader.data_ready_qt.connect(self.monitor_win.update_data)
+
         # RCS Checkbox 直接控制 FogReader 的模式
         self.central_widget.save_block.rcs_cb.clicked.connect(self.on_rcs_changed)
 
@@ -152,6 +165,12 @@ class MainWindow(QMainWindow):
         is_checked = self.central_widget.save_block.rcs_cb.isChecked()
         # 直接告訴 FogReader 切換模式，Main 不需要知道矩陣運算
         self.fog_reader.set_rcs_mode(is_checked)
+
+    def show_monitor_window(self):
+        if self.monitor_win:
+            self.monitor_win.show()
+            self.monitor_win.raise_()  # 確保視窗跳到最前面
+            self.monitor_win.activateWindow()
 
     def collect_fog_data(self, new_data_dict):
         """ 極速收集數據 (無阻塞) """

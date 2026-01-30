@@ -29,6 +29,23 @@ class pigImuWidget(QWidget):
 
     def initUI(self):
         self.usb = usbConnect()
+        # [新增] Monitor 按鈕
+        self.monitor_bt = QPushButton("Monitor")
+        self.monitor_bt.setEnabled(True)  # 預設開啟，讓使用者未連線也能開啟預覽排版
+        # 加入綠色背景樣式
+        self.monitor_bt.setStyleSheet("""
+            QPushButton {
+                background-color: #90EE90; 
+                color: black; 
+                font-weight: bold; 
+                border-radius: 5px;
+                border: 1px solid #777;
+            }
+            QPushButton:hover {
+                background-color: #7CCD7C;
+            }
+        """)
+
         self.read_bt = QPushButton("read")
         self.read_bt.setEnabled(False)
         self.stop_bt = QPushButton("stop")
@@ -75,8 +92,9 @@ class pigImuWidget(QWidget):
         layout = QGridLayout()
         layout.addWidget(self.usb.layout(), 0, 0, 1, 4)
         # layout.addWidget(self.kal_filter_rb, 0, 4, 1, 1)
-        layout.addWidget(self.read_bt, 0, 5, 1, 1)
-        layout.addWidget(self.stop_bt, 0, 6, 1, 1)
+        layout.addWidget(self.read_bt, 0, 4, 1, 1)
+        layout.addWidget(self.stop_bt, 0, 5, 1, 1)
+        layout.addWidget(self.monitor_bt, 0, 6, 1, 1)
         # layout.addWidget(self.saveDumpCb, 0, 7, 1, 1)
         layout.addWidget(self.save_block, 0, 7, 1, 6)
         layout.addWidget(self.plot1_unit_rb, 1, 0, 1, 2)

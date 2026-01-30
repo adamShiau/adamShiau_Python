@@ -30,8 +30,9 @@ class pigImuWidget(QWidget):
     def initUI(self):
         self.usb = usbConnect()
         # [新增] Monitor 按鈕
-        self.monitor_bt = QPushButton("Monitor")
-        self.monitor_bt.setEnabled(True)  # 預設開啟，讓使用者未連線也能開啟預覽排版
+        self.monitor_bt = QPushButton("TH Mon.")
+        self.monitor_bt.setEnabled(True)
+        self.monitor_bt.setFixedWidth(60)
         # 加入綠色背景樣式
         self.monitor_bt.setStyleSheet("""
             QPushButton {

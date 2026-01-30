@@ -5,14 +5,14 @@ import logging
 class HinsMonitorParser:
     def __init__(self):
         self.logger = logging.getLogger("drivers.HinsMonitor.Parser")
-        # 2B(Header), B(Fix), H(Valid), 3f(Floats), d(Double), 3H(U16s), B(Case), 2B(CK)
+        # 2B(Header[2]), B(Fix), H(Valid), 3f(Floats[3]), d(Double), 3H(U16s), B(Case), 2B(CK)
         # 長度計算: 2 + 1 + 2 + (4*3) + 8 + (2*3) + 1 + 2 = 34 Bytes
         self.struct_fmt = "<2B B H 3f d H H H B 2B"
 
     def parse(self, packet: list) -> dict:
         try:
             unpacked = struct.unpack(self.struct_fmt, bytes(packet))
-            return {
+            result = {
                 "type": "MCU_MONITOR",
                 "fix_type": unpacked[2],
                 "valid_flag_da": unpacked[3],
@@ -25,6 +25,9 @@ class HinsMonitorParser:
                 "status_82": unpacked[10],
                 "case_flag": unpacked[11]
             }
+            # print(f"Parser Output: {result}")
+            return result
+
         except Exception as e:
             self.logger.error(f"Parse error: {e}")
             return {}

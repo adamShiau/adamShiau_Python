@@ -6,7 +6,7 @@ class HinsMonitorDecoder(ProtocolParser):
         super().__init__()
         # MCU Monitor Header: EB 90
         self.header = [0xEB, 0x90]
-        self.packet_len = 34  # 更新後的封包長度
+        self.packet_len = 36  # 更新後的封包長度
 
     def push_byte(self, byte):
         self.buffer.append(byte)

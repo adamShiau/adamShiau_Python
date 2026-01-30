@@ -73,14 +73,14 @@ class MonitorGraphWidget(QWidget):
 
         self.le_widgets = {}
         fields = [
-            ("DA Fix Type:", "fix_type"), ("DA Valid Flag:", "valid"),
-            ("GPS TOW (s):", "tow"), ("Dynamic Mode:", "dyn"),
-            ("Filter State:", "state"), ("Filter Condition:", "cond"),
-            ("Case Flag:", "case"), ("Warning/Error:", "warn")
+            ("DA Fix Type:", "fix_type"), ("Status Flag:", "status_flag"), ("DA Valid Flag:", "valid"),
+            ("GPS TOW (s):", "tow"), ("Dynamic Mode:", "dyn"), ("Filter State:", "state"),
+            ("Filter Condition:", "cond"), ("Case Flag:", "case"), ("Warning/Error:", "warn")
         ]
 
         for i, (label, key) in enumerate(fields):
-            row, col = i // 4, (i % 4) * 2
+            # 調整為每行 3 個欄位以容納新增加的項目
+            row, col = i // 3, (i % 3) * 2
             grid.addWidget(QLabel(f"<b>{label}</b>"), row, col)
             le = QLineEdit("-")
             le.setReadOnly(True)
@@ -163,14 +163,19 @@ class MonitorGraphWidget(QWidget):
     @Slot(dict)
     def update_data(self, data):
         """ 接收解析數據並更新 UI 與圖表 """
+        # print(f"Widget received data keys: {data.keys()}")
         try:
-            # 1. 狀態與名稱更新
-            valid = data.get("valid_flag_da", 0)
+            # 1. 解析 Status Flag (bit 0: rcv_1, bit 1: rcv_2, bit 2: ant_offset)
+            s_flag = data.get("status_flag", 0)
             v_names = []
-            if valid & (1 << 0): v_names.append("RCV1")
-            if valid & (1 << 1): v_names.append("RCV2")
-            if valid & (1 << 2): v_names.append("ANT_OFF")
-            self.le_widgets["valid"].setText(f"{hex(valid)} ({'/'.join(v_names) if v_names else 'INV'})")
+            if s_flag & (1 << 0): v_names.append("RCV1")
+            if s_flag & (1 << 1): v_names.append("RCV2")
+            if s_flag & (1 << 2): v_names.append("ANT_OFF")
+            self.le_widgets["status_flag"].setText(f"{hex(s_flag)} ({'/'.join(v_names) if v_names else 'none valid'})")
+
+            # 2. Valid Flag 僅顯示原始十六進位
+            v_da = data.get("valid_flag_da", 0)
+            self.le_widgets["valid"].setText(f"{hex(v_da)}")
 
             s82 = data.get("status_82", 0)
             w_names = []

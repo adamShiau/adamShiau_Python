@@ -6,7 +6,7 @@ class HinsMonitorValidator:
         self.logger = logging.getLogger("drivers.HinsMonitor.Validator")
 
     def validate(self, packet: list) -> bool:
-        if len(packet) != 34: return False
+        if len(packet) != 36: return False
 
         data = packet[:-2]
         recv_ck_msb = packet[-2]

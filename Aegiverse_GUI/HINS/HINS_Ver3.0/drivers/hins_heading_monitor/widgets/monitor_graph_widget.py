@@ -111,15 +111,21 @@ class MonitorGraphWidget(QWidget):
 
         ctrl_layout.addStretch(1)
 
+        # 正式數值 Label 顯示區
         self.frame_da, self.lbl_val_da = self.create_formal_label("DA Heading", "#008080")
         self.frame_imu, self.lbl_val_imu = self.create_formal_label("IMU Heading", "#8B4513")
         self.frame_off, self.lbl_val_off = self.create_formal_label("G-Offset", "#800080")
+        # [新增] True Heading 顯示欄位
+        self.frame_true, self.lbl_val_true = self.create_formal_label("True Heading", "#D2691E")
 
         ctrl_layout.addWidget(self.frame_da)
         ctrl_layout.addSpacing(40)
         ctrl_layout.addWidget(self.frame_imu)
         ctrl_layout.addSpacing(40)
         ctrl_layout.addWidget(self.frame_off)
+        # [新增] 將 True Heading 加入佈局
+        ctrl_layout.addSpacing(40)
+        ctrl_layout.addWidget(self.frame_true)
 
         ctrl_layout.addStretch(1)
 
@@ -148,13 +154,15 @@ class MonitorGraphWidget(QWidget):
         main_layout.addWidget(self.pw)
 
     def update_buffer_size(self):
+        """ 當 QSpinBox 數值改變或初始化時呼叫 """
         self.max_pts = self.sb_points.value()
-        self.buf_da = np.zeros(self.max_pts);
-        self.buf_imu = np.zeros(self.max_pts);
+        self.buf_da = np.zeros(self.max_pts)
+        self.buf_imu = np.zeros(self.max_pts)
         self.buf_off = np.zeros(self.max_pts)
 
     @Slot(dict)
     def update_data(self, data):
+        """ 接收解析數據並更新 UI 與圖表 """
         try:
             # 1. 狀態與名稱更新
             valid = data.get("valid_flag_da", 0)
@@ -172,16 +180,14 @@ class MonitorGraphWidget(QWidget):
             if s82 & (1 << 5): w_names.append("Velocity")
             if s82 & (1 << 10): w_names.append("NoTimeSync")
 
-            # [修正] 當沒有警告位元(Bit 2-15)被觸發時，顯示 "no warning/err"
             warn_suffix = ", ".join(w_names) if w_names else "no warning/err"
             self.le_widgets["warn"].setText(f"{hex(s82)} ({warn_suffix})")
 
-            # [修正] Case Flag 背景顏色調整
+            # Case Flag 解析與背景顏色調整
             c_flag = data.get("case_flag", 0)
             c_name = "GNSS mode" if c_flag == 1 else "Inertial mode" if c_flag == 2 else "Unknown"
             self.le_widgets["case"].setText(f"{c_flag} ({c_name})")
 
-            # 當 case flag 為 2 時，背景顯示為淡藍色
             if c_flag == 2:
                 self.le_widgets["case"].setStyleSheet("background-color: #E0F7FA; color: #333; border: 1px solid #CCC;")
             else:
@@ -197,13 +203,20 @@ class MonitorGraphWidget(QWidget):
             cond = s82 & 0x03;
             self.le_widgets["cond"].setText(f"{cond} ({self.COND_NAMES.get(cond, 'UNK')})")
 
-            # 2. 正式數值更新
+            # 2. 正式數值更新 (帶單位)
             h_da = np.degrees(data.get("heading_da", 0.0))
             h_imu = np.degrees(data.get("imu_heading", 0.0))
             h_off = np.degrees(data.get("offset", 0.0))
-            self.lbl_val_da.setText(f"{h_da:.2f}");
-            self.lbl_val_imu.setText(f"{h_imu:.2f}");
+            self.lbl_val_da.setText(f"{h_da:.2f}")
+            self.lbl_val_imu.setText(f"{h_imu:.2f}")
             self.lbl_val_off.setText(f"{h_off:.2f}")
+
+            # [新增] True Heading 計算與顯示邏輯 (僅在 Inertial mode 時顯示)
+            if c_flag == 2:
+                h_true = h_imu + h_off
+                self.lbl_val_true.setText(f"{h_true:.2f}")
+            else:
+                self.lbl_val_true.setText("-")
 
             # 3. 滾動繪圖
             self.buf_da[:-1] = self.buf_da[1:];
@@ -212,14 +225,15 @@ class MonitorGraphWidget(QWidget):
             self.buf_imu[-1] = h_imu
             self.buf_off[:-1] = self.buf_off[1:];
             self.buf_off[-1] = h_off
-            self.cur_da.setData(self.buf_da);
-            self.cur_imu.setData(self.buf_imu);
+            self.cur_da.setData(self.buf_da)
+            self.cur_imu.setData(self.buf_imu)
             self.cur_off.setData(self.buf_off)
 
         except Exception as e:
             logger.error(f"UI Update Error: {e}")
 
 
+# [完整保留] 您的獨立執行區塊
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     window = MonitorGraphWidget()

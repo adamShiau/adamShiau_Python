@@ -211,6 +211,16 @@ class MonitorGraphWidget(QWidget):
             self.le_widgets["dyn"].setText(str(data.get("dynamic_mode", 0)))
             st = data.get("filter_state", 0);
             self.le_widgets["state"].setText(f"{st} ({self.STATE_NAMES.get(st, 'UNK')})")
+            # 當狀態為 4 (Full Navigation) 時，背景顯示為綠色；否則恢復原色
+            if st == 4:
+                # 淺綠色背景 (#C8E6C9)
+                self.le_widgets["state"].setStyleSheet(
+                    "background-color: #C8E6C9; color: #1B5E20; font-weight: bold; border: 1px solid #CCC;")
+            else:
+                # 恢復預設背景
+                self.le_widgets["state"].setStyleSheet(
+                    "background-color: #FDFDFD; color: #333; border: 1px solid #CCC;")
+
             ft = data.get("fix_type", 0);
             self.le_widgets["fix_type"].setText(f"{ft} ({self.FIX_NAMES.get(ft, 'UNK')})")
             cond = s82 & 0x03;

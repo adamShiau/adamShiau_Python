@@ -185,11 +185,24 @@ class MonitorGraphWidget(QWidget):
 
             # Case Flag 解析與背景顏色調整
             c_flag = data.get("case_flag", 0)
-            c_name = "GNSS mode" if c_flag == 1 else "Inertial mode" if c_flag == 2 else "Unknown"
+
+            # 定義顯示文字
+            if c_flag == 1:
+                c_name = "GNSS mode"
+            elif c_flag == 2:
+                c_name = "Inertial mode"
+            elif c_flag == 3:
+                c_name = "Reset (Waiting)"  # [新增] 重啟等待收斂狀態
+            else:
+                c_name = "Unknown"
+
             self.le_widgets["case"].setText(f"{c_flag} ({c_name})")
 
             if c_flag == 2:
                 self.le_widgets["case"].setStyleSheet("background-color: #E0F7FA; color: #333; border: 1px solid #CCC;")
+            elif c_flag == 3:
+                # [新增] 淡紅色背景
+                self.le_widgets["case"].setStyleSheet("background-color: #FFEBEE; color: #333; border: 1px solid #CCC;")
             else:
                 self.le_widgets["case"].setStyleSheet("background-color: #FDFDFD; color: #333; border: 1px solid #CCC;")
 

@@ -49,7 +49,7 @@ from drivers.hins_heading_monitor.hins_monitor_reader import HinsMonitorReader
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.GUI_VERSION = "HINS_Ver2.0"
+        self.GUI_VERSION = "HINS_Ver3.0"
         self.setWindowTitle("Aegiverse HINS GUI")
         self.resize(1450, 800)
 

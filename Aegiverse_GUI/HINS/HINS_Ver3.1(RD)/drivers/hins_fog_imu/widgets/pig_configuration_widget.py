@@ -34,7 +34,7 @@ class pig_configuration_widget(QWidget):
         self._updating_ui = False  # 防止 dump 回填時又觸發 valueChanged
 
         self.setWindowTitle("Configuration")
-        self.resize(450, 480)
+        self.resize(450, 500)
 
         # --- UI ---
         # --- DR/BR ---
@@ -64,6 +64,22 @@ class pig_configuration_widget(QWidget):
         # --- dump 按鈕  ---
         self.dump_btn = QPushButton("Dump Configuration")
 
+        # --- 新增 UI: Local Frame 區塊 ---
+        self.lf_group = QGroupBox("Local Frame Setting")
+        lf_layout = QHBoxLayout()  # 使用水平佈局
+        self.cb_enu = QtWidgets.QCheckBox("ENU (0)")
+        self.cb_ned = QtWidgets.QCheckBox("NED (1)")
+
+        # 使用 ButtonGroup 確保互斥 (二選一)
+        self.lf_btn_group = QtWidgets.QButtonGroup(self)
+        self.lf_btn_group.addButton(self.cb_enu, 0)  # ID 為 0
+        self.lf_btn_group.addButton(self.cb_ned, 1)  # ID 為 1
+        self.lf_btn_group.setExclusive(True)  # 開啟互斥
+
+        lf_layout.addWidget(self.cb_enu)
+        lf_layout.addWidget(self.cb_ned)
+        self.lf_group.setLayout(lf_layout)
+
         # --- Layout 配置 ---
         layout = QVBoxLayout()  # 使用垂直佈局包裝
         layout.addWidget(self.dr_idx)
@@ -72,6 +88,7 @@ class pig_configuration_widget(QWidget):
         layout.addWidget(self.br_hint)
         layout.addWidget(self.rcs_group)
         layout.addWidget(self.set_rcs_btn)
+        layout.addWidget(self.lf_group)
         layout.addWidget(self.dump_btn)
         self.setLayout(layout)
 
@@ -80,6 +97,7 @@ class pig_configuration_widget(QWidget):
         self.br_idx.spin.valueChanged.connect(self._on_br_changed)
         self.set_rcs_btn.clicked.connect(self.set_rcs_matrix)
         self.dump_btn.clicked.connect(self.dump_configuration)
+        self.lf_btn_group.idClicked.connect(self._on_lf_changed)
 
     # --- 內部工具函數  ---
     def _float_to_int_bits(self, val: float) -> int:
@@ -157,7 +175,7 @@ class pig_configuration_widget(QWidget):
         print(cfg)
 
         if isinstance(cfg, dict):
-            self._updating_ui = True
+            self._updating_ui = True # 開啟旗標避免回填時觸發 _on_lf_changed
             try:
                 # 1. 回填 DR/BR
                 self.dr_idx.spin.setValue(int(cfg.get("0", 0)))
@@ -173,10 +191,37 @@ class pig_configuration_widget(QWidget):
                             f_val = self._int_bits_to_float(int(val_int))
                             self.rcs_elements[r][c].spin.setValue(f_val)
                         key_idx += 1
+
+                # 3. 回填 Local Frame (Key: 11)
+                lf_val = cfg.get("11")
+                if lf_val is not None:
+                    lf_val = int(lf_val)
+                    if lf_val == 0:
+                        self.cb_enu.setChecked(True)
+                    elif lf_val == 1:
+                        self.cb_ned.setChecked(True)
+                    else:
+                        # 若數值非 0 或 1，取消所有勾選
+                        self.lf_btn_group.setExclusive(False)
+                        self.cb_enu.setChecked(False)
+                        self.cb_ned.setChecked(False)
+                        self.lf_btn_group.setExclusive(True)
+
+            except Exception as e:
+                logger.error(f"UI Update Error: {e}")
             finally:
                 self._updating_ui = False
         elif cfg == "無法取得值":  #
             QtWidgets.QMessageBox.warning(self, "Dump Error", "無法取得設定值")
+
+    def _on_lf_changed(self, val: int):
+        """當 CheckBox 被勾選時，立即送出指令"""
+        if self._updating_ui:
+            return
+
+        if self._ensure_act():
+            print(f"Sending Local Frame CMD: {hex(CMD_CFG_LF).upper()}, Val={val}")
+            self.__act.writeImuCmd(CMD_CFG_LF, val, 6)
 
     # 覆寫 show()，看排版（也會把視窗帶到最上層）
     def show(self):

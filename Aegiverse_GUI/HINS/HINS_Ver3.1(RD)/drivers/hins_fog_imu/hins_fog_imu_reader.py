@@ -28,7 +28,6 @@ class HinsFogImuReader(QObject):
         # RCS 設定
         self.is_rcs_mode = False
         self.R_CS = [0, -1, 0, 1, 0, 0, 0, 0, 1]
-        # self.R_CS = [0, -1, 0, 1, 0, 0, 0, 0, -1]
     def set_connector(self, connector):
         self._connector = connector
 

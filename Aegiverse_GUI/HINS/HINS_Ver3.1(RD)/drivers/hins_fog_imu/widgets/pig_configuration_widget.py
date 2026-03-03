@@ -21,15 +21,7 @@ CMD_CFG_RSC_MAP = [
     [0x4D, 0x4E, 0x4F], # Row 2: 21, 22, 23
     [0x50, 0x51, 0x52]  # Row 3: 31, 32, 33
 ]
-# CMD_CFG_RSC_11 = 0x4A
-# CMD_CFG_RSC_12 = 0x4B
-# CMD_CFG_RSC_13 = 0x4C
-# CMD_CFG_RSC_21 = 0x4D
-# CMD_CFG_RSC_22 = 0x4E
-# CMD_CFG_RSC_23 = 0x4F
-# CMD_CFG_RSC_31 = 0x50
-# CMD_CFG_RSC_32 = 0x51
-# CMD_CFG_RSC_33 = 0x52
+CMD_CFG_LF = 0x53
 
 # BR_TABLE = [9600, 115200, 230400, 460800, 921600]
 # DR_TABLE = [10, 50, 100, 200, 400]
@@ -82,23 +74,6 @@ class pig_configuration_widget(QWidget):
         layout.addWidget(self.set_rcs_btn)
         layout.addWidget(self.dump_btn)
         self.setLayout(layout)
-
-        # # DR/BR 部分
-        # config_layout = QGridLayout()
-        # config_layout.addWidget(self.dr_idx, 0, 0);
-        # config_layout.addWidget(self.dr_hint, 1, 0)
-        # config_layout.addWidget(self.br_idx, 2, 0);
-        # config_layout.addWidget(self.br_hint, 3, 0)
-        # main_layout.addLayout(config_layout)
-        #
-        # # RCS 部分
-        # main_layout.addWidget(self.rcs_group)
-        # self.rcs_group.setLayout(rcs_layout)
-        # main_layout.addWidget(self.set_rcs_btn)
-        #
-        # main_layout.addSpacing(10)
-        # main_layout.addWidget(self.dump_btn)
-        # self.setLayout(main_layout)
 
         # --- Signal ---
         self.dr_idx.spin.valueChanged.connect(self._on_dr_changed)

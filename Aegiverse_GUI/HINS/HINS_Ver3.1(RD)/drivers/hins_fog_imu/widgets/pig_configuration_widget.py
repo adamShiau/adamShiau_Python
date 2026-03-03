@@ -41,6 +41,15 @@ from myLib.myGui.myLabel import *  # spinBlock
 
 CMD_CFG_DR = 0x48
 CMD_CFG_BR = 0x49
+CMD_CFG_RSC_11 = 0x4A
+CMD_CFG_RSC_12 = 0x4B
+CMD_CFG_RSC_13 = 0x4C
+CMD_CFG_RSC_21 = 0x4D
+CMD_CFG_RSC_22 = 0x4E
+CMD_CFG_RSC_23 = 0x4F
+CMD_CFG_RSC_31 = 0x50
+CMD_CFG_RSC_32 = 0x51
+CMD_CFG_RSC_33 = 0x52
 
 BR_TABLE = [9600, 115200, 230400, 460800, 921600]
 DR_TABLE = [10, 50, 100, 200, 400]
@@ -120,6 +129,7 @@ class pig_configuration_widget(QWidget):
 
         self.__act.flushInputBuffer("None")
         cfg = self.__act.dump_configuration()
+        print(cfg)
 
         if isinstance(cfg, dict):
             dr = int(cfg.get("0", 0))  # "0" -> datarate idx

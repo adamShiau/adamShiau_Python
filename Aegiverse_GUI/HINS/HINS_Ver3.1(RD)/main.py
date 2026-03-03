@@ -107,6 +107,9 @@ class MainWindow(QMainWindow):
         # 6. 訊號連接
         self.connect_signals()
 
+        # 更新 Rcs
+        self.pig_configuration_menu.rcs_updated_qt.connect(self.fog_reader.update_rcs_matrix)
+
     def connect_signals(self):
         # USB 連線相關
         self.central_widget.usb.bt_update.clicked.connect(self.update_com_ports)
@@ -393,8 +396,23 @@ class MainWindow(QMainWindow):
             # --- [關鍵修正結束] ---
 
             self.hybrid_reader.start()  # 啟動執行緒
+
+            # [優化] 連線成功後，自動觸發一次參數同步
+            logger.info("Connection established. Synchronizing configuration...")
+            QTimer.singleShot(500, self.sync_config_on_connect)  # 延遲 0.5秒確保通訊穩定
+
+
         else:
             QMessageBox.critical(self, "Connection Error", "無法連接 Serial Port")
+
+    def sync_config_on_connect(self):
+        """ 自動執行 Dump 並更新所有 Reader 的內部參數 """
+        # 觸發 configuration_menu 的 dump 函式
+        # 這會導致：1. UI 更新, 2. 發送 rcs_updated_qt 訊號給 fog_reader
+        self.pig_configuration_menu.dump_configuration()
+
+        # 也可以同步更新 SN 或其他必要參數
+        # self.pig_parameter_widget.dump_parameters()
 
     def disconnect_serial(self):
         self.stop_reading()

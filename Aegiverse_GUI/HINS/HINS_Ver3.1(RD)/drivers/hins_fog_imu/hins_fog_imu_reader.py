@@ -28,6 +28,13 @@ class HinsFogImuReader(QObject):
         # RCS 設定
         self.is_rcs_mode = False
         self.R_CS = [0, -1, 0, 1, 0, 0, 0, 0, 1]
+
+    def update_rcs_matrix(self, matrix_list):
+        """ 更新軟體端運算用的 RCS 矩陣 """
+        if len(matrix_list) == 9:
+            self.R_CS = matrix_list
+            self.logger.info(f"Software RCS updated: {self.R_CS}")
+
     def set_connector(self, connector):
         self._connector = connector
 

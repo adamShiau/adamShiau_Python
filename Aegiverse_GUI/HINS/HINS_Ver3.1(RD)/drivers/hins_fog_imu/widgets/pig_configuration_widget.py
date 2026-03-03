@@ -28,6 +28,8 @@ CMD_CFG_LF = 0x53
 
 
 class pig_configuration_widget(QWidget):
+    rcs_updated_qt = Signal(list)
+
     def __init__(self, act=None, parent=None):
         super().__init__(parent)
         self.__act = act
@@ -183,14 +185,17 @@ class pig_configuration_widget(QWidget):
 
                 # 2. 回填 RCS 矩陣 (Key 2 ~ 10)
                 key_idx = 2
+                rcs_values = []
                 for r in range(3):
                     for c in range(3):
                         val_int = cfg.get(str(key_idx))
                         if val_int is not None:
                             # 轉換回浮點數後填入 UI
                             f_val = self._int_bits_to_float(int(val_int))
+                            rcs_values.append(f_val)
                             self.rcs_elements[r][c].spin.setValue(f_val)
                         key_idx += 1
+                self.rcs_updated_qt.emit(rcs_values)
 
                 # 3. 回填 Local Frame (Key: 11)
                 lf_val = cfg.get("11")

@@ -22,6 +22,12 @@ CMD_CFG_RSC_MAP = [
     [0x50, 0x51, 0x52]  # Row 3: 31, 32, 33
 ]
 CMD_CFG_LF = 0x53
+CMD_CFG_LPF_G = 0x54
+CMD_CFG_LPF_A = 0x55
+
+# LPF 頻寬對應表
+LPF_G_TABLE = ["133 Hz", "128 Hz", "112 Hz", "134 Hz", "86 Hz", "48 Hz", "24.6 Hz", "12.6 Hz"]
+LPF_A_TABLE = ["104 Hz", "41.6 Hz", "20.8 Hz", "9.24 Hz", "4.2 Hz", "2.1 Hz", "1 Hz", "0.5 Hz"]
 
 # BR_TABLE = [9600, 115200, 230400, 460800, 921600]
 # DR_TABLE = [10, 50, 100, 200, 400]
@@ -36,7 +42,7 @@ class pig_configuration_widget(QWidget):
         self._updating_ui = False  # 防止 dump 回填時又觸發 valueChanged
 
         self.setWindowTitle("Configuration")
-        self.resize(450, 500)
+        self.resize(450, 650)
 
         # --- UI ---
         # --- DR/BR ---
@@ -66,7 +72,7 @@ class pig_configuration_widget(QWidget):
         # --- dump 按鈕  ---
         self.dump_btn = QPushButton("Dump Configuration")
 
-        # --- 新增 UI: Local Frame 區塊 ---
+        # --- Local Frame 區塊 ---
         self.lf_group = QGroupBox("Local Frame Setting")
         lf_layout = QHBoxLayout()  # 使用水平佈局
         self.cb_enu = QtWidgets.QCheckBox("ENU (0)")

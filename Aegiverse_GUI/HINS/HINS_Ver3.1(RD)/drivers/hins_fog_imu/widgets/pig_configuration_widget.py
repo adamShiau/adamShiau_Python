@@ -17,6 +17,7 @@ CMD_CFG_RSC_MAP = [
 CMD_CFG_LF = 0x53
 CMD_CFG_LPF_G = 0x54  # Gyro LPF
 CMD_CFG_LPF_A = 0x55  # Accl LPF
+CMD_CFG_WZ_SRC= 0x56  # Accl LPF
 
 # LPF 頻寬對應表
 LPF_G_TABLE = ["133 Hz", "128 Hz", "112 Hz", "134 Hz", "86 Hz", "48 Hz", "24.6 Hz", "12.6 Hz"]
@@ -32,7 +33,7 @@ class pig_configuration_widget(QWidget):
         self._updating_ui = False
 
         self.setWindowTitle("Configuration")
-        self.resize(450, 650)  # 稍微調高視窗高度
+        self.resize(450, 750)  # 稍微調高視窗高度
 
         # --- UI ---
         # --- DR/BR ---
@@ -59,8 +60,8 @@ class pig_configuration_widget(QWidget):
         # --- Local Frame ---
         self.lf_group = QGroupBox("Local Frame Setting")
         lf_layout = QHBoxLayout()
-        self.cb_enu = QtWidgets.QCheckBox("ENU (0)")
-        self.cb_ned = QtWidgets.QCheckBox("NED (1)")
+        self.cb_enu = QtWidgets.QCheckBox("ENU")
+        self.cb_ned = QtWidgets.QCheckBox("NED")
         self.lf_btn_group = QtWidgets.QButtonGroup(self)
         self.lf_btn_group.addButton(self.cb_enu, 0)
         self.lf_btn_group.addButton(self.cb_ned, 1)
@@ -69,7 +70,20 @@ class pig_configuration_widget(QWidget):
         lf_layout.addWidget(self.cb_ned)
         self.lf_group.setLayout(lf_layout)
 
-        # --- MEMS IMU LPF (新增區塊) ---
+        # --- Gyro Z Source Setting ---
+        self.gz_group = QGroupBox("Gyro Z Source Setting")
+        gz_layout = QHBoxLayout()
+        self.cb_gz_mems = QtWidgets.QCheckBox("MEMS")
+        self.cb_gz_fog = QtWidgets.QCheckBox("FOG")
+        self.gz_btn_group = QtWidgets.QButtonGroup(self)
+        self.gz_btn_group.addButton(self.cb_gz_mems, 0)
+        self.gz_btn_group.addButton(self.cb_gz_fog, 1)
+        self.gz_btn_group.setExclusive(True)
+        gz_layout.addWidget(self.cb_gz_mems)
+        gz_layout.addWidget(self.cb_gz_fog)
+        self.gz_group.setLayout(gz_layout)
+
+        # --- MEMS IMU LPF ---
         self.lpf_group = QGroupBox("MEMS IMU LPF Setting")
         lpf_layout = QGridLayout()
         self.lpf_g_idx = spinBlock(title="Gyro LPF Index", minValue=0, maxValue=7, double=False, step=1)
@@ -92,6 +106,7 @@ class pig_configuration_widget(QWidget):
         layout.addWidget(self.dr_hint)
         layout.addWidget(self.br_idx)
         layout.addWidget(self.br_hint)
+        layout.addWidget(self.gz_group)
         layout.addWidget(self.lpf_group)
         layout.addWidget(self.lf_group)
         layout.addWidget(self.rcs_group)
@@ -105,9 +120,9 @@ class pig_configuration_widget(QWidget):
         self.set_rcs_btn.clicked.connect(self.set_rcs_matrix)
         self.dump_btn.clicked.connect(self.dump_configuration)
         self.lf_btn_group.idClicked.connect(self._on_lf_changed)
-        # LPF Signals
         self.lpf_g_idx.spin.valueChanged.connect(self._on_lpf_g_changed)
         self.lpf_a_idx.spin.valueChanged.connect(self._on_lpf_a_changed)
+        self.gz_btn_group.idClicked.connect(self._on_gz_changed)
 
     # --- 內部工具函數 ---
     def _float_to_int_bits(self, val: float) -> int:
@@ -126,6 +141,10 @@ class pig_configuration_widget(QWidget):
         return True
 
     # --- Event Handlers ---
+    def _on_gz_changed(self, val: int):
+        if self._updating_ui or not self._ensure_act(): return
+        print(f"Sending Gyro Z Source CMD: {hex(CMD_CFG_WZ_SRC).upper()}, Val={val}")
+        self.__act.writeImuCmd(CMD_CFG_WZ_SRC, val, 6)
     def _on_lpf_g_changed(self, val: int):
         self.lpf_g_val_label.setText(f"BW: {LPF_G_TABLE[val]}")
         if self._updating_ui: return
@@ -167,11 +186,16 @@ class pig_configuration_widget(QWidget):
         if not self._ensure_act(): return
         self.__act.flushInputBuffer("None")
         cfg = self.__act.dump_configuration()
-        print(f"Dump Result: {cfg}")
+        # Debug 1: 印出原始回傳資料
+        print(f"DEBUG - Raw cfg from act: {cfg} (Type: {type(cfg)})")
 
         if isinstance(cfg, dict):
             self._updating_ui = True
             try:
+                # Debug 2: 檢查特定的 Key 是否存在
+                for key in ["0", "1", "11", "12", "13", "14"]:
+                    print(f"DEBUG - Key {key} value: {cfg.get(key)}")
+
                 # 1. DR/BR
                 self.dr_idx.spin.setValue(int(cfg.get("0", 0)))
                 self.br_idx.spin.setValue(int(cfg.get("1", 0)))
@@ -205,8 +229,30 @@ class pig_configuration_widget(QWidget):
                 if lpf_a_val is not None:
                     self.lpf_a_idx.spin.setValue(int(lpf_a_val))
 
+                # 5. Gyro Z Source (Key 14)
+                gz_val = cfg.get("14")
+                if gz_val is not None:
+                    gz_val = int(gz_val)
+                    if gz_val == 0:
+                        self.cb_gz_mems.setChecked(True)
+                    elif gz_val == 1:
+                        self.cb_gz_fog.setChecked(True)
+
+                # Debug 3: 檢查 Gyro Z Source (Key 14)
+                gz_val = cfg.get("14")
+                if gz_val is not None:
+                    print(f"DEBUG - Setting Gyro Z Source to: {gz_val}")
+                    if int(gz_val) == 0:
+                        self.cb_gz_mems.setChecked(True)
+                    elif int(gz_val) == 1:
+                        self.cb_gz_fog.setChecked(True)
+
             except Exception as e:
-                print(f"UI Update Error: {e}")
+                # Debug 4: 捕捉報錯行數與原因
+                import traceback
+                print("--- UI Update Error Traceback ---")
+                traceback.print_exc()
+                print(f"Error detail: {e}")
             finally:
                 self._updating_ui = False
         elif cfg == "無法取得值":

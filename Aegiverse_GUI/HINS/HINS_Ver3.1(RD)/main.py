@@ -468,6 +468,16 @@ class MainWindow(QMainWindow):
     def show_configuration_menu(self):
         self.pig_configuration_menu.show()
 
+    def exception_hook(exctype, value, traceback):
+        print(exctype, value, traceback)
+        sys.__excepthook__(exctype, value, traceback)
+        # 彈出錯誤訊息視窗
+        msg = QMessageBox()
+        msg.setIcon(QMessageBox.Critical)
+        msg.setText(f"發生未預期錯誤: {value}")
+        msg.setWindowTitle("Error")
+        msg.exec()
+
     def show_hins_cmd_menu(self):
         self.hins_config_widget.show()
 

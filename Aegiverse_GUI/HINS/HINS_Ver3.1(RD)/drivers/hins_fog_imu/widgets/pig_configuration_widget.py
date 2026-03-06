@@ -150,6 +150,9 @@ class pig_configuration_widget(QWidget):
         self.__act.writeImuCmd(CMD_CFG_WZ_SRC, val, 6)
 
     def _on_lpf_g_changed(self, val: int):
+        if 0 <= val < len(LPF_G_TABLE):
+            self.lpf_g_val_label.setText(f"BW: {LPF_G_TABLE[val]}")
+
         if getattr(self, '_updating_ui', False):
             return
         if not self._ensure_act():
@@ -158,6 +161,9 @@ class pig_configuration_widget(QWidget):
         self.__act.writeImuCmd(CMD_CFG_LPF_G, val, 6)
 
     def _on_lpf_a_changed(self, val: int):
+        if 0 <= val < len(LPF_A_TABLE):
+            self.lpf_a_val_label.setText(f"BW: {LPF_A_TABLE[val]}")
+
         if getattr(self, '_updating_ui', False):
             return
         if not self._ensure_act():

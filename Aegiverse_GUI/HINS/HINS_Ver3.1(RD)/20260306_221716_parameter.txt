@@ -1,0 +1,95 @@
+# FOG Parameters Export - 20260306_221716
+
+[Z Channel]
+0=162             # frequency
+1=8292            # MOD_H
+2=-8292           # MOD_L
+3=1               # polarity
+4=51              # Wait cnt
+5=4               # avg
+6=5               # GAIN1
+7=16284           # const_step
+8=0               # mode(0:OPEN)
+9=6               # GAIN2
+10=1               # Err offset
+11=73              # DAC_GAIN
+12=645.0           # CutOff
+13=1.5             # Att. Threshold
+14=0               # Threshold EN
+17=0.0             # FOG STA
+18=350.000001      # FOG STB
+23=10.0            # FOG Bias T1
+24=50.0            # FOG Bias T2
+25=5.0             # FOG Bias BTA1
+26=6.0             # FOG Bias BTB1
+27=3.0             # FOG Bias BTA2
+28=4.0             # FOG Bias BTB2
+29=1.0             # FOG Bias BTA3
+30=2.0             # FOG Bias BTB3
+31=0.0             # ACCL STA
+32=10000.0         # ACCL STB
+33=1.0             # ACCL Bias BTA1
+34=2.0             # ACCL Bias BTB1
+
+[Y Channel]
+0=160             # frequency
+1=8192            # MOD_H
+2=-8192           # MOD_L
+3=1               # polarity
+4=51              # Wait cnt
+5=4               # avg
+6=7               # GAIN1
+7=16384           # const_step
+8=1               # mode(0:OPEN)
+9=6               # GAIN2
+10=1               # Err offset
+11=72              # DAC_GAIN
+12=655.0           # CutOff
+13=1.0             # Att. Threshold
+14=0               # Threshold EN
+17=0.0             # FOG STA
+18=350.000001      # FOG STB
+23=10.0            # FOG Bias T1
+24=50.0            # FOG Bias T2
+25=10.0            # FOG Bias BTA1
+26=10.0            # FOG Bias BTB1
+27=10.0            # FOG Bias BTA2
+28=10.0            # FOG Bias BTB2
+29=10.0            # FOG Bias BTA3
+30=10.0            # FOG Bias BTB3
+31=0.0             # ACCL STA
+32=10000.0         # ACCL STB
+33=5.0             # ACCL Bias BTA1
+34=1.0             # ACCL Bias BTB1
+
+[X Channel]
+0=163             # frequency
+1=8192            # MOD_H
+2=-8192           # MOD_L
+3=0               # polarity
+4=52              # Wait cnt
+5=5               # avg
+6=3               # GAIN1
+7=16384           # const_step
+8=1               # mode(0:OPEN)
+9=2               # GAIN2
+10=0               # Err offset
+11=69              # DAC_GAIN
+12=660.0           # CutOff
+13=2.0             # Att. Threshold
+14=0               # Threshold EN
+17=0.0             # FOG STA
+18=350.000001      # FOG STB
+23=12.0            # FOG Bias T1
+24=55.0            # FOG Bias T2
+25=3.0             # FOG Bias BTA1
+26=3.0             # FOG Bias BTB1
+27=1.0             # FOG Bias BTA2
+28=2.0             # FOG Bias BTB2
+29=3.0             # FOG Bias BTA3
+30=4.0             # FOG Bias BTB3
+31=0.0             # ACCL STA
+32=10000.0         # ACCL STB
+33=4.0             # ACCL Bias BTA1
+34=5.0             # ACCL Bias BTB1
+

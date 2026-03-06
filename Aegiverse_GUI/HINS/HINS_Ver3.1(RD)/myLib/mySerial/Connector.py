@@ -267,257 +267,81 @@ class Connector:
 
     # ---------- updated dump ----------
 
-    # def dump_fog_parameters(self, ch=3):
-    #     max_retries = 3
-    #     # 發送指令前的 Buffer 檢查
-    #     pre_buffer = self.readInputBuffer()
-    #     if pre_buffer > 0:
-    #         logger.info(f"DIAGNOSIS: Flushing {pre_buffer} residual bytes before DUMP")
-    #         self.flushInputBuffer()  # 強制清除，避免舊的 IMU 數據干擾 0xFA 的搜尋
-    #     # 送命令維持你目前的格式：AB BA ... 55 56
-    #     self.__ser.write(bytearray([0xAB, 0xBA]))
-    #     self.__ser.write([0x66, 0, 0, 0, 0x02, ch])
-    #     self.__ser.write(bytearray([0x55, 0x56]))
-    #
-    #     try:
-    #         # 1) ACK
-    #         logger.info("DIAGNOSIS: Waiting for ACK (0xA1)...")
-    #         ack = self._read_frame(timeout_s=0.5)
-    #         if ack["type"] != 0xA1 or ack["cmd"] != 0x66:
-    #             raise ValueError(f"unexpected ACK frame: {ack}")
-    #         if ack["len"] != 0:
-    #             # 依你規格 ACK 應該是 len=0
-    #             raise ValueError(f"ACK len should be 0, got {ack['len']}")
-    #
-    #         # ACK 的 status 代表「已受理」；若你 MCU 規劃 ACK 可能回錯誤碼，這裡可先擋
-    #         # if ack["status"] != 0: ...
-    #
-    #         # 2) RESULT
-    #         logger.info(f"DIAGNOSIS: ACK received. Waiting for RESULT (0xA2)...")
-    #         res = self._read_frame(timeout_s=1.5)  # dump 可能比 ACK 慢
-    #         if res["type"] != 0xA2 or res["cmd"] != 0x66:
-    #             raise ValueError(f"unexpected RESULT frame: {res}")
-    #
-    #         # status handling
-    #         if res["len"] == 0:
-    #             # timeout / failure：照你結論 timeout 會 len=0
-    #             return "無法取得值"
-    #
-    #         # payload: JSON bytes
-    #         payload_bytes = res["payload"]
-    #         try:
-    #             payload_str = payload_bytes.decode("utf-8", errors="strict")
-    #         except UnicodeDecodeError:
-    #             # 如果 MCU 送的是 ASCII/UTF-8 混雜，寬鬆一點也行
-    #             payload_str = payload_bytes.decode("utf-8", errors="replace")
-    #
-    #         logger.info(f"DIAGNOSIS: Success! Payload length: {res['len']}")
-    #         return json.loads(payload_str)
-    #
-    #     except TimeoutError:
-    #         logger.error("dump_fog_parameters timeout while waiting ACK/RESULT")
-    #         self.flushInputBuffer()
-    #         return "無法取得值，此處可考慮是否要重發一次指令"
-    #     except (ValueError, json.JSONDecodeError) as e:
-    #         logger.error(f"dump_fog_parameters parse error: {e}")
-    #         return "無法取得值"
-
-    def dump_fog_parameters(self, ch=3):
+    def _execute_dump_sequence(self, cmd_bytes, expected_cmd, ch=None, timeout_res=2.0):
+        """
+        通用重試邏輯封裝：發送指令 -> 等待 ACK -> 等待 RESULT
+        """
         max_retries = 3
         for attempt in range(max_retries):
-            # 1. 每一次嘗試前都清空緩衝區，確保從乾淨的狀態開始搜尋 0xFA
-            self.flushInputBuffer()
-
-            # 2. 發送指令
-            self.__ser.write(bytearray([0xAB, 0xBA]))
-            self.__ser.write([0x66, 0, 0, 0, 0x02, ch])
-            self.__ser.write(bytearray([0x55, 0x56]))
-
             try:
-                # 3. 等待 ACK (0xA1)
-                # 這裡縮短等待時間，因為 ACK 理論上是 MCU 收到指令後立刻回發
+                # 1. 前置清空
+                self.flushInputBuffer()
+
+                # 2. 發送指令 (格式: AB BA [Payload] 55 56)
+                self.__ser.write(bytearray([0xAB, 0xBA]))
+                self.__ser.write(cmd_bytes)
+                self.__ser.write(bytearray([0x55, 0x56]))
+
+                # 3. 等待 ACK (A1)
                 ack = self._read_frame(timeout_s=0.5)
-                if ack["type"] != 0xA1 or ack["cmd"] != 0x66:
-                    raise ValueError("Wrong ACK type")
+                if ack["type"] != 0xA1 or ack["cmd"] != expected_cmd:
+                    raise ValueError(f"Unexpected ACK: {ack['type']}")
 
-                # 4. 等待 RESULT (0xA2)
-                # 給予較充足的解析 JSON 時間
-                res = self._read_frame(timeout_s=1.5)
-                if res["type"] != 0xA2 or res["cmd"] != 0x66:
-                    raise ValueError("Wrong RESULT type")
+                # 4. 等待 RESULT (A2)
+                res = self._read_frame(timeout_s=timeout_res)
+                if res["type"] != 0xA2 or res["cmd"] != expected_cmd:
+                    raise ValueError(f"Unexpected RESULT: {res['type']}")
 
-                # 成功取得資料，直接 return
-                payload_str = res["payload"].decode("utf-8", errors="replace")
-                logger.info(f"DUMP Success on attempt {attempt + 1}")
-                return json.loads(payload_str)
+                return res  # 成功則回傳整個 frame
 
-            except (TimeoutError, ValueError, json.JSONDecodeError) as e:
-                logger.warning(f"DUMP Attempt {attempt + 1} failed: {e}")
-                # 如果還沒到最大次數，稍微休息一下再試
+            except (TimeoutError, ValueError) as e:
+                logger.warning(f"CMD {hex(expected_cmd)} Attempt {attempt + 1} failed: {e}")
                 if attempt < max_retries - 1:
-                    time.sleep(0.1)
+                    time.sleep(0.1)  # 短暫休息後重試
                     continue
                 else:
-                    logger.error("DUMP failed after max retries.")
-                    return "無法取得值"
+                    raise e  # 三次都失敗才拋出異常
+
+    def dump_fog_parameters(self, ch=3):
+        try:
+            res = self._execute_dump_sequence([0x66, 0, 0, 0, 0x02, ch], 0x66)
+            if res["len"] == 0: return "無法取得值"
+            return json.loads(res["payload"].decode("utf-8", errors="replace"))
+        except Exception:
+            return "無法取得值"
 
     def dump_cali_parameters(self, ch=2):
-        # CMD_DUMP_MIS = 0x81
-        self.__ser.write(bytearray([0xAB, 0xBA]))
-        self.__ser.write([0x81, 0, 0, 0, 0, ch])
-        self.__ser.write(bytearray([0x55, 0x56]))
-
         try:
-            # 1) ACK (A1)
-            ack = self._read_frame(timeout_s=1.0)
-            if ack["type"] != 0xA1 or ack["cmd"] != 0x81:
-                raise ValueError(f"unexpected ACK frame: {ack}")
-            if ack["len"] != 0:
-                raise ValueError(f"ACK len should be 0, got {ack['len']}")
-
-            # 2) RESULT (A2)
-            res = self._read_frame(timeout_s=2.0)
-            if res["type"] != 0xA2 or res["cmd"] != 0x81:
-                raise ValueError(f"unexpected RESULT frame: {res}")
-
-            if res["len"] == 0:
-                # timeout / failure：依你 MCU 規格 len=0
-                return "無法取得值"
-
-            payload_bytes = res["payload"]
-            try:
-                payload_str = payload_bytes.decode("utf-8", errors="strict")
-            except UnicodeDecodeError:
-                payload_str = payload_bytes.decode("utf-8", errors="replace")
-
-            return json.loads(payload_str)
-
-        except TimeoutError:
-            logger.error("dump_cali_parameters timeout while waiting ACK/RESULT")
+            res = self._execute_dump_sequence([0x81, 0, 0, 0, 0, ch], 0x81)
+            if res["len"] == 0: return "無法取得值"
+            return json.loads(res["payload"].decode("utf-8", errors="replace"))
+        except Exception:
             return "無法取得值"
-        except (ValueError, json.JSONDecodeError) as e:
-            logger.error(f"dump_cali_parameters parse error: {e}")
-            return "無法取得值"
-
-
-    def getVersion(self, ch=2):
-        self.__ser.write(bytearray([0xAB, 0xBA]))
-        self.__ser.write([0x83, 0, 0, 0, 0, ch])
-        self.__ser.write(bytearray([0x55, 0x56]))
-        try:
-            # 1) ACK (A1): FA A1 83 status lenL lenH checksum16
-            ack = self._read_frame(timeout_s=1.0)
-            if ack["type"] != 0xA1 or ack["cmd"] != 0x83:
-                raise ValueError(f"unexpected ACK frame: {ack}")
-            if ack["len"] != 0:
-                raise ValueError(f"ACK len should be 0, got {ack['len']}")
-
-            # 2) RESULT (A2): FA A2 83 status lenL lenH payload[len] checksum16
-            res = self._read_frame(timeout_s=2.0)
-            if res["type"] != 0xA2 or res["cmd"] != 0x83:
-                raise ValueError(f"unexpected RESULT frame: {res}")
-
-            if res["len"] == 0:
-                # timeout / failure
-                return "Error"
-
-            ver = res["payload"].decode("ascii", errors="replace")
-            ver = ver.rstrip("\x00").rstrip("\r").rstrip("\n").strip()
-            return ver
-
-        except TimeoutError:
-            logger.error("getVersion timeout while waiting ACK/RESULT")
-            return "Error"
-        except ValueError as e:
-            logger.error(f"getVersion parse error: {e}")
-            return "Error"
-
-    def dump_SN_parameters(self, ch=2):
-        # CMD_DUMP_SN = 0x82
-        self.__ser.write(bytearray([0xAB, 0xBA]))
-        self.__ser.write([0x82, 0, 0, 0, 0, ch])
-        self.__ser.write(bytearray([0x55, 0x56]))
-
-        try:
-            # 1) ACK (A1): FA A1 82 status lenL lenH checksum16
-            ack = self._read_frame(timeout_s=1.0)
-            if ack["type"] != 0xA1 or ack["cmd"] != 0x82:
-                raise ValueError(f"unexpected ACK frame: {ack}")
-            if ack["len"] != 0:
-                # 依你的規格 ACK 應該 len=0
-                raise ValueError(f"ACK len should be 0, got {ack['len']}")
-
-            # 2) RESULT (A2): FA A2 82 status lenL lenH payload[len] checksum16
-            res = self._read_frame(timeout_s=2.0)
-            if res["type"] != 0xA2 or res["cmd"] != 0x82:
-                raise ValueError(f"unexpected RESULT frame: {res}")
-
-            if res["len"] == 0:
-                # MCU timeout / SN 未設定 / 其他 failure（你目前 GUI 用這個訊息判斷）
-                return "發生參數值為空的狀況"
-
-            payload = res["payload"]
-
-            # 你的 SN payload 固定 12 bytes ASCII（可含空白/0x00 padding）
-            # 先 decode，再把尾端 padding 去掉，讓 GUI 顯示更乾淨
-            sn = payload.decode("ascii", errors="replace")
-            sn = sn.rstrip("\x00").rstrip(" ")
-
-            # 若全部被 strip 乾淨變空字串，仍回報為空
-            if sn == "":
-                return "發生參數值為空的狀況"
-
-            return sn
-
-        except TimeoutError:
-            logger.error("dump_SN_parameters timeout while waiting ACK/RESULT")
-            return "發生參數值為空的狀況"
-        except ValueError as e:
-            logger.error(f"dump_SN_parameters parse error: {e}")
-            return "發生參數值為空的狀況"
 
     def dump_configuration(self):
-        """
-        CMD_DUMP_CONFIGURATION = 0x84
-        TX: AB BA 84 00 00 00 00 00 55 56   (依你提供固定格式)
-        RX: ACK  + RESULT(JSON)
-            JSON: {"0": <datarate_idx>, "1": <baudrate_idx>, ...}
-        """
-        # send command (exact bytes you specified)
-        self.__ser.write(bytearray([0xAB, 0xBA]))
-        self.__ser.write([0x84, 0, 0, 0, 0, 0])
-        self.__ser.write(bytearray([0x55, 0x56]))
-
         try:
-            # 1) ACK
-            ack = self._read_frame(timeout_s=1.0)
-            if ack["type"] != 0xA1 or ack["cmd"] != 0x84:
-                raise ValueError(f"unexpected ACK frame: {ack}")
-            if ack["len"] != 0:
-                raise ValueError(f"ACK len should be 0, got {ack['len']}")
-
-            # 2) RESULT
-            res = self._read_frame(timeout_s=2.0)
-            if res["type"] != 0xA2 or res["cmd"] != 0x84:
-                raise ValueError(f"unexpected RESULT frame: {res}")
-
-            if res["len"] == 0:
-                return "無法取得值"
-
-            payload_bytes = res["payload"]
-            try:
-                payload_str = payload_bytes.decode("utf-8", errors="strict")
-            except UnicodeDecodeError:
-                payload_str = payload_bytes.decode("utf-8", errors="replace")
-
-            return json.loads(payload_str)
-
-        except TimeoutError:
-            logger.error("dump_configuration timeout while waiting ACK/RESULT")
+            res = self._execute_dump_sequence([0x84, 0, 0, 0, 0, 0], 0x84)
+            if res["len"] == 0: return "無法取得值"
+            return json.loads(res["payload"].decode("utf-8", errors="replace"))
+        except Exception:
             return "無法取得值"
-        except (ValueError, json.JSONDecodeError) as e:
-            logger.error(f"dump_configuration parse error: {e}")
-            return "無法取得值"
+
+    def dump_SN_parameters(self, ch=2):
+        try:
+            res = self._execute_dump_sequence([0x82, 0, 0, 0, 0, ch], 0x82)
+            if res["len"] == 0: return "發生參數值為空的狀況"
+            sn = res["payload"].decode("ascii", errors="replace").rstrip("\x00").strip()
+            return sn if sn else "發生參數值為空的狀況"
+        except Exception:
+            return "發生參數值為空的狀況"
+
+    def getVersion(self, ch=2):
+        try:
+            res = self._execute_dump_sequence([0x83, 0, 0, 0, 0, ch], 0x83)
+            if res["len"] == 0: return "Unknown"
+            return res["payload"].decode("ascii", errors="replace").strip()
+        except Exception:
+            return "Unknown"
 
     def readLine(self):
         return self.__ser.readline()

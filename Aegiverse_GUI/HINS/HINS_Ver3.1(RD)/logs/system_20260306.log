@@ -767,3 +767,307 @@
 2026-03-06 10:33:51,574 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: Parameters dump and UI fill success.
 2026-03-06 10:33:55,914 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: Parameters Dump Result Type: <class 'dict'>
 2026-03-06 10:33:55,916 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: Parameters dump and UI fill success.
+2026-03-06 10:45:43,288 [INFO] pigImu_Widget.pigImu_Widget: pigImu_Widget logger start
+2026-03-06 10:45:43,312 [INFO] myLib.myGui.graph.myLib.myGui.graph: myLib.myGui.graph logger start
+2026-03-06 10:45:44,047 [INFO] myLib.common.myLib.common: myLib.common logger start
+2026-03-06 10:45:44,048 [INFO] myLib.myGui.mygui_serial.myLib.myGui.mygui_serial: myLib.myGui.mygui_serial logger start
+2026-03-06 10:45:44,050 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: myLib.myGui.myLabel logger start
+2026-03-06 10:45:44,051 [INFO] myLib.myGui.myLineEdit.myLib.myGui.myLineEdit: myLib.myGui.myLineEdit logger start
+2026-03-06 10:45:44,052 [INFO] myLib.myGui.myCheckBox.myLib.myGui.myCheckBox: myLib.myGui.myCheckBox logger start
+2026-03-06 10:45:44,052 [INFO] myLib.myGui.myRadioButton.myLib.myGui.myRadioButton: myLib.myGui.myRadioButton logger start
+2026-03-06 10:45:44,053 [INFO] record_Log: record_Log logger start
+2026-03-06 10:45:44,065 [INFO] myLib.myGui.AttitudeIndicator.myLib.myGui.AttitudeIndicator: myLib.myGui.AttitudeIndicator logger start
+2026-03-06 10:45:44,068 [INFO] myLib.myGui.pig_menu_manager.myLib.myGui.pig_menu_manager: myLib.myGui.pig_menu_manager logger start
+2026-03-06 10:45:44,076 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: myLib.mySerial.Connector logger start
+2026-03-06 10:45:44,083 [INFO] myLib.myGui.myComboBox.myLib.myGui.myComboBox: myLib.myGui.myComboBox logger start
+2026-03-06 10:45:44,084 [INFO] drivers.hins_fog_imu.widgets.pig_parameters_widget.drivers.hins_fog_imu.widgets.pig_parameters_widget: drivers.hins_fog_imu.widgets.pig_parameters_widget logger start
+2026-03-06 10:45:44,087 [INFO] drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget.drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget: drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget logger start
+2026-03-06 10:45:44,088 [INFO] drivers.hins_fog_imu.widgets.pig_version_widget.drivers.hins_fog_imu.widgets.pig_version_widget: drivers.hins_fog_imu.widgets.pig_version_widget logger start
+2026-03-06 10:45:44,096 [INFO] myLib.crcCalculator.crcLib.myLib.crcCalculator.crcLib: myLib.crcCalculator.crcLib logger start
+2026-03-06 10:45:45,633 [INFO] Main: Port Selected: COM5
+2026-03-06 10:45:45,634 [INFO] Main: Port Selected: COM5
+2026-03-06 10:45:52,749 [INFO] Main: Port Selected: COM8
+2026-03-06 10:45:53,573 [INFO] Main: Connecting to COM8 at 230400...
+2026-03-06 10:45:53,578 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM8 is connected
+2026-03-06 10:45:53,579 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-03-06 10:45:53,579 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-03-06 10:45:53,580 [INFO] Main: Connection established. Synchronizing configuration...
+2026-03-06 10:45:53,583 [INFO] main.drivers.HinsHybrid: Hybrid Reader (Dispatcher) Started.
+2026-03-06 10:45:54,080 [INFO] Main: Pausing Reader for configuration sync...
+2026-03-06 10:45:54,081 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-03-06 10:45:54,384 [INFO] Main: Syncing Configuration...
+2026-03-06 10:45:54,455 [INFO] drivers.HinsFog: Software RCS updated: [0.0, -1.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0]
+2026-03-06 10:45:54,557 [INFO] Main: Resuming Hybrid Reader...
+2026-03-06 10:45:54,558 [INFO] main.drivers.HinsHybrid: Hybrid Reader (Dispatcher) Started.
+2026-03-06 10:46:00,298 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: Waiting for ACK (0xA1)...
+2026-03-06 10:46:00,298 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: ACK received. Waiting for RESULT (0xA2)...
+2026-03-06 10:46:00,429 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: Success! Payload length: 350
+2026-03-06 10:46:00,430 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: Parameters Dump Result Type: <class 'dict'>
+2026-03-06 10:46:00,430 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: Parameters dump and UI fill success.
+2026-03-06 10:46:07,775 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: Waiting for ACK (0xA1)...
+2026-03-06 10:46:07,892 [ERROR] myLib.mySerial.Connector.myLib.mySerial.Connector: dump_fog_parameters parse error: checksum mismatch: calc=0xC108, recv(le)=0x7B01, recv(be)=0x017B
+2026-03-06 10:46:07,894 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: Parameters Dump Result Type: <class 'str'>
+2026-03-06 10:46:12,818 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: Waiting for ACK (0xA1)...
+2026-03-06 10:46:12,821 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: ACK received. Waiting for RESULT (0xA2)...
+2026-03-06 10:46:12,950 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: Success! Payload length: 352
+2026-03-06 10:46:12,952 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: Parameters Dump Result Type: <class 'dict'>
+2026-03-06 10:46:12,952 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: Parameters dump and UI fill success.
+2026-03-06 10:46:16,219 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: Waiting for ACK (0xA1)...
+2026-03-06 10:46:16,221 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: ACK received. Waiting for RESULT (0xA2)...
+2026-03-06 10:46:16,350 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: Success! Payload length: 354
+2026-03-06 10:46:16,352 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: Parameters Dump Result Type: <class 'dict'>
+2026-03-06 10:46:16,352 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: Parameters dump and UI fill success.
+2026-03-06 10:46:35,687 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: Waiting for ACK (0xA1)...
+2026-03-06 10:46:35,688 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: ACK received. Waiting for RESULT (0xA2)...
+2026-03-06 10:46:35,817 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: Success! Payload length: 350
+2026-03-06 10:46:35,819 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: Parameters Dump Result Type: <class 'dict'>
+2026-03-06 10:46:35,820 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: Parameters dump and UI fill success.
+2026-03-06 10:46:42,408 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: Waiting for ACK (0xA1)...
+2026-03-06 10:46:42,409 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: ACK received. Waiting for RESULT (0xA2)...
+2026-03-06 10:46:42,541 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: Success! Payload length: 352
+2026-03-06 10:46:42,541 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: Parameters Dump Result Type: <class 'dict'>
+2026-03-06 10:46:42,543 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: Parameters dump and UI fill success.
+2026-03-06 10:46:46,856 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: Waiting for ACK (0xA1)...
+2026-03-06 10:46:46,857 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: ACK received. Waiting for RESULT (0xA2)...
+2026-03-06 10:46:46,986 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: Success! Payload length: 354
+2026-03-06 10:46:46,988 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: Parameters Dump Result Type: <class 'dict'>
+2026-03-06 10:46:46,988 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: Parameters dump and UI fill success.
+2026-03-06 10:47:08,516 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: Waiting for ACK (0xA1)...
+2026-03-06 10:47:08,517 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: ACK received. Waiting for RESULT (0xA2)...
+2026-03-06 10:47:33,652 [ERROR] myLib.mySerial.Connector.myLib.mySerial.Connector: serial read timeout: check if the input power is ON, close the GUI and re-excute.
+2026-03-06 10:47:33,654 [ERROR] myLib.mySerial.Connector.myLib.mySerial.Connector: dump_fog_parameters timeout while waiting ACK/RESULT
+2026-03-06 10:47:33,654 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: Parameters Dump Result Type: <class 'str'>
+2026-03-06 10:47:50,383 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: Waiting for ACK (0xA1)...
+2026-03-06 10:47:50,385 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: ACK received. Waiting for RESULT (0xA2)...
+2026-03-06 10:47:50,514 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: Success! Payload length: 354
+2026-03-06 10:47:50,516 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: Parameters Dump Result Type: <class 'dict'>
+2026-03-06 10:47:50,516 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: Parameters dump and UI fill success.
+2026-03-06 10:53:54,080 [INFO] pigImu_Widget.pigImu_Widget: pigImu_Widget logger start
+2026-03-06 10:53:54,105 [INFO] myLib.myGui.graph.myLib.myGui.graph: myLib.myGui.graph logger start
+2026-03-06 10:53:54,904 [INFO] myLib.common.myLib.common: myLib.common logger start
+2026-03-06 10:53:54,905 [INFO] myLib.myGui.mygui_serial.myLib.myGui.mygui_serial: myLib.myGui.mygui_serial logger start
+2026-03-06 10:53:54,907 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: myLib.myGui.myLabel logger start
+2026-03-06 10:53:54,907 [INFO] myLib.myGui.myLineEdit.myLib.myGui.myLineEdit: myLib.myGui.myLineEdit logger start
+2026-03-06 10:53:54,908 [INFO] myLib.myGui.myCheckBox.myLib.myGui.myCheckBox: myLib.myGui.myCheckBox logger start
+2026-03-06 10:53:54,909 [INFO] myLib.myGui.myRadioButton.myLib.myGui.myRadioButton: myLib.myGui.myRadioButton logger start
+2026-03-06 10:53:54,910 [INFO] record_Log: record_Log logger start
+2026-03-06 10:53:54,924 [INFO] myLib.myGui.AttitudeIndicator.myLib.myGui.AttitudeIndicator: myLib.myGui.AttitudeIndicator logger start
+2026-03-06 10:53:54,926 [INFO] myLib.myGui.pig_menu_manager.myLib.myGui.pig_menu_manager: myLib.myGui.pig_menu_manager logger start
+2026-03-06 10:53:54,935 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: myLib.mySerial.Connector logger start
+2026-03-06 10:53:54,941 [INFO] myLib.myGui.myComboBox.myLib.myGui.myComboBox: myLib.myGui.myComboBox logger start
+2026-03-06 10:53:54,942 [INFO] drivers.hins_fog_imu.widgets.pig_parameters_widget.drivers.hins_fog_imu.widgets.pig_parameters_widget: drivers.hins_fog_imu.widgets.pig_parameters_widget logger start
+2026-03-06 10:53:54,946 [INFO] drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget.drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget: drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget logger start
+2026-03-06 10:53:54,947 [INFO] drivers.hins_fog_imu.widgets.pig_version_widget.drivers.hins_fog_imu.widgets.pig_version_widget: drivers.hins_fog_imu.widgets.pig_version_widget logger start
+2026-03-06 10:53:54,955 [INFO] myLib.crcCalculator.crcLib.myLib.crcCalculator.crcLib: myLib.crcCalculator.crcLib logger start
+2026-03-06 10:54:00,811 [INFO] Main: Port Selected: COM5
+2026-03-06 10:54:00,812 [INFO] Main: Port Selected: COM5
+2026-03-06 10:54:02,173 [INFO] Main: Port Selected: COM8
+2026-03-06 10:54:02,839 [INFO] Main: Connecting to COM8 at 230400...
+2026-03-06 10:54:02,845 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM8 is connected
+2026-03-06 10:54:02,846 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-03-06 10:54:02,847 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-03-06 10:54:02,847 [INFO] Main: Connection established. Synchronizing configuration...
+2026-03-06 10:54:02,849 [INFO] main.drivers.HinsHybrid: Hybrid Reader (Dispatcher) Started.
+2026-03-06 10:54:03,356 [INFO] Main: Pausing Reader for configuration sync...
+2026-03-06 10:54:03,358 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-03-06 10:54:03,660 [INFO] Main: Syncing Configuration...
+2026-03-06 10:54:03,730 [INFO] drivers.HinsFog: Software RCS updated: [0.0, -1.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0]
+2026-03-06 10:54:03,832 [INFO] Main: Resuming Hybrid Reader...
+2026-03-06 10:54:03,835 [INFO] main.drivers.HinsHybrid: Hybrid Reader (Dispatcher) Started.
+2026-03-06 10:54:09,622 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: Waiting for ACK (0xA1)...
+2026-03-06 10:54:09,624 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: ACK received. Waiting for RESULT (0xA2)...
+2026-03-06 10:54:09,753 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: Success! Payload length: 350
+2026-03-06 10:54:09,754 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: Parameters Dump Result Type: <class 'dict'>
+2026-03-06 10:54:09,756 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: Parameters dump and UI fill success.
+2026-03-06 10:54:21,020 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: Waiting for ACK (0xA1)...
+2026-03-06 10:54:21,020 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: ACK received. Waiting for RESULT (0xA2)...
+2026-03-06 10:54:21,153 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: Success! Payload length: 352
+2026-03-06 10:54:21,153 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: Parameters Dump Result Type: <class 'dict'>
+2026-03-06 10:54:21,154 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: Parameters dump and UI fill success.
+2026-03-06 10:54:28,918 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: Waiting for ACK (0xA1)...
+2026-03-06 10:54:30,039 [ERROR] myLib.mySerial.Connector.myLib.mySerial.Connector: dump_fog_parameters timeout while waiting ACK/RESULT
+2026-03-06 10:54:30,039 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: Parameters Dump Result Type: <class 'str'>
+2026-03-06 10:55:11,200 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: Waiting for ACK (0xA1)...
+2026-03-06 10:55:11,201 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: ACK received. Waiting for RESULT (0xA2)...
+2026-03-06 10:55:11,332 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: Success! Payload length: 354
+2026-03-06 10:55:11,333 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: Parameters Dump Result Type: <class 'dict'>
+2026-03-06 10:55:11,333 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: Parameters dump and UI fill success.
+2026-03-06 10:55:15,007 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: Waiting for ACK (0xA1)...
+2026-03-06 10:55:15,009 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: ACK received. Waiting for RESULT (0xA2)...
+2026-03-06 10:55:15,138 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: Success! Payload length: 354
+2026-03-06 10:55:15,140 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: Parameters Dump Result Type: <class 'dict'>
+2026-03-06 10:55:15,140 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: Parameters dump and UI fill success.
+2026-03-06 10:55:16,831 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: Waiting for ACK (0xA1)...
+2026-03-06 10:55:16,833 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: ACK received. Waiting for RESULT (0xA2)...
+2026-03-06 10:55:16,962 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: Success! Payload length: 354
+2026-03-06 10:55:16,964 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: Parameters Dump Result Type: <class 'dict'>
+2026-03-06 10:55:16,964 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: Parameters dump and UI fill success.
+2026-03-06 10:55:18,212 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: Waiting for ACK (0xA1)...
+2026-03-06 10:55:18,214 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: ACK received. Waiting for RESULT (0xA2)...
+2026-03-06 10:55:18,344 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: Success! Payload length: 354
+2026-03-06 10:55:18,345 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: Parameters Dump Result Type: <class 'dict'>
+2026-03-06 10:55:18,345 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: Parameters dump and UI fill success.
+2026-03-06 10:55:19,327 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: Waiting for ACK (0xA1)...
+2026-03-06 10:55:19,329 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: ACK received. Waiting for RESULT (0xA2)...
+2026-03-06 10:55:19,459 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: Success! Payload length: 354
+2026-03-06 10:55:19,459 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: Parameters Dump Result Type: <class 'dict'>
+2026-03-06 10:55:19,460 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: Parameters dump and UI fill success.
+2026-03-06 10:55:22,695 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: Waiting for ACK (0xA1)...
+2026-03-06 10:55:22,697 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: ACK received. Waiting for RESULT (0xA2)...
+2026-03-06 10:55:22,828 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: Success! Payload length: 352
+2026-03-06 10:55:22,830 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: Parameters Dump Result Type: <class 'dict'>
+2026-03-06 10:55:22,830 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: Parameters dump and UI fill success.
+2026-03-06 10:55:25,404 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: Waiting for ACK (0xA1)...
+2026-03-06 10:55:25,405 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: ACK received. Waiting for RESULT (0xA2)...
+2026-03-06 10:55:25,535 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: Success! Payload length: 354
+2026-03-06 10:55:25,537 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: Parameters Dump Result Type: <class 'dict'>
+2026-03-06 10:55:25,537 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: Parameters dump and UI fill success.
+2026-03-06 10:55:29,197 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: Waiting for ACK (0xA1)...
+2026-03-06 10:55:29,198 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: ACK received. Waiting for RESULT (0xA2)...
+2026-03-06 10:55:29,329 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: Success! Payload length: 350
+2026-03-06 10:55:29,329 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: Parameters Dump Result Type: <class 'dict'>
+2026-03-06 10:55:29,330 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: Parameters dump and UI fill success.
+2026-03-06 10:55:41,408 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: Waiting for ACK (0xA1)...
+2026-03-06 10:55:41,409 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: ACK received. Waiting for RESULT (0xA2)...
+2026-03-06 10:55:41,538 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: Success! Payload length: 350
+2026-03-06 10:55:41,540 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: Parameters Dump Result Type: <class 'dict'>
+2026-03-06 10:55:41,540 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: Parameters dump and UI fill success.
+2026-03-06 10:55:48,414 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: Waiting for ACK (0xA1)...
+2026-03-06 10:55:48,530 [WARNING] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: Found 0xFA after discarding 2 bytes
+2026-03-06 10:55:49,534 [ERROR] myLib.mySerial.Connector.myLib.mySerial.Connector: dump_fog_parameters timeout while waiting ACK/RESULT
+2026-03-06 10:55:49,536 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: Parameters Dump Result Type: <class 'str'>
+2026-03-06 10:55:59,761 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: Waiting for ACK (0xA1)...
+2026-03-06 10:55:59,761 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: ACK received. Waiting for RESULT (0xA2)...
+2026-03-06 10:55:59,891 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: Success! Payload length: 354
+2026-03-06 10:55:59,893 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: Parameters Dump Result Type: <class 'dict'>
+2026-03-06 10:55:59,894 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: Parameters dump and UI fill success.
+2026-03-06 10:56:02,610 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: Waiting for ACK (0xA1)...
+2026-03-06 10:56:02,612 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: ACK received. Waiting for RESULT (0xA2)...
+2026-03-06 10:56:02,743 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: Success! Payload length: 350
+2026-03-06 10:56:02,743 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: Parameters Dump Result Type: <class 'dict'>
+2026-03-06 10:56:02,745 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: Parameters dump and UI fill success.
+2026-03-06 10:56:06,735 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: Waiting for ACK (0xA1)...
+2026-03-06 10:56:06,735 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: ACK received. Waiting for RESULT (0xA2)...
+2026-03-06 10:56:06,868 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: Success! Payload length: 352
+2026-03-06 10:56:06,868 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: Parameters Dump Result Type: <class 'dict'>
+2026-03-06 10:56:06,870 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: Parameters dump and UI fill success.
+2026-03-06 10:56:10,141 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: Waiting for ACK (0xA1)...
+2026-03-06 10:56:10,142 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: ACK received. Waiting for RESULT (0xA2)...
+2026-03-06 10:56:10,273 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: Success! Payload length: 354
+2026-03-06 10:56:10,273 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: Parameters Dump Result Type: <class 'dict'>
+2026-03-06 10:56:10,275 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: Parameters dump and UI fill success.
+2026-03-06 10:56:13,216 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: Waiting for ACK (0xA1)...
+2026-03-06 10:56:13,218 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: ACK received. Waiting for RESULT (0xA2)...
+2026-03-06 10:56:13,347 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: Success! Payload length: 350
+2026-03-06 10:56:13,349 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: Parameters Dump Result Type: <class 'dict'>
+2026-03-06 10:56:13,349 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: Parameters dump and UI fill success.
+2026-03-06 10:56:17,064 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: Waiting for ACK (0xA1)...
+2026-03-06 10:56:18,182 [ERROR] myLib.mySerial.Connector.myLib.mySerial.Connector: dump_fog_parameters timeout while waiting ACK/RESULT
+2026-03-06 10:56:18,182 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: Parameters Dump Result Type: <class 'str'>
+2026-03-06 10:56:28,292 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: Waiting for ACK (0xA1)...
+2026-03-06 10:56:29,419 [ERROR] myLib.mySerial.Connector.myLib.mySerial.Connector: dump_fog_parameters timeout while waiting ACK/RESULT
+2026-03-06 10:56:29,420 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: Parameters Dump Result Type: <class 'str'>
+2026-03-06 10:56:33,174 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: Waiting for ACK (0xA1)...
+2026-03-06 10:56:33,174 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: ACK received. Waiting for RESULT (0xA2)...
+2026-03-06 10:56:33,305 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: Success! Payload length: 350
+2026-03-06 10:56:33,307 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: Parameters Dump Result Type: <class 'dict'>
+2026-03-06 10:56:33,307 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: Parameters dump and UI fill success.
+2026-03-06 10:56:38,800 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: Waiting for ACK (0xA1)...
+2026-03-06 10:56:39,917 [ERROR] myLib.mySerial.Connector.myLib.mySerial.Connector: dump_fog_parameters timeout while waiting ACK/RESULT
+2026-03-06 10:56:39,917 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: Parameters Dump Result Type: <class 'str'>
+2026-03-06 10:56:43,667 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: Waiting for ACK (0xA1)...
+2026-03-06 10:56:43,668 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: ACK received. Waiting for RESULT (0xA2)...
+2026-03-06 10:56:43,800 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: Success! Payload length: 354
+2026-03-06 10:56:43,800 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: Parameters Dump Result Type: <class 'dict'>
+2026-03-06 10:56:43,801 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: Parameters dump and UI fill success.
+2026-03-06 10:56:46,772 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: Waiting for ACK (0xA1)...
+2026-03-06 10:56:46,773 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: ACK received. Waiting for RESULT (0xA2)...
+2026-03-06 10:56:46,904 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: Success! Payload length: 352
+2026-03-06 10:56:46,905 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: Parameters Dump Result Type: <class 'dict'>
+2026-03-06 10:56:46,905 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: Parameters dump and UI fill success.
+2026-03-06 10:56:49,871 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: Waiting for ACK (0xA1)...
+2026-03-06 10:56:49,986 [WARNING] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: Found 0xFA after discarding 1 bytes
+2026-03-06 10:56:51,001 [ERROR] myLib.mySerial.Connector.myLib.mySerial.Connector: dump_fog_parameters timeout while waiting ACK/RESULT
+2026-03-06 10:56:51,002 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: Parameters Dump Result Type: <class 'str'>
+2026-03-06 10:56:54,700 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: Waiting for ACK (0xA1)...
+2026-03-06 10:56:54,700 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: ACK received. Waiting for RESULT (0xA2)...
+2026-03-06 10:56:54,832 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: Success! Payload length: 354
+2026-03-06 10:56:54,832 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: Parameters Dump Result Type: <class 'dict'>
+2026-03-06 10:56:54,833 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: Parameters dump and UI fill success.
+2026-03-06 11:01:19,213 [INFO] pigImu_Widget.pigImu_Widget: pigImu_Widget logger start
+2026-03-06 11:01:19,239 [INFO] myLib.myGui.graph.myLib.myGui.graph: myLib.myGui.graph logger start
+2026-03-06 11:01:20,123 [INFO] myLib.common.myLib.common: myLib.common logger start
+2026-03-06 11:01:20,124 [INFO] myLib.myGui.mygui_serial.myLib.myGui.mygui_serial: myLib.myGui.mygui_serial logger start
+2026-03-06 11:01:20,125 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: myLib.myGui.myLabel logger start
+2026-03-06 11:01:20,128 [INFO] myLib.myGui.myLineEdit.myLib.myGui.myLineEdit: myLib.myGui.myLineEdit logger start
+2026-03-06 11:01:20,129 [INFO] myLib.myGui.myCheckBox.myLib.myGui.myCheckBox: myLib.myGui.myCheckBox logger start
+2026-03-06 11:01:20,129 [INFO] myLib.myGui.myRadioButton.myLib.myGui.myRadioButton: myLib.myGui.myRadioButton logger start
+2026-03-06 11:01:20,130 [INFO] record_Log: record_Log logger start
+2026-03-06 11:01:20,143 [INFO] myLib.myGui.AttitudeIndicator.myLib.myGui.AttitudeIndicator: myLib.myGui.AttitudeIndicator logger start
+2026-03-06 11:01:20,146 [INFO] myLib.myGui.pig_menu_manager.myLib.myGui.pig_menu_manager: myLib.myGui.pig_menu_manager logger start
+2026-03-06 11:01:20,156 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: myLib.mySerial.Connector logger start
+2026-03-06 11:01:20,164 [INFO] myLib.myGui.myComboBox.myLib.myGui.myComboBox: myLib.myGui.myComboBox logger start
+2026-03-06 11:01:20,165 [INFO] drivers.hins_fog_imu.widgets.pig_parameters_widget.drivers.hins_fog_imu.widgets.pig_parameters_widget: drivers.hins_fog_imu.widgets.pig_parameters_widget logger start
+2026-03-06 11:01:20,168 [INFO] drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget.drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget: drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget logger start
+2026-03-06 11:01:20,171 [INFO] drivers.hins_fog_imu.widgets.pig_version_widget.drivers.hins_fog_imu.widgets.pig_version_widget: drivers.hins_fog_imu.widgets.pig_version_widget logger start
+2026-03-06 11:01:20,180 [INFO] myLib.crcCalculator.crcLib.myLib.crcCalculator.crcLib: myLib.crcCalculator.crcLib logger start
+2026-03-06 11:01:21,815 [INFO] Main: Port Selected: COM5
+2026-03-06 11:01:21,816 [INFO] Main: Port Selected: COM5
+2026-03-06 11:01:27,736 [INFO] Main: Port Selected: COM8
+2026-03-06 11:01:28,381 [INFO] Main: Connecting to COM8 at 230400...
+2026-03-06 11:01:28,386 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM8 is connected
+2026-03-06 11:01:28,388 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-03-06 11:01:28,388 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-03-06 11:01:28,389 [INFO] Main: Connection established. Synchronizing configuration...
+2026-03-06 11:01:28,390 [INFO] main.drivers.HinsHybrid: Hybrid Reader (Dispatcher) Started.
+2026-03-06 11:01:28,886 [INFO] Main: Pausing Reader for configuration sync...
+2026-03-06 11:01:28,888 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-03-06 11:01:29,191 [INFO] Main: Syncing Configuration...
+2026-03-06 11:01:29,261 [INFO] drivers.HinsFog: Software RCS updated: [0.0, -1.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0]
+2026-03-06 11:01:29,364 [INFO] Main: Resuming Hybrid Reader...
+2026-03-06 11:01:29,366 [INFO] main.drivers.HinsHybrid: Hybrid Reader (Dispatcher) Started.
+2026-03-06 11:01:37,965 [WARNING] myLib.mySerial.Connector.myLib.mySerial.Connector: DUMP Attempt 1 failed: checksum mismatch: calc=0xC108, recv(le)=0x7B01, recv(be)=0x017B
+2026-03-06 11:01:38,199 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DUMP Success on attempt 2
+2026-03-06 11:01:38,201 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: Parameters Dump Result Type: <class 'dict'>
+2026-03-06 11:01:38,202 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: Parameters dump and UI fill success.
+2026-03-06 11:01:48,634 [WARNING] myLib.mySerial.Connector.myLib.mySerial.Connector: DUMP Attempt 1 failed: serial timeout: want 2 bytes, got 0 bytes
+2026-03-06 11:01:50,864 [WARNING] myLib.mySerial.Connector.myLib.mySerial.Connector: DUMP Attempt 2 failed: serial timeout: want 352 bytes, got 335 bytes
+2026-03-06 11:01:53,116 [WARNING] myLib.mySerial.Connector.myLib.mySerial.Connector: DUMP Attempt 3 failed: serial timeout: want 2 bytes, got 0 bytes
+2026-03-06 11:01:53,116 [ERROR] myLib.mySerial.Connector.myLib.mySerial.Connector: DUMP failed after max retries.
+2026-03-06 11:01:53,116 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: Parameters Dump Result Type: <class 'str'>
+2026-03-06 11:02:13,270 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DUMP Success on attempt 1
+2026-03-06 11:02:13,270 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: Parameters Dump Result Type: <class 'dict'>
+2026-03-06 11:02:13,271 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: Parameters dump and UI fill success.
+2026-03-06 11:02:18,583 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DUMP Success on attempt 1
+2026-03-06 11:02:18,585 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: Parameters Dump Result Type: <class 'dict'>
+2026-03-06 11:02:18,585 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: Parameters dump and UI fill success.
+2026-03-06 11:02:27,409 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DUMP Success on attempt 1
+2026-03-06 11:02:27,411 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: Parameters Dump Result Type: <class 'dict'>
+2026-03-06 11:02:27,411 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: Parameters dump and UI fill success.
+2026-03-06 11:02:31,208 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DUMP Success on attempt 1
+2026-03-06 11:02:31,209 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: Parameters Dump Result Type: <class 'dict'>
+2026-03-06 11:02:31,209 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: Parameters dump and UI fill success.
+2026-03-06 11:02:34,386 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DUMP Success on attempt 1
+2026-03-06 11:02:34,387 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: Parameters Dump Result Type: <class 'dict'>
+2026-03-06 11:02:34,387 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: Parameters dump and UI fill success.
+2026-03-06 11:02:42,056 [WARNING] myLib.mySerial.Connector.myLib.mySerial.Connector: DUMP Attempt 1 failed: serial timeout: want 2 bytes, got 0 bytes
+2026-03-06 11:02:42,290 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DUMP Success on attempt 2
+2026-03-06 11:02:42,290 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: Parameters Dump Result Type: <class 'dict'>
+2026-03-06 11:02:42,291 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: Parameters dump and UI fill success.
+2026-03-06 11:02:55,196 [WARNING] myLib.mySerial.Connector.myLib.mySerial.Connector: DUMP Attempt 1 failed: serial timeout: want 2 bytes, got 0 bytes
+2026-03-06 11:02:55,430 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DUMP Success on attempt 2
+2026-03-06 11:02:55,430 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: Parameters Dump Result Type: <class 'dict'>
+2026-03-06 11:02:55,432 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: Parameters dump and UI fill success.
+2026-03-06 11:03:06,163 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DUMP Success on attempt 1
+2026-03-06 11:03:06,163 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: Parameters Dump Result Type: <class 'dict'>
+2026-03-06 11:03:06,163 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: Parameters dump and UI fill success.
+2026-03-06 11:03:10,200 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DUMP Success on attempt 1
+2026-03-06 11:03:10,201 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: Parameters Dump Result Type: <class 'dict'>
+2026-03-06 11:03:10,201 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: Parameters dump and UI fill success.
+2026-03-06 11:03:14,303 [WARNING] myLib.mySerial.Connector.myLib.mySerial.Connector: DUMP Attempt 1 failed: serial timeout: want 24576 bytes, got 336 bytes
+2026-03-06 11:03:14,537 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: DUMP Success on attempt 2
+2026-03-06 11:03:14,539 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: Parameters Dump Result Type: <class 'dict'>
+2026-03-06 11:03:14,539 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: Parameters dump and UI fill success.
+2026-03-06 11:03:46,557 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-03-06 11:03:46,558 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-03-06 11:03:46,670 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM8 is disconnected

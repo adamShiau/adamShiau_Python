@@ -70,7 +70,7 @@ class Connector:
     def connectConn(self):
         self.__ser.baudrate = self.__baudRate
         self.__ser.port = self.__portName
-        self.__ser.timeout = 25
+        self.__ser.timeout = 1
         # self.__ser.writeTimeout = 5
         self.__ser.parity = serial.PARITY_NONE
         self.__ser.stopbits = serial.STOPBITS_ONE
@@ -202,15 +202,25 @@ class Connector:
             raise TimeoutError(f"serial timeout: want {n} bytes, got {len(buf)} bytes")
         return bytes(buf)
 
+    # Connector.py
+
     def _find_sync_fa(self, timeout_s: float) -> None:
         """Consume bytes until 0xFA is found (sync)."""
         end = time.time() + timeout_s
+        discarded_count = 0
         while time.time() < end:
             b = self.__ser.read(1)
             if not b:
                 continue
             if b[0] == 0xFA:
+                if discarded_count > 0:
+                    # 若丟棄過多位元組，代表數據流中有干擾或是讀取不同步
+                    logger.warning(f"DIAGNOSIS: Found 0xFA after discarding {discarded_count} bytes")
                 return
+            discarded_count += 1
+
+        # 若超時沒找到 0xFA，列印目前 Buffer 狀態
+        logger.error(f"DIAGNOSIS: [TIMEOUT] Cannot find 0xFA. Buffer size: {self.readInputBuffer()}")
         raise TimeoutError("serial timeout: cannot find 0xFA sync")
 
     def _read_frame(self, timeout_s: float = 1.0) -> dict:
@@ -225,6 +235,8 @@ class Connector:
         # type/cmd/status/lenL/lenH
         hdr = self._read_exact(5, timeout_s)
         ftype, cmd, status, lenL, lenH = hdr
+        logger.debug(f"DIAGNOSIS: [HEADER] type={hex(ftype)}, cmd={hex(cmd)}, len={(lenH << 8) | lenL}")
+
         length = (lenH << 8) | lenL
 
         payload = b""
@@ -246,6 +258,7 @@ class Connector:
                 raise ValueError(
                     f"checksum mismatch: calc=0x{calc_ck:04X}, recv(le)=0x{recv_ck_le:04X}, recv(be)=0x{recv_ck_be:04X}"
                 )
+            logger.error(f"DIAGNOSIS: [CHECKSUM ERROR] Cmd: {hex(cmd)}, Calc: {hex(calc_ck)}, Recv: {hex(recv_ck_le)}")
 
         return {
             "type": ftype, "cmd": cmd, "status": status,
@@ -254,50 +267,99 @@ class Connector:
 
     # ---------- updated dump ----------
 
+    # def dump_fog_parameters(self, ch=3):
+    #     max_retries = 3
+    #     # 發送指令前的 Buffer 檢查
+    #     pre_buffer = self.readInputBuffer()
+    #     if pre_buffer > 0:
+    #         logger.info(f"DIAGNOSIS: Flushing {pre_buffer} residual bytes before DUMP")
+    #         self.flushInputBuffer()  # 強制清除，避免舊的 IMU 數據干擾 0xFA 的搜尋
+    #     # 送命令維持你目前的格式：AB BA ... 55 56
+    #     self.__ser.write(bytearray([0xAB, 0xBA]))
+    #     self.__ser.write([0x66, 0, 0, 0, 0x02, ch])
+    #     self.__ser.write(bytearray([0x55, 0x56]))
+    #
+    #     try:
+    #         # 1) ACK
+    #         logger.info("DIAGNOSIS: Waiting for ACK (0xA1)...")
+    #         ack = self._read_frame(timeout_s=0.5)
+    #         if ack["type"] != 0xA1 or ack["cmd"] != 0x66:
+    #             raise ValueError(f"unexpected ACK frame: {ack}")
+    #         if ack["len"] != 0:
+    #             # 依你規格 ACK 應該是 len=0
+    #             raise ValueError(f"ACK len should be 0, got {ack['len']}")
+    #
+    #         # ACK 的 status 代表「已受理」；若你 MCU 規劃 ACK 可能回錯誤碼，這裡可先擋
+    #         # if ack["status"] != 0: ...
+    #
+    #         # 2) RESULT
+    #         logger.info(f"DIAGNOSIS: ACK received. Waiting for RESULT (0xA2)...")
+    #         res = self._read_frame(timeout_s=1.5)  # dump 可能比 ACK 慢
+    #         if res["type"] != 0xA2 or res["cmd"] != 0x66:
+    #             raise ValueError(f"unexpected RESULT frame: {res}")
+    #
+    #         # status handling
+    #         if res["len"] == 0:
+    #             # timeout / failure：照你結論 timeout 會 len=0
+    #             return "無法取得值"
+    #
+    #         # payload: JSON bytes
+    #         payload_bytes = res["payload"]
+    #         try:
+    #             payload_str = payload_bytes.decode("utf-8", errors="strict")
+    #         except UnicodeDecodeError:
+    #             # 如果 MCU 送的是 ASCII/UTF-8 混雜，寬鬆一點也行
+    #             payload_str = payload_bytes.decode("utf-8", errors="replace")
+    #
+    #         logger.info(f"DIAGNOSIS: Success! Payload length: {res['len']}")
+    #         return json.loads(payload_str)
+    #
+    #     except TimeoutError:
+    #         logger.error("dump_fog_parameters timeout while waiting ACK/RESULT")
+    #         self.flushInputBuffer()
+    #         return "無法取得值，此處可考慮是否要重發一次指令"
+    #     except (ValueError, json.JSONDecodeError) as e:
+    #         logger.error(f"dump_fog_parameters parse error: {e}")
+    #         return "無法取得值"
+
     def dump_fog_parameters(self, ch=3):
-        # 送命令維持你目前的格式：AB BA ... 55 56
-        self.__ser.write(bytearray([0xAB, 0xBA]))
-        self.__ser.write([0x66, 0, 0, 0, 0x02, ch])
-        self.__ser.write(bytearray([0x55, 0x56]))
+        max_retries = 3
+        for attempt in range(max_retries):
+            # 1. 每一次嘗試前都清空緩衝區，確保從乾淨的狀態開始搜尋 0xFA
+            self.flushInputBuffer()
 
-        try:
-            # 1) ACK
-            ack = self._read_frame(timeout_s=1.0)
-            if ack["type"] != 0xA1 or ack["cmd"] != 0x66:
-                raise ValueError(f"unexpected ACK frame: {ack}")
-            if ack["len"] != 0:
-                # 依你規格 ACK 應該是 len=0
-                raise ValueError(f"ACK len should be 0, got {ack['len']}")
+            # 2. 發送指令
+            self.__ser.write(bytearray([0xAB, 0xBA]))
+            self.__ser.write([0x66, 0, 0, 0, 0x02, ch])
+            self.__ser.write(bytearray([0x55, 0x56]))
 
-            # ACK 的 status 代表「已受理」；若你 MCU 規劃 ACK 可能回錯誤碼，這裡可先擋
-            # if ack["status"] != 0: ...
-
-            # 2) RESULT
-            res = self._read_frame(timeout_s=2.0)  # dump 可能比 ACK 慢
-            if res["type"] != 0xA2 or res["cmd"] != 0x66:
-                raise ValueError(f"unexpected RESULT frame: {res}")
-
-            # status handling
-            if res["len"] == 0:
-                # timeout / failure：照你結論 timeout 會 len=0
-                return "無法取得值"
-
-            # payload: JSON bytes
-            payload_bytes = res["payload"]
             try:
-                payload_str = payload_bytes.decode("utf-8", errors="strict")
-            except UnicodeDecodeError:
-                # 如果 MCU 送的是 ASCII/UTF-8 混雜，寬鬆一點也行
-                payload_str = payload_bytes.decode("utf-8", errors="replace")
+                # 3. 等待 ACK (0xA1)
+                # 這裡縮短等待時間，因為 ACK 理論上是 MCU 收到指令後立刻回發
+                ack = self._read_frame(timeout_s=0.5)
+                if ack["type"] != 0xA1 or ack["cmd"] != 0x66:
+                    raise ValueError("Wrong ACK type")
 
-            return json.loads(payload_str)
+                # 4. 等待 RESULT (0xA2)
+                # 給予較充足的解析 JSON 時間
+                res = self._read_frame(timeout_s=1.5)
+                if res["type"] != 0xA2 or res["cmd"] != 0x66:
+                    raise ValueError("Wrong RESULT type")
 
-        except TimeoutError:
-            logger.error("dump_fog_parameters timeout while waiting ACK/RESULT")
-            return "無法取得值"
-        except (ValueError, json.JSONDecodeError) as e:
-            logger.error(f"dump_fog_parameters parse error: {e}")
-            return "無法取得值"
+                # 成功取得資料，直接 return
+                payload_str = res["payload"].decode("utf-8", errors="replace")
+                logger.info(f"DUMP Success on attempt {attempt + 1}")
+                return json.loads(payload_str)
+
+            except (TimeoutError, ValueError, json.JSONDecodeError) as e:
+                logger.warning(f"DUMP Attempt {attempt + 1} failed: {e}")
+                # 如果還沒到最大次數，稍微休息一下再試
+                if attempt < max_retries - 1:
+                    time.sleep(0.1)
+                    continue
+                else:
+                    logger.error("DUMP failed after max retries.")
+                    return "無法取得值"
 
     def dump_cali_parameters(self, ch=2):
         # CMD_DUMP_MIS = 0x81

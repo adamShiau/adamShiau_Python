@@ -1,8 +1,0 @@
-# PIG Configuration Export - 20260306_173234
-DR_Index=2
-BR_Index=2
-Gyro_Z_Source=0
-Gyro_LPF_Index=0
-Accl_LPF_Index=2
-Local_Frame=1
-RCS_Matrix=1.0,-1.0,0.0,1.0,0.0,0.0,0.0,0.0,1.0

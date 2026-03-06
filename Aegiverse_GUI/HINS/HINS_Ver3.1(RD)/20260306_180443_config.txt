@@ -1,0 +1,18 @@
+# PIG Configuration Export - 20260306_180443
+
+0=2            # Data Rate Index
+1=2            # Baud Rate Index
+# RCS Matrix Elements (Floating Point)
+2=-1.0          # R11
+3=-1.0         # R12
+4=1.0          # R13
+5=1.0          # R21
+6=0.0          # R22
+7=0.0          # R23
+8=0.0          # R31
+9=0.0          # R32
+10=1.0          # R33
+11=1           # Local Frame
+12=7           # Gyro LPF Index
+13=3           # Accl LPF Index
+14=0           # Gyro Z Source

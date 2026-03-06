@@ -144,8 +144,11 @@ class pig_configuration_widget(QWidget):
 
     def _int_bits_to_float(self, val_int: int) -> float:
         try:
-            return struct.unpack('<f', struct.pack('<i', int(val_int)))[0]
-        except Exception:
+            # 加上 & 0xFFFFFFFF 可以將任何 32-bit 整數（不論正負）
+            # 強制轉換為正確的無符號位元格式，這樣還原 float 就不會報錯
+            return struct.unpack('<f', struct.pack('<I', int(val_int) & 0xFFFFFFFF))[0]
+        except Exception as e:
+            print(f"Float conversion error for {val_int}: {e}")
             return 0.0
 
     def _ensure_act(self) -> bool:
@@ -287,80 +290,78 @@ class pig_configuration_widget(QWidget):
             logger.error("Configuration dump failed: Hardware did not respond.")
 
     def export_to_txt(self):
-        """將目前 UI 參數匯出至文字檔"""
         now = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-        default_name = f"{now}_config.txt"
-
-        file_path, _ = QFileDialog.getSaveFileName(self, "Export Config", default_name, "Text Files (*.txt)")
-        if not file_path:
-            return
+        file_path, _ = QFileDialog.getSaveFileName(self, "Export Config", f"{now}_config.txt", "Text Files (*.txt)")
+        if not file_path: return
 
         try:
             with open(file_path, 'w', encoding='utf-8') as f:
-                f.write(f"# PIG Configuration Export - {now}\n")
-                f.write(f"DR_Index={self.dr_idx.spin.value()}\n")
-                f.write(f"BR_Index={self.br_idx.spin.value()}\n")
-                f.write(f"Gyro_Z_Source={self.gz_btn_group.checkedId()}\n")
-                f.write(f"Gyro_LPF_Index={self.lpf_g_idx.spin.value()}\n")
-                f.write(f"Accl_LPF_Index={self.lpf_a_idx.spin.value()}\n")
-                f.write(f"Local_Frame={self.lf_btn_group.checkedId()}\n")
+                f.write(f"# PIG Configuration Export - {now}\n\n")
+                f.write(f"0={self.dr_idx.spin.value():<12} # Data Rate Index\n")
+                f.write(f"1={self.br_idx.spin.value():<12} # Baud Rate Index\n")
 
-                # 儲存 RCS 矩陣
-                rcs_data = []
-                for r in range(3):
-                    for c in range(3):
-                        rcs_data.append(str(self.rcs_elements[r][c].spin.value()))
-                f.write(f"RCS_Matrix={','.join(rcs_data)}\n")
+                f.write("# RCS Matrix Elements (Floating Point)\n")
+                for i in range(2, 11):
+                    r, c = (i - 2) // 3, (i - 2) % 3
+                    val_float = self.rcs_elements[r][c].spin.value()
+                    # 直接存浮點數，不進行位元轉換
+                    f.write(f"{i}={val_float:<12} # R{r + 1}{c + 1}\n")
 
-            QtWidgets.QMessageBox.information(self, "Success", f"Config exported to:\n{file_path}")
+                f.write(f"11={self.lf_btn_group.checkedId():<11} # Local Frame\n")
+                f.write(f"12={self.lpf_g_idx.spin.value():<11} # Gyro LPF Index\n")
+                f.write(f"13={self.lpf_a_idx.spin.value():<11} # Accl LPF Index\n")
+                f.write(f"14={self.gz_btn_group.checkedId():<11} # Gyro Z Source\n")
+
+            QtWidgets.QMessageBox.information(self, "Success", "Config exported as floats.")
         except Exception as e:
-            QtWidgets.QMessageBox.critical(self, "Error", f"Failed to export: {str(e)}")
+            QtWidgets.QMessageBox.critical(self, "Error", f"Export failed: {e}")
 
     def import_from_txt(self):
-        """從文字檔讀取參數並更新 UI"""
         file_path, _ = QFileDialog.getOpenFileName(self, "Import Config", "", "Text Files (*.txt)")
-        if not file_path:
-            return
+        if not file_path: return
 
         try:
-            config_data = {}
+            cfg = {}
             with open(file_path, 'r', encoding='utf-8') as f:
                 for line in f:
-                    if line.startswith("#") or "=" not in line:
-                        continue
-                    key, val = line.strip().split('=')
-                    config_data[key] = val
+                    clean_line = line.split('#')[0].strip()
+                    if "=" in clean_line:
+                        k, v = clean_line.split('=')
+                        cfg[k.strip()] = v.strip()
 
-            self._updating_ui = True  # 防止觸發傳送指令給硬體
+            self._updating_ui = False  # 確保會觸發發送指令的信號
 
-            if "DR_Index" in config_data: self.dr_idx.spin.setValue(int(config_data["DR_Index"]))
-            if "BR_Index" in config_data: self.br_idx.spin.setValue(int(config_data["BR_Index"]))
-            if "Gyro_LPF_Index" in config_data: self.lpf_g_idx.spin.setValue(int(config_data["Gyro_LPF_Index"]))
-            if "Accl_LPF_Index" in config_data: self.lpf_a_idx.spin.setValue(int(config_data["Accl_LPF_Index"]))
+            # 1. DR / BR
+            if "0" in cfg: self.dr_idx.spin.setValue(int(cfg["0"]))
+            if "1" in cfg: self.br_idx.spin.setValue(int(cfg["1"]))
 
-            if "Gyro_Z_Source" in config_data:
-                gz_id = int(config_data["Gyro_Z_Source"])
-                btn = self.gz_btn_group.button(gz_id)
-                if btn: btn.setChecked(True)
+            # 2. RCS Matrix (直接讀取浮點數)
+            for i in range(2, 11):
+                if str(i) in cfg:
+                    val_float = float(cfg[str(i)])  # 直接轉 float
+                    r, c = (i - 2) // 3, (i - 2) % 3
+                    self.rcs_elements[r][c].spin.setValue(val_float)
 
-            if "Local_Frame" in config_data:
-                lf_id = int(config_data["Local_Frame"])
-                btn = self.lf_btn_group.button(lf_id)
-                if btn: btn.setChecked(True)
+            # 3. 其他觸發按鈕
+            if "11" in cfg:
+                btn = self.lf_btn_group.button(int(cfg["11"]))
+                if btn: btn.click()
 
-            if "RCS_Matrix" in config_data:
-                rcs_vals = config_data["RCS_Matrix"].split(',')
-                for i, val in enumerate(rcs_vals):
-                    r, c = i // 3, i % 3
-                    self.rcs_elements[r][c].spin.setValue(float(val))
+            if "12" in cfg: self.lpf_g_idx.spin.setValue(int(cfg["12"]))
+            if "13" in cfg: self.lpf_a_idx.spin.setValue(int(cfg["13"]))
 
-            self._updating_ui = False
-            QtWidgets.QMessageBox.information(self, "Success",
-                                              "Config imported to UI.\n(Click 'Set' or 'Dump' to sync with hardware)")
+            if "14" in cfg:
+                btn = self.gz_btn_group.button(int(cfg["14"]))
+                if btn: btn.click()
+
+            # 重點：RCS Matrix 需要手動按 Set，或者我們在這裡幫忙呼叫一次
+            reply = QtWidgets.QMessageBox.question(self, "Sync",
+                                                   "UI updated. Do you want to SEND RCS Matrix to hardware now?")
+            if reply == QtWidgets.QMessageBox.Yes:
+                self.set_rcs_matrix()
 
         except Exception as e:
-            self._updating_ui = False
-            QtWidgets.QMessageBox.critical(self, "Error", f"Failed to import: {str(e)}")
+            QtWidgets.QMessageBox.critical(self, "Error", f"Import failed: {e}")
 
     def show(self):
         super().show()

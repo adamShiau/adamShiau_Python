@@ -19,8 +19,8 @@ logger.info(__name__ + ' logger start')
 from PySide6 import QtCore, QtWidgets
 from PySide6.QtGui import Qt
 from PySide6.QtWidgets import (QGroupBox, QStackedWidget, QGridLayout, QVBoxLayout, QWidget,
-                               QPushButton, QSpacerItem, QSizePolicy, QHBoxLayout,
-                               QFileDialog, QMessageBox, QFrame)
+                               QPushButton, QHBoxLayout, QFileDialog, QMessageBox, QFrame,
+                               QProgressDialog)
 
 from myLib.myGui.mygui_serial import editBlock
 from myLib import common as cmn
@@ -307,15 +307,34 @@ class pig_calibration_widget(QGroupBox):
                 val_int = int(float(val_str))  # 處理帶 .0 的整數情況
 
             self.__act.writeImuCmd(cmd, val_int, 4)
+
     def init_para(self):
-        """ 初始化參數 (批次發送) """
+        """ 帶有進度條的初始化參數 (批次發送) """
         if QMessageBox.question(self, "Init", "Reset all parameters to default?") != QMessageBox.Yes: return
 
-        self._updating_ui = False
-        for cid, val in INIT_PARAMETERS.items():
+        # 建立進度條對話框
+        progress = QProgressDialog("Sending initial parameters...", "Cancel", 0, len(INIT_PARAMETERS), self)
+        progress.setWindowModality(Qt.WindowModal)
+        progress.setMinimumDuration(0)  # 立即顯示
+        progress.setWindowTitle("Please Wait")
+
+        self._updating_ui = False  # 確保會觸發指令發送
+        for i, (cid, val) in enumerate(INIT_PARAMETERS.items()):
+            if progress.wasCanceled():
+                break
+
+            progress.setValue(i)
+            # 更新顯示內容，告知使用者當前發送進度
             if cid in self.config_table:
+                comment = self.config_table[cid]['comment']
+                progress.setLabelText(f"Sending parameter {i + 1}/{len(INIT_PARAMETERS)}: {comment}")
                 self.config_table[cid]["widget"].le.setText(str(val))
-                time.sleep(0.02)  # 防止指令堆疊過快
+
+            time.sleep(0.02)  # 防止指令堆疊過快
+            # 強制讓 UI 更新進度條顯示
+            QtWidgets.QApplication.processEvents()
+
+        progress.setValue(len(INIT_PARAMETERS))
         QMessageBox.information(self, "Done", "Parameters reset.")
 
     def loadCSVandWriteMisalignment(self, mode):

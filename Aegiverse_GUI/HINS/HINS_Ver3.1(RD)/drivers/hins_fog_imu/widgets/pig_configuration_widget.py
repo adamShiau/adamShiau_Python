@@ -2,8 +2,10 @@
 import logging
 import struct
 import time
+import datetime
 from PySide6 import QtWidgets, QtCore
-from PySide6.QtWidgets import QWidget, QPushButton, QGridLayout, QLabel, QVBoxLayout, QHBoxLayout, QGroupBox
+from PySide6.QtWidgets import (QWidget, QPushButton, QGridLayout, QLabel, QVBoxLayout, QHBoxLayout, QGroupBox,
+                               QFileDialog, QMessageBox)
 from myLib.myGui.mygui_serial import *
 from myLib.myGui.myLabel import *  # 定義指令常數
 
@@ -100,6 +102,15 @@ class pig_configuration_widget(QWidget):
         # --- dump 按鈕 ---
         self.dump_btn = QPushButton("Dump Configuration")
 
+        # --- File I/O Group (新區塊) ---
+        self.file_group = QGroupBox("Configuration File Management")
+        file_layout = QHBoxLayout()
+        self.export_btn = QPushButton("Export Config (.txt)")
+        self.import_btn = QPushButton("Import Config (.txt)")
+        file_layout.addWidget(self.export_btn)
+        file_layout.addWidget(self.import_btn)
+        self.file_group.setLayout(file_layout)
+
         # --- Layout 配置 ---
         layout = QVBoxLayout()
         layout.addWidget(self.dr_idx)
@@ -112,6 +123,7 @@ class pig_configuration_widget(QWidget):
         layout.addWidget(self.rcs_group)
         layout.addWidget(self.set_rcs_btn)
         layout.addWidget(self.dump_btn)
+        layout.addWidget(self.file_group)
         self.setLayout(layout)
 
         # --- Signal ---
@@ -123,6 +135,8 @@ class pig_configuration_widget(QWidget):
         self.lpf_g_idx.spin.valueChanged.connect(self._on_lpf_g_changed)
         self.lpf_a_idx.spin.valueChanged.connect(self._on_lpf_a_changed)
         self.gz_btn_group.idClicked.connect(self._on_gz_changed)
+        self.export_btn.clicked.connect(self.export_to_txt)
+        self.import_btn.clicked.connect(self.import_from_txt)
 
     # --- 內部工具函數 ---
     def _float_to_int_bits(self, val: float) -> int:
@@ -272,81 +286,81 @@ class pig_configuration_widget(QWidget):
             # 如果是 "無法取得值"，只印出 log 或警告，不執行更新 UI 邏輯
             logger.error("Configuration dump failed: Hardware did not respond.")
 
-    # def dump_configuration(self):
-    #     if not self._ensure_act(): return
-    #     self.__act.flushInputBuffer("None")
-    #     cfg = self.__act.dump_configuration()
-    #     # Debug 1: 印出原始回傳資料
-    #     print(f"DEBUG - Raw cfg from act: {cfg} (Type: {type(cfg)})")
-    #
-    #     if isinstance(cfg, dict):
-    #         self._updating_ui = True
-    #         try:
-    #             # Debug 2: 檢查特定的 Key 是否存在
-    #             for key in ["0", "1", "11", "12", "13", "14"]:
-    #                 print(f"DEBUG - Key {key} value: {cfg.get(key)}")
-    #
-    #             # 1. DR/BR
-    #             self.dr_idx.spin.setValue(int(cfg.get("0", 0)))
-    #             self.br_idx.spin.setValue(int(cfg.get("1", 0)))
-    #
-    #             # 2. RCS Matrix (Key 2 ~ 10)
-    #             rcs_values = []
-    #             for i in range(2, 11):
-    #                 val_int = cfg.get(str(i))
-    #                 if val_int is not None:
-    #                     f_val = self._int_bits_to_float(int(val_int))
-    #                     rcs_values.append(f_val)
-    #                     r, c = (i - 2) // 3, (i - 2) % 3
-    #                     self.rcs_elements[r][c].spin.setValue(f_val)
-    #             self.rcs_updated_qt.emit(rcs_values)
-    #
-    #             # 3. Local Frame (Key 11)
-    #             lf_val = cfg.get("11")
-    #             if lf_val is not None:
-    #                 lf_val = int(lf_val)
-    #                 if lf_val == 0:
-    #                     self.cb_enu.setChecked(True)
-    #                 elif lf_val == 1:
-    #                     self.cb_ned.setChecked(True)
-    #
-    #             # 4. LPF Gyro (Key 12) & Accl (Key 13)
-    #             lpf_g_val = cfg.get("12")
-    #             if lpf_g_val is not None:
-    #                 self.lpf_g_idx.spin.setValue(int(lpf_g_val))
-    #
-    #             lpf_a_val = cfg.get("13")
-    #             if lpf_a_val is not None:
-    #                 self.lpf_a_idx.spin.setValue(int(lpf_a_val))
-    #
-    #             # 5. Gyro Z Source (Key 14)
-    #             gz_val = cfg.get("14")
-    #             if gz_val is not None:
-    #                 gz_val = int(gz_val)
-    #                 if gz_val == 0:
-    #                     self.cb_gz_mems.setChecked(True)
-    #                 elif gz_val == 1:
-    #                     self.cb_gz_fog.setChecked(True)
-    #
-    #             # Debug 3: 檢查 Gyro Z Source (Key 14)
-    #             gz_val = cfg.get("14")
-    #             if gz_val is not None:
-    #                 print(f"DEBUG - Setting Gyro Z Source to: {gz_val}")
-    #                 if int(gz_val) == 0:
-    #                     self.cb_gz_mems.setChecked(True)
-    #                 elif int(gz_val) == 1:
-    #                     self.cb_gz_fog.setChecked(True)
-    #
-    #         except Exception as e:
-    #             # Debug 4: 捕捉報錯行數與原因
-    #             import traceback
-    #             print("--- UI Update Error Traceback ---")
-    #             traceback.print_exc()
-    #             print(f"Error detail: {e}")
-    #         finally:
-    #             self._updating_ui = False
-    #     elif cfg == "無法取得值":
-    #         QtWidgets.QMessageBox.warning(self, "Dump Error", "無法取得設定值")
+    def export_to_txt(self):
+        """將目前 UI 參數匯出至文字檔"""
+        now = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+        default_name = f"{now}_config.txt"
+
+        file_path, _ = QFileDialog.getSaveFileName(self, "Export Config", default_name, "Text Files (*.txt)")
+        if not file_path:
+            return
+
+        try:
+            with open(file_path, 'w', encoding='utf-8') as f:
+                f.write(f"# PIG Configuration Export - {now}\n")
+                f.write(f"DR_Index={self.dr_idx.spin.value()}\n")
+                f.write(f"BR_Index={self.br_idx.spin.value()}\n")
+                f.write(f"Gyro_Z_Source={self.gz_btn_group.checkedId()}\n")
+                f.write(f"Gyro_LPF_Index={self.lpf_g_idx.spin.value()}\n")
+                f.write(f"Accl_LPF_Index={self.lpf_a_idx.spin.value()}\n")
+                f.write(f"Local_Frame={self.lf_btn_group.checkedId()}\n")
+
+                # 儲存 RCS 矩陣
+                rcs_data = []
+                for r in range(3):
+                    for c in range(3):
+                        rcs_data.append(str(self.rcs_elements[r][c].spin.value()))
+                f.write(f"RCS_Matrix={','.join(rcs_data)}\n")
+
+            QtWidgets.QMessageBox.information(self, "Success", f"Config exported to:\n{file_path}")
+        except Exception as e:
+            QtWidgets.QMessageBox.critical(self, "Error", f"Failed to export: {str(e)}")
+
+    def import_from_txt(self):
+        """從文字檔讀取參數並更新 UI"""
+        file_path, _ = QFileDialog.getOpenFileName(self, "Import Config", "", "Text Files (*.txt)")
+        if not file_path:
+            return
+
+        try:
+            config_data = {}
+            with open(file_path, 'r', encoding='utf-8') as f:
+                for line in f:
+                    if line.startswith("#") or "=" not in line:
+                        continue
+                    key, val = line.strip().split('=')
+                    config_data[key] = val
+
+            self._updating_ui = True  # 防止觸發傳送指令給硬體
+
+            if "DR_Index" in config_data: self.dr_idx.spin.setValue(int(config_data["DR_Index"]))
+            if "BR_Index" in config_data: self.br_idx.spin.setValue(int(config_data["BR_Index"]))
+            if "Gyro_LPF_Index" in config_data: self.lpf_g_idx.spin.setValue(int(config_data["Gyro_LPF_Index"]))
+            if "Accl_LPF_Index" in config_data: self.lpf_a_idx.spin.setValue(int(config_data["Accl_LPF_Index"]))
+
+            if "Gyro_Z_Source" in config_data:
+                gz_id = int(config_data["Gyro_Z_Source"])
+                btn = self.gz_btn_group.button(gz_id)
+                if btn: btn.setChecked(True)
+
+            if "Local_Frame" in config_data:
+                lf_id = int(config_data["Local_Frame"])
+                btn = self.lf_btn_group.button(lf_id)
+                if btn: btn.setChecked(True)
+
+            if "RCS_Matrix" in config_data:
+                rcs_vals = config_data["RCS_Matrix"].split(',')
+                for i, val in enumerate(rcs_vals):
+                    r, c = i // 3, i % 3
+                    self.rcs_elements[r][c].spin.setValue(float(val))
+
+            self._updating_ui = False
+            QtWidgets.QMessageBox.information(self, "Success",
+                                              "Config imported to UI.\n(Click 'Set' or 'Dump' to sync with hardware)")
+
+        except Exception as e:
+            self._updating_ui = False
+            QtWidgets.QMessageBox.critical(self, "Error", f"Failed to import: {str(e)}")
 
     def show(self):
         super().show()

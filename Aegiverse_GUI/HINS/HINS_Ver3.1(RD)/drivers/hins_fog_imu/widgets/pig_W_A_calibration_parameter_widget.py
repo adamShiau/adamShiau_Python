@@ -1,9 +1,11 @@
+# -*- coding:UTF-8 -*-
 """ ####### log stuff creation, always on the top ########  """
 import ast
 import builtins
 import datetime
 import logging
-
+import struct
+import time
 import pandas
 
 if hasattr(builtins, 'LOGGER_NAME'):
@@ -14,40 +16,26 @@ logger = logging.getLogger(logger_name + '.' + __name__)
 logger.info(__name__ + ' logger start')
 """ ####### end of log stuff creation ########  """
 
-import struct
-
 from PySide6 import QtCore, QtWidgets
-from PySide6.QtGui import QDoubleValidator, Qt
-from PySide6.QtWidgets import QGroupBox, QStackedWidget, QGridLayout, QApplication, QVBoxLayout, QWidget, QPushButton, \
-    QSpacerItem, QSizePolicy, QHBoxLayout, QFileDialog, QMessageBox, QFrame
+from PySide6.QtGui import Qt
+from PySide6.QtWidgets import (QGroupBox, QStackedWidget, QGridLayout, QVBoxLayout, QWidget,
+                               QPushButton, QSpacerItem, QSizePolicy, QHBoxLayout,
+                               QFileDialog, QMessageBox, QFrame)
 
 from myLib.myGui.mygui_serial import editBlock
 from myLib import common as cmn
 
-CMD_Gyro_G11 = 63
-CMD_Gyro_G12 = 64
-CMD_Gyro_G13 = 65
-CMD_Gyro_G21 = 66
-CMD_Gyro_G22 = 67
-CMD_Gyro_G23 = 68
-CMD_Gyro_G31 = 69
-CMD_Gyro_G32 = 70
-CMD_Gyro_G33 = 71
-CMD_Gyro_GX = 60
-CMD_Gyro_GY = 61
-CMD_Gyro_GZ = 62
-CMD_Accele_A11 = 51
-CMD_Accele_A12 = 52
-CMD_Accele_A13 = 53
-CMD_Accele_A21 = 54
-CMD_Accele_A22 = 55
-CMD_Accele_A23 = 56
-CMD_Accele_A31 = 57
-CMD_Accele_A32 = 58
-CMD_Accele_A33 = 59
-CMD_Accele_AX = 48
-CMD_Accele_AY = 49
-CMD_Accele_AZ = 50
+# 指令 ID 與 參數 Key 的對照表 (對應你原始定義的 CMD_Gyro_... 等)
+CMD_MAP = {
+    "0": 48, "1": 49, "2": 50,  # Accel Bias: AX, AY, AZ
+    "3": 51, "4": 52, "5": 53,  # Accel R: A11, A12, A13
+    "6": 54, "7": 55, "8": 56,  # Accel R: A21, A22, A23
+    "9": 57, "10": 58, "11": 59,  # Accel R: A31, A32, A33
+    "12": 60, "13": 61, "14": 62,  # Gyro Bias: GX, GY, GZ
+    "15": 63, "16": 64, "17": 65,  # Gyro R: G11, G12, G13
+    "18": 66, "19": 67, "20": 68,  # Gyro R: G21, G22, G23
+    "21": 69, "22": 70, "23": 71  # Gyro R: G31, G32, G33
+}
 
 INIT_PARAMETERS = {
     "0": 0, "1": 0, "2": 0, "3": 9.8, "4": 0, "5": 0, "6": 0, "7": 9.8, "8": 0, "9": 0, "10": 0,
@@ -59,667 +47,323 @@ INIT_PARAMETERS = {
 class pig_calibration_widget(QGroupBox):
     def __init__(self, act, dataFile, dataFileName):
         super(pig_calibration_widget, self).__init__()
-        self.setWindowTitle("IMU Misalignment Calibrtion")
+        self.setWindowTitle("IMU Misalignment Calibration")
         self.__act = act
         self.__file = dataFile
         self.filename = dataFileName
-        self._updating_ui = False  # 新增鎖定旗標
-        self.dumpTrigerState = None
-        self.keyIsNotExist = False
-        self.__modifiedItem = set()
+        self._updating_ui = False  # 防止回填時觸發指令發送
+        self.dumpTrigerState = False
+
         self.intiUI()
+
+        # --- 配置管理表 (Table-Driven) ---
+        # 建立 Key 與 UI 元件的映射關係，方便自動化處理
+        self.config_table = {
+            "0": {"type": "float", "widget": self.Ax, "comment": "Accel Bias X"},
+            "1": {"type": "float", "widget": self.Ay, "comment": "Accel Bias Y"},
+            "2": {"type": "float", "widget": self.Az, "comment": "Accel Bias Z"},
+            "3": {"type": "float", "widget": self.A1_1, "comment": "A11"},
+            "4": {"type": "float", "widget": self.A1_2, "comment": "A12"},
+            "5": {"type": "float", "widget": self.A1_3, "comment": "A13"},
+            "6": {"type": "float", "widget": self.A2_1, "comment": "A21"},
+            "7": {"type": "float", "widget": self.A2_2, "comment": "A22"},
+            "8": {"type": "float", "widget": self.A2_3, "comment": "A23"},
+            "9": {"type": "float", "widget": self.A3_1, "comment": "A31"},
+            "10": {"type": "float", "widget": self.A3_2, "comment": "A32"},
+            "11": {"type": "float", "widget": self.A3_3, "comment": "A33"},
+            "12": {"type": "float", "widget": self.Wx, "comment": "Gyro Bias X"},
+            "13": {"type": "float", "widget": self.Wy, "comment": "Gyro Bias Y"},
+            "14": {"type": "float", "widget": self.Wz, "comment": "Gyro Bias Z"},
+            "15": {"type": "float", "widget": self.W1_1, "comment": "G11"},
+            "16": {"type": "float", "widget": self.W1_2, "comment": "G12"},
+            "17": {"type": "float", "widget": self.W1_3, "comment": "G13"},
+            "18": {"type": "float", "widget": self.W2_1, "comment": "G21"},
+            "19": {"type": "float", "widget": self.W2_2, "comment": "G22"},
+            "20": {"type": "float", "widget": self.W2_3, "comment": "G23"},
+            "21": {"type": "float", "widget": self.W3_1, "comment": "G31"},
+            "22": {"type": "float", "widget": self.W3_2, "comment": "G32"},
+            "23": {"type": "float", "widget": self.W3_3, "comment": "G33"},
+        }
+
         self.linkFunction()
 
     def intiUI(self):
+        """ 初始化 UI 佈局 (維持原始結構) """
         All_Layout = QHBoxLayout()
         self.stackView_one = QStackedWidget()
         Angular_velocity_Layout = QVBoxLayout()
         acceleration_Layout = QVBoxLayout()
-        OneWidget = QWidget()
-        TwoWidget = QWidget()
+        OneWidget, TwoWidget = QWidget(), QWidget()
 
-        # first Page
+        # 第一頁: Gyro
         R_GroupBox = QGroupBox("Gyro R")
-        R_GroupBox_layout = QGridLayout()
-        R_GroupBox.setLayout(R_GroupBox_layout)
-        self.W1_1 = editBlock("G11")
-        self.W1_2 = editBlock("G12")
-        self.W1_3 = editBlock("G13")
-        self.W2_1 = editBlock("G21")
-        self.W2_2 = editBlock("G22")
-        self.W2_3 = editBlock("G23")
-        self.W3_1 = editBlock("G31")
-        self.W3_2 = editBlock("G32")
-        self.W3_3 = editBlock("G33")
-        self.W1_1.setFixedWidth(150)
-        self.W1_2.setFixedWidth(150)
-        self.W1_3.setFixedWidth(150)
-        nextPage = QPushButton("next page -->")
-        nextPage.setFixedSize(120, 25)
+        R_layout = QGridLayout()
+        self.W1_1, self.W1_2, self.W1_3 = editBlock("G11"), editBlock("G12"), editBlock("G13")
+        self.W2_1, self.W2_2, self.W2_3 = editBlock("G21"), editBlock("G22"), editBlock("G23")
+        self.W3_1, self.W3_2, self.W3_3 = editBlock("G31"), editBlock("G32"), editBlock("G33")
+        for i, w in enumerate(
+                [self.W1_1, self.W1_2, self.W1_3, self.W2_1, self.W2_2, self.W2_3, self.W3_1, self.W3_2, self.W3_3]):
+            w.setFixedWidth(150)
+            R_layout.addWidget(w, i // 3, (i % 3) * 2, 1, 2)
+        R_GroupBox.setLayout(R_layout)
 
         b_GroupBox = QGroupBox("Gyro b")
-        b_GroupBox_layout = QGridLayout()
-        b_GroupBox.setLayout(b_GroupBox_layout)
-        self.Wx = editBlock("Bias WX")
-        self.Wy = editBlock("Bias WY")
-        self.Wz = editBlock("Bias WZ")
+        b_layout = QGridLayout()
+        self.Wx, self.Wy, self.Wz = editBlock("Bias WX"), editBlock("Bias WY"), editBlock("Bias WZ")
+        b_layout.addWidget(self.Wx, 0, 0, 1, 2);
+        b_layout.addWidget(self.Wy, 0, 2, 1, 2);
+        b_layout.addWidget(self.Wz, 0, 4, 1, 2)
+        b_GroupBox.setLayout(b_layout)
 
-        R_GroupBox_layout.addWidget(self.W1_1, 0, 0, 1, 2)
-        R_GroupBox_layout.addWidget(self.W1_2, 0, 2, 1, 2)
-        R_GroupBox_layout.addWidget(self.W1_3, 0, 4, 1, 2)
-        R_GroupBox_layout.addWidget(self.W2_1, 1, 0, 1, 2)
-        R_GroupBox_layout.addWidget(self.W2_2, 1, 2, 1, 2)
-        R_GroupBox_layout.addWidget(self.W2_3, 1, 4, 1, 2)
-        R_GroupBox_layout.addWidget(self.W3_1, 2, 0, 1, 2)
-        R_GroupBox_layout.addWidget(self.W3_2, 2, 2, 1, 2)
-        R_GroupBox_layout.addWidget(self.W3_3, 2, 4, 1, 2)
-        b_GroupBox_layout.addWidget(self.Wx, 0, 0, 1, 2)
-        b_GroupBox_layout.addWidget(self.Wy, 0, 2, 1, 2)
-        b_GroupBox_layout.addWidget(self.Wz, 0, 4, 1, 2)
-        Angular_velocity_Layout.addWidget(R_GroupBox)
+        nextPage = QPushButton("next page -->")
+        Angular_velocity_Layout.addWidget(R_GroupBox);
         Angular_velocity_Layout.addWidget(b_GroupBox)
-        Angular_velocity_Layout.addWidget(nextPage, alignment=QtCore.Qt.AlignRight)
-
-        spring = QSpacerItem(15, 35, QSizePolicy.Minimum, QSizePolicy.Expanding)
-        Angular_velocity_Layout.addItem(spring)
-        # Angular_velocity_Layout.insertLayout(4, BtnHorizontal)
+        Angular_velocity_Layout.addWidget(nextPage, alignment=Qt.AlignRight)
+        Angular_velocity_Layout.addStretch()
         OneWidget.setLayout(Angular_velocity_Layout)
 
-        # Second Page
-        acceleration_R_Group = QGroupBox("Accelerometer R")
-        acceleration_R_GroupBox_layout = QGridLayout()
-        acceleration_R_Group.setLayout(acceleration_R_GroupBox_layout)
-        self.A1_1 = editBlock("A11")
-        self.A1_2 = editBlock("A12")
-        self.A1_3 = editBlock("A13")
-        self.A2_1 = editBlock("A21")
-        self.A2_2 = editBlock("A22")
-        self.A2_3 = editBlock("A23")
-        self.A3_1 = editBlock("A31")
-        self.A3_2 = editBlock("A32")
-        self.A3_3 = editBlock("A33")
-        self.A1_1.setFixedWidth(150)
-        self.A1_2.setFixedWidth(150)
-        self.A1_3.setFixedWidth(150)
-        PreviousPage = QPushButton("<-- previous page")
-        PreviousPage.setFixedSize(120, 25)
+        # 第二頁: Accelerometer
+        acc_R_Group = QGroupBox("Accelerometer R")
+        acc_R_layout = QGridLayout()
+        self.A1_1, self.A1_2, self.A1_3 = editBlock("A11"), editBlock("A12"), editBlock("A13")
+        self.A2_1, self.A2_2, self.A2_3 = editBlock("A21"), editBlock("A22"), editBlock("A23")
+        self.A3_1, self.A3_2, self.A3_3 = editBlock("A31"), editBlock("A32"), editBlock("A33")
+        for i, w in enumerate(
+                [self.A1_1, self.A1_2, self.A1_3, self.A2_1, self.A2_2, self.A2_3, self.A3_1, self.A3_2, self.A3_3]):
+            w.setFixedWidth(150)
+            acc_R_layout.addWidget(w, i // 3, (i % 3) * 2, 1, 2)
+        acc_R_Group.setLayout(acc_R_layout)
 
-        acceleration_b_Group = QGroupBox("Accelerometer b")
-        acceleration_b_Group_layout = QGridLayout()
-        acceleration_b_Group.setLayout(acceleration_b_Group_layout)
-        self.Ax = editBlock("AX")
-        self.Ay = editBlock("AY")
-        self.Az = editBlock("AZ")
+        acc_b_Group = QGroupBox("Accelerometer b")
+        acc_b_layout = QGridLayout()
+        self.Ax, self.Ay, self.Az = editBlock("AX"), editBlock("AY"), editBlock("AZ")
+        acc_b_layout.addWidget(self.Ax, 0, 0, 1, 2);
+        acc_b_layout.addWidget(self.Ay, 0, 2, 1, 2);
+        acc_b_layout.addWidget(self.Az, 0, 4, 1, 2)
+        acc_b_Group.setLayout(acc_b_layout)
 
-        acceleration_R_GroupBox_layout.addWidget(self.A1_1, 0, 0, 1, 2)
-        acceleration_R_GroupBox_layout.addWidget(self.A1_2, 0, 2, 1, 2)
-        acceleration_R_GroupBox_layout.addWidget(self.A1_3, 0, 4, 1, 2)
-        acceleration_R_GroupBox_layout.addWidget(self.A2_1, 1, 0, 1, 2)
-        acceleration_R_GroupBox_layout.addWidget(self.A2_2, 1, 2, 1, 2)
-        acceleration_R_GroupBox_layout.addWidget(self.A2_3, 1, 4, 1, 2)
-        acceleration_R_GroupBox_layout.addWidget(self.A3_1, 2, 0, 1, 2)
-        acceleration_R_GroupBox_layout.addWidget(self.A3_2, 2, 2, 1, 2)
-        acceleration_R_GroupBox_layout.addWidget(self.A3_3, 2, 4, 1, 2)
-        acceleration_b_Group_layout.addWidget(self.Ax, 0, 0, 1, 2)
-        acceleration_b_Group_layout.addWidget(self.Ay, 0, 2, 1, 2)
-        acceleration_b_Group_layout.addWidget(self.Az, 0, 4, 1, 2)
-        acceleration_Layout.addWidget(acceleration_R_Group)
-        acceleration_Layout.addWidget(acceleration_b_Group)
-        acceleration_Layout.addWidget(PreviousPage)
-        accelerationSpring = QSpacerItem(15, 35, QSizePolicy.Minimum, QSizePolicy.Expanding)
-        acceleration_Layout.addItem(accelerationSpring)
+        prevPage = QPushButton("<-- previous page")
+        acceleration_Layout.addWidget(acc_R_Group);
+        acceleration_Layout.addWidget(acc_b_Group)
+        acceleration_Layout.addWidget(prevPage);
+        acceleration_Layout.addStretch()
         TwoWidget.setLayout(acceleration_Layout)
 
-        setting_frame = QFrame()
-        setting_frame.setStyleSheet('''QFrame {
-                                               background-color: rgba(0, 0, 0, 192);
-                                               border: 2px solid rgba(0, 0, 0, 32);
-                                               border-radius: 10px;                                            
-                                                }''')
-        self.dump_Btn = QPushButton("Dump")
-        self.dump_Btn.setFixedHeight(30)
-        self.setBtnStyle(self.dump_Btn)
-        self.init_para_btn = QPushButton("Init Para")
-        self.init_para_btn.setFixedHeight(30)
-        self.setBtnStyle(self.init_para_btn)
-        self.Update_Btn = QPushButton("Update")
-        self.Update_Btn.setFixedHeight(30)
-        self.Update_Btn.setObjectName("UDBtn")
-        self.setBtnStyle(self.Update_Btn)
-        self.Update_Btn.setDisabled(True)
-        self.loadMisalignmentFile_Gyro = QPushButton("Load Gyro File")
-        self.loadMisalignmentFile_Gyro.setFixedHeight(30)
-        self.setBtnStyle(self.loadMisalignmentFile_Gyro)
-        self.loadMisalignmentFile_Acce = QPushButton("Load Acceleration File")
-        self.loadMisalignmentFile_Acce.setFixedHeight(30)
-        self.setBtnStyle(self.loadMisalignmentFile_Acce)
-        self.export_Btn = QPushButton("Export")
-        self.export_Btn.setFixedHeight(30)
-        self.setBtnStyle(self.export_Btn)
-        self.import_Btn = QPushButton("Import")
-        self.import_Btn.setFixedHeight(30)
-        self.setBtnStyle(self.import_Btn)
-
-        BtnHorizontal = QVBoxLayout()
-        BtnHorizontal.setAlignment(Qt.AlignTop)
-        BtnHorizontal.setSpacing(5)
-        BtnHorizontal.setContentsMargins(0, 0, 0, 0)
-        BtnHorizontal.addWidget(self.dump_Btn)
-        BtnHorizontal.addWidget(self.init_para_btn)
-        BtnHorizontal.addWidget(self.Update_Btn)
-        BtnHorizontal.addWidget(self.loadMisalignmentFile_Gyro)
-        BtnHorizontal.addWidget(self.loadMisalignmentFile_Acce)
-        BtnHorizontal.addWidget(self.export_Btn)
-        BtnHorizontal.addWidget(self.import_Btn)
-        setting_frame.setLayout(BtnHorizontal)
-
-        self.stackView_one.addWidget(OneWidget)
+        self.stackView_one.addWidget(OneWidget);
         self.stackView_one.addWidget(TwoWidget)
-        nextPage.clicked.connect(self.NextToTheSecondPG)
-        PreviousPage.clicked.connect(self.PreviousToTheFirstPG)
-        All_Layout.addWidget(setting_frame, 1)
-        All_Layout.addWidget(self.stackView_one, 3)
+        nextPage.clicked.connect(lambda: self.stackView_one.setCurrentIndex(1))
+        prevPage.clicked.connect(lambda: self.stackView_one.setCurrentIndex(0))
 
-        # All_Layout.addWidget(stackView_one)
+        # 控制按鈕區
+        setting_frame = QFrame()
+        setting_frame.setStyleSheet("background-color: rgba(0, 0, 0, 192); border-radius: 10px;")
+        self.dump_Btn = QPushButton("Dump")
+        self.init_para_btn = QPushButton("Init Para")
+        self.loadMisalignmentFile_Gyro = QPushButton("Load Gyro File")
+        self.loadMisalignmentFile_Acce = QPushButton("Load Acceleration File")
+        self.export_Btn = QPushButton("Export")
+        self.import_Btn = QPushButton("Import")
+
+        btn_layout = QVBoxLayout()
+        for btn in [self.dump_Btn, self.init_para_btn, self.loadMisalignmentFile_Gyro,
+                    self.loadMisalignmentFile_Acce, self.export_Btn, self.import_Btn]:
+            btn.setFixedHeight(30)
+            self.setBtnStyle(btn)
+            btn_layout.addWidget(btn)
+        setting_frame.setLayout(btn_layout)
+
+        All_Layout.addWidget(setting_frame, 1);
+        All_Layout.addWidget(self.stackView_one, 3)
         self.setLayout(All_Layout)
 
     def linkFunction(self):
-        self.W1_1.le.textChanged.connect(self.Send_G11_CMD)
-        self.W1_2.le.textChanged.connect(self.Send_G12_CMD)
-        self.W1_3.le.textChanged.connect(self.Send_G13_CMD)
-        self.W2_1.le.textChanged.connect(self.Send_G21_CMD)
-        self.W2_2.le.textChanged.connect(self.Send_G22_CMD)
-        self.W2_3.le.textChanged.connect(self.Send_G23_CMD)
-        self.W3_1.le.textChanged.connect(self.Send_G31_CMD)
-        self.W3_2.le.textChanged.connect(self.Send_G32_CMD)
-        self.W3_3.le.textChanged.connect(self.Send_G33_CMD)
-        self.Wx.le.textChanged.connect(self.Send_GX_CMD)
-        self.Wy.le.textChanged.connect(self.Send_GY_CMD)
-        self.Wz.le.textChanged.connect(self.Send_GZ_CMD)
-        self.A1_1.le.textChanged.connect(self.Send_A11_CMD)
-        self.A1_2.le.textChanged.connect(self.Send_A12_CMD)
-        self.A1_3.le.textChanged.connect(self.Send_A13_CMD)
-        self.A2_1.le.textChanged.connect(self.Send_A21_CMD)
-        self.A2_2.le.textChanged.connect(self.Send_A22_CMD)
-        self.A2_3.le.textChanged.connect(self.Send_A23_CMD)
-        self.A3_1.le.textChanged.connect(self.Send_A31_CMD)
-        self.A3_2.le.textChanged.connect(self.Send_A32_CMD)
-        self.A3_3.le.textChanged.connect(self.Send_A33_CMD)
-        self.Ax.le.textChanged.connect(self.Send_AX_CMD)
-        self.Ay.le.textChanged.connect(self.Send_AY_CMD)
-        self.Az.le.textChanged.connect(self.Send_AZ_CMD)
+        """ 連接按鈕與數值變動信號 """
         self.dump_Btn.clicked.connect(self.dump_cali_parameter)
         self.init_para_btn.clicked.connect(self.init_para)
-        # self.Update_Btn.clicked.connect(self.update_changevalue)
+        self.export_Btn.clicked.connect(self.export_to_txt)
+        self.import_Btn.clicked.connect(self.import_from_txt)
         self.loadMisalignmentFile_Gyro.clicked.connect(lambda: self.loadCSVandWriteMisalignment("G"))
         self.loadMisalignmentFile_Acce.clicked.connect(lambda: self.loadCSVandWriteMisalignment("A"))
-        self.export_Btn.clicked.connect(self.exportTXTDump)
-        self.import_Btn.clicked.connect(self.importTXT)
 
+        # 為所有輸入框綁定自動變色與發送指令功能
+        for cid, info in self.config_table.items():
+            info["widget"].le.textChanged.connect(lambda _, c=cid: self._on_value_changed(c))
+
+    # --- 工具函數 ---
     def setBtnStyle(self, item):
-        if item.objectName() == "UDBtn":
-            item.setStyleSheet('''QPushButton {
-                                               background-color: rgba(213, 216, 220, 68);
-                                               border: 0px;
-                                               border-radius: 10px;
-                                               color: rgb(229, 231, 233);
-                                               }''')
-        else:
-            item.setStyleSheet('''QPushButton {
-                                               background-color: rgba(0, 0, 0, 32);
-                                               border: 0px;
-                                               border-radius: 10px;
-                                               color: rgb(255, 255, 255);
-                                               }
-                                  QPushButton::hover {
-                                                      background-color: rgb(255, 255, 255);
-                                                      color: rgb(0, 0, 0);
-                                                      border: 0px;
-                                                      border-radius: 10px;
-                                                      }''')
+        item.setStyleSheet("QPushButton { background-color: rgba(0, 0, 0, 32); color: white; border-radius: 10px; }"
+                           "QPushButton::hover { background-color: white; color: black; }")
+
+    def _float_to_int_bits(self, val_str: str) -> int:
+        try:
+            return struct.unpack('<I', struct.pack('<f', float(val_str)))[0]
+        except:
+            return 0
+
+    def _int_bits_to_float_str(self, val_int: int) -> str:
+        try:
+            f_val = struct.unpack('<f', struct.pack('<I', int(val_int) & 0xFFFFFFFF))[0]
+            return f"{f_val:.10f}".rstrip('0').rstrip('.')
+        except:
+            return "0"
+
+    # --- 核心邏輯 (重寫部分) ---
 
     def dump_cali_parameter(self):
-        if not self.__act:
-            return
+        """ 從硬體讀取並根據 type 進行轉換回填 """
+        if not self.__act: return
         self.__act.flushInputBuffer("None")
-        initVal = self.__act.dump_cali_parameters(2)
-        if isinstance(initVal, (list, dict)):
-            QtCore.QTimer.singleShot(10, lambda: self.set_init_val(initVal))
-            self.dumpTrigerState = True
-        elif type(initVal) == bool:
-            self.mesboxProcess("warning", "Error occurred while in dump", "Please check if the device has power.")
+        cfg = self.__act.dump_cali_parameters(2)
 
-    # 跳下一頁
-    def NextToTheSecondPG(self):
-        self.stackView_one.setCurrentIndex(1)
-
-    # 回上一頁
-    def PreviousToTheFirstPG(self):
-        self.stackView_one.setCurrentIndex(0)
-
-    def checkKeyExist(self, para, key):
-        try:
-            return para.get(str(key), 0)
-        except:
-            return 0
-
-    def keyExistOrNotMes(self, name):
-        if self.keyIsNotExist:
-            if name == "misalignment參數值":
-                self.mesboxProcess("warning", name + "有不存在的狀況", "在取misalignment參數值的狀況時，因設備版號為舊的部分\n"
-                                                                       "，而GUI為最新版本未有撈取舊參數值，所以訊息通知使用\n"
-                                                                       "者有些參數若為0或空值，代表該參數在舊版本的設備中未\n"
-                                                                       "使用，因此撈取不到正確的參數。")
-            elif name == "匯入參數值":
-                self.mesboxProcess("warning", name + "有不存在的狀況",
-                                   "請確認匯入的參數，是否有key值設定錯誤，或是不存在的狀況發生。")
-            else:
-                self.mesboxProcess("warning", name + "有不存在的狀況", "請確認使用的CSV檔案內容與標題是否有問題。")
-
-            self.keyIsNotExist = False
-
-    # 點擊dump可以讀取儀器的數據
-    def set_init_val(self, para):
-        self._updating_ui = True  # 開啟回填鎖定
-        try:
-            self.W1_1.le.setText(str(self.ieee754_int_to_float(self.checkKeyExist(para, "15"))))
-            self.W1_2.le.setText(str(self.ieee754_int_to_float(self.checkKeyExist(para, "16"))))
-            self.W1_3.le.setText(str(self.ieee754_int_to_float(self.checkKeyExist(para, "17"))))
-            self.W2_1.le.setText(str(self.ieee754_int_to_float(self.checkKeyExist(para, "18"))))
-            self.W2_2.le.setText(str(self.ieee754_int_to_float(self.checkKeyExist(para, "19"))))
-            self.W2_3.le.setText(str(self.ieee754_int_to_float(self.checkKeyExist(para, "20"))))
-            self.W3_1.le.setText(str(self.ieee754_int_to_float(self.checkKeyExist(para, "21"))))
-            self.W3_2.le.setText(str(self.ieee754_int_to_float(self.checkKeyExist(para, "22"))))
-            self.W3_3.le.setText(str(self.ieee754_int_to_float(self.checkKeyExist(para, "23"))))
-            self.Wx.le.setText(str(self.ieee754_int_to_float(self.checkKeyExist(para, "12"))))
-            self.Wy.le.setText(str(self.ieee754_int_to_float(self.checkKeyExist(para, "13"))))
-            self.Wz.le.setText(str(self.ieee754_int_to_float(self.checkKeyExist(para, "14"))))
-            self.A1_1.le.setText(str(self.ieee754_int_to_float(self.checkKeyExist(para, "3"))))
-            self.A1_2.le.setText(str(self.ieee754_int_to_float(self.checkKeyExist(para, "4"))))
-            self.A1_3.le.setText(str(self.ieee754_int_to_float(self.checkKeyExist(para, "5"))))
-            self.A2_1.le.setText(str(self.ieee754_int_to_float(self.checkKeyExist(para, "6"))))
-            self.A2_2.le.setText(str(self.ieee754_int_to_float(self.checkKeyExist(para, "7"))))
-            self.A2_3.le.setText(str(self.ieee754_int_to_float(self.checkKeyExist(para, "8"))))
-            self.A3_1.le.setText(str(self.ieee754_int_to_float(self.checkKeyExist(para, "9"))))
-            self.A3_2.le.setText(str(self.ieee754_int_to_float(self.checkKeyExist(para, "10"))))
-            self.A3_3.le.setText(str(self.ieee754_int_to_float(self.checkKeyExist(para, "11"))))
-            self.Ax.le.setText(str(self.ieee754_int_to_float(self.checkKeyExist(para, "0"))))
-            self.Ay.le.setText(str(self.ieee754_int_to_float(self.checkKeyExist(para, "1"))))
-            self.Az.le.setText(str(self.ieee754_int_to_float(self.checkKeyExist(para, "2"))))
-
-            if not __name__ == "__main__":
-                self.controlchangewhite()
-                self.keyExistOrNotMes("misalignment參數值")
-                self.__modifiedItem.clear()
-        finally:
-            self._updating_ui = False  # 回填結束，解除鎖定
-
-    def selectcontrolchangecolor(self, control, send_item_func):
-        control.setStyleSheet('background-color: yellow')
-
-        clickBtnObj = self.sender()
-        if not hasattr(clickBtnObj,
-                       'text') or clickBtnObj.text() == "Load Misalignment File" or clickBtnObj.text() == "Import":
-            if send_item_func not in self.__modifiedItem and send_item_func != None:
-                self.__modifiedItem.add(send_item_func)
-
-    def controlchangewhite(self):
-        widgets = [self.W1_1, self.W1_2, self.W1_3, self.W2_1, self.W2_2, self.W2_3, self.W3_1, self.W3_2, self.W3_3,
-                   self.Wx, self.Wy, self.Wz, self.A1_1, self.A1_2, self.A1_3, self.A2_1, self.A2_2, self.A2_3,
-                   self.A3_1, self.A3_2, self.A3_3, self.Ax, self.Ay, self.Az]
-        for w in widgets: w.le.setStyleSheet('background-color: white')
-
-    def update_changevalue(self):
-        mesbox = QtWidgets.QMessageBox()
-        mesbox.setIcon(QMessageBox.Question)
-        mesbox.setWindowTitle("確認是否要更新數值")
-        mesbox.setText("請確認被選中的控制項都是要修改數值嗎?")
-        mesbox.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
-        mesbox.setDefaultButton(QtWidgets.QMessageBox.Yes)
-        mes_result = mesbox.exec_()
-
-        if mes_result == QMessageBox.Yes:
-            self.updatelink()
-            # print("Yes")
-        elif mes_result == QMessageBox.No:
-            pass
-
-    def updatelink(self):
-        if self.dumpTrigerState == True:
-            for itemFunc in self.__modifiedItem:
-                itemFunc()
-
-            # 將背景顏色轉回白色
-            self.controlchangewhite()
-            self.__modifiedItem.clear()
-            self.mesboxProcess("info", "更新完成資訊", "已更新完所有被修改的設備參數。")
-            self.keyExistOrNotMes("misalignment參數值")
-        else:
-            self.mesboxProcess("warning", "update按鈕錯誤警告", "請確認是否已經點擊過dump按鈕，數據已經顯示於畫面中了。")
-
-    # 讀取CSV的檔案，並填至控制項中
-    def loadCSVandWriteMisalignment(self, load_mode):
-        # 根據模式判斷是要將參數load到哪邊
-        misalignment_list = {
-            'G': [self.W1_1, self.W1_2, self.W1_3, self.W2_1, self.W2_2, self.W2_3, self.W3_1, self.W3_2, self.W3_3],
-            'A': [self.A1_1, self.A1_2, self.A1_3, self.A2_1, self.A2_2, self.A2_3, self.A3_1, self.A3_2, self.A3_3]}
-
-        if self.dumpTrigerState == True:
-            options = QFileDialog.Option()
-            filename, _ = QFileDialog.getOpenFileName(None, "選擇檔案", "", "All Files (*);;", options=options)
-            if filename != "":
-                misalignmentData = cmn.loadCSVFile(filename)
-                # print(misalignmentData)
-                biasVal = self.checkKeyExist(misalignmentData, "Bias")
-
-                if isinstance(biasVal, pandas.Series):
-                    try:
-                        RVal = misalignmentData.iloc[0:5, 2:5]
-                        # print(RVal.iloc[0,0])
-
-                        misalignment_list[load_mode][0].le.setText(f'{RVal.iloc[0, 0]:.10f}'.rstrip('0').rstrip('.'))
-                        misalignment_list[load_mode][1].le.setText(f'{RVal.iloc[0, 1]:.10f}'.rstrip('0').rstrip('.'))
-                        misalignment_list[load_mode][2].le.setText(f'{RVal.iloc[0, 2]:.10f}'.rstrip('0').rstrip('.'))
-                        misalignment_list[load_mode][3].le.setText(f'{RVal.iloc[1, 0]:.10f}'.rstrip('0').rstrip('.'))
-                        misalignment_list[load_mode][4].le.setText(f'{RVal.iloc[1, 1]:.10f}'.rstrip('0').rstrip('.'))
-                        misalignment_list[load_mode][5].le.setText(f'{RVal.iloc[1, 2]:.10f}'.rstrip('0').rstrip('.'))
-                        misalignment_list[load_mode][6].le.setText(f'{RVal.iloc[2, 0]:.10f}'.rstrip('0').rstrip('.'))
-                        misalignment_list[load_mode][7].le.setText(f'{RVal.iloc[2, 1]:.10f}'.rstrip('0').rstrip('.'))
-                        misalignment_list[load_mode][8].le.setText(f'{RVal.iloc[2, 2]:.10f}'.rstrip('0').rstrip('.'))
-
-                        if load_mode == 'A':
-                            self.Ax.le.setText(f'{biasVal[0]:.10f}'.rstrip('0').rstrip('.'))
-                            self.Ay.le.setText(f'{biasVal[1]:.10f}'.rstrip('0').rstrip('.'))
-                            self.Az.le.setText(f'{biasVal[2]:.10f}'.rstrip('0').rstrip('.'))
-                    except Exception:
-                        logger.error("載入CSV數據的功能出現錯誤。")
-                        self.keyIsNotExist = True
-                else:
-                    self.keyIsNotExist = True
-                self.keyExistOrNotMes("load Bias CSV")
-                self.keyIsNotExist = False
-        else:
-            self.mesboxProcess("warning", "請確認是否已dump了", "請確認是否已經點擊過dump按鈕，或是已經將設備的\n參數回填至控制項中，且數據已經顯示於畫面。"
-                                                                "\n若還沒執行dump，將無法執行此Load File功能。")
-
-    def exportTXTDump(self):
-        if self.dumpTrigerState == True:
+        if isinstance(cfg, dict):
+            self._updating_ui = True
             try:
-                time_now = datetime.datetime.now()
-                timeFormat = time_now.strftime("%Y%m%d%h%M")
+                for cid, info in self.config_table.items():
+                    raw_val = cfg.get(cid)
+                    if raw_val is None: continue
 
-                self.__act.flushInputBuffer("None")
-                SN = self.__act.dump_SN_parameters(3)
-                if "發生參數值為空的狀況" == SN:
-                    dumpParaSN = "參數值為空，請確認設備是否以上電。"
-                else:
-                    dumpParaSN = SN
-                # 移除\x00的相關字元，避免出現embedded null character錯誤
-                SNPara = dumpParaSN.replace("\x00", "")
+                    # 根據 Table 中的 type 決定轉換方式
+                    if info["type"] == "float":
+                        val_str = self._int_bits_to_float_str(raw_val)
+                    else:
+                        val_str = str(int(raw_val))
 
-                # 先開啟要寫入的檔案
-                self.__file.name = str(SNPara) + "_misalignment_" + timeFormat + "_" + self.filename + ".txt"
-                self.__file.open(True)
+                    info["widget"].le.setText(val_str)
+                    info["widget"].le.setStyleSheet('background-color: white')
+                self.dumpTrigerState = True
+                QMessageBox.information(self, "Success", "Cali parameters dumped.")
+            finally:
+                self._updating_ui = False
 
-                # 參數key值的對照表
-                self.__file.write_dump("參數key值對照表 ->")
-                self.__file.write_dump(f"0= AX      , 1= AY      , 2= AZ        , 3= A11     , 4= A12     , 5= A13,\n"
-                                       f"  6= A21     , 7= A22    , 8= A23      , 9= A31     , 10= A32   , 11= A33,\n"
-                                       f"  12= GX     , 13= GY    , 14= GZ     , 15= G11   , 16= G12   , 17= G13,\n"
-                                       f"  18= G21   , 19= G22   , 20= G23   , 21= G31   , 22= G32   , 23= G33")
-
-                # 撈取設備中的misalignment參數
-                self.__act.flushInputBuffer("None")
-                initVal = self.__act.dump_cali_parameters(2)
-                self.__file.write_dump("misalignment參數")
-                if isinstance(initVal, dict):
-                    self.__file.write_dump(initVal)
-                else:
-                    self.__file.write_dump("None")
-                self.mesboxProcess("info", "匯出功能", "匯出功能正常執行，儲存misalignment的參數至txt檔案。")
-            except Exception as e:
-                logger.error(f"匯出參數的過程中發生錯誤 - {e}")
-                self.mesboxProcess("warning", "匯出功能發生錯誤", "請確認匯出過程發生的錯誤，並進行修改。")
-            if self.__file.isOpenFile:
-                self.__file.close()
-        else:
-            self.mesboxProcess("warning", "請確認是否已dump了", "請確認是否已經點擊過dump按鈕，或是已經將設備的\n參數回填至控制項中，且數據已經顯示於畫面。"
-                                                                "\n若還沒執行dump，將無法執行此匯出功能。")
-
-    def importTXT(self):
-        options = QFileDialog.Options()
-        filename, _ = QFileDialog.getOpenFileName(None, "選擇檔案", "", "All Files (*);;", options=options)
-
-        misalignment_para = False
-        if filename != "":
-            if self.dumpTrigerState == True:
-                try:
-                    with open(filename, "r", encoding='utf-8') as f:
-                        content = f.readline()
-                        while content:
-                            # 處理字串，使用取代功能將'#'與'\n'，取代為空值
-                            content_replace = content.replace("#", "").replace("\n", "")
-                            if misalignment_para and self.strCovertibleToDict(content_replace):
-                                self.dumpTrigerState = True
-                                self.set_init_val(ast.literal_eval(content_replace))
-                                # self.updatelink()
-                                misalignment_para = False
-
-                            if content_replace == "misalignment參數":
-                                misalignment_para = True
-                            content = f.readline()
-                            continue
-                except Exception as e:
-                    logger.error(f"匯入參數的過程中發生錯誤 - {e}")
-                    self.mesboxProcess("warning", "匯入功能發生錯誤", "請確認匯入過程發生的錯誤，並進行修改。")
-                finally:
-                    self.keyExistOrNotMes("匯入參數值")
-            else:
-                self.mesboxProcess("warning", "請確認是否已dump了", "請確認是否已經點擊過dump按鈕，或是已經將設備的\n參數回填至控制項中，且數據已經顯示於畫面。"
-                                                                    "\n若還沒執行dump，將無法執行此匯入功能。")
-
-    def strCovertibleToDict(self, content):
-        try:
-            result = ast.literal_eval(content)
-            return isinstance(result, dict)
-        except (ValueError, SyntaxError):
-            return False
-
-    def init_para(self):
-        """Apply INIT_PARAMETERS sequentially; each setText triggers Send_*_CMD."""
-        if getattr(self, "_init_in_progress", False):
-            return
-        self._init_in_progress = True
-
-        # Disable buttons during init
-        self.init_para_btn.setEnabled(False)
-        self.dump_Btn.setEnabled(False)
-        self.export_Btn.setEnabled(False)
-        self.import_Btn.setEnabled(False)
-        self.loadMisalignmentFile_Gyro.setEnabled(False)
-        self.loadMisalignmentFile_Acce.setEnabled(False)
-
-        self._init_ops = self._build_init_ops_from_INIT_PARAMETERS()
-        self._init_total = len(self._init_ops)
-        self._init_idx = 0
-
-        self._init_progress = QtWidgets.QProgressDialog("Updating calibration parameters…", None, 0, self._init_total,
-                                                        self)
-        self._init_progress.setWindowTitle("Init Para")
-        self._init_progress.setWindowModality(QtCore.Qt.WindowModal)
-        self._init_progress.setAutoClose(True)
-        self._init_progress.setAutoReset(True)
-        self._init_progress.show()
-
-        QtCore.QTimer.singleShot(0, self._init_para_step)
-
-    def _init_para_step(self):
-        if self._init_idx >= self._init_total:
-            self._init_progress.setValue(self._init_total)
-            self._init_progress.close()
-
-            # Re-enable buttons
-            self.init_para_btn.setEnabled(True)
-            self.dump_Btn.setEnabled(True)
-            self.export_Btn.setEnabled(True)
-            self.import_Btn.setEnabled(True)
-            self.loadMisalignmentFile_Gyro.setEnabled(True)
-            self.loadMisalignmentFile_Acce.setEnabled(True)
-
-            self._init_in_progress = False
-            self.mesboxProcess("info", "Init Para", "Calibration parameters updated.")
+    def export_to_txt(self):
+        """ 修正檔名格式：日期 + _cali.txt """
+        if not self.dumpTrigerState:
+            QMessageBox.warning(self, "Warning", "Please Dump first.")
             return
 
-        setter, value = self._init_ops[self._init_idx]
+        now = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+        # 修改 1: 檔名改為 日期 + _cali.txt
+        default_name = f"{now}_cali.txt"
+
+        path, _ = QFileDialog.getSaveFileName(self, "Export Calibration", default_name, "Text Files (*.txt)")
+        if not path: return
+
         try:
-            setter(value)
+            with open(path, 'w', encoding='utf-8') as f:
+                f.write(f"# IMU Calibration Export - {now}\n\n")
+                for cid in sorted(self.config_table.keys(), key=int):
+                    info = self.config_table[cid]
+                    val = info["widget"].le.text()
+                    # 這裡輸出純文字數值與註解
+                    f.write(f"{cid}={val:<15} # {info['comment']}\n")
+            QMessageBox.information(self, "Success", "Calibration data exported.")
         except Exception as e:
-            logger.error(f"init_para failed at idx={self._init_idx}: {e}")
+            QMessageBox.critical(self, "Error", f"Export failed: {e}")
 
-        self._init_idx += 1
-        self._init_progress.setValue(self._init_idx)
+    def import_from_txt(self):
+        """ 根據 type 進行讀取回填並觸發指令 """
+        if not self.dumpTrigerState:
+            QMessageBox.warning(self, "Warning", "Please Dump first.")
+            return
 
-        # Wait 50ms between each parameter update
-        QtCore.QTimer.singleShot(50, self._init_para_step)
-
-    def _build_init_ops_from_INIT_PARAMETERS(self):
-        """Build ordered setter ops based on the key table (see exportTXTDump)."""
-        p = INIT_PARAMETERS
-
-        def gv(k, default=0):
-            return p.get(str(k), default)
-
-        def fmt(x):
-            try:
-                return f"{float(x):.10f}".rstrip("0").rstrip(".")
-            except Exception:
-                return str(x)
-
-        ops = []
-        # Accelerometer b
-        ops.append((self.Ax.le.setText, fmt(gv(0))))
-        ops.append((self.Ay.le.setText, fmt(gv(1))))
-        ops.append((self.Az.le.setText, fmt(gv(2))))
-
-        # Accelerometer R
-        ops.append((self.A1_1.le.setText, fmt(gv(3))))
-        ops.append((self.A1_2.le.setText, fmt(gv(4))))
-        ops.append((self.A1_3.le.setText, fmt(gv(5))))
-        ops.append((self.A2_1.le.setText, fmt(gv(6))))
-        ops.append((self.A2_2.le.setText, fmt(gv(7))))
-        ops.append((self.A2_3.le.setText, fmt(gv(8))))
-        ops.append((self.A3_1.le.setText, fmt(gv(9))))
-        ops.append((self.A3_2.le.setText, fmt(gv(10))))
-        ops.append((self.A3_3.le.setText, fmt(gv(11))))
-
-        # Gyro b
-        ops.append((self.Wx.le.setText, fmt(gv(12))))
-        ops.append((self.Wy.le.setText, fmt(gv(13))))
-        ops.append((self.Wz.le.setText, fmt(gv(14))))
-
-        # Gyro R
-        ops.append((self.W1_1.le.setText, fmt(gv(15))))
-        ops.append((self.W1_2.le.setText, fmt(gv(16))))
-        ops.append((self.W1_3.le.setText, fmt(gv(17))))
-        ops.append((self.W2_1.le.setText, fmt(gv(18))))
-        ops.append((self.W2_2.le.setText, fmt(gv(19))))
-        ops.append((self.W2_3.le.setText, fmt(gv(20))))
-        ops.append((self.W3_1.le.setText, fmt(gv(21))))
-        ops.append((self.W3_2.le.setText, fmt(gv(22))))
-        ops.append((self.W3_3.le.setText, fmt(gv(23))))
-
-        return ops
-
-    def mesboxProcess(self, status, title, content):
-        msg = QMessageBox(self)
-        if status == "warning": msg.warning(self, title, content)
-        else: msg.information(self, title, content)
-
-    def ieee754_int_to_float(self, int_value: int) -> float:
-        typeChange = 0
-        buttonObj = self.sender()
-        is_import = False
-        if buttonObj is not None and hasattr(buttonObj, 'text'):
-            if buttonObj.text() == "Import": is_import = True
+        path, _ = QFileDialog.getOpenFileName(self, "Import Calibration", "", "Text Files (*.txt)")
+        if not path: return
 
         try:
-            val = int(int_value)
-            if is_import and (len(str(abs(val))) >= 8):
-                typeChange = round(struct.unpack('!f', struct.pack('!i', val))[0], 7)
-            else:
-                typeChange = round(struct.unpack('!f', struct.pack('!i', val))[0], 7)
-        except:
-            return 0
-        return typeChange
+            cfg_data = {}
+            with open(path, 'r', encoding='utf-8') as f:
+                for line in f:
+                    clean = line.split('#')[0].strip()
+                    if "=" in clean:
+                        k, v = clean.split('=')
+                        cfg_data[k.strip()] = v.strip()
 
-    # 將輸入至edit控制項中的數值轉為整數
-    def _safe_send_cmd(self, edit_block, cmd, ch=4):
+            self._updating_ui = False  # 確保 setText 會觸發 _on_value_changed
+            for cid, info in self.config_table.items():
+                if cid in cfg_data:
+                    # 這裡直接填入字串，_on_value_changed 會負責處理轉碼發送
+                    info["widget"].le.setText(cfg_data[cid])
+
+            QMessageBox.information(self, "Success", "Import success and commands sent.")
+        except Exception as e:
+            QMessageBox.critical(self, "Error", f"Import failed: {e}")
+
+    def _on_value_changed(self, cid):
+        """ 統一發送指令，根據 type 處理編碼 """
         if getattr(self, '_updating_ui', False): return
-        raw = edit_block.le.text().strip()
-        if not raw: return
-        try:
-            val = struct.unpack('<I', struct.pack('<f', float(raw)))[0]
-            self.__act.writeImuCmd(cmd, val, ch)
-        except: pass
 
-# --- 指令發送函式 ---
-    def Send_G11_CMD(self): self._safe_send_cmd(self.W1_1, CMD_Gyro_G11)
-    def Send_G12_CMD(self): self._safe_send_cmd(self.W1_2, CMD_Gyro_G12)
-    def Send_G13_CMD(self): self._safe_send_cmd(self.W1_3, CMD_Gyro_G13)
-    def Send_G21_CMD(self): self._safe_send_cmd(self.W2_1, CMD_Gyro_G21)
-    def Send_G22_CMD(self): self._safe_send_cmd(self.W2_2, CMD_Gyro_G22)
-    def Send_G23_CMD(self): self._safe_send_cmd(self.W2_3, CMD_Gyro_G23)
-    def Send_G31_CMD(self): self._safe_send_cmd(self.W3_1, CMD_Gyro_G31)
-    def Send_G32_CMD(self): self._safe_send_cmd(self.W3_2, CMD_Gyro_G32)
-    def Send_G33_CMD(self): self._safe_send_cmd(self.W3_3, CMD_Gyro_G33)
-    def Send_GX_CMD(self): self._safe_send_cmd(self.Wx, CMD_Gyro_GX)
-    def Send_GY_CMD(self): self._safe_send_cmd(self.Wy, CMD_Gyro_GY)
-    def Send_GZ_CMD(self): self._safe_send_cmd(self.Wz, CMD_Gyro_GZ)
-    def Send_A11_CMD(self): self._safe_send_cmd(self.A1_1, CMD_Accele_A11)
-    def Send_A12_CMD(self): self._safe_send_cmd(self.A1_2, CMD_Accele_A12)
-    def Send_A13_CMD(self): self._safe_send_cmd(self.A1_3, CMD_Accele_A13)
-    def Send_A21_CMD(self): self._safe_send_cmd(self.A2_1, CMD_Accele_A21)
-    def Send_A22_CMD(self): self._safe_send_cmd(self.A2_2, CMD_Accele_A22)
-    def Send_A23_CMD(self): self._safe_send_cmd(self.A2_3, CMD_Accele_A23)
-    def Send_A31_CMD(self): self._safe_send_cmd(self.A3_1, CMD_Accele_A31)
-    def Send_A32_CMD(self): self._safe_send_cmd(self.A3_2, CMD_Accele_A32)
-    def Send_A33_CMD(self): self._safe_send_cmd(self.A3_3, CMD_Accele_A33)
-    def Send_AX_CMD(self): self._safe_send_cmd(self.Ax, CMD_Accele_AX)
-    def Send_AY_CMD(self): self._safe_send_cmd(self.Ay, CMD_Accele_AY)
-    def Send_AZ_CMD(self): self._safe_send_cmd(self.Az, CMD_Accele_AZ)
+        info = self.config_table[cid]
+        val_str = info["widget"].le.text().strip()
+        if not val_str: return
+
+        info["widget"].le.setStyleSheet('background-color: yellow')
+
+        cmd = CMD_MAP.get(cid)
+        if cmd and self.__act:
+            # 根據 type 決定發送前如何打包
+            if info["type"] == "float":
+                val_int = self._float_to_int_bits(val_str)
+            else:
+                val_int = int(float(val_str))  # 處理帶 .0 的整數情況
+
+            self.__act.writeImuCmd(cmd, val_int, 4)
+    def init_para(self):
+        """ 初始化參數 (批次發送) """
+        if QMessageBox.question(self, "Init", "Reset all parameters to default?") != QMessageBox.Yes: return
+
+        self._updating_ui = False
+        for cid, val in INIT_PARAMETERS.items():
+            if cid in self.config_table:
+                self.config_table[cid]["widget"].le.setText(str(val))
+                time.sleep(0.02)  # 防止指令堆疊過快
+        QMessageBox.information(self, "Done", "Parameters reset.")
+
+    def loadCSVandWriteMisalignment(self, mode):
+        """ 讀取校正報表 (維持原始 CSV 解析邏輯) """
+        if not self.dumpTrigerState:
+            QMessageBox.warning(self, "Warning", "Please Dump first.")
+            return
+
+        path, _ = QFileDialog.getOpenFileName(self, "Select CSV File", "", "CSV Files (*.csv)")
+        if path:
+            data = cmn.loadCSVFile(path)
+            self._updating_ui = False
+            try:
+                # 這裡對應你原始的 pandas iloc 讀取邏輯
+                R = data.iloc[0:3, 2:5]  # 假設 R 矩陣位置
+                bias = data.get("Bias", [0, 0, 0])
+
+                if mode == "G":
+                    targets = ["15", "16", "17", "18", "19", "20", "21", "22", "23"]  # Gyro R
+                    for i, cid in enumerate(targets):
+                        val = R.iloc[i // 3, i % 3]
+                        self.config_table[cid]["widget"].le.setText(f"{val:.10f}".rstrip('0').rstrip('.'))
+                else:
+                    targets = ["3", "4", "5", "6", "7", "8", "9", "10", "11"]  # Accel R
+                    for i, cid in enumerate(targets):
+                        val = R.iloc[i // 3, i % 3]
+                        self.config_table[cid]["widget"].le.setText(f"{val:.10f}".rstrip('0').rstrip('.'))
+                    # Bias X, Y, Z
+                    for i, cid in enumerate(["0", "1", "2"]):
+                        self.config_table[cid]["widget"].le.setText(f"{bias[i]:.10f}".rstrip('0').rstrip('.'))
+            except Exception as e:
+                QMessageBox.critical(self, "Error", f"Failed to parse CSV: {e}")
 
 
-# ==========================================
-#   UI 預覽測試區塊 (Layout Preview Only)
-# ==========================================
 if __name__ == "__main__":
     import sys
-    import os
     from PySide6.QtWidgets import QApplication
 
-    # 1. 修正路徑 (讓 Python 找得到根目錄的 myLib)
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    root_dir = os.path.abspath(os.path.join(current_dir, "../../../.."))
-    sys.path.append(root_dir)
 
+    class Dummy:
+        def dump_cali_parameters(self, t): return {"0": 0, "15": 1065353216}  # 1.0
 
-    # 2. 定義 Dummy Reader (防止報錯)
-    class DummyReader:
-        def __getattr__(self, name):
-            # 無論 UI 呼叫什麼方法 (如 flushInputBuffer)，都回傳這個空函式
-            def method(*args, **kwargs):
-                print(f"[UI Preview] Method called: {name}")
-                return 0
+        def writeImuCmd(self, *args): print(f"CMD Sent: {args}")
 
-            return method
+        def flushInputBuffer(self, x): pass
 
 
     app = QApplication(sys.argv)
-
-    # 3. 啟動視窗
-    # 注意：這個 Widget 的 __init__ 通常是 (act, parent, filename)
-    # 我們傳入 DummyReader, None, 和一個假檔名
-    window = pig_calibration_widget(DummyReader(), None, "test_cali_config")
-
-    window.show()
+    win = pig_calibration_widget(Dummy(), None, "test")
+    win.show()
     sys.exit(app.exec())

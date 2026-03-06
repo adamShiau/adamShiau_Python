@@ -110,6 +110,7 @@ class pig_parameters_widget(QGroupBox):
         super(pig_parameters_widget, self).__init__()
         print("import pigParameters")
         self.__act = act
+        self._updating_ui = False  # 初始化旗標
         self.imudata_file_Para = cmn.data_manager(fnum=0)
         self.filename = dataFileName
         self.dumpTrigerState = None
@@ -405,16 +406,33 @@ class pig_parameters_widget(QGroupBox):
         '''comboBox'''
         self.dropdown_para.cb.currentIndexChanged.connect(self.setChannel)
 
+    # 修改 pig_parameters_widget.py 中的 dump_parameter
     def dump_parameter(self):
-        self.__act.flushInputBuffer("None")
+        if not self.__act:
+            return
+        for _ in range(3):
+            self.__act.flushInputBuffer("None")
+            time.sleep(0.01)
+
+        # 執行讀取
         initPara = self.__act.dump_fog_parameters(self.__chVal)
-        # print(initPara)
-        if isinstance(initPara, (list, dict)):
-            self.set_init_value(initPara)
-            self.dumpTrigerState = True
-        # elif type(initPara) == bool:
-        elif initPara == "無法取得值":
-            self.mesboxProcess("warning", "Error occurred while in dump", "Please check if the device has power.")
+
+        # Debug 資訊
+        logger.info(f"Parameters Dump Result Type: {type(initPara)}")
+
+        if isinstance(initPara, dict):  # 確保收到的是字典
+            try:
+                QtCore.QTimer.singleShot(10, lambda: self.set_init_value(initPara))
+                self.dumpTrigerState = True
+                logger.info("Parameters dump and UI fill success.")
+            except Exception as e:
+                logger.error(f"Error filling parameters to UI: {e}")
+                self.mesboxProcess("warning", "UI回填失敗", f"解析參數時發生錯誤: {e}")
+        else:
+            # 如果收到的是 "無法取得值" 或 None
+            self.dumpTrigerState = False
+            self.mesboxProcess("warning", "Dump 逾時",
+                               "無法取得設備參數，請確認：\n1. 設備是否已上電\n2. 連線是否正常\n3. 嘗試重新連接 USB")
 
     def init_para(self):
         """
@@ -906,67 +924,126 @@ class pig_parameters_widget(QGroupBox):
 
             self.keyIsNotExist = False
 
+    # def set_init_value(self, para):
+    #     self.freq.spin.setValue(self.checkKeyExist(para, "0"))
+    #     self.mod_H.spin.setValue(self.checkKeyExist(para, "1"))
+    #     self.mod_L.spin.setValue(self.checkKeyExist(para, "2"))
+    #     self.polarity.spin.setValue(self.checkKeyExist(para, "3"))
+    #     self.wait_cnt.spin.setValue(self.checkKeyExist(para, "4"))
+    #     self.avg.spin.setValue(self.checkKeyExist(para, "5"))
+    #     self.gain1.spin.setValue(self.checkKeyExist(para, "6"))
+    #     self.const_step.spin.setValue(self.checkKeyExist(para, "7"))
+    #     self.fb_on.spin.setValue(self.checkKeyExist(para, "8"))
+    #     self.gain2.spin.setValue(self.checkKeyExist(para, "9"))
+    #     self.err_offset.spin.setValue(self.checkKeyExist(para, "10"))
+    #     self.dac_gain.spin.setValue(self.checkKeyExist(para, "11"))
+    #     self.cutoff.spin.setValue(self.ieee754_int_to_float(self.checkKeyExist(para, "12")))
+    #     self.out_th_en.spin.setValue(self.checkKeyExist(para, "14"))
+    #
+    #     out_th = self.ieee754_int_to_float(self.checkKeyExist(para, "13"))
+    #     self.out_th.le.setText(f'{out_th:.4f}'.rstrip('0').rstrip('.'))
+    #
+    #     ### 20240417 修改
+    #     # #將會有可能產生科學符號的部份，使用此方式將科學符號轉為標準表示法
+    #     sf0_val = (self.ieee754_int_to_float(self.checkKeyExist(para, "17"), 17) * 10000)
+    #     sf1_val = (self.ieee754_int_to_float(self.checkKeyExist(para, "18"), 18) * 10000)
+    #     self.sf0.le.setText(f'{sf0_val:.6f}'.rstrip('0').rstrip('.'))
+    #     self.sf1.le.setText(f'{sf1_val:.6f}'.rstrip('0').rstrip('.'))
+    #     ## 20240417 修改
+    #     # #將會有可能產生科學符號的部份，使用此方式將科學符號轉為標準表示法
+    #     slope1_process = self.ieee754_int_to_float(self.checkKeyExist(para, "25"))
+    #     slope2_process = self.ieee754_int_to_float(self.checkKeyExist(para, "27"))
+    #     slope3_process = self.ieee754_int_to_float(self.checkKeyExist(para, "29"))
+    #     offset1_process = self.ieee754_int_to_float(self.checkKeyExist(para, "26"))
+    #     offset2_process = self.ieee754_int_to_float(self.checkKeyExist(para, "28"))
+    #     offset3_process = self.ieee754_int_to_float(self.checkKeyExist(para, "30"))
+    #
+    #     t1 = self.ieee754_int_to_float(self.checkKeyExist(para, "23"))
+    #     t2 = self.ieee754_int_to_float(self.checkKeyExist(para, "24"))
+    #     self.T1.le.setText(f'{t1:.1f}'.rstrip('0').rstrip('.'))
+    #     self.T2.le.setText(f'{t2:.1f}'.rstrip('0').rstrip('.'))
+    #     self.slope1.le.setText(f'{slope1_process:.10f}'.rstrip('0').rstrip('.'))
+    #     self.slope2.le.setText(f'{slope2_process:.10f}'.rstrip('0').rstrip('.'))
+    #     self.slope3.le.setText(f'{slope3_process:.10f}'.rstrip('0').rstrip('.'))
+    #     self.offset1.le.setText(f'{offset1_process:.10f}'.rstrip('0').rstrip('.'))
+    #     self.offset2.le.setText(f'{offset2_process:.10f}'.rstrip('0').rstrip('.'))
+    #     self.offset3.le.setText(f'{offset3_process:.10f}'.rstrip('0').rstrip('.'))
+    #
+    #     accl_sf0_val = self.ieee754_int_to_float(self.checkKeyExist(para, "31"), 31) * 10000
+    #     accl_sf1_val = self.ieee754_int_to_float(self.checkKeyExist(para, "32"), 32) * 10000
+    #     self.ACCLsta.le.setText(f'{accl_sf0_val:.6f}'.rstrip('0').rstrip('.'))
+    #     self.ACCLstb.le.setText(f'{accl_sf1_val:.6f}'.rstrip('0').rstrip('.'))
+    #     accl_slope_process = self.ieee754_int_to_float(self.checkKeyExist(para, "33"))
+    #     accl_offset_process = self.ieee754_int_to_float(self.checkKeyExist(para, "34"))
+    #     self.ACCL_slope1.le.setText(f'{accl_slope_process:.10f}'.rstrip('0').rstrip('.'))
+    #     self.ACCL_offset1.le.setText(f'{accl_offset_process:.10f}'.rstrip('0').rstrip('.'))
+    #
+    #     # pass
+    #     if not __name__ == "__main__":
+    #         self.controlchangewhite()
+    #
+    #     if self.__int_to_float_errorTimes > 0:
+    #         self.mesboxProcess('warning', '整數轉換單精度浮點數發生錯誤',
+    #                            '轉換過程中因帶入的整數，不符合此轉換的方法，所以發生錯誤。')
+
     def set_init_value(self, para):
-        self.freq.spin.setValue(self.checkKeyExist(para, "0"))
-        self.mod_H.spin.setValue(self.checkKeyExist(para, "1"))
-        self.mod_L.spin.setValue(self.checkKeyExist(para, "2"))
-        self.polarity.spin.setValue(self.checkKeyExist(para, "3"))
-        self.wait_cnt.spin.setValue(self.checkKeyExist(para, "4"))
-        self.avg.spin.setValue(self.checkKeyExist(para, "5"))
-        self.gain1.spin.setValue(self.checkKeyExist(para, "6"))
-        self.const_step.spin.setValue(self.checkKeyExist(para, "7"))
-        self.fb_on.spin.setValue(self.checkKeyExist(para, "8"))
-        self.gain2.spin.setValue(self.checkKeyExist(para, "9"))
-        self.err_offset.spin.setValue(self.checkKeyExist(para, "10"))
-        self.dac_gain.spin.setValue(self.checkKeyExist(para, "11"))
-        self.cutoff.spin.setValue(self.ieee754_int_to_float(self.checkKeyExist(para, "12")))
-        self.out_th_en.spin.setValue(self.checkKeyExist(para, "14"))
+        self._updating_ui = True  # 開啟鎖定
+        print("DEBUG: Starting UI Auto-fill...")  # 加入這行
+        try:
+            # 這裡的每一筆 setValue 都會觸發訊號，但會被下面對應的 send_xxx_cmd 攔截
+            self.freq.spin.setValue(self.checkKeyExist(para, "0"))
+            self.mod_H.spin.setValue(self.checkKeyExist(para, "1"))
+            self.mod_L.spin.setValue(self.checkKeyExist(para, "2"))
+            self.polarity.spin.setValue(self.checkKeyExist(para, "3"))
+            self.wait_cnt.spin.setValue(self.checkKeyExist(para, "4"))
+            self.avg.spin.setValue(self.checkKeyExist(para, "5"))
+            self.gain1.spin.setValue(self.checkKeyExist(para, "6"))
+            self.const_step.spin.setValue(self.checkKeyExist(para, "7"))
+            self.fb_on.spin.setValue(self.checkKeyExist(para, "8"))
+            self.gain2.spin.setValue(self.checkKeyExist(para, "9"))
+            self.err_offset.spin.setValue(self.checkKeyExist(para, "10"))
+            self.dac_gain.spin.setValue(self.checkKeyExist(para, "11"))
+            self.cutoff.spin.setValue(self.ieee754_int_to_float(self.checkKeyExist(para, "12")))
+            self.out_th_en.spin.setValue(self.checkKeyExist(para, "14"))
 
-        out_th = self.ieee754_int_to_float(self.checkKeyExist(para, "13"))
-        self.out_th.le.setText(f'{out_th:.4f}'.rstrip('0').rstrip('.'))
+            out_th = self.ieee754_int_to_float(self.checkKeyExist(para, "13"))
+            self.out_th.le.setText(f'{out_th:.4f}'.rstrip('0').rstrip('.'))
 
-        ### 20240417 修改
-        # #將會有可能產生科學符號的部份，使用此方式將科學符號轉為標準表示法
-        sf0_val = (self.ieee754_int_to_float(self.checkKeyExist(para, "17"), 17) * 10000)
-        sf1_val = (self.ieee754_int_to_float(self.checkKeyExist(para, "18"), 18) * 10000)
-        self.sf0.le.setText(f'{sf0_val:.6f}'.rstrip('0').rstrip('.'))
-        self.sf1.le.setText(f'{sf1_val:.6f}'.rstrip('0').rstrip('.'))
-        ## 20240417 修改
-        # #將會有可能產生科學符號的部份，使用此方式將科學符號轉為標準表示法
-        slope1_process = self.ieee754_int_to_float(self.checkKeyExist(para, "25"))
-        slope2_process = self.ieee754_int_to_float(self.checkKeyExist(para, "27"))
-        slope3_process = self.ieee754_int_to_float(self.checkKeyExist(para, "29"))
-        offset1_process = self.ieee754_int_to_float(self.checkKeyExist(para, "26"))
-        offset2_process = self.ieee754_int_to_float(self.checkKeyExist(para, "28"))
-        offset3_process = self.ieee754_int_to_float(self.checkKeyExist(para, "30"))
+            sf0_val = (self.ieee754_int_to_float(self.checkKeyExist(para, "17"), 17) * 10000)
+            sf1_val = (self.ieee754_int_to_float(self.checkKeyExist(para, "18"), 18) * 10000)
+            self.sf0.le.setText(f'{sf0_val:.6f}'.rstrip('0').rstrip('.'))
+            self.sf1.le.setText(f'{sf1_val:.6f}'.rstrip('0').rstrip('.'))
 
-        t1 = self.ieee754_int_to_float(self.checkKeyExist(para, "23"))
-        t2 = self.ieee754_int_to_float(self.checkKeyExist(para, "24"))
-        self.T1.le.setText(f'{t1:.1f}'.rstrip('0').rstrip('.'))
-        self.T2.le.setText(f'{t2:.1f}'.rstrip('0').rstrip('.'))
-        self.slope1.le.setText(f'{slope1_process:.10f}'.rstrip('0').rstrip('.'))
-        self.slope2.le.setText(f'{slope2_process:.10f}'.rstrip('0').rstrip('.'))
-        self.slope3.le.setText(f'{slope3_process:.10f}'.rstrip('0').rstrip('.'))
-        self.offset1.le.setText(f'{offset1_process:.10f}'.rstrip('0').rstrip('.'))
-        self.offset2.le.setText(f'{offset2_process:.10f}'.rstrip('0').rstrip('.'))
-        self.offset3.le.setText(f'{offset3_process:.10f}'.rstrip('0').rstrip('.'))
+            t1 = self.ieee754_int_to_float(self.checkKeyExist(para, "23"))
+            t2 = self.ieee754_int_to_float(self.checkKeyExist(para, "24"))
+            self.T1.le.setText(f'{t1:.1f}'.rstrip('0').rstrip('.'))
+            self.T2.le.setText(f'{t2:.1f}'.rstrip('0').rstrip('.'))
+            self.slope1.le.setText(
+                f'{self.ieee754_int_to_float(self.checkKeyExist(para, "25")):.10f}'.rstrip('0').rstrip('.'))
+            self.slope2.le.setText(
+                f'{self.ieee754_int_to_float(self.checkKeyExist(para, "27")):.10f}'.rstrip('0').rstrip('.'))
+            self.slope3.le.setText(
+                f'{self.ieee754_int_to_float(self.checkKeyExist(para, "29")):.10f}'.rstrip('0').rstrip('.'))
+            self.offset1.le.setText(
+                f'{self.ieee754_int_to_float(self.checkKeyExist(para, "26")):.10f}'.rstrip('0').rstrip('.'))
+            self.offset2.le.setText(
+                f'{self.ieee754_int_to_float(self.checkKeyExist(para, "28")):.10f}'.rstrip('0').rstrip('.'))
+            self.offset3.le.setText(
+                f'{self.ieee754_int_to_float(self.checkKeyExist(para, "30")):.10f}'.rstrip('0').rstrip('.'))
 
-        accl_sf0_val = self.ieee754_int_to_float(self.checkKeyExist(para, "31"), 31) * 10000
-        accl_sf1_val = self.ieee754_int_to_float(self.checkKeyExist(para, "32"), 32) * 10000
-        self.ACCLsta.le.setText(f'{accl_sf0_val:.6f}'.rstrip('0').rstrip('.'))
-        self.ACCLstb.le.setText(f'{accl_sf1_val:.6f}'.rstrip('0').rstrip('.'))
-        accl_slope_process = self.ieee754_int_to_float(self.checkKeyExist(para, "33"))
-        accl_offset_process = self.ieee754_int_to_float(self.checkKeyExist(para, "34"))
-        self.ACCL_slope1.le.setText(f'{accl_slope_process:.10f}'.rstrip('0').rstrip('.'))
-        self.ACCL_offset1.le.setText(f'{accl_offset_process:.10f}'.rstrip('0').rstrip('.'))
+            accl_sf0_val = self.ieee754_int_to_float(self.checkKeyExist(para, "31"), 31) * 10000
+            accl_sf1_val = self.ieee754_int_to_float(self.checkKeyExist(para, "32"), 32) * 10000
+            self.ACCLsta.le.setText(f'{accl_sf0_val:.6f}'.rstrip('0').rstrip('.'))
+            self.ACCLstb.le.setText(f'{accl_sf1_val:.6f}'.rstrip('0').rstrip('.'))
+            self.ACCL_slope1.le.setText(
+                f'{self.ieee754_int_to_float(self.checkKeyExist(para, "33")):.10f}'.rstrip('0').rstrip('.'))
+            self.ACCL_offset1.le.setText(
+                f'{self.ieee754_int_to_float(self.checkKeyExist(para, "34")):.10f}'.rstrip('0').rstrip('.'))
 
-        # pass
-        if not __name__ == "__main__":
-            self.controlchangewhite()
-
-        if self.__int_to_float_errorTimes > 0:
-            self.mesboxProcess('warning', '整數轉換單精度浮點數發生錯誤',
-                               '轉換過程中因帶入的整數，不符合此轉換的方法，所以發生錯誤。')
+            if not __name__ == "__main__":
+                self.controlchangewhite()
+        finally:
+            self._updating_ui = False  # 釋放鎖定
 
     def mesboxProcess(self, status, title, content):
         mesbox = QMessageBox(self)
@@ -1034,88 +1111,100 @@ class pig_parameters_widget(QGroupBox):
         return typeChange
 
     def send_FREQ_CMD(self):
-        # dt_fpga = 1e3 / 91e6  # for PLL set to 91MHz
-        # dt_fpga = 1e3 / 90e6
         dt_fpga = 1e3 / 100e6
-        # dt_fpga = 1e3/ 105e6 # for PLL set to 105MHz
-        # dt_fpga = 1e3/ 107e6 # for PLL set to 107MHz
-        # dt_fpga = 1e3/ 108.333333e6 # for PLL set to 109MHz
         value = self.freq.spin.value()
-        # logger.info('set freq: %d', value)
         self.freq.lb.setText(str(round(1 / (2 * (value + 1) * dt_fpga), 2)) + ' KHz')
+        if getattr(self, '_updating_ui', False):  # 如果正在 Dump 回填，直接跳出不送指令
+            return
         self.__act.writeImuCmd(CMD_FOG_MOD_FREQ, value, self.__chVal)
-        # print('send_FREQ_CMD:', self.__chVal)
-        # self.__par_manager.update_parameters("FREQ", value)
 
     def send_MOD_H_CMD(self):
+        if getattr(self, '_updating_ui', False):  # 如果正在 Dump 回填，直接跳出不送指令
+            return
         value = self.mod_H.spin.value()
         # logger.info('set mod_H: %d', value)
         self.__act.writeImuCmd(CMD_FOG_MOD_AMP_H, value, self.__chVal)
-        # self.__par_manager.update_parameters("MOD_H", value)
 
     def send_MOD_L_CMD(self):
+        if getattr(self, '_updating_ui', False):  # 如果正在 Dump 回填，直接跳出不送指令
+            return
         value = self.mod_L.spin.value()
         self.__act.writeImuCmd(CMD_FOG_MOD_AMP_L, value, self.__chVal)
-        # logger.info('set mod_L: %d', value)
-        # self.__par_manager.update_parameters("MOD_L", value)
 
     def send_ERR_OFFSET_CMD(self):
+        if getattr(self, '_updating_ui', False):  # 如果正在 Dump 回填，直接跳出不送指令
+            return
         value = self.err_offset.spin.value()
         # logger.info('set err offset: %d', value)
         self.__act.writeImuCmd(CMD_FOG_ERR_OFFSET, value, self.__chVal)
         # self.__par_manager.update_parameters("ERR_OFFSET", value)
 
     def send_POLARITY_CMD(self):
+        if getattr(self, '_updating_ui', False):  # 如果正在 Dump 回填，直接跳出不送指令
+            return
         value = self.polarity.spin.value()
         # logger.info('set polarity: %d', value)
         self.__act.writeImuCmd(CMD_FOG_POLARITY, value, self.__chVal)
         # self.__par_manager.update_parameters("POLARITY", value)
 
     def send_WAIT_CNT_CMD(self):
+        if getattr(self, '_updating_ui', False):  # 如果正在 Dump 回填，直接跳出不送指令
+            return
         value = self.wait_cnt.spin.value()
         # logger.info('set wait cnt: %d', value)
         self.__act.writeImuCmd(CMD_FOG_WAIT_CNT, value, self.__chVal)
         # self.__par_manager.update_parameters("WAIT_CNT", value)
 
     def send_ERR_TH_CMD(self):
+        if getattr(self, '_updating_ui', False):  # 如果正在 Dump 回填，直接跳出不送指令
+            return
         value = self.err_th.spin.value()
         # logger.info('set err_th: %d', value)
         self.__act.writeImuCmd(CMD_FOG_ERR_TH, value, self.__chVal)
         # self.__par_manager.update_parameters("ERR_TH", value)
 
     def send_AVG_CMD(self):
+        if getattr(self, '_updating_ui', False):  # 如果正在 Dump 回填，直接跳出不送指令
+            return
         value = self.avg.spin.value()
         # logger.info('set err_avg: %d', value)
         self.__act.writeImuCmd(CMD_FOG_ERR_AVG, value, self.__chVal)
         # self.__par_manager.update_parameters("ERR_AVG", value)
 
     def send_GAIN1_CMD(self):
+        if getattr(self, '_updating_ui', False):  # 如果正在 Dump 回填，直接跳出不送指令
+            return
         value = self.gain1.spin.value()
         # logger.info('set gain1: %d', value)
         self.__act.writeImuCmd(CMD_FOG_GAIN1, value, self.__chVal)
         # self.__par_manager.update_parameters("GAIN1", value)
 
     def send_GAIN2_CMD(self):
+        if getattr(self, '_updating_ui', False):  # 如果正在 Dump 回填，直接跳出不送指令
+            return
         value = self.gain2.spin.value()
         # logger.info('set gain2: %d', value)
         self.__act.writeImuCmd(CMD_FOG_GAIN2, value, self.__chVal)
         # self.__par_manager.update_parameters("GAIN2", value)
 
     def send_FB_ON_CMD(self):
+        if getattr(self, '_updating_ui', False):  # 如果正在 Dump 回填，直接跳出不送指令
+            return
         value = self.fb_on.spin.value()
-        # logger.info('set FB on: %d', value)
         self.__act.writeImuCmd(CMD_FOG_FB_ON, value, self.__chVal)
-        # self.__act.writeImuCmd(CMD_FOG_FB_ON, 0)
-        # self.__act.writeImuCmd(CMD_FOG_FB_ON, value)
-        # self.__par_manager.update_parameters("FB_ON", value)
+
 
     def send_DAC_GAIN_CMD(self):
+        if getattr(self, '_updating_ui', False):  # 如果正在 Dump 回填，直接跳出不送指令
+            return
         value = self.dac_gain.spin.value()
         # logger.info('set DAC gain: %d', value)
         self.__act.writeImuCmd(CMD_FOG_DAC_GAIN, value, self.__chVal)
         # self.__par_manager.update_parameters("DAC_GAIN", value)
 
     def send_TMIN_CMD(self):
+        if getattr(self, '_updating_ui', False):  # 如果正在 Dump 回填，直接跳出不送指令
+            return
         value = self.Tmin.spin.value()
         value2 = struct.unpack('<I', struct.pack('<f', value))
         # logger.info('set DAC gain: %d', value)
@@ -1124,6 +1213,8 @@ class pig_parameters_widget(QGroupBox):
         print("%x" % value2[0])
 
     def send_TMAX_CMD(self):
+        if getattr(self, '_updating_ui', False):  # 如果正在 Dump 回填，直接跳出不送指令
+            return
         value = self.Tmax.spin.value()
         value2 = struct.unpack('<I', struct.pack('<f', value))
         # logger.info('set DAC gain: %d', value)
@@ -1132,34 +1223,42 @@ class pig_parameters_widget(QGroupBox):
         print("%x" % value2[0])
 
     def send_CUTOFF_CMD(self):
+        if getattr(self, '_updating_ui', False):  # 如果正在 Dump 回填，直接跳出不送指令
+            return
         cutoff_Val = self.cutoff.spin.value()
         logger.info('set CUTOFF : %d', cutoff_Val)
         # value2 = struct.unpack('<I', struct.pack('<f', value))
         # logger.info('set DAC gain: %d', value)
         value = struct.unpack('<I', struct.pack('<f', float(cutoff_Val)))
         self.__act.writeImuCmd(CMD_FOG_CUTOFF, value[0], self.__chVal)
-        # self.__par_manager.update_parameters("DAC_GAIN", value)
-        # print("%d" % value)
 
     def send_OUT_TH_EN_CMD(self):
+        if getattr(self, '_updating_ui', False):  # 如果正在 Dump 回填，直接跳出不送指令
+            return
         value = self.out_th_en.spin.value()
         # logger.info('set FB on: %d', value)
         self.__act.writeImuCmd(CMD_OUT_TH_EN, value, self.__chVal)
 
 
     def send_OUT_TH_CMD(self):
+        if getattr(self, '_updating_ui', False):  # 如果正在 Dump 回填，直接跳出不送指令
+            return
         out_th = float(self.out_th.le.text())
         # logger.info('set SFA : %d', Re_sf0Val)
         value = struct.unpack('<I', struct.pack('<f', out_th))
         self.__act.writeImuCmd(CMD_OUT_TH, value[0], self.__chVal)
 
     def send_SF0_CMD(self):
+        if getattr(self, '_updating_ui', False):  # 如果正在 Dump 回填，直接跳出不送指令
+            return
         Re_sf0Val = float(self.sf0.le.text()) * 0.0001  # 與AA同方式
         # logger.info('set SFA : %d', Re_sf0Val)
         value = struct.unpack('<I', struct.pack('<f', Re_sf0Val))
         self.__act.writeImuCmd(CMD_FOG_SF0, value[0], self.__chVal)
 
     def send_SF1_CMD(self):
+        if getattr(self, '_updating_ui', False):  # 如果正在 Dump 回填，直接跳出不送指令
+            return
         Re_sf1Val = float(self.sf1.le.text()) * 0.0001  # 與AA同方式
         print(Re_sf1Val)
         # logger.info('set SFB : %d', Re_sf1Val)
@@ -1168,173 +1267,209 @@ class pig_parameters_widget(QGroupBox):
         print("SF1: ")
         print(str(value[0]))
 
-    # def send_SF_COMP_T1_CMD(self):
-    #     value = struct.unpack('<I', struct.pack('<f', float(self.sf_comp_T1.le.text())))
-    #     print(value[0])
-    #     self.__act.writeImuCmd(CMD_SF_COMP_T1, value[0])
-    #
-    # def send_SF_COMP_T2_CMD(self):
-    #     value = struct.unpack('<I', struct.pack('<f', float(self.sf_comp_T2.le.text())))
-    #     print(value[0])
-    #     self.__act.writeImuCmd(CMD_SF_COMP_T2, value[0])
-    #
-    # def send_SF_1_SLOPE(self):
-    #     value = struct.unpack('<I', struct.pack('<f', float(self.sf_1_slope.le.text())))
-    #     print(value[0])
-    #     self.__act.writeImuCmd(CMD_SF_1_SLOPE, value[0])
-    #
-    # def send_SF_1_OFFSET(self):
-    #     value = struct.unpack('<I', struct.pack('<f', float(self.sf_1_offset.le.text())))
-    #     print(value[0])
-    #     self.__act.writeImuCmd(CMD_SF_1_OFFSET, value[0])
-
     def send_SF3_CMD(self):
+        if getattr(self, '_updating_ui', False):  # 如果正在 Dump 回填，直接跳出不送指令
+            return
         value = struct.unpack('<I', struct.pack('<f', float(self.sf3.le.text())))
         self.__act.writeImuCmd(CMD_FOG_SF3, value[0])
 
     def send_SF4_CMD(self):
+        if getattr(self, '_updating_ui', False):  # 如果正在 Dump 回填，直接跳出不送指令
+            return
         value = struct.unpack('<I', struct.pack('<f', float(self.sf4.le.text())))
         self.__act.writeImuCmd(CMD_FOG_SF4, value[0])
 
     def send_SF5_CMD(self):
+        if getattr(self, '_updating_ui', False):  # 如果正在 Dump 回填，直接跳出不送指令
+            return
         value = struct.unpack('<I', struct.pack('<f', float(self.sf5.le.text())))
         self.__act.writeImuCmd(CMD_FOG_SF5, value[0])
 
     def send_SF6_CMD(self):
+        if getattr(self, '_updating_ui', False):  # 如果正在 Dump 回填，直接跳出不送指令
+            return
         value = struct.unpack('<I', struct.pack('<f', float(self.sf6.le.text())))
         self.__act.writeImuCmd(CMD_FOG_SF6, value[0])
 
     def send_SF7_CMD(self):
+        if getattr(self, '_updating_ui', False):  # 如果正在 Dump 回填，直接跳出不送指令
+            return
         value = struct.unpack('<I', struct.pack('<f', float(self.sf7.le.text())))
         self.__act.writeImuCmd(CMD_FOG_SF7, value[0])
 
     def send_SF8_CMD(self):
+        if getattr(self, '_updating_ui', False):  # 如果正在 Dump 回填，直接跳出不送指令
+            return
         value = struct.unpack('<I', struct.pack('<f', float(self.sf8.le.text())))
         self.__act.writeImuCmd(CMD_FOG_SF8, value[0])
 
     def send_SF9_CMD(self):
+        if getattr(self, '_updating_ui', False):  # 如果正在 Dump 回填，直接跳出不送指令
+            return
         value = struct.unpack('<I', struct.pack('<f', float(self.sf9.le.text())))
         self.__act.writeImuCmd(CMD_FOG_SF9, value[0])
 
     def send_SFB_CMD(self):
+        if getattr(self, '_updating_ui', False):  # 如果正在 Dump 回填，直接跳出不送指令
+            return
         value = struct.unpack('<I', struct.pack('<f', float(self.sfb.le.text())))
         self.__act.writeImuCmd(CMD_FOG_SFB, value[0])
 
     def send_CONST_STEP_CMD(self):
+        if getattr(self, '_updating_ui', False):  # 如果正在 Dump 回填，直接跳出不送指令
+            return
         value = self.const_step.spin.value()
         # logger.info('set constant step: %d', value)
         self.__act.writeImuCmd(CMD_FOG_CONST_STEP, value, self.__chVal)
         # self.__par_manager.update_parameters("CONST_STEP", value)
 
     def update_KF_Q(self):
+        if getattr(self, '_updating_ui', False):  # 如果正在 Dump 回填，直接跳出不送指令
+            return
         value = self.KF_Q.spin.value()
         # logger.info('set KF_Q: %d', value)
         self.__act.kal_Q = value
         # self.__par_manager.update_parameters("KF_Q", value)
 
     def update_KF_R(self):
+        if getattr(self, '_updating_ui', False):  # 如果正在 Dump 回填，直接跳出不送指令
+            return
         value = self.KF_R.spin.value()
         # logger.info('set KF_R: %d', value)
         self.__act.kal_R = value
         # self.__par_manager.update_parameters("KF_R", value)
 
     def update_FPGA_Q(self):
+        if getattr(self, '_updating_ui', False):  # 如果正在 Dump 回填，直接跳出不送指令
+            return
         value = self.HD_Q.spin.value()
         # logger.info('set HD_Q: %d', value)
         self.__act.writeImuCmd(CMD_FOG_FPGA_Q, value)
         # self.__par_manager.update_parameters("HD_Q", value)
 
     def update_FPGA_R(self):
+        if getattr(self, '_updating_ui', False):  # 如果正在 Dump 回填，直接跳出不送指令
+            return
         value = self.HD_R.spin.value()
         # logger.info('set HD_R: %d', value)
         self.__act.writeImuCmd(CMD_FOG_FPGA_R, value)
         # self.__par_manager.update_parameters("HD_R", value)
 
     def send_DATA_RATE_CMD(self):
+        if getattr(self, '_updating_ui', False):  # 如果正在 Dump 回填，直接跳出不送指令
+            return
         value = self.dataRate_sd.sd.value()
         # logger.info('set dataRate: %d', value)
         self.__act.writeImuCmd(CMD_FOG_INT_DELAY, value)
         # self.__par_manager.update_parameters("DATA_RATE", value)
 
     def SF_A_EDIT(self):
+        if getattr(self, '_updating_ui', False):  # 如果正在 Dump 回填，直接跳出不送指令
+            return
         value = float(self.sf_a.le.text())
         # logger.info('set sf_a: %f', value)
         self.__act.sf_a = value
         # self.__par_manager.update_parameters("SF_A", value)
 
     def SF_B_EDIT(self):
+        if getattr(self, '_updating_ui', False):  # 如果正在 Dump 回填，直接跳出不送指令
+            return
         value = float(self.sf_b.le.text())
         # logger.info('set sf_b: %f', value)
         self.__act.sf_b = value
         # self.__par_manager.update_parameters("SF_B", value)
 
     def send_BIAS_T1_CMD(self):
+        if getattr(self, '_updating_ui', False):  # 如果正在 Dump 回填，直接跳出不送指令
+            return
         logger.info('set BIAS T1 : %d', float(self.T1.le.text()))
         value = struct.unpack('<I', struct.pack('<f', float(self.T1.le.text())))
         self.__act.writeImuCmd(CMD_FOG_BIAS_T1, value[0], self.__chVal)
         # print("%x" % value[0])
 
     def send_BIAS_T2_CMD(self):
+        if getattr(self, '_updating_ui', False):  # 如果正在 Dump 回填，直接跳出不送指令
+            return
         logger.info('set BIAS T2 : %d', float(self.T2.le.text()))
         value = struct.unpack('<I', struct.pack('<f', float(self.T2.le.text())))
         self.__act.writeImuCmd(CMD_FOG_BIAS_T2, value[0], self.__chVal)
         # print("%x" % value[0])
 
     def send_SFB_SLOPE_1_CMD(self):
+        if getattr(self, '_updating_ui', False):  # 如果正在 Dump 回填，直接跳出不送指令
+            return
         logger.info('set BIAS SF SLOPE1 : %d', float(self.slope1.le.text()))
         value = struct.unpack('<I', struct.pack('<f', (float(self.slope1.le.text()))))
         self.__act.writeImuCmd(CMD_FOG_SFB_SLOPE_1, value[0], self.__chVal)
         # print("%x" % value[0])
 
     def send_SFB_SLOPE_2_CMD(self):
+        if getattr(self, '_updating_ui', False):  # 如果正在 Dump 回填，直接跳出不送指令
+            return
         logger.info('set BIAS SF SLOPE2 : %d', float(self.slope2.le.text()))
         value = struct.unpack('<I', struct.pack('<f', (float(self.slope2.le.text()))))
         self.__act.writeImuCmd(CMD_FOG_SFB_SLOPE_2, value[0], self.__chVal)
         # print("%x" % value[0])
 
     def send_SFB_SLOPE_3_CMD(self):
+        if getattr(self, '_updating_ui', False):  # 如果正在 Dump 回填，直接跳出不送指令
+            return
         logger.info('set BIAS SF SLOPE3 : %d', float(self.slope3.le.text()))
         value = struct.unpack('<I', struct.pack('<f', (float(self.slope3.le.text()))))
         self.__act.writeImuCmd(CMD_FOG_SFB_SLOPE_3, value[0], self.__chVal)
         # print("%x" % value[0])
 
     def send_SFB_OFFSET_1_CMD(self):
+        if getattr(self, '_updating_ui', False):  # 如果正在 Dump 回填，直接跳出不送指令
+            return
         logger.info('set BIAS SF OFFSET1 : %d', float(self.offset1.le.text()))
         value = struct.unpack('<I', struct.pack('<f', (float(self.offset1.le.text()))))
         self.__act.writeImuCmd(CMD_FOG_SFB_OFFSET_1, value[0], self.__chVal)
         # print("%x" % value[0])
 
     def send_SFB_OFFSET_2_CMD(self):
+        if getattr(self, '_updating_ui', False):  # 如果正在 Dump 回填，直接跳出不送指令
+            return
         logger.info('set BIAS SF OFFSET2 : %d', float(self.offset2.le.text()))
         value = struct.unpack('<I', struct.pack('<f', (float(self.offset2.le.text()))))
         self.__act.writeImuCmd(CMD_FOG_SFB_OFFSET_2, value[0], self.__chVal)
         # print("%x" % value[0])
 
     def send_SFB_OFFSET_3_CMD(self):
+        if getattr(self, '_updating_ui', False):  # 如果正在 Dump 回填，直接跳出不送指令
+            return
         logger.info('set BIAS SF OFFSET3 : %d', float(self.offset3.le.text()))
         value = struct.unpack('<I', struct.pack('<f', (float(self.offset3.le.text()))))
         self.__act.writeImuCmd(CMD_FOG_SFB_OFFSET_3, value[0], self.__chVal)
         # print("%x" % value[0])
 
     def send_ACCL_SF0_CMD(self):
+        if getattr(self, '_updating_ui', False):  # 如果正在 Dump 回填，直接跳出不送指令
+            return
         Re_sf0Val = float(self.ACCLsta.le.text()) * 0.0001  # 與AA同方式
         # logger.info('set ACC SFA : %d', Re_sf0Val)
         value = struct.unpack('<I', struct.pack('<f', Re_sf0Val))
         self.__act.writeImuCmd(CMD_ACCL_SF0, value[0], self.__chVal)
 
     def send_ACCL_SF1_CMD(self):
+        if getattr(self, '_updating_ui', False):  # 如果正在 Dump 回填，直接跳出不送指令
+            return
         Re_sf1Val = float(self.ACCLstb.le.text()) * 0.0001  # 與AA同方式
         # logger.info('set ACC SFB : %d', Re_sf1Val)
         value = struct.unpack('<I', struct.pack('<f', Re_sf1Val))
         self.__act.writeImuCmd(CMD_ACCL_SF1, value[0], self.__chVal)
 
     def send_ACCL_SFB_SLOPE_1_CMD(self):
+        if getattr(self, '_updating_ui', False):  # 如果正在 Dump 回填，直接跳出不送指令
+            return
         logger.info('set ACC SF SLOPE1 : %d', float(self.ACCL_slope1.le.text()))
         value = struct.unpack('<I', struct.pack('<f', (float(self.ACCL_slope1.le.text()))))
         self.__act.writeImuCmd(CMD_ACCL_SFB_SLOPE_1, value[0], self.__chVal)
         # print("%x" % value[0])
 
     def send_ACCL_SFB_OFFSET_1_CMD(self):
+        if getattr(self, '_updating_ui', False):  # 如果正在 Dump 回填，直接跳出不送指令
+            return
         logger.info('set ACC SF OFFSET1 : %d', float(self.ACCL_offset1.le.text()))
         value = struct.unpack('<I', struct.pack('<f', (float(self.ACCL_offset1.le.text()))))
         self.__act.writeImuCmd(CMD_ACCL_SFB_OFFSET_1, value[0], self.__chVal)

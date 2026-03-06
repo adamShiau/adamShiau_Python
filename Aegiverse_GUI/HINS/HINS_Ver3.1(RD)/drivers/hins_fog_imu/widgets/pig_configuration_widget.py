@@ -17,7 +17,7 @@ CMD_CFG_RSC_MAP = [
 CMD_CFG_LF = 0x53
 CMD_CFG_LPF_G = 0x54  # Gyro LPF
 CMD_CFG_LPF_A = 0x55  # Accl LPF
-CMD_CFG_WZ_SRC= 0x56  # Accl LPF
+CMD_CFG_WZ_SRC = 0x56  # Accl LPF
 
 # LPF 頻寬對應表
 LPF_G_TABLE = ["133 Hz", "128 Hz", "112 Hz", "134 Hz", "86 Hz", "48 Hz", "24.6 Hz", "12.6 Hz"]
@@ -142,25 +142,34 @@ class pig_configuration_widget(QWidget):
 
     # --- Event Handlers ---
     def _on_gz_changed(self, val: int):
-        if self._updating_ui or not self._ensure_act(): return
+        if getattr(self, '_updating_ui', False):
+            return
+        if not self._ensure_act():
+            return
         print(f"Sending Gyro Z Source CMD: {hex(CMD_CFG_WZ_SRC).upper()}, Val={val}")
         self.__act.writeImuCmd(CMD_CFG_WZ_SRC, val, 6)
+
     def _on_lpf_g_changed(self, val: int):
-        self.lpf_g_val_label.setText(f"BW: {LPF_G_TABLE[val]}")
-        if self._updating_ui: return
-        if self._ensure_act():
-            print(f"Sending Gyro LPF CMD: {hex(CMD_CFG_LPF_G).upper()}, Val={val}")
-            self.__act.writeImuCmd(CMD_CFG_LPF_G, val, 6)
+        if getattr(self, '_updating_ui', False):
+            return
+        if not self._ensure_act():
+            return
+        print(f"Sending Gyro LPF CMD: {hex(CMD_CFG_LPF_G).upper()}, Val={val}")
+        self.__act.writeImuCmd(CMD_CFG_LPF_G, val, 6)
 
     def _on_lpf_a_changed(self, val: int):
-        self.lpf_a_val_label.setText(f"BW: {LPF_A_TABLE[val]}")
-        if self._updating_ui: return
-        if self._ensure_act():
-            print(f"Sending Accl LPF CMD: {hex(CMD_CFG_LPF_A).upper()}, Val={val}")
-            self.__act.writeImuCmd(CMD_CFG_LPF_A, val, 6)
+        if getattr(self, '_updating_ui', False):
+            return
+        if not self._ensure_act():
+            return
+        print(f"Sending Accl LPF CMD: {hex(CMD_CFG_LPF_A).upper()}, Val={val}")
+        self.__act.writeImuCmd(CMD_CFG_LPF_A, val, 6)
 
     def set_rcs_matrix(self):
-        if not self._ensure_act(): return
+        if getattr(self, '_updating_ui', False):
+            return
+        if not self._ensure_act():
+            return
         for r in range(3):
             for c in range(3):
                 val_float = self.rcs_elements[r][c].spin.value()
@@ -171,20 +180,32 @@ class pig_configuration_widget(QWidget):
         QtWidgets.QMessageBox.information(self, "Success", "RCS Matrix sent.")
 
     def _on_dr_changed(self, idx: int):
-        if self._updating_ui or not self._ensure_act(): return
+        if getattr(self, '_updating_ui', False):
+            return
+        if not self._ensure_act():
+            return
+        print(f"Sending data rate: {hex(CMD_CFG_DR).upper()}, Val={idx}")
         self.__act.writeImuCmd(CMD_CFG_DR, int(idx), 6)
 
     def _on_br_changed(self, idx: int):
-        if self._updating_ui or not self._ensure_act(): return
+        if getattr(self, '_updating_ui', False):
+            return
+        if not self._ensure_act():
+            return
+        print(f"Sending baud rate: {hex(CMD_CFG_BR).upper()}, Val={idx}")
         self.__act.writeImuCmd(CMD_CFG_BR, int(idx), 6)
 
     def _on_lf_changed(self, val: int):
-        if self._updating_ui or not self._ensure_act(): return
+        if getattr(self, '_updating_ui', False):
+            return
+        if not self._ensure_act():
+            return
         self.__act.writeImuCmd(CMD_CFG_LF, val, 6)
 
     # 修改 dump_configuration 函式後半段
     def dump_configuration(self):
-        if not self._ensure_act(): return
+        if not self._ensure_act():
+            return
         self.__act.flushInputBuffer("None")
         cfg = self.__act.dump_configuration()
 

@@ -406,31 +406,39 @@ class MainWindow(QMainWindow):
         else:
             QMessageBox.critical(self, "Connection Error", "無法連接 Serial Port")
 
-    # def sync_config_on_connect(self):
-    #     """ 自動執行 Dump 並更新所有 Reader 的內部參數 """
-    #     # 觸發 configuration_menu 的 dump 函式
-    #     # 這會導致：1. UI 更新, 2. 發送 rcs_updated_qt 訊號給 fog_reader
-    #     self.pig_configuration_menu.dump_configuration()
-
-    # 修改 main.py 中的 sync_config_on_connect 函式
     def sync_config_on_connect(self):
         """ 自動執行 Dump 並更新所有 Reader 的內部參數 """
         logger.info("Pausing Reader for configuration sync...")
 
-        # 1. 暫停總機執行緒的解析邏輯 (如果 HinsHybridReader 有 is_run 旗標)
+        self.pig_parameter_widget.setEnabled(False)
+        self.pig_configuration_menu.setEnabled(False)
+
+        # 1. 徹底停止讀取執行緒，避免搶佔 Serial Port
         self.hybrid_reader.is_run = False
         self.hybrid_reader.stop()
         self.hybrid_reader.wait()
-        time.sleep(0.1)  # 給一點時間讓 Serial 閒置
+        time.sleep(0.3)  # 增加一點延遲讓硬體緩衝清除
 
-        # 2. 執行 Dump
-        self.pig_configuration_menu.dump_configuration()
+        try:
+            # 2. 同步 Configuration (快速)
+            logger.info("Syncing Configuration...")
+            self.pig_configuration_menu.dump_configuration()
+            time.sleep(0.1)
 
-        # 3. 恢復總機執行緒
-        logger.info("Resuming Reader...")
-        self.hybrid_reader.is_run = True
-        if not self.hybrid_reader.isRunning():
+            # 3. 同步 Parameters (較慢，暫存器多) > 目前暫不需要 connect 後馬上 dump 參數
+            '''
+            logger.info("Syncing Parameters...")
+            self.pig_parameter_widget.dump_parameter()
+            '''
+        except Exception as e:
+            logger.error(f"Sync on connect failed: {e}")
+        finally:
+            # 4. 無論成功失敗，最後都要啟動執行緒恢復 GUI 繪圖
+            logger.info("Resuming Hybrid Reader...")
+            self.hybrid_reader.is_run = True
             self.hybrid_reader.start()
+            self.pig_parameter_widget.setEnabled(True)
+            self.pig_configuration_menu.setEnabled(True)
 
     def disconnect_serial(self):
         self.stop_reading()

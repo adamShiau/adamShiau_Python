@@ -14,7 +14,6 @@ logger = logging.getLogger(logger_name + '.' + __name__)
 logger.info(__name__ + ' logger start')
 """ ####### end of log stuff creation ########  """
 
-
 import struct
 
 from PySide6 import QtCore, QtWidgets
@@ -24,7 +23,6 @@ from PySide6.QtWidgets import QGroupBox, QStackedWidget, QGridLayout, QApplicati
 
 from myLib.myGui.mygui_serial import editBlock
 from myLib import common as cmn
-
 
 CMD_Gyro_G11 = 63
 CMD_Gyro_G12 = 64
@@ -57,6 +55,7 @@ INIT_PARAMETERS = {
     "22": 0, "23": 1
 }
 
+
 class pig_calibration_widget(QGroupBox):
     def __init__(self, act, dataFile, dataFileName):
         super(pig_calibration_widget, self).__init__()
@@ -64,6 +63,7 @@ class pig_calibration_widget(QGroupBox):
         self.__act = act
         self.__file = dataFile
         self.filename = dataFileName
+        self._updating_ui = False  # 新增鎖定旗標
         self.dumpTrigerState = None
         self.keyIsNotExist = False
         self.__modifiedItem = set()
@@ -77,7 +77,6 @@ class pig_calibration_widget(QGroupBox):
         acceleration_Layout = QVBoxLayout()
         OneWidget = QWidget()
         TwoWidget = QWidget()
-
 
         # first Page
         R_GroupBox = QGroupBox("Gyro R")
@@ -121,21 +120,9 @@ class pig_calibration_widget(QGroupBox):
         Angular_velocity_Layout.addWidget(b_GroupBox)
         Angular_velocity_Layout.addWidget(nextPage, alignment=QtCore.Qt.AlignRight)
 
-        # self.dump_Btn = QPushButton("dump")
-        # self.dump_Btn.setFixedWidth(150)
-        # self.Update_Btn = QPushButton("Update")
-        # self.Update_Btn.setFixedWidth(150)
-        # self.loadMisalignmentFile = QPushButton("Load Misalignment File")
-        # self.loadMisalignmentFile.setFixedWidth(150)
-        #
-        # BtnHorizontal = QHBoxLayout()
-        # BtnHorizontal.addWidget(self.dump_Btn)
-        # BtnHorizontal.addWidget(self.Update_Btn)
-        # BtnHorizontal.addWidget(self.loadMisalignmentFile)
-
         spring = QSpacerItem(15, 35, QSizePolicy.Minimum, QSizePolicy.Expanding)
         Angular_velocity_Layout.addItem(spring)
-        #Angular_velocity_Layout.insertLayout(4, BtnHorizontal)
+        # Angular_velocity_Layout.insertLayout(4, BtnHorizontal)
         OneWidget.setLayout(Angular_velocity_Layout)
 
         # Second Page
@@ -233,7 +220,7 @@ class pig_calibration_widget(QGroupBox):
         All_Layout.addWidget(setting_frame, 1)
         All_Layout.addWidget(self.stackView_one, 3)
 
-        #All_Layout.addWidget(stackView_one)
+        # All_Layout.addWidget(stackView_one)
         self.setLayout(All_Layout)
 
     def linkFunction(self):
@@ -261,37 +248,6 @@ class pig_calibration_widget(QGroupBox):
         self.Ax.le.textChanged.connect(self.Send_AX_CMD)
         self.Ay.le.textChanged.connect(self.Send_AY_CMD)
         self.Az.le.textChanged.connect(self.Send_AZ_CMD)
-
-        # limite_doublevalidator = QDoubleValidator()
-        # limite_doublevalidator.setNotation(QDoubleValidator.StandardNotation)
-        # limite_doublevalidator.setRange(-100000, 100000, 7)
-        #
-        # # 設定輸入值的限制
-        # self.W1_1.le.setValidator(limite_doublevalidator)
-        # self.W1_2.le.setValidator(limite_doublevalidator)
-        # self.W1_3.le.setValidator(limite_doublevalidator)
-        # self.W2_1.le.setValidator(limite_doublevalidator)
-        # self.W2_2.le.setValidator(limite_doublevalidator)
-        # self.W2_3.le.setValidator(limite_doublevalidator)
-        # self.W3_1.le.setValidator(limite_doublevalidator)
-        # self.W3_2.le.setValidator(limite_doublevalidator)
-        # self.W3_3.le.setValidator(limite_doublevalidator)
-        # self.Wx.le.setValidator(limite_doublevalidator)
-        # self.Wy.le.setValidator(limite_doublevalidator)
-        # self.Wz.le.setValidator(limite_doublevalidator)
-        # # 設定輸入值的限制
-        # self.A1_1.le.setValidator(limite_doublevalidator)
-        # self.A1_2.le.setValidator(limite_doublevalidator)
-        # self.A1_3.le.setValidator(limite_doublevalidator)
-        # self.A2_1.le.setValidator(limite_doublevalidator)
-        # self.A2_2.le.setValidator(limite_doublevalidator)
-        # self.A2_3.le.setValidator(limite_doublevalidator)
-        # self.A3_1.le.setValidator(limite_doublevalidator)
-        # self.A3_2.le.setValidator(limite_doublevalidator)
-        # self.A3_3.le.setValidator(limite_doublevalidator)
-        # self.Ax.le.setValidator(limite_doublevalidator)
-        # self.Ay.le.setValidator(limite_doublevalidator)
-        # self.Az.le.setValidator(limite_doublevalidator)
         self.dump_Btn.clicked.connect(self.dump_cali_parameter)
         self.init_para_btn.clicked.connect(self.init_para)
         # self.Update_Btn.clicked.connect(self.update_changevalue)
@@ -323,15 +279,15 @@ class pig_calibration_widget(QGroupBox):
                                                       }''')
 
     def dump_cali_parameter(self):
+        if not self.__act:
+            return
         self.__act.flushInputBuffer("None")
         initVal = self.__act.dump_cali_parameters(2)
-        # print(initVal)
         if isinstance(initVal, (list, dict)):
-            self.set_init_val(initVal)
+            QtCore.QTimer.singleShot(10, lambda: self.set_init_val(initVal))
             self.dumpTrigerState = True
         elif type(initVal) == bool:
             self.mesboxProcess("warning", "Error occurred while in dump", "Please check if the device has power.")
-
 
     # 跳下一頁
     def NextToTheSecondPG(self):
@@ -343,113 +299,75 @@ class pig_calibration_widget(QGroupBox):
 
     def checkKeyExist(self, para, key):
         try:
-            val = para.get(str(key))
-        except TypeError:
+            return para.get(str(key), 0)
+        except:
             return 0
-        except Exception:
-            return 0
-
-        # 用於load csv檔案的判斷
-        if "Bias" in para:
-            try:
-                for idx, biasVal in val.items():
-                    if not isinstance(biasVal, float):
-                        return 0
-            except Exception as e:
-                logger.error(f"{e} ,檢查key是否存在的判斷出現錯誤。")
-                self.keyIsNotExist = True
-                return 0
-        if not isinstance(val, pandas.Series):
-            # 用於dump參數時的判斷
-            if val == None:
-                self.keyIsNotExist = True
-                return 0
-            # key值存在，但沒有值或是值為nan
-            if val == "nan" or val == '':
-                logger.info("參數值為空的狀況，故回傳數值0代替空值。")
-                return 0
-        return val
 
     def keyExistOrNotMes(self, name):
         if self.keyIsNotExist:
             if name == "misalignment參數值":
-                self.mesboxProcess("warning", name+"有不存在的狀況", "在取misalignment參數值的狀況時，因設備版號為舊的部分\n"
-                                                                                "，而GUI為最新版本未有撈取舊參數值，所以訊息通知使用\n"
-                                                                                "者有些參數若為0或空值，代表該參數在舊版本的設備中未\n"
-                                                                                "使用，因此撈取不到正確的參數。")
+                self.mesboxProcess("warning", name + "有不存在的狀況", "在取misalignment參數值的狀況時，因設備版號為舊的部分\n"
+                                                                       "，而GUI為最新版本未有撈取舊參數值，所以訊息通知使用\n"
+                                                                       "者有些參數若為0或空值，代表該參數在舊版本的設備中未\n"
+                                                                       "使用，因此撈取不到正確的參數。")
             elif name == "匯入參數值":
-                self.mesboxProcess("warning", name+ "有不存在的狀況", "請確認匯入的參數，是否有key值設定錯誤，或是不存在的狀況發生。")
+                self.mesboxProcess("warning", name + "有不存在的狀況",
+                                   "請確認匯入的參數，是否有key值設定錯誤，或是不存在的狀況發生。")
             else:
-                self.mesboxProcess("warning", name+"有不存在的狀況", "請確認使用的CSV檔案內容與標題是否有問題。")
+                self.mesboxProcess("warning", name + "有不存在的狀況", "請確認使用的CSV檔案內容與標題是否有問題。")
 
             self.keyIsNotExist = False
 
-
     # 點擊dump可以讀取儀器的數據
     def set_init_val(self, para):
-        self.W1_1.le.setText(str(self.ieee754_int_to_float(self.checkKeyExist(para, "15"))))
-        self.W1_2.le.setText(str(self.ieee754_int_to_float(self.checkKeyExist(para, "16"))))
-        self.W1_3.le.setText(str(self.ieee754_int_to_float(self.checkKeyExist(para, "17"))))
-        self.W2_1.le.setText(str(self.ieee754_int_to_float(self.checkKeyExist(para, "18"))))
-        self.W2_2.le.setText(str(self.ieee754_int_to_float(self.checkKeyExist(para, "19"))))
-        self.W2_3.le.setText(str(self.ieee754_int_to_float(self.checkKeyExist(para, "20"))))
-        self.W3_1.le.setText(str(self.ieee754_int_to_float(self.checkKeyExist(para, "21"))))
-        self.W3_2.le.setText(str(self.ieee754_int_to_float(self.checkKeyExist(para, "22"))))
-        self.W3_3.le.setText(str(self.ieee754_int_to_float(self.checkKeyExist(para, "23"))))
-        self.Wx.le.setText(str(self.ieee754_int_to_float(self.checkKeyExist(para, "12"))))
-        self.Wy.le.setText(str(self.ieee754_int_to_float(self.checkKeyExist(para, "13"))))
-        self.Wz.le.setText(str(self.ieee754_int_to_float(self.checkKeyExist(para, "14"))))
-        self.A1_1.le.setText(str(self.ieee754_int_to_float(self.checkKeyExist(para, "3"))))
-        self.A1_2.le.setText(str(self.ieee754_int_to_float(self.checkKeyExist(para, "4"))))
-        self.A1_3.le.setText(str(self.ieee754_int_to_float(self.checkKeyExist(para, "5"))))
-        self.A2_1.le.setText(str(self.ieee754_int_to_float(self.checkKeyExist(para, "6"))))
-        self.A2_2.le.setText(str(self.ieee754_int_to_float(self.checkKeyExist(para, "7"))))
-        self.A2_3.le.setText(str(self.ieee754_int_to_float(self.checkKeyExist(para, "8"))))
-        self.A3_1.le.setText(str(self.ieee754_int_to_float(self.checkKeyExist(para, "9"))))
-        self.A3_2.le.setText(str(self.ieee754_int_to_float(self.checkKeyExist(para, "10"))))
-        self.A3_3.le.setText(str(self.ieee754_int_to_float(self.checkKeyExist(para, "11"))))
-        self.Ax.le.setText(str(self.ieee754_int_to_float(self.checkKeyExist(para, "0"))))
-        self.Ay.le.setText(str(self.ieee754_int_to_float(self.checkKeyExist(para, "1"))))
-        self.Az.le.setText(str(self.ieee754_int_to_float(self.checkKeyExist(para, "2"))))
-        if not __name__ == "__main__":
-            self.controlchangewhite()
-            self.keyExistOrNotMes("misalignment參數值")
-            self.__modifiedItem.clear()
+        self._updating_ui = True  # 開啟回填鎖定
+        try:
+            self.W1_1.le.setText(str(self.ieee754_int_to_float(self.checkKeyExist(para, "15"))))
+            self.W1_2.le.setText(str(self.ieee754_int_to_float(self.checkKeyExist(para, "16"))))
+            self.W1_3.le.setText(str(self.ieee754_int_to_float(self.checkKeyExist(para, "17"))))
+            self.W2_1.le.setText(str(self.ieee754_int_to_float(self.checkKeyExist(para, "18"))))
+            self.W2_2.le.setText(str(self.ieee754_int_to_float(self.checkKeyExist(para, "19"))))
+            self.W2_3.le.setText(str(self.ieee754_int_to_float(self.checkKeyExist(para, "20"))))
+            self.W3_1.le.setText(str(self.ieee754_int_to_float(self.checkKeyExist(para, "21"))))
+            self.W3_2.le.setText(str(self.ieee754_int_to_float(self.checkKeyExist(para, "22"))))
+            self.W3_3.le.setText(str(self.ieee754_int_to_float(self.checkKeyExist(para, "23"))))
+            self.Wx.le.setText(str(self.ieee754_int_to_float(self.checkKeyExist(para, "12"))))
+            self.Wy.le.setText(str(self.ieee754_int_to_float(self.checkKeyExist(para, "13"))))
+            self.Wz.le.setText(str(self.ieee754_int_to_float(self.checkKeyExist(para, "14"))))
+            self.A1_1.le.setText(str(self.ieee754_int_to_float(self.checkKeyExist(para, "3"))))
+            self.A1_2.le.setText(str(self.ieee754_int_to_float(self.checkKeyExist(para, "4"))))
+            self.A1_3.le.setText(str(self.ieee754_int_to_float(self.checkKeyExist(para, "5"))))
+            self.A2_1.le.setText(str(self.ieee754_int_to_float(self.checkKeyExist(para, "6"))))
+            self.A2_2.le.setText(str(self.ieee754_int_to_float(self.checkKeyExist(para, "7"))))
+            self.A2_3.le.setText(str(self.ieee754_int_to_float(self.checkKeyExist(para, "8"))))
+            self.A3_1.le.setText(str(self.ieee754_int_to_float(self.checkKeyExist(para, "9"))))
+            self.A3_2.le.setText(str(self.ieee754_int_to_float(self.checkKeyExist(para, "10"))))
+            self.A3_3.le.setText(str(self.ieee754_int_to_float(self.checkKeyExist(para, "11"))))
+            self.Ax.le.setText(str(self.ieee754_int_to_float(self.checkKeyExist(para, "0"))))
+            self.Ay.le.setText(str(self.ieee754_int_to_float(self.checkKeyExist(para, "1"))))
+            self.Az.le.setText(str(self.ieee754_int_to_float(self.checkKeyExist(para, "2"))))
+
+            if not __name__ == "__main__":
+                self.controlchangewhite()
+                self.keyExistOrNotMes("misalignment參數值")
+                self.__modifiedItem.clear()
+        finally:
+            self._updating_ui = False  # 回填結束，解除鎖定
 
     def selectcontrolchangecolor(self, control, send_item_func):
         control.setStyleSheet('background-color: yellow')
 
         clickBtnObj = self.sender()
-        if not hasattr(clickBtnObj, 'text') or clickBtnObj.text() == "Load Misalignment File" or clickBtnObj.text() == "Import":
+        if not hasattr(clickBtnObj,
+                       'text') or clickBtnObj.text() == "Load Misalignment File" or clickBtnObj.text() == "Import":
             if send_item_func not in self.__modifiedItem and send_item_func != None:
                 self.__modifiedItem.add(send_item_func)
 
-
     def controlchangewhite(self):
-        self.W1_1.le.setStyleSheet('background-color: white')
-        self.W1_2.le.setStyleSheet('background-color: white')
-        self.W1_3.le.setStyleSheet('background-color: white')
-        self.W2_1.le.setStyleSheet('background-color: white')
-        self.W2_2.le.setStyleSheet('background-color: white')
-        self.W2_3.le.setStyleSheet('background-color: white')
-        self.W3_1.le.setStyleSheet('background-color: white')
-        self.W3_2.le.setStyleSheet('background-color: white')
-        self.W3_3.le.setStyleSheet('background-color: white')
-        self.Wx.le.setStyleSheet('background-color: white')
-        self.Wy.le.setStyleSheet('background-color: white')
-        self.Wz.le.setStyleSheet('background-color: white')
-        self.A1_1.le.setStyleSheet('background-color: white')
-        self.A1_2.le.setStyleSheet('background-color: white')
-        self.A1_3.le.setStyleSheet('background-color: white')
-        self.A2_1.le.setStyleSheet('background-color: white')
-        self.A2_2.le.setStyleSheet('background-color: white')
-        self.A2_3.le.setStyleSheet('background-color: white')
-        self.A3_1.le.setStyleSheet('background-color: white')
-        self.A3_2.le.setStyleSheet('background-color: white')
-        self.A3_3.le.setStyleSheet('background-color: white')
-        self.Ax.le.setStyleSheet('background-color: white')
-        self.Ay.le.setStyleSheet('background-color: white')
-        self.Az.le.setStyleSheet('background-color: white')
+        widgets = [self.W1_1, self.W1_2, self.W1_3, self.W2_1, self.W2_2, self.W2_3, self.W3_1, self.W3_2, self.W3_3,
+                   self.Wx, self.Wy, self.Wz, self.A1_1, self.A1_2, self.A1_3, self.A2_1, self.A2_2, self.A2_3,
+                   self.A3_1, self.A3_2, self.A3_3, self.Ax, self.Ay, self.Az]
+        for w in widgets: w.le.setStyleSheet('background-color: white')
 
     def update_changevalue(self):
         mesbox = QtWidgets.QMessageBox()
@@ -462,39 +380,15 @@ class pig_calibration_widget(QGroupBox):
 
         if mes_result == QMessageBox.Yes:
             self.updatelink()
-            #print("Yes")
+            # print("Yes")
         elif mes_result == QMessageBox.No:
             pass
-
 
     def updatelink(self):
         if self.dumpTrigerState == True:
             for itemFunc in self.__modifiedItem:
                 itemFunc()
-            # self.Send_G11_CMD()
-            # self.Send_G12_CMD()
-            # self.Send_G13_CMD()
-            # self.Send_G21_CMD()
-            # self.Send_G22_CMD()
-            # self.Send_G23_CMD()
-            # self.Send_G31_CMD()
-            # self.Send_G32_CMD()
-            # self.Send_G33_CMD()
-            # self.Send_GX_CMD()
-            # self.Send_GY_CMD()
-            # self.Send_GZ_CMD()
-            # self.Send_A11_CMD()
-            # self.Send_A12_CMD()
-            # self.Send_A13_CMD()
-            # self.Send_A21_CMD()
-            # self.Send_A22_CMD()
-            # self.Send_A23_CMD()
-            # self.Send_A31_CMD()
-            # self.Send_A32_CMD()
-            # self.Send_A33_CMD()
-            # self.Send_AX_CMD()
-            # self.Send_AY_CMD()
-            # self.Send_AZ_CMD()
+
             # 將背景顏色轉回白色
             self.controlchangewhite()
             self.__modifiedItem.clear()
@@ -503,12 +397,12 @@ class pig_calibration_widget(QGroupBox):
         else:
             self.mesboxProcess("warning", "update按鈕錯誤警告", "請確認是否已經點擊過dump按鈕，數據已經顯示於畫面中了。")
 
-
     # 讀取CSV的檔案，並填至控制項中
     def loadCSVandWriteMisalignment(self, load_mode):
         # 根據模式判斷是要將參數load到哪邊
-        misalignment_list = {'G': [self.W1_1, self.W1_2, self.W1_3, self.W2_1, self.W2_2, self.W2_3, self.W3_1, self.W3_2, self.W3_3],
-                'A': [self.A1_1, self.A1_2, self.A1_3, self.A2_1, self.A2_2, self.A2_3, self.A3_1, self.A3_2, self.A3_3]}
+        misalignment_list = {
+            'G': [self.W1_1, self.W1_2, self.W1_3, self.W2_1, self.W2_2, self.W2_3, self.W3_1, self.W3_2, self.W3_3],
+            'A': [self.A1_1, self.A1_2, self.A1_3, self.A2_1, self.A2_2, self.A2_3, self.A3_1, self.A3_2, self.A3_3]}
 
         if self.dumpTrigerState == True:
             options = QFileDialog.Option()
@@ -521,11 +415,11 @@ class pig_calibration_widget(QGroupBox):
                 if isinstance(biasVal, pandas.Series):
                     try:
                         RVal = misalignmentData.iloc[0:5, 2:5]
-                        #print(RVal.iloc[0,0])
+                        # print(RVal.iloc[0,0])
 
-                        misalignment_list[load_mode][0].le.setText(f'{RVal.iloc[0,0]:.10f}'.rstrip('0').rstrip('.'))
-                        misalignment_list[load_mode][1].le.setText(f'{RVal.iloc[0,1]:.10f}'.rstrip('0').rstrip('.'))
-                        misalignment_list[load_mode][2].le.setText(f'{RVal.iloc[0,2]:.10f}'.rstrip('0').rstrip('.'))
+                        misalignment_list[load_mode][0].le.setText(f'{RVal.iloc[0, 0]:.10f}'.rstrip('0').rstrip('.'))
+                        misalignment_list[load_mode][1].le.setText(f'{RVal.iloc[0, 1]:.10f}'.rstrip('0').rstrip('.'))
+                        misalignment_list[load_mode][2].le.setText(f'{RVal.iloc[0, 2]:.10f}'.rstrip('0').rstrip('.'))
                         misalignment_list[load_mode][3].le.setText(f'{RVal.iloc[1, 0]:.10f}'.rstrip('0').rstrip('.'))
                         misalignment_list[load_mode][4].le.setText(f'{RVal.iloc[1, 1]:.10f}'.rstrip('0').rstrip('.'))
                         misalignment_list[load_mode][5].le.setText(f'{RVal.iloc[1, 2]:.10f}'.rstrip('0').rstrip('.'))
@@ -548,7 +442,6 @@ class pig_calibration_widget(QGroupBox):
             self.mesboxProcess("warning", "請確認是否已dump了", "請確認是否已經點擊過dump按鈕，或是已經將設備的\n參數回填至控制項中，且數據已經顯示於畫面。"
                                                                 "\n若還沒執行dump，將無法執行此Load File功能。")
 
-
     def exportTXTDump(self):
         if self.dumpTrigerState == True:
             try:
@@ -568,7 +461,7 @@ class pig_calibration_widget(QGroupBox):
                 self.__file.name = str(SNPara) + "_misalignment_" + timeFormat + "_" + self.filename + ".txt"
                 self.__file.open(True)
 
-                #參數key值的對照表
+                # 參數key值的對照表
                 self.__file.write_dump("參數key值對照表 ->")
                 self.__file.write_dump(f"0= AX      , 1= AY      , 2= AZ        , 3= A11     , 4= A12     , 5= A13,\n"
                                        f"  6= A21     , 7= A22    , 8= A23      , 9= A31     , 10= A32   , 11= A33,\n"
@@ -632,7 +525,6 @@ class pig_calibration_widget(QGroupBox):
         except (ValueError, SyntaxError):
             return False
 
-
     def init_para(self):
         """Apply INIT_PARAMETERS sequentially; each setText triggers Send_*_CMD."""
         if getattr(self, "_init_in_progress", False):
@@ -651,7 +543,8 @@ class pig_calibration_widget(QGroupBox):
         self._init_total = len(self._init_ops)
         self._init_idx = 0
 
-        self._init_progress = QtWidgets.QProgressDialog("Updating calibration parameters…", None, 0, self._init_total, self)
+        self._init_progress = QtWidgets.QProgressDialog("Updating calibration parameters…", None, 0, self._init_total,
+                                                        self)
         self._init_progress.setWindowTitle("Init Para")
         self._init_progress.setWindowModality(QtCore.Qt.WindowModal)
         self._init_progress.setAutoClose(True)
@@ -737,155 +630,63 @@ class pig_calibration_widget(QGroupBox):
 
         return ops
 
-
     def mesboxProcess(self, status, title, content):
-        mesbox = QMessageBox(self)
-        if status == "warning":
-            mesbox.warning(self, title, content)
-        if status == "info":
-            mesbox.information(self, title, content)
+        msg = QMessageBox(self)
+        if status == "warning": msg.warning(self, title, content)
+        else: msg.information(self, title, content)
 
     def ieee754_int_to_float(self, int_value: int) -> float:
-        """
-        Convert a 32-bit IEEE-754 integer representation to a float.
-
-        :param int_value: Integer representation of IEEE-754 float (32-bit)
-        :return: Converted floating-point number
-        """
-        # Pack integer as 4 bytes, then unpack as a float
-        # return round(struct.unpack('!f', struct.pack('!I', int_value))[0], 7)
         typeChange = 0
         buttonObj = self.sender()
-        if buttonObj.text()  == "Import":
-            if isinstance(int_value, float):
-                typeChange = int_value
-            elif isinstance(int_value, int):
-                if len(str(abs(int_value))) == 10 or len(str(abs(int_value))) >= 8:
-                    try:
-                        typeChange = round(struct.unpack('!f', struct.pack('!i', int_value))[0], 7)
-                    except Exception as e:
-                        logger.error(f"{e} - 使用Import匯入數據，在數據型態轉換的過程發生錯誤。")
-                        self.mesboxProcess('warning', '整數轉換單精度浮點數發生錯誤',
-                                           '轉換過程中因帶入的整數，不符合此轉換的方法，所以發生錯誤。')
-                else:
-                    typeChange = int_value
-            # if len(str(int_value)) == 10 or len(str(abs(int_value))) >= 8:
-            #     try:
-            #         typeChange = round(struct.unpack('!f', struct.pack('!i', int_value))[0], 7)
-            #     except Exception as e:
-            #         logger.error(f"{e} - 使用Import匯入數據，在數據型態轉換的過程發生錯誤。")
-            #         self.mesboxProcess('warning', '整數轉換單精度浮點數發生錯誤', '轉換過程中因帶入的整數，不符合此轉換的方法，所以發生錯誤。')
-            # else:
-            #     typeChange = int_value
-        else:
-            try:
-                typeChange = round(struct.unpack('!f', struct.pack('!i', int_value))[0], 7)
-            except Exception as e:
-                logger.error(f"{e} - 使用dump撈取數據，在數據型態轉換的過程發生錯誤。")
-                self.mesboxProcess('warning', '整數轉換單精度浮點數發生錯誤',
-                                   '轉換過程中因帶入的整數，不符合此轉換的方法，所以發生錯誤。')
+        is_import = False
+        if buttonObj is not None and hasattr(buttonObj, 'text'):
+            if buttonObj.text() == "Import": is_import = True
+
+        try:
+            val = int(int_value)
+            if is_import and (len(str(abs(val))) >= 8):
+                typeChange = round(struct.unpack('!f', struct.pack('!i', val))[0], 7)
+            else:
+                typeChange = round(struct.unpack('!f', struct.pack('!i', val))[0], 7)
+        except:
+            return 0
         return typeChange
 
-
     # 將輸入至edit控制項中的數值轉為整數
-    def Send_G11_CMD(self):
-        value = struct.unpack('<I', struct.pack('<f', (float(self.W1_1.le.text()))))
-        self.__act.writeImuCmd(CMD_Gyro_G11, value[0], 4)
+    def _safe_send_cmd(self, edit_block, cmd, ch=4):
+        if getattr(self, '_updating_ui', False): return
+        raw = edit_block.le.text().strip()
+        if not raw: return
+        try:
+            val = struct.unpack('<I', struct.pack('<f', float(raw)))[0]
+            self.__act.writeImuCmd(cmd, val, ch)
+        except: pass
 
-    def Send_G12_CMD(self):
-        value = struct.unpack('<I', struct.pack('<f', (float(self.W1_2.le.text()))))
-        self.__act.writeImuCmd(CMD_Gyro_G12, value[0], 4)
-
-    def Send_G13_CMD(self):
-        value = struct.unpack('<I', struct.pack('<f', (float(self.W1_3.le.text()))))
-        self.__act.writeImuCmd(CMD_Gyro_G13, value[0], 4)
-
-    def Send_G21_CMD(self):
-        value = struct.unpack('<I', struct.pack('<f', (float(self.W2_1.le.text()))))
-        self.__act.writeImuCmd(CMD_Gyro_G21, value[0], 4)
-
-    def Send_G22_CMD(self):
-        value = struct.unpack('<I', struct.pack('<f', (float(self.W2_2.le.text()))))
-        self.__act.writeImuCmd(CMD_Gyro_G22, value[0], 4)
-
-    def Send_G23_CMD(self):
-        value = struct.unpack('<I', struct.pack('<f', (float(self.W2_3.le.text()))))
-        self.__act.writeImuCmd(CMD_Gyro_G23, value[0], 4)
-
-    def Send_G31_CMD(self):
-        value = struct.unpack('<I', struct.pack('<f', (float(self.W3_1.le.text()))))
-        self.__act.writeImuCmd(CMD_Gyro_G31, value[0], 4)
-
-    def Send_G32_CMD(self):
-        value = struct.unpack('<I', struct.pack('<f', (float(self.W3_2.le.text()))))
-        self.__act.writeImuCmd(CMD_Gyro_G32, value[0], 4)
-
-    def Send_G33_CMD(self):
-        value = struct.unpack('<I', struct.pack('<f', (float(self.W3_3.le.text()))))
-        self.__act.writeImuCmd(CMD_Gyro_G33, value[0], 4)
-
-    def Send_GX_CMD(self):
-        value = struct.unpack('<I', struct.pack('<f', (float(self.Wx.le.text()))))
-        self.__act.writeImuCmd(CMD_Gyro_GX, value[0], 4)
-        print("Send_GX_CMD: ", value[0])
-
-    def Send_GY_CMD(self):
-        value = struct.unpack('<I', struct.pack('<f', (float(self.Wy.le.text()))))
-        self.__act.writeImuCmd(CMD_Gyro_GY, value[0], 4)
-
-    def Send_GZ_CMD(self):
-        value = struct.unpack('<I', struct.pack('<f', (float(self.Wz.le.text()))))
-        self.__act.writeImuCmd(CMD_Gyro_GZ, value[0], 4)
-        print("Send_GZ_CMD: ", value[0])
-
-    def Send_A11_CMD(self):
-        value = struct.unpack('<I', struct.pack('<f', (float(self.A1_1.le.text()))))
-        self.__act.writeImuCmd(CMD_Accele_A11, value[0], 4)
-
-    def Send_A12_CMD(self):
-        value = struct.unpack('<I', struct.pack('<f', (float(self.A1_2.le.text()))))
-        self.__act.writeImuCmd(CMD_Accele_A12, value[0], 4)
-
-    def Send_A13_CMD(self):
-        value = struct.unpack('<I', struct.pack('<f', (float(self.A1_3.le.text()))))
-        self.__act.writeImuCmd(CMD_Accele_A13, value[0], 4)
-
-    def Send_A21_CMD(self):
-        value = struct.unpack('<I', struct.pack('<f', (float(self.A2_1.le.text()))))
-        self.__act.writeImuCmd(CMD_Accele_A21, value[0], 4)
-
-    def Send_A22_CMD(self):
-        value = struct.unpack('<I', struct.pack('<f', (float(self.A2_2.le.text()))))
-        self.__act.writeImuCmd(CMD_Accele_A22, value[0], 4)
-
-    def Send_A23_CMD(self):
-        value = struct.unpack('<I', struct.pack('<f', (float(self.A2_3.le.text()))))
-        self.__act.writeImuCmd(CMD_Accele_A23, value[0], 4)
-
-    def Send_A31_CMD(self):
-        value = struct.unpack('<I', struct.pack('<f', (float(self.A3_1.le.text()))))
-        self.__act.writeImuCmd(CMD_Accele_A31, value[0], 4)
-
-    def Send_A32_CMD(self):
-        value = struct.unpack('<I', struct.pack('<f', (float(self.A3_2.le.text()))))
-        self.__act.writeImuCmd(CMD_Accele_A32, value[0], 4)
-
-    def Send_A33_CMD(self):
-        value = struct.unpack('<I', struct.pack('<f', (float(self.A3_3.le.text()))))
-        self.__act.writeImuCmd(CMD_Accele_A33, value[0], 4)
-
-    def Send_AX_CMD(self):
-        value = struct.unpack('<I', struct.pack('<f', (float(self.Ax.le.text()))))
-        self.__act.writeImuCmd(CMD_Accele_AX, value[0], 4)
-
-    def Send_AY_CMD(self):
-        value = struct.unpack('<I', struct.pack('<f', (float(self.Ay.le.text()))))
-        self.__act.writeImuCmd(CMD_Accele_AY, value[0], 4)
-
-    def Send_AZ_CMD(self):
-        value = struct.unpack('<I', struct.pack('<f', (float(self.Az.le.text()))))
-        self.__act.writeImuCmd(CMD_Accele_AZ, value[0], 4)
-        print("send AZ")
+# --- 指令發送函式 ---
+    def Send_G11_CMD(self): self._safe_send_cmd(self.W1_1, CMD_Gyro_G11)
+    def Send_G12_CMD(self): self._safe_send_cmd(self.W1_2, CMD_Gyro_G12)
+    def Send_G13_CMD(self): self._safe_send_cmd(self.W1_3, CMD_Gyro_G13)
+    def Send_G21_CMD(self): self._safe_send_cmd(self.W2_1, CMD_Gyro_G21)
+    def Send_G22_CMD(self): self._safe_send_cmd(self.W2_2, CMD_Gyro_G22)
+    def Send_G23_CMD(self): self._safe_send_cmd(self.W2_3, CMD_Gyro_G23)
+    def Send_G31_CMD(self): self._safe_send_cmd(self.W3_1, CMD_Gyro_G31)
+    def Send_G32_CMD(self): self._safe_send_cmd(self.W3_2, CMD_Gyro_G32)
+    def Send_G33_CMD(self): self._safe_send_cmd(self.W3_3, CMD_Gyro_G33)
+    def Send_GX_CMD(self): self._safe_send_cmd(self.Wx, CMD_Gyro_GX)
+    def Send_GY_CMD(self): self._safe_send_cmd(self.Wy, CMD_Gyro_GY)
+    def Send_GZ_CMD(self): self._safe_send_cmd(self.Wz, CMD_Gyro_GZ)
+    def Send_A11_CMD(self): self._safe_send_cmd(self.A1_1, CMD_Accele_A11)
+    def Send_A12_CMD(self): self._safe_send_cmd(self.A1_2, CMD_Accele_A12)
+    def Send_A13_CMD(self): self._safe_send_cmd(self.A1_3, CMD_Accele_A13)
+    def Send_A21_CMD(self): self._safe_send_cmd(self.A2_1, CMD_Accele_A21)
+    def Send_A22_CMD(self): self._safe_send_cmd(self.A2_2, CMD_Accele_A22)
+    def Send_A23_CMD(self): self._safe_send_cmd(self.A2_3, CMD_Accele_A23)
+    def Send_A31_CMD(self): self._safe_send_cmd(self.A3_1, CMD_Accele_A31)
+    def Send_A32_CMD(self): self._safe_send_cmd(self.A3_2, CMD_Accele_A32)
+    def Send_A33_CMD(self): self._safe_send_cmd(self.A3_3, CMD_Accele_A33)
+    def Send_AX_CMD(self): self._safe_send_cmd(self.Ax, CMD_Accele_AX)
+    def Send_AY_CMD(self): self._safe_send_cmd(self.Ay, CMD_Accele_AY)
+    def Send_AZ_CMD(self): self._safe_send_cmd(self.Az, CMD_Accele_AZ)
 
 
 # ==========================================

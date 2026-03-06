@@ -463,7 +463,6 @@ class pig_parameters_widget(QGroupBox):
 
     def _init_para_step(self):
         if self._init_idx >= self._init_total:
-            # done
             self._init_progress.setValue(self._init_total)
             self._init_progress.close()
             self.init_para_btn.setEnabled(True)
@@ -471,70 +470,56 @@ class pig_parameters_widget(QGroupBox):
             self.mesboxProcess("info", "Init Para", "Parameters updated.")
             return
 
-        (setter, value) = self._init_ops[self._init_idx]
+        # 這裡改為接收三個參數：setter, value, 以及對應的 cmd_func
+        (setter, value, cmd_func) = self._init_ops[self._init_idx]
 
         try:
-            setter(value)  # 這裡會觸發 valueChanged/textChanged -> send cmd
+            setter(value)  # 更新 UI 顯示
+            cmd_func()  # --- 強制送出指令，解決 0 不更新的問題 ---
         except Exception as e:
             logger.error(f"init_para step failed at idx={self._init_idx}: {e}")
 
         self._init_idx += 1
         self._init_progress.setValue(self._init_idx)
-
-        # 50ms 後做下一個
         QtCore.QTimer.singleShot(50, self._init_para_step)
 
     def _build_init_ops_from_INIT_PARAMETERS(self):
-        """
-        Convert INIT_PARAMETERS (GUI-style values) to a list of (setter, value) operations in order.
-        Important: do NOT call set_init_value() because that expects dump-format (IEEE ints, scaling, etc).
-        """
         p = INIT_PARAMETERS
 
-        def gv(k, default=0):
-            return p.get(str(k), default)
+        def gv(k, default=0): return p.get(str(k), default)
 
         ops = []
 
-        # spin boxes (direct int)
-        ops.append((self.freq.spin.setValue, int(gv(0))))
-        ops.append((self.mod_H.spin.setValue, int(gv(1))))
-        ops.append((self.mod_L.spin.setValue, int(gv(2))))
-        ops.append((self.polarity.spin.setValue, int(gv(3))))
-        ops.append((self.wait_cnt.spin.setValue, int(gv(4))))
-        ops.append((self.avg.spin.setValue, int(gv(5))))
-        ops.append((self.gain1.spin.setValue, int(gv(6))))
-        ops.append((self.const_step.spin.setValue, int(gv(7))))
-        ops.append((self.fb_on.spin.setValue, int(gv(8))))
-        ops.append((self.gain2.spin.setValue, int(gv(9))))
-        ops.append((self.err_offset.spin.setValue, int(gv(10))))
-        ops.append((self.dac_gain.spin.setValue, int(gv(11))))
+        # 格式：(UI 設定函式, 數值, 指令發送函式)
+        ops.append((self.freq.spin.setValue, int(gv(0)), self.send_FREQ_CMD))
+        ops.append((self.mod_H.spin.setValue, int(gv(1)), self.send_MOD_H_CMD))
+        ops.append((self.mod_L.spin.setValue, int(gv(2)), self.send_MOD_L_CMD))
+        ops.append((self.polarity.spin.setValue, int(gv(3)), self.send_POLARITY_CMD))
+        ops.append((self.wait_cnt.spin.setValue, int(gv(4)), self.send_WAIT_CNT_CMD))
+        ops.append((self.avg.spin.setValue, int(gv(5)), self.send_AVG_CMD))
+        ops.append((self.gain1.spin.setValue, int(gv(6)), self.send_GAIN1_CMD))
+        ops.append((self.const_step.spin.setValue, int(gv(7)), self.send_CONST_STEP_CMD))
+        ops.append((self.fb_on.spin.setValue, int(gv(8)), self.send_FB_ON_CMD))
+        ops.append((self.gain2.spin.setValue, int(gv(9)), self.send_GAIN2_CMD))
+        ops.append((self.err_offset.spin.setValue, int(gv(10)), self.send_ERR_OFFSET_CMD))
+        ops.append((self.dac_gain.spin.setValue, int(gv(11)), self.send_DAC_GAIN_CMD))
+        ops.append((self.cutoff.spin.setValue, float(gv(12)), self.send_CUTOFF_CMD))
 
-        # cutoff: GUI-style (float shown in spin)
-        ops.append((self.cutoff.spin.setValue, float(gv(12))))
-
-        # line edits: treat INIT as GUI displayed string/number
-        # SF (displayed multiplied by 10000 in your UI note)
-        ops.append((self.sf0.le.setText, str(gv(17))))
-        ops.append((self.sf1.le.setText, str(gv(18))))
-
-        # Bias temp
-        ops.append((self.T1.le.setText, str(gv(23))))
-        ops.append((self.T2.le.setText, str(gv(24))))
-        ops.append((self.slope1.le.setText, str(gv(25))))
-        ops.append((self.offset1.le.setText, str(gv(26))))
-        ops.append((self.slope2.le.setText, str(gv(27))))
-        ops.append((self.offset2.le.setText, str(gv(28))))
-        ops.append((self.slope3.le.setText, str(gv(29))))
-        ops.append((self.offset3.le.setText, str(gv(30))))
-
-        # ACCL SF temp (displayed *10000)
-        ops.append((self.ACCLsta.le.setText, str(gv(31))))
-        ops.append((self.ACCLstb.le.setText, str(gv(32))))
-
-        # ACCL bias temp
-        ops.append((self.ACCL_slope1.le.setText, str(gv(33))))
-        ops.append((self.ACCL_offset1.le.setText, str(gv(34))))
+        # Line Edits
+        ops.append((self.sf0.le.setText, str(gv(17)), self.send_SF0_CMD))
+        ops.append((self.sf1.le.setText, str(gv(18)), self.send_SF1_CMD))
+        ops.append((self.T1.le.setText, str(gv(23)), self.send_BIAS_T1_CMD))
+        ops.append((self.T2.le.setText, str(gv(24)), self.send_BIAS_T2_CMD))
+        ops.append((self.slope1.le.setText, str(gv(25)), self.send_SFB_SLOPE_1_CMD))
+        ops.append((self.offset1.le.setText, str(gv(26)), self.send_SFB_OFFSET_1_CMD))
+        ops.append((self.slope2.le.setText, str(gv(27)), self.send_SFB_SLOPE_2_CMD))
+        ops.append((self.offset2.le.setText, str(gv(28)), self.send_SFB_OFFSET_2_CMD))
+        ops.append((self.slope3.le.setText, str(gv(29)), self.send_SFB_SLOPE_3_CMD))
+        ops.append((self.offset3.le.setText, str(gv(30)), self.send_SFB_OFFSET_3_CMD))
+        ops.append((self.ACCLsta.le.setText, str(gv(31)), self.send_ACCL_SF0_CMD))
+        ops.append((self.ACCLstb.le.setText, str(gv(32)), self.send_ACCL_SF1_CMD))
+        ops.append((self.ACCL_slope1.le.setText, str(gv(33)), self.send_ACCL_SFB_SLOPE_1_CMD))
+        ops.append((self.ACCL_offset1.le.setText, str(gv(34)), self.send_ACCL_SFB_OFFSET_1_CMD))
 
         return ops
 

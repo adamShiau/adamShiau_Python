@@ -308,10 +308,10 @@ class pig_parameters_widget(QGroupBox):
 
         # channel
         self.dropdown_para = comboGroup_1("channel")
-        self.dropdown_para.addItem(["X", "Y", "Z"])  # Z -> 3, X -> 1, Y -> 2
+        self.dropdown_para.addItem(["X", "Y", "Z"])  # Z -> 1, X -> 3, Y -> 2
         # Only use Z channel for now: default to Z and lock the dropdown
         self.dropdown_para.cb.setCurrentText("Z")
-        self.dropdown_para.cb.setEnabled(False)
+        # self.dropdown_para.cb.setEnabled(False)
         self.__chVal = 1  # Z
 
         self.initUI()

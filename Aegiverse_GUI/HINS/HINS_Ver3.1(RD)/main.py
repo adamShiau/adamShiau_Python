@@ -2,6 +2,7 @@
 import sys
 import os
 import logging
+import time
 import logging.handlers
 from datetime import datetime
 import numpy as np
@@ -405,14 +406,31 @@ class MainWindow(QMainWindow):
         else:
             QMessageBox.critical(self, "Connection Error", "無法連接 Serial Port")
 
+    # def sync_config_on_connect(self):
+    #     """ 自動執行 Dump 並更新所有 Reader 的內部參數 """
+    #     # 觸發 configuration_menu 的 dump 函式
+    #     # 這會導致：1. UI 更新, 2. 發送 rcs_updated_qt 訊號給 fog_reader
+    #     self.pig_configuration_menu.dump_configuration()
+
+    # 修改 main.py 中的 sync_config_on_connect 函式
     def sync_config_on_connect(self):
         """ 自動執行 Dump 並更新所有 Reader 的內部參數 """
-        # 觸發 configuration_menu 的 dump 函式
-        # 這會導致：1. UI 更新, 2. 發送 rcs_updated_qt 訊號給 fog_reader
+        logger.info("Pausing Reader for configuration sync...")
+
+        # 1. 暫停總機執行緒的解析邏輯 (如果 HinsHybridReader 有 is_run 旗標)
+        self.hybrid_reader.is_run = False
+        self.hybrid_reader.stop()
+        self.hybrid_reader.wait()
+        time.sleep(0.1)  # 給一點時間讓 Serial 閒置
+
+        # 2. 執行 Dump
         self.pig_configuration_menu.dump_configuration()
 
-        # 也可以同步更新 SN 或其他必要參數
-        # self.pig_parameter_widget.dump_parameters()
+        # 3. 恢復總機執行緒
+        logger.info("Resuming Reader...")
+        self.hybrid_reader.is_run = True
+        if not self.hybrid_reader.isRunning():
+            self.hybrid_reader.start()
 
     def disconnect_serial(self):
         self.stop_reading()

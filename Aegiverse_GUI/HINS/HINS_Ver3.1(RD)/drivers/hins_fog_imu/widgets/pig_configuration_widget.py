@@ -182,25 +182,28 @@ class pig_configuration_widget(QWidget):
         if self._updating_ui or not self._ensure_act(): return
         self.__act.writeImuCmd(CMD_CFG_LF, val, 6)
 
+    # 修改 dump_configuration 函式後半段
     def dump_configuration(self):
         if not self._ensure_act(): return
         self.__act.flushInputBuffer("None")
         cfg = self.__act.dump_configuration()
-        # Debug 1: 印出原始回傳資料
+
         print(f"DEBUG - Raw cfg from act: {cfg} (Type: {type(cfg)})")
 
+        # --- 關鍵修改：只有當 cfg 是字典時才執行解析 ---
         if isinstance(cfg, dict):
             self._updating_ui = True
             try:
-                # Debug 2: 檢查特定的 Key 是否存在
-                for key in ["0", "1", "11", "12", "13", "14"]:
-                    print(f"DEBUG - Key {key} value: {cfg.get(key)}")
+                # 建議使用 get 的安全寫法，避免 Key 不存在時出錯
+                def get_int(k, default=0):
+                    v = cfg.get(str(k))
+                    return int(v) if v is not None else default
 
                 # 1. DR/BR
-                self.dr_idx.spin.setValue(int(cfg.get("0", 0)))
-                self.br_idx.spin.setValue(int(cfg.get("1", 0)))
+                self.dr_idx.spin.setValue(get_int(0))
+                self.br_idx.spin.setValue(get_int(1))
 
-                # 2. RCS Matrix (Key 2 ~ 10)
+                # 2. RCS Matrix (2~10)
                 rcs_values = []
                 for i in range(2, 11):
                     val_int = cfg.get(str(i))
@@ -211,34 +214,19 @@ class pig_configuration_widget(QWidget):
                         self.rcs_elements[r][c].spin.setValue(f_val)
                 self.rcs_updated_qt.emit(rcs_values)
 
-                # 3. Local Frame (Key 11)
+                # 3. Local Frame (11)
                 lf_val = cfg.get("11")
                 if lf_val is not None:
-                    lf_val = int(lf_val)
-                    if lf_val == 0:
+                    if int(lf_val) == 0:
                         self.cb_enu.setChecked(True)
-                    elif lf_val == 1:
+                    elif int(lf_val) == 1:
                         self.cb_ned.setChecked(True)
 
-                # 4. LPF Gyro (Key 12) & Accl (Key 13)
-                lpf_g_val = cfg.get("12")
-                if lpf_g_val is not None:
-                    self.lpf_g_idx.spin.setValue(int(lpf_g_val))
+                # 4. LPF (12, 13)
+                self.lpf_g_idx.spin.setValue(get_int(12))
+                self.lpf_a_idx.spin.setValue(get_int(13))
 
-                lpf_a_val = cfg.get("13")
-                if lpf_a_val is not None:
-                    self.lpf_a_idx.spin.setValue(int(lpf_a_val))
-
-                # 5. Gyro Z Source (Key 14)
-                gz_val = cfg.get("14")
-                if gz_val is not None:
-                    gz_val = int(gz_val)
-                    if gz_val == 0:
-                        self.cb_gz_mems.setChecked(True)
-                    elif gz_val == 1:
-                        self.cb_gz_fog.setChecked(True)
-
-                # Debug 3: 檢查 Gyro Z Source (Key 14)
+                # 5. Gyro Z Source (14)
                 gz_val = cfg.get("14")
                 if gz_val is not None:
                     print(f"DEBUG - Setting Gyro Z Source to: {gz_val}")
@@ -248,15 +236,90 @@ class pig_configuration_widget(QWidget):
                         self.cb_gz_fog.setChecked(True)
 
             except Exception as e:
-                # Debug 4: 捕捉報錯行數與原因
                 import traceback
-                print("--- UI Update Error Traceback ---")
                 traceback.print_exc()
-                print(f"Error detail: {e}")
+                print(f"UI Update Error: {e}")
             finally:
                 self._updating_ui = False
-        elif cfg == "無法取得值":
-            QtWidgets.QMessageBox.warning(self, "Dump Error", "無法取得設定值")
+        else:
+            # 如果是 "無法取得值"，只印出 log 或警告，不執行更新 UI 邏輯
+            logger.error("Configuration dump failed: Hardware did not respond.")
+
+    # def dump_configuration(self):
+    #     if not self._ensure_act(): return
+    #     self.__act.flushInputBuffer("None")
+    #     cfg = self.__act.dump_configuration()
+    #     # Debug 1: 印出原始回傳資料
+    #     print(f"DEBUG - Raw cfg from act: {cfg} (Type: {type(cfg)})")
+    #
+    #     if isinstance(cfg, dict):
+    #         self._updating_ui = True
+    #         try:
+    #             # Debug 2: 檢查特定的 Key 是否存在
+    #             for key in ["0", "1", "11", "12", "13", "14"]:
+    #                 print(f"DEBUG - Key {key} value: {cfg.get(key)}")
+    #
+    #             # 1. DR/BR
+    #             self.dr_idx.spin.setValue(int(cfg.get("0", 0)))
+    #             self.br_idx.spin.setValue(int(cfg.get("1", 0)))
+    #
+    #             # 2. RCS Matrix (Key 2 ~ 10)
+    #             rcs_values = []
+    #             for i in range(2, 11):
+    #                 val_int = cfg.get(str(i))
+    #                 if val_int is not None:
+    #                     f_val = self._int_bits_to_float(int(val_int))
+    #                     rcs_values.append(f_val)
+    #                     r, c = (i - 2) // 3, (i - 2) % 3
+    #                     self.rcs_elements[r][c].spin.setValue(f_val)
+    #             self.rcs_updated_qt.emit(rcs_values)
+    #
+    #             # 3. Local Frame (Key 11)
+    #             lf_val = cfg.get("11")
+    #             if lf_val is not None:
+    #                 lf_val = int(lf_val)
+    #                 if lf_val == 0:
+    #                     self.cb_enu.setChecked(True)
+    #                 elif lf_val == 1:
+    #                     self.cb_ned.setChecked(True)
+    #
+    #             # 4. LPF Gyro (Key 12) & Accl (Key 13)
+    #             lpf_g_val = cfg.get("12")
+    #             if lpf_g_val is not None:
+    #                 self.lpf_g_idx.spin.setValue(int(lpf_g_val))
+    #
+    #             lpf_a_val = cfg.get("13")
+    #             if lpf_a_val is not None:
+    #                 self.lpf_a_idx.spin.setValue(int(lpf_a_val))
+    #
+    #             # 5. Gyro Z Source (Key 14)
+    #             gz_val = cfg.get("14")
+    #             if gz_val is not None:
+    #                 gz_val = int(gz_val)
+    #                 if gz_val == 0:
+    #                     self.cb_gz_mems.setChecked(True)
+    #                 elif gz_val == 1:
+    #                     self.cb_gz_fog.setChecked(True)
+    #
+    #             # Debug 3: 檢查 Gyro Z Source (Key 14)
+    #             gz_val = cfg.get("14")
+    #             if gz_val is not None:
+    #                 print(f"DEBUG - Setting Gyro Z Source to: {gz_val}")
+    #                 if int(gz_val) == 0:
+    #                     self.cb_gz_mems.setChecked(True)
+    #                 elif int(gz_val) == 1:
+    #                     self.cb_gz_fog.setChecked(True)
+    #
+    #         except Exception as e:
+    #             # Debug 4: 捕捉報錯行數與原因
+    #             import traceback
+    #             print("--- UI Update Error Traceback ---")
+    #             traceback.print_exc()
+    #             print(f"Error detail: {e}")
+    #         finally:
+    #             self._updating_ui = False
+    #     elif cfg == "無法取得值":
+    #         QtWidgets.QMessageBox.warning(self, "Dump Error", "無法取得設定值")
 
     def show(self):
         super().show()

@@ -277,12 +277,15 @@ class pig_parameters_widget(QGroupBox):
         self.__act.flushInputBuffer("None");
         time.sleep(0.01)
         cfg = self.__act.dump_fog_parameters(self.__chVal)
+
         if isinstance(cfg, dict):
             self._updating_ui = True
             try:
                 for cid, info in self.config_table.items():
                     raw = cfg.get(cid)
                     if raw is None: continue
+
+                    # --- 數據轉換邏輯 ---
                     f_val = self.ieee754_int_to_float(raw)
                     if info["type"] == "float":
                         val_s = f"{f_val:.10f}".rstrip('0').rstrip('.')
@@ -290,12 +293,23 @@ class pig_parameters_widget(QGroupBox):
                         val_s = f"{f_val * 10000:.6f}".rstrip('0').rstrip('.')
                     else:
                         val_s = str(int(raw))
+
                     w = info["widget"]
-                    if hasattr(w, "setValue"):
-                        w.setValue(float(val_s))
-                    else:
-                        w.setText(val_s)
-                    w.setStyleSheet("background-color: white")
+                    try:
+                        # --- 溢位與範圍保護 ---
+                        target_val = float(val_s)
+                        if hasattr(w, "setValue"):
+                            # 檢查是否在元件允許的範圍內，避免 OverflowError
+                            if target_val > w.maximum(): target_val = w.maximum()
+                            if target_val < w.minimum(): target_val = w.minimum()
+                            w.setValue(target_val)
+                        else:
+                            w.setText(val_s)
+                        w.setStyleSheet("background-color: white")
+                    except (OverflowError, ValueError) as e:
+                        logger.error(f"ID {cid} Value {val_s} Overflow: {e}")
+                        continue
+
                 self.dumpTrigerState = True
                 QMessageBox.information(self, "Success", f"Channel {self.__chVal} dumped.")
             finally:
@@ -387,8 +401,23 @@ class pig_parameters_widget(QGroupBox):
 
     # --- 指令發送區域 (核心邏輯不變，僅加入更新鎖定) ---
     def send_FREQ_CMD(self):
-        if getattr(self, '_updating_ui', False): return
-        self.__act.writeImuCmd(CMD_FOG_MOD_FREQ, self.freq.spin.value(), self.__chVal)
+        # 1. 取得數值
+        value = self.freq.spin.value()
+
+        # 2. 計算顯示邏輯
+        dt_fpga = 1e3 / 100e6  # 基準頻率 100MHz
+        try:
+            # 計算公式：1 / (2 * (value + 1) * dt_fpga)
+            khz_val = round(1 / (2 * (value + 1) * dt_fpga), 2)
+            self.freq.lb.setText(f"{khz_val} KHz")
+        except ZeroDivisionError:
+            self.freq.lb.setText("0 KHz")
+
+        # 3. 鎖定檢查：如果是 Dump 觸發的，就不再發送指令回硬體
+        if getattr(self, '_updating_ui', False):
+            return
+
+        self.__act.writeImuCmd(CMD_FOG_MOD_FREQ, value, self.__chVal)
 
     def send_MOD_H_CMD(self):
         if getattr(self, '_updating_ui', False): return

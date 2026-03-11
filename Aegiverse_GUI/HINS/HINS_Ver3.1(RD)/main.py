@@ -479,6 +479,10 @@ class MainWindow(QMainWindow):
         self.hybrid_reader.stop()
         self.hybrid_reader.wait()
 
+        if self.central_widget.save_block.rb.isChecked():
+            self.central_widget.save_block.rb.setChecked(False)  # 讓介面取消勾選
+            self.toggle_save_data()  # 手動呼叫以執行 close() 並紀錄結束時間
+
     # --- Menu Actions ---
     def show_parameters(self):
         self.pig_parameter_widget.show()

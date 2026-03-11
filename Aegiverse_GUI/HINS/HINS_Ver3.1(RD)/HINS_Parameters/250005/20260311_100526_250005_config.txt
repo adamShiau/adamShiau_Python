@@ -1,0 +1,17 @@
+# PIG Configuration Export - 20260311_100526
+
+0=2            # Data Rate Index
+1=2            # Baud Rate Index
+2=0.0          # RCS Matrix R11
+3=-1.0         # RCS Matrix R12
+4=0.0          # RCS Matrix R13
+5=1.0          # RCS Matrix R21
+6=0.0          # RCS Matrix R22
+7=0.0          # RCS Matrix R23
+8=0.0          # RCS Matrix R31
+9=0.0          # RCS Matrix R32
+10=1.0          # RCS Matrix R33
+11=1            # Local Frame (0:ENU, 1:NED)
+12=6            # Gyro LPF Index
+13=2            # Accl LPF Index
+14=1            # Gyro Z Source (0:MEMS, 1:FOG)

@@ -1,0 +1,4 @@
+#2026/03/11 11:08:40
+# data rotate to sensor frame
+time,wx,wy,wz,ax,ay,az,Tx,Ty,Tz,Tacc,pitch,roll,yaw
+#2026/03/11 11:08:42

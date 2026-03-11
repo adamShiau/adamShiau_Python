@@ -126,7 +126,7 @@ class MainWindow(QMainWindow):
         self.central_widget.stop_bt.clicked.connect(self.stop_reading)
 
         # 綁定 Save RadioButton 點擊事件 -> 觸發開檔/關檔
-        self.central_widget.save_block.rb.clicked.connect(self.toggle_save_data)
+        # self.central_widget.save_block.rb.clicked.connect(self.toggle_save_data)
 
         # --- Menu Action 連接 ---
         # 根據 pig_menu_manager.py 的 action_trigger_connect 順序:
@@ -461,27 +461,36 @@ class MainWindow(QMainWindow):
         for key in self.data_buffer:
             self.data_buffer[key] = []
 
-        # 2. 啟動總機 Thread
+        # 2. 檢查是否需要存檔，若要存檔則在此時才開檔
+        if self.central_widget.save_block.rb.isChecked():
+            self.toggle_save_data()  # 此時才會執行 common.py 裡的 open 並紀錄開始時間
+
+        # 3. 啟動總機 Thread
         self.hybrid_reader.is_run = True
         if not self.hybrid_reader.isRunning():
             logger.info("Restarting Hybrid Reader Thread...")
             self.hybrid_reader.start()
 
-        # 3. 清空緩衝 (總機會幫大家清空 decoder)
+        # 4. 清空緩衝 (總機會幫大家清空 decoder)
         self.hybrid_reader.flush_buffers()
 
-        # 4. 發送讀取指令 (透過 FogReader 封裝好的方法)
+        # 5. 發送讀取指令 (透過 FogReader 封裝好的方法)
         self.fog_reader.read_imu()
 
     def stop_reading(self):
-        # 透過 FogReader 發送停止
+        # 1. 透過 FogReader 發送停止
         self.fog_reader.stop_imu()
         self.hybrid_reader.stop()
         self.hybrid_reader.wait()
 
+        # 2. [優化] 檢查檔案是否開啟中，若有則關檔並記錄結束時間
+        if self.imudata_file.isOpenFile():
+            self.imudata_file.close()  # 執行 common.py 裡的 close 並紀錄結束時間
+            logger.info("File closed and recording stopped.")
+
+        # 3. [回彈] 將 Save 按鈕設為 Unchecked，預防下次誤覆蓋
         if self.central_widget.save_block.rb.isChecked():
-            self.central_widget.save_block.rb.setChecked(False)  # 讓介面取消勾選
-            self.toggle_save_data()  # 手動呼叫以執行 close() 並紀錄結束時間
+            self.central_widget.save_block.rb.setChecked(False)
 
     # --- Menu Actions ---
     def show_parameters(self):

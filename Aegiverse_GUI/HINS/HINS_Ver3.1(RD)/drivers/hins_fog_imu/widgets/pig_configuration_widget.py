@@ -3,6 +3,7 @@ import logging
 import struct
 import time
 import datetime
+import math
 from PySide6 import QtWidgets, QtCore
 from PySide6.QtWidgets import (QWidget, QPushButton, QGridLayout, QLabel, QVBoxLayout, QHBoxLayout, QGroupBox,
                                QFileDialog, QMessageBox)
@@ -21,7 +22,10 @@ CMD_CFG_LF = 0x53
 CMD_CFG_LPF_G = 0x54
 CMD_CFG_LPF_A = 0x55
 CMD_CFG_WZ_SRC = 0x56
+CMD_CFG_LPF_FOG = 0x57
 
+DR_TABLE = [10, 50, 100, 200, 400]  # 對應 dr_idx 0~4
+ALPHA_F_TABLE = [1.000, 0.611, 0.386, 0.239, 0.136, 0.030]  # 定義在 MCU 的 alpha 係數
 LPF_G_TABLE = ["133 Hz", "128 Hz", "112 Hz", "134 Hz", "86 Hz", "48 Hz", "24.6 Hz", "12.6 Hz"]
 LPF_A_TABLE = ["104 Hz", "41.6 Hz", "20.8 Hz", "9.24 Hz", "4.2 Hz", "2.1 Hz", "1 Hz", "0.5 Hz"]
 
@@ -35,7 +39,7 @@ class pig_configuration_widget(QWidget):
         self._updating_ui = False
 
         self.setWindowTitle("Configuration")
-        self.resize(450, 800)
+        self.resize(450, 850)
 
         # --- UI 初始化 ---
         self._init_ui()
@@ -49,6 +53,7 @@ class pig_configuration_widget(QWidget):
             "12": {"type": "int", "widget": self.lpf_g_idx.spin, "comment": "Gyro LPF Index"},
             "13": {"type": "int", "widget": self.lpf_a_idx.spin, "comment": "Accl LPF Index"},
             "14": {"type": "enum", "widget": self.gz_btn_group, "comment": "Gyro Z Source (0:MEMS, 1:FOG)"},
+            "15": {"type": "int", "widget": self.lpf_f_idx.spin, "comment": "FOG LPF Index"},
         }
         # 動態加入 RCS Matrix (ID 2~10) 到 Table
         for i in range(2, 11):
@@ -64,8 +69,8 @@ class pig_configuration_widget(QWidget):
 
     def _init_ui(self):
         """初始化所有 UI 組件"""
-        self.br_idx = spinBlock(title="Baudrate Index", minValue=0, maxValue=4, double=False, step=1)
-        self.dr_idx = spinBlock(title="Datarate Index", minValue=0, maxValue=4, double=False, step=1)
+        self.br_idx = spinBlock(title="Baud rate Index", minValue=0, maxValue=4, double=False, step=1)
+        self.dr_idx = spinBlock(title="Data rate Index", minValue=0, maxValue=4, double=False, step=1)
         self.br_hint = QLabel("Index->BR: 0=9600, 1=115200, 2=230400, 3=460800, 4=921600")
         self.dr_hint = QLabel("Index->DR: 0=10, 1=50, 2=100, 3=200, 4=400 Hz")
 
@@ -106,16 +111,32 @@ class pig_configuration_widget(QWidget):
         self.gz_group.setLayout(gz_layout)
 
         # LPF
-        self.lpf_group = QGroupBox("MEMS IMU LPF Setting")
+        self.lpf_group = QGroupBox("IMU LPF Setting")
         lpf_layout = QGridLayout()
-        self.lpf_g_idx = spinBlock(title="Gyro LPF Index", minValue=0, maxValue=7, double=False, step=1)
+        self.lpf_g_idx = spinBlock(title="Gyro LPF1 Index", minValue=0, maxValue=7, double=False, step=1)
         self.lpf_a_idx = spinBlock(title="Accl LPF2 Index", minValue=0, maxValue=7, double=False, step=1)
+        self.lpf_f_idx = spinBlock(title="FOG LPF Index", minValue=0, maxValue=5, double=False, step=1)
         self.lpf_g_val_label = QLabel(f"BW: {LPF_G_TABLE[0]}")
         self.lpf_a_val_label = QLabel(f"BW: {LPF_A_TABLE[0]}")
+        self.lpf_f_val_label = QLabel("BW: Bypass") # 初始值
+
         lpf_layout.addWidget(self.lpf_g_idx, 0, 0);
         lpf_layout.addWidget(self.lpf_g_val_label, 0, 1)
         lpf_layout.addWidget(self.lpf_a_idx, 1, 0);
         lpf_layout.addWidget(self.lpf_a_val_label, 1, 1)
+        lpf_layout.addWidget(self.lpf_f_idx, 2, 0)
+        lpf_layout.addWidget(self.lpf_f_val_label, 2, 1)
+
+        line = QtWidgets.QFrame()
+        line.setFrameShape(QtWidgets.QFrame.HLine)
+        line.setFrameShadow(QtWidgets.QFrame.Sunken)
+        lpf_layout.addWidget(line, 3, 0, 1, 2)
+
+        # 精簡顯示最終頻寬的標籤
+        self.final_bw_label = QLabel("Final BW >> G: -- | A: -- | F: --")
+        self.final_bw_label.setStyleSheet("color: #0055ff; font-weight: bold;")  # 使用藍色加粗區別
+        lpf_layout.addWidget(self.final_bw_label, 4, 0, 1, 2)
+
         self.lpf_group.setLayout(lpf_layout)
 
         # File I/O
@@ -138,15 +159,22 @@ class pig_configuration_widget(QWidget):
 
     def _connect_signals(self):
         self.dr_idx.spin.valueChanged.connect(self._on_dr_changed)
+        self.dr_idx.spin.valueChanged.connect(self._update_fog_lpf_label)
         self.br_idx.spin.valueChanged.connect(self._on_br_changed)
         self.set_rcs_btn.clicked.connect(self.set_rcs_matrix)
         self.dump_btn.clicked.connect(self.dump_configuration)
         self.lf_btn_group.idClicked.connect(self._on_lf_changed)
         self.lpf_g_idx.spin.valueChanged.connect(self._on_lpf_g_changed)
         self.lpf_a_idx.spin.valueChanged.connect(self._on_lpf_a_changed)
+        self.lpf_f_idx.spin.valueChanged.connect(self._on_lpf_f_changed)
         self.gz_btn_group.idClicked.connect(self._on_gz_changed)
         self.export_btn.clicked.connect(self.export_to_txt)
         self.import_btn.clicked.connect(self.import_from_txt)
+        self.dr_idx.spin.valueChanged.connect(self._update_all_bw_display)
+        self.lpf_g_idx.spin.valueChanged.connect(self._update_all_bw_display)
+        self.lpf_a_idx.spin.valueChanged.connect(self._update_all_bw_display)
+        self.lpf_f_idx.spin.valueChanged.connect(self._update_all_bw_display)
+
 
     # --- 工具函數 ---
     def _float_to_int_bits(self, val: float) -> int:
@@ -192,6 +220,7 @@ class pig_configuration_widget(QWidget):
                 # 更新 LPF 標籤與發送信號
                 self.lpf_g_val_label.setText(f"BW: {LPF_G_TABLE[self.lpf_g_idx.spin.value()]}")
                 self.lpf_a_val_label.setText(f"BW: {LPF_A_TABLE[self.lpf_a_idx.spin.value()]}")
+                self._update_fog_lpf_label() # 更新 FOG LPF Label
                 rcs_vals = [self._int_bits_to_float(cfg.get(str(i), 0)) for i in range(2, 11)]
                 self.rcs_updated_qt.emit(rcs_vals)
 
@@ -265,6 +294,11 @@ class pig_configuration_widget(QWidget):
         if not self._updating_ui and self._ensure_act():
             self.__act.writeImuCmd(CMD_CFG_LPF_A, val, 6)
 
+    def _on_lpf_f_changed(self, val):
+        self._update_fog_lpf_label()  # 調用動態計算
+        if not self._updating_ui and self._ensure_act():
+            self.__act.writeImuCmd(CMD_CFG_LPF_FOG, val, 6)
+
     def set_rcs_matrix(self):
         if not self._ensure_act(): return
         for r in range(3):
@@ -285,6 +319,56 @@ class pig_configuration_widget(QWidget):
     def _on_lf_changed(self, val):
         if not self._updating_ui and self._ensure_act():
             self.__act.writeImuCmd(CMD_CFG_LF, val, 6)
+
+    def _update_fog_lpf_label(self):
+        """根據公式計算並更新 FOG LPF 的頻寬顯示"""
+        try:
+            fs = DR_TABLE[self.dr_idx.spin.value()]
+            alpha = ALPHA_F_TABLE[self.lpf_f_idx.spin.value()]
+
+            if alpha >= 1.0:
+                # 計算 Sinc 濾波的 3dB 頻寬
+                f_cf = 0.443 * fs
+                bw_text = f"{f_cf:.2f} Hz (bypass)"
+            else:
+                # 公式: f_cf = (alpha * fs) / (2 * pi * (1 - alpha))
+                f_cf = (alpha * fs) / (2 * math.pi * (1 - alpha))
+                bw_text = f"{f_cf:.2f} Hz"
+
+            self.lpf_f_val_label.setText(f"BW: {bw_text}")
+        except Exception as e:
+            logging.error(f"Calculate FOG BW error: {e}")
+
+    def _update_all_bw_display(self):
+        """計算並更新最下方的精簡頻寬資訊"""
+        try:
+            # 1. 取得 Data Rate
+            fs = DR_TABLE[self.dr_idx.spin.value()]
+
+            # 2. 取得 MEMS 數值 (直接從 Table 拿字串並去掉 " Hz")
+            bw_g = LPF_G_TABLE[self.lpf_g_idx.spin.value()].replace(" Hz", "")
+            bw_a = LPF_A_TABLE[self.lpf_a_idx.spin.value()].replace(" Hz", "")
+
+            # 3. 計算 FOG 合成頻寬
+            f1 = 0.443 * fs  # Stage 1: FPGA Mean (Sinc)
+            alpha = ALPHA_F_TABLE[self.lpf_f_idx.spin.value()]
+
+            if alpha >= 1.0:
+                f_fog_final = f1
+            else:
+                f2 = (alpha * fs) / (2 * math.pi * (1 - alpha))  # Stage 2: IIR
+                # 級聯頻寬公式: 1 / sqrt( (1/f1)^2 + (1/f2)^2 )
+                f_fog_final = 1 / math.sqrt((1 / f1 ** 2) + (1 / f2 ** 2))
+
+            # 4. 更新 UI 顯示 (精簡格式)
+            info = f"Final BW >> G: {bw_g}Hz | A: {bw_a}Hz | F: {f_fog_final:.1f}Hz"
+            self.final_bw_label.setText(info)
+
+            # 同步更新原本的 FOG Label (如果你還留著的話)
+            self._update_fog_lpf_label()
+
+        except Exception as e:
+            print(f"Update BW Error: {e}")
 
     def show(self):
         super().show()

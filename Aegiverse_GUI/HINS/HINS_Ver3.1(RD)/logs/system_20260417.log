@@ -1,0 +1,351 @@
+2026-04-17 11:09:50,580 [INFO] pigImu_Widget.pigImu_Widget: pigImu_Widget logger start
+2026-04-17 11:09:50,622 [INFO] myLib.myGui.graph.myLib.myGui.graph: myLib.myGui.graph logger start
+2026-04-17 11:10:01,052 [INFO] myLib.common.myLib.common: myLib.common logger start
+2026-04-17 11:10:01,071 [INFO] myLib.myGui.mygui_serial.myLib.myGui.mygui_serial: myLib.myGui.mygui_serial logger start
+2026-04-17 11:10:01,081 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: myLib.myGui.myLabel logger start
+2026-04-17 11:10:01,090 [INFO] myLib.myGui.myLineEdit.myLib.myGui.myLineEdit: myLib.myGui.myLineEdit logger start
+2026-04-17 11:10:01,100 [INFO] myLib.myGui.myCheckBox.myLib.myGui.myCheckBox: myLib.myGui.myCheckBox logger start
+2026-04-17 11:10:01,110 [INFO] myLib.myGui.myRadioButton.myLib.myGui.myRadioButton: myLib.myGui.myRadioButton logger start
+2026-04-17 11:10:01,120 [INFO] record_Log: record_Log logger start
+2026-04-17 11:10:01,252 [INFO] myLib.myGui.AttitudeIndicator.myLib.myGui.AttitudeIndicator: myLib.myGui.AttitudeIndicator logger start
+2026-04-17 11:10:01,274 [INFO] myLib.myGui.pig_menu_manager.myLib.myGui.pig_menu_manager: myLib.myGui.pig_menu_manager logger start
+2026-04-17 11:10:01,344 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: myLib.mySerial.Connector logger start
+2026-04-17 11:10:01,393 [INFO] drivers.hins_fog_imu.widgets.pig_parameters_widget.drivers.hins_fog_imu.widgets.pig_parameters_widget: drivers.hins_fog_imu.widgets.pig_parameters_widget logger start
+2026-04-17 11:10:01,395 [INFO] myLib.myGui.myComboBox.myLib.myGui.myComboBox: myLib.myGui.myComboBox logger start
+2026-04-17 11:10:01,416 [INFO] drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget.drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget: drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget logger start
+2026-04-17 11:10:01,427 [INFO] drivers.hins_fog_imu.widgets.pig_version_widget.drivers.hins_fog_imu.widgets.pig_version_widget: drivers.hins_fog_imu.widgets.pig_version_widget logger start
+2026-04-17 11:10:01,504 [INFO] myLib.crcCalculator.crcLib.myLib.crcCalculator.crcLib: myLib.crcCalculator.crcLib logger start
+2026-04-17 11:10:05,552 [INFO] Main: Port Selected: COM10
+2026-04-17 11:10:05,553 [INFO] Main: Port Selected: COM10
+2026-04-17 11:10:08,728 [INFO] Main: Port Selected: COM19
+2026-04-17 11:10:09,321 [INFO] Main: Connecting to COM19 at 230400...
+2026-04-17 11:10:09,602 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM19 is connected
+2026-04-17 11:10:09,603 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-04-17 11:10:09,604 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-04-17 11:10:09,604 [INFO] Main: Connection established. Synchronizing configuration...
+2026-04-17 11:10:09,605 [INFO] main.drivers.HinsHybrid: Hybrid Reader (Dispatcher) Started.
+2026-04-17 11:10:10,093 [INFO] Main: Pausing Reader for configuration sync...
+2026-04-17 11:10:10,095 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-04-17 11:10:10,397 [INFO] Main: Syncing Configuration...
+2026-04-17 11:10:11,401 [ERROR] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: [TIMEOUT] Cannot find 0xFA. Buffer size: 0
+2026-04-17 11:10:11,402 [WARNING] myLib.mySerial.Connector.myLib.mySerial.Connector: CMD 0x84 Attempt 1 failed: serial timeout: cannot find 0xFA sync
+2026-04-17 11:10:12,519 [ERROR] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: [TIMEOUT] Cannot find 0xFA. Buffer size: 0
+2026-04-17 11:10:12,520 [WARNING] myLib.mySerial.Connector.myLib.mySerial.Connector: CMD 0x84 Attempt 2 failed: serial timeout: cannot find 0xFA sync
+2026-04-17 11:10:13,626 [ERROR] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: [TIMEOUT] Cannot find 0xFA. Buffer size: 0
+2026-04-17 11:10:13,627 [WARNING] myLib.mySerial.Connector.myLib.mySerial.Connector: CMD 0x84 Attempt 3 failed: serial timeout: cannot find 0xFA sync
+2026-04-17 11:10:13,627 [ERROR] root: Configuration dump failed.
+2026-04-17 11:10:13,728 [INFO] Main: Resuming Hybrid Reader...
+2026-04-17 11:10:13,729 [INFO] main.drivers.HinsHybrid: Hybrid Reader (Dispatcher) Started.
+2026-04-17 11:10:35,841 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-04-17 11:10:36,644 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-04-17 11:10:36,645 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-04-17 11:10:36,759 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM19 is disconnected
+2026-04-17 11:19:55,273 [INFO] pigImu_Widget.pigImu_Widget: pigImu_Widget logger start
+2026-04-17 11:19:55,295 [INFO] myLib.myGui.graph.myLib.myGui.graph: myLib.myGui.graph logger start
+2026-04-17 11:19:55,920 [INFO] myLib.common.myLib.common: myLib.common logger start
+2026-04-17 11:19:55,921 [INFO] myLib.myGui.mygui_serial.myLib.myGui.mygui_serial: myLib.myGui.mygui_serial logger start
+2026-04-17 11:19:55,922 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: myLib.myGui.myLabel logger start
+2026-04-17 11:19:55,923 [INFO] myLib.myGui.myLineEdit.myLib.myGui.myLineEdit: myLib.myGui.myLineEdit logger start
+2026-04-17 11:19:55,923 [INFO] myLib.myGui.myCheckBox.myLib.myGui.myCheckBox: myLib.myGui.myCheckBox logger start
+2026-04-17 11:19:55,924 [INFO] myLib.myGui.myRadioButton.myLib.myGui.myRadioButton: myLib.myGui.myRadioButton logger start
+2026-04-17 11:19:55,925 [INFO] record_Log: record_Log logger start
+2026-04-17 11:19:55,936 [INFO] myLib.myGui.AttitudeIndicator.myLib.myGui.AttitudeIndicator: myLib.myGui.AttitudeIndicator logger start
+2026-04-17 11:19:55,938 [INFO] myLib.myGui.pig_menu_manager.myLib.myGui.pig_menu_manager: myLib.myGui.pig_menu_manager logger start
+2026-04-17 11:19:55,942 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: myLib.mySerial.Connector logger start
+2026-04-17 11:19:55,947 [INFO] drivers.hins_fog_imu.widgets.pig_parameters_widget.drivers.hins_fog_imu.widgets.pig_parameters_widget: drivers.hins_fog_imu.widgets.pig_parameters_widget logger start
+2026-04-17 11:19:55,948 [INFO] myLib.myGui.myComboBox.myLib.myGui.myComboBox: myLib.myGui.myComboBox logger start
+2026-04-17 11:19:55,949 [INFO] drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget.drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget: drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget logger start
+2026-04-17 11:19:55,950 [INFO] drivers.hins_fog_imu.widgets.pig_version_widget.drivers.hins_fog_imu.widgets.pig_version_widget: drivers.hins_fog_imu.widgets.pig_version_widget logger start
+2026-04-17 11:19:55,956 [INFO] myLib.crcCalculator.crcLib.myLib.crcCalculator.crcLib: myLib.crcCalculator.crcLib logger start
+2026-04-17 11:19:59,295 [INFO] Main: Port Selected: COM10
+2026-04-17 11:19:59,296 [INFO] Main: Port Selected: COM10
+2026-04-17 11:20:03,230 [INFO] Main: Port Selected: COM19
+2026-04-17 11:20:04,429 [INFO] Main: Connecting to COM19 at 230400...
+2026-04-17 11:20:04,470 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM19 is connected
+2026-04-17 11:20:04,471 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-04-17 11:20:04,471 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-04-17 11:20:04,471 [INFO] Main: Connection established. Synchronizing configuration...
+2026-04-17 11:20:04,473 [INFO] main.drivers.HinsHybrid: Hybrid Reader (Dispatcher) Started.
+2026-04-17 11:20:04,967 [INFO] Main: Pausing Reader for configuration sync...
+2026-04-17 11:20:04,969 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-04-17 11:20:05,272 [INFO] Main: Syncing Configuration...
+2026-04-17 11:20:06,277 [ERROR] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: [TIMEOUT] Cannot find 0xFA. Buffer size: 0
+2026-04-17 11:20:06,278 [WARNING] myLib.mySerial.Connector.myLib.mySerial.Connector: CMD 0x84 Attempt 1 failed: serial timeout: cannot find 0xFA sync
+2026-04-17 11:20:07,382 [ERROR] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: [TIMEOUT] Cannot find 0xFA. Buffer size: 0
+2026-04-17 11:20:07,383 [WARNING] myLib.mySerial.Connector.myLib.mySerial.Connector: CMD 0x84 Attempt 2 failed: serial timeout: cannot find 0xFA sync
+2026-04-17 11:20:08,488 [ERROR] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: [TIMEOUT] Cannot find 0xFA. Buffer size: 0
+2026-04-17 11:20:08,489 [WARNING] myLib.mySerial.Connector.myLib.mySerial.Connector: CMD 0x84 Attempt 3 failed: serial timeout: cannot find 0xFA sync
+2026-04-17 11:20:08,490 [ERROR] root: Configuration dump failed.
+2026-04-17 11:20:08,590 [INFO] Main: Resuming Hybrid Reader...
+2026-04-17 11:20:08,593 [INFO] main.drivers.HinsHybrid: Hybrid Reader (Dispatcher) Started.
+2026-04-17 11:20:08,757 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-04-17 11:20:08,759 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-04-17 11:20:08,867 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM19 is disconnected
+2026-04-17 11:20:18,682 [INFO] pigImu_Widget.pigImu_Widget: pigImu_Widget logger start
+2026-04-17 11:20:18,704 [INFO] myLib.myGui.graph.myLib.myGui.graph: myLib.myGui.graph logger start
+2026-04-17 11:20:19,383 [INFO] myLib.common.myLib.common: myLib.common logger start
+2026-04-17 11:20:19,384 [INFO] myLib.myGui.mygui_serial.myLib.myGui.mygui_serial: myLib.myGui.mygui_serial logger start
+2026-04-17 11:20:19,385 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: myLib.myGui.myLabel logger start
+2026-04-17 11:20:19,385 [INFO] myLib.myGui.myLineEdit.myLib.myGui.myLineEdit: myLib.myGui.myLineEdit logger start
+2026-04-17 11:20:19,386 [INFO] myLib.myGui.myCheckBox.myLib.myGui.myCheckBox: myLib.myGui.myCheckBox logger start
+2026-04-17 11:20:19,387 [INFO] myLib.myGui.myRadioButton.myLib.myGui.myRadioButton: myLib.myGui.myRadioButton logger start
+2026-04-17 11:20:19,387 [INFO] record_Log: record_Log logger start
+2026-04-17 11:20:19,399 [INFO] myLib.myGui.AttitudeIndicator.myLib.myGui.AttitudeIndicator: myLib.myGui.AttitudeIndicator logger start
+2026-04-17 11:20:19,402 [INFO] myLib.myGui.pig_menu_manager.myLib.myGui.pig_menu_manager: myLib.myGui.pig_menu_manager logger start
+2026-04-17 11:20:19,406 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: myLib.mySerial.Connector logger start
+2026-04-17 11:20:19,411 [INFO] drivers.hins_fog_imu.widgets.pig_parameters_widget.drivers.hins_fog_imu.widgets.pig_parameters_widget: drivers.hins_fog_imu.widgets.pig_parameters_widget logger start
+2026-04-17 11:20:19,412 [INFO] myLib.myGui.myComboBox.myLib.myGui.myComboBox: myLib.myGui.myComboBox logger start
+2026-04-17 11:20:19,414 [INFO] drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget.drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget: drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget logger start
+2026-04-17 11:20:19,414 [INFO] drivers.hins_fog_imu.widgets.pig_version_widget.drivers.hins_fog_imu.widgets.pig_version_widget: drivers.hins_fog_imu.widgets.pig_version_widget logger start
+2026-04-17 11:20:19,421 [INFO] myLib.crcCalculator.crcLib.myLib.crcCalculator.crcLib: myLib.crcCalculator.crcLib logger start
+2026-04-17 11:20:24,573 [INFO] Main: Port Selected: COM10
+2026-04-17 11:20:24,574 [INFO] Main: Port Selected: COM10
+2026-04-17 11:20:26,361 [INFO] Main: Port Selected: COM19
+2026-04-17 11:20:27,756 [INFO] Main: Connecting to COM19 at 115200...
+2026-04-17 11:20:27,797 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM19 is connected
+2026-04-17 11:20:27,798 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-04-17 11:20:27,799 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-04-17 11:20:27,800 [INFO] Main: Connection established. Synchronizing configuration...
+2026-04-17 11:20:27,801 [INFO] main.drivers.HinsHybrid: Hybrid Reader (Dispatcher) Started.
+2026-04-17 11:20:28,296 [INFO] Main: Pausing Reader for configuration sync...
+2026-04-17 11:20:28,299 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-04-17 11:20:28,601 [INFO] Main: Syncing Configuration...
+2026-04-17 11:20:28,666 [INFO] drivers.HinsFog: Software RCS updated: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+2026-04-17 11:20:28,768 [INFO] Main: Resuming Hybrid Reader...
+2026-04-17 11:20:28,770 [INFO] main.drivers.HinsHybrid: Hybrid Reader (Dispatcher) Started.
+2026-04-17 11:21:17,273 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-04-17 11:21:17,275 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-04-17 11:21:17,393 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM19 is disconnected
+2026-04-17 11:21:33,162 [INFO] pigImu_Widget.pigImu_Widget: pigImu_Widget logger start
+2026-04-17 11:21:33,184 [INFO] myLib.myGui.graph.myLib.myGui.graph: myLib.myGui.graph logger start
+2026-04-17 11:21:33,812 [INFO] myLib.common.myLib.common: myLib.common logger start
+2026-04-17 11:21:33,813 [INFO] myLib.myGui.mygui_serial.myLib.myGui.mygui_serial: myLib.myGui.mygui_serial logger start
+2026-04-17 11:21:33,813 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: myLib.myGui.myLabel logger start
+2026-04-17 11:21:33,814 [INFO] myLib.myGui.myLineEdit.myLib.myGui.myLineEdit: myLib.myGui.myLineEdit logger start
+2026-04-17 11:21:33,815 [INFO] myLib.myGui.myCheckBox.myLib.myGui.myCheckBox: myLib.myGui.myCheckBox logger start
+2026-04-17 11:21:33,815 [INFO] myLib.myGui.myRadioButton.myLib.myGui.myRadioButton: myLib.myGui.myRadioButton logger start
+2026-04-17 11:21:33,817 [INFO] record_Log: record_Log logger start
+2026-04-17 11:21:33,829 [INFO] myLib.myGui.AttitudeIndicator.myLib.myGui.AttitudeIndicator: myLib.myGui.AttitudeIndicator logger start
+2026-04-17 11:21:33,832 [INFO] myLib.myGui.pig_menu_manager.myLib.myGui.pig_menu_manager: myLib.myGui.pig_menu_manager logger start
+2026-04-17 11:21:33,836 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: myLib.mySerial.Connector logger start
+2026-04-17 11:21:33,841 [INFO] drivers.hins_fog_imu.widgets.pig_parameters_widget.drivers.hins_fog_imu.widgets.pig_parameters_widget: drivers.hins_fog_imu.widgets.pig_parameters_widget logger start
+2026-04-17 11:21:33,842 [INFO] myLib.myGui.myComboBox.myLib.myGui.myComboBox: myLib.myGui.myComboBox logger start
+2026-04-17 11:21:33,844 [INFO] drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget.drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget: drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget logger start
+2026-04-17 11:21:33,845 [INFO] drivers.hins_fog_imu.widgets.pig_version_widget.drivers.hins_fog_imu.widgets.pig_version_widget: drivers.hins_fog_imu.widgets.pig_version_widget logger start
+2026-04-17 11:21:33,852 [INFO] myLib.crcCalculator.crcLib.myLib.crcCalculator.crcLib: myLib.crcCalculator.crcLib logger start
+2026-04-17 11:21:36,702 [INFO] Main: Port Selected: COM10
+2026-04-17 11:21:36,703 [INFO] Main: Port Selected: COM10
+2026-04-17 11:21:37,757 [INFO] Main: Port Selected: COM19
+2026-04-17 11:21:41,356 [INFO] Main: Connecting to COM19 at 230400...
+2026-04-17 11:21:41,397 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM19 is connected
+2026-04-17 11:21:41,398 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-04-17 11:21:41,398 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-04-17 11:21:41,399 [INFO] Main: Connection established. Synchronizing configuration...
+2026-04-17 11:21:41,400 [INFO] main.drivers.HinsHybrid: Hybrid Reader (Dispatcher) Started.
+2026-04-17 11:21:41,890 [INFO] Main: Pausing Reader for configuration sync...
+2026-04-17 11:21:41,892 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-04-17 11:21:42,194 [INFO] Main: Syncing Configuration...
+2026-04-17 11:21:43,204 [ERROR] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: [TIMEOUT] Cannot find 0xFA. Buffer size: 0
+2026-04-17 11:21:43,206 [WARNING] myLib.mySerial.Connector.myLib.mySerial.Connector: CMD 0x84 Attempt 1 failed: serial timeout: cannot find 0xFA sync
+2026-04-17 11:21:44,308 [ERROR] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: [TIMEOUT] Cannot find 0xFA. Buffer size: 0
+2026-04-17 11:21:44,309 [WARNING] myLib.mySerial.Connector.myLib.mySerial.Connector: CMD 0x84 Attempt 2 failed: serial timeout: cannot find 0xFA sync
+2026-04-17 11:21:45,415 [ERROR] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: [TIMEOUT] Cannot find 0xFA. Buffer size: 0
+2026-04-17 11:21:45,416 [WARNING] myLib.mySerial.Connector.myLib.mySerial.Connector: CMD 0x84 Attempt 3 failed: serial timeout: cannot find 0xFA sync
+2026-04-17 11:21:45,417 [ERROR] root: Configuration dump failed.
+2026-04-17 11:21:45,517 [INFO] Main: Resuming Hybrid Reader...
+2026-04-17 11:21:45,519 [INFO] main.drivers.HinsHybrid: Hybrid Reader (Dispatcher) Started.
+2026-04-17 11:21:49,435 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-04-17 11:21:49,437 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-04-17 11:21:49,543 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM19 is disconnected
+2026-04-17 11:22:44,224 [INFO] pigImu_Widget.pigImu_Widget: pigImu_Widget logger start
+2026-04-17 11:22:44,248 [INFO] myLib.myGui.graph.myLib.myGui.graph: myLib.myGui.graph logger start
+2026-04-17 11:22:44,882 [INFO] myLib.common.myLib.common: myLib.common logger start
+2026-04-17 11:22:44,883 [INFO] myLib.myGui.mygui_serial.myLib.myGui.mygui_serial: myLib.myGui.mygui_serial logger start
+2026-04-17 11:22:44,884 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: myLib.myGui.myLabel logger start
+2026-04-17 11:22:44,885 [INFO] myLib.myGui.myLineEdit.myLib.myGui.myLineEdit: myLib.myGui.myLineEdit logger start
+2026-04-17 11:22:44,886 [INFO] myLib.myGui.myCheckBox.myLib.myGui.myCheckBox: myLib.myGui.myCheckBox logger start
+2026-04-17 11:22:44,887 [INFO] myLib.myGui.myRadioButton.myLib.myGui.myRadioButton: myLib.myGui.myRadioButton logger start
+2026-04-17 11:22:44,888 [INFO] record_Log: record_Log logger start
+2026-04-17 11:22:44,899 [INFO] myLib.myGui.AttitudeIndicator.myLib.myGui.AttitudeIndicator: myLib.myGui.AttitudeIndicator logger start
+2026-04-17 11:22:44,902 [INFO] myLib.myGui.pig_menu_manager.myLib.myGui.pig_menu_manager: myLib.myGui.pig_menu_manager logger start
+2026-04-17 11:22:44,906 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: myLib.mySerial.Connector logger start
+2026-04-17 11:22:44,911 [INFO] drivers.hins_fog_imu.widgets.pig_parameters_widget.drivers.hins_fog_imu.widgets.pig_parameters_widget: drivers.hins_fog_imu.widgets.pig_parameters_widget logger start
+2026-04-17 11:22:44,912 [INFO] myLib.myGui.myComboBox.myLib.myGui.myComboBox: myLib.myGui.myComboBox logger start
+2026-04-17 11:22:44,913 [INFO] drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget.drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget: drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget logger start
+2026-04-17 11:22:44,914 [INFO] drivers.hins_fog_imu.widgets.pig_version_widget.drivers.hins_fog_imu.widgets.pig_version_widget: drivers.hins_fog_imu.widgets.pig_version_widget logger start
+2026-04-17 11:22:44,922 [INFO] myLib.crcCalculator.crcLib.myLib.crcCalculator.crcLib: myLib.crcCalculator.crcLib logger start
+2026-04-17 11:22:47,064 [INFO] Main: Port Selected: COM10
+2026-04-17 11:22:47,065 [INFO] Main: Port Selected: COM10
+2026-04-17 11:22:50,195 [INFO] Main: Port Selected: COM19
+2026-04-17 11:22:53,256 [INFO] Main: Connecting to COM19 at 230400...
+2026-04-17 11:22:53,298 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM19 is connected
+2026-04-17 11:22:53,299 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-04-17 11:22:53,299 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-04-17 11:22:53,300 [INFO] Main: Connection established. Synchronizing configuration...
+2026-04-17 11:22:53,301 [INFO] main.drivers.HinsHybrid: Hybrid Reader (Dispatcher) Started.
+2026-04-17 11:22:53,796 [INFO] Main: Pausing Reader for configuration sync...
+2026-04-17 11:22:53,798 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-04-17 11:22:54,100 [INFO] Main: Syncing Configuration...
+2026-04-17 11:22:54,170 [INFO] drivers.HinsFog: Software RCS updated: [0.0, -1.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0]
+2026-04-17 11:22:54,272 [INFO] Main: Resuming Hybrid Reader...
+2026-04-17 11:22:54,274 [INFO] main.drivers.HinsHybrid: Hybrid Reader (Dispatcher) Started.
+2026-04-17 11:23:43,599 [WARNING] myLib.mySerial.Connector.myLib.mySerial.Connector: CMD 0x66 Attempt 1 failed: serial timeout: want 2 bytes, got 0 bytes
+2026-04-17 11:23:48,645 [ERROR] myLib.myGui.myLabel.myLib.myGui.myLabel: ID 12 Value nan Overflow: 
+2026-04-17 11:25:01,110 [ERROR] myLib.myGui.myLabel.myLib.myGui.myLabel: ID 12 Value nan Overflow: 
+2026-04-17 11:26:39,853 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-04-17 11:26:41,133 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-04-17 11:26:41,134 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-04-17 11:26:41,244 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM19 is disconnected
+2026-04-17 11:28:37,394 [INFO] pigImu_Widget.pigImu_Widget: pigImu_Widget logger start
+2026-04-17 11:28:37,416 [INFO] myLib.myGui.graph.myLib.myGui.graph: myLib.myGui.graph logger start
+2026-04-17 11:28:38,074 [INFO] myLib.common.myLib.common: myLib.common logger start
+2026-04-17 11:28:38,075 [INFO] myLib.myGui.mygui_serial.myLib.myGui.mygui_serial: myLib.myGui.mygui_serial logger start
+2026-04-17 11:28:38,076 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: myLib.myGui.myLabel logger start
+2026-04-17 11:28:38,077 [INFO] myLib.myGui.myLineEdit.myLib.myGui.myLineEdit: myLib.myGui.myLineEdit logger start
+2026-04-17 11:28:38,077 [INFO] myLib.myGui.myCheckBox.myLib.myGui.myCheckBox: myLib.myGui.myCheckBox logger start
+2026-04-17 11:28:38,078 [INFO] myLib.myGui.myRadioButton.myLib.myGui.myRadioButton: myLib.myGui.myRadioButton logger start
+2026-04-17 11:28:38,079 [INFO] record_Log: record_Log logger start
+2026-04-17 11:28:38,091 [INFO] myLib.myGui.AttitudeIndicator.myLib.myGui.AttitudeIndicator: myLib.myGui.AttitudeIndicator logger start
+2026-04-17 11:28:38,093 [INFO] myLib.myGui.pig_menu_manager.myLib.myGui.pig_menu_manager: myLib.myGui.pig_menu_manager logger start
+2026-04-17 11:28:38,097 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: myLib.mySerial.Connector logger start
+2026-04-17 11:28:38,103 [INFO] drivers.hins_fog_imu.widgets.pig_parameters_widget.drivers.hins_fog_imu.widgets.pig_parameters_widget: drivers.hins_fog_imu.widgets.pig_parameters_widget logger start
+2026-04-17 11:28:38,104 [INFO] myLib.myGui.myComboBox.myLib.myGui.myComboBox: myLib.myGui.myComboBox logger start
+2026-04-17 11:28:38,105 [INFO] drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget.drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget: drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget logger start
+2026-04-17 11:28:38,106 [INFO] drivers.hins_fog_imu.widgets.pig_version_widget.drivers.hins_fog_imu.widgets.pig_version_widget: drivers.hins_fog_imu.widgets.pig_version_widget logger start
+2026-04-17 11:28:38,114 [INFO] myLib.crcCalculator.crcLib.myLib.crcCalculator.crcLib: myLib.crcCalculator.crcLib logger start
+2026-04-17 11:28:41,120 [INFO] Main: Port Selected: COM10
+2026-04-17 11:28:41,120 [INFO] Main: Port Selected: COM10
+2026-04-17 11:28:42,677 [INFO] Main: Port Selected: COM19
+2026-04-17 11:28:43,928 [INFO] Main: Connecting to COM19 at 230400...
+2026-04-17 11:28:43,969 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM19 is connected
+2026-04-17 11:28:43,971 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-04-17 11:28:43,971 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-04-17 11:28:43,971 [INFO] Main: Connection established. Synchronizing configuration...
+2026-04-17 11:28:43,973 [INFO] main.drivers.HinsHybrid: Hybrid Reader (Dispatcher) Started.
+2026-04-17 11:28:44,468 [INFO] Main: Pausing Reader for configuration sync...
+2026-04-17 11:28:44,470 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-04-17 11:28:44,772 [INFO] Main: Syncing Configuration...
+2026-04-17 11:28:45,788 [ERROR] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: [TIMEOUT] Cannot find 0xFA. Buffer size: 0
+2026-04-17 11:28:45,789 [WARNING] myLib.mySerial.Connector.myLib.mySerial.Connector: CMD 0x84 Attempt 1 failed: serial timeout: cannot find 0xFA sync
+2026-04-17 11:28:46,892 [ERROR] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: [TIMEOUT] Cannot find 0xFA. Buffer size: 0
+2026-04-17 11:28:46,893 [WARNING] myLib.mySerial.Connector.myLib.mySerial.Connector: CMD 0x84 Attempt 2 failed: serial timeout: cannot find 0xFA sync
+2026-04-17 11:28:47,995 [ERROR] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: [TIMEOUT] Cannot find 0xFA. Buffer size: 0
+2026-04-17 11:28:47,997 [WARNING] myLib.mySerial.Connector.myLib.mySerial.Connector: CMD 0x84 Attempt 3 failed: serial timeout: cannot find 0xFA sync
+2026-04-17 11:28:47,998 [ERROR] root: Configuration dump failed.
+2026-04-17 11:28:48,099 [INFO] Main: Resuming Hybrid Reader...
+2026-04-17 11:28:48,102 [INFO] main.drivers.HinsHybrid: Hybrid Reader (Dispatcher) Started.
+2026-04-17 11:28:51,670 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-04-17 11:28:51,672 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-04-17 11:28:51,789 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM19 is disconnected
+2026-04-17 11:29:33,407 [INFO] Main: Connecting to COM19 at 230400...
+2026-04-17 11:29:33,448 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM19 is connected
+2026-04-17 11:29:33,449 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-04-17 11:29:33,449 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-04-17 11:29:33,449 [INFO] Main: Connection established. Synchronizing configuration...
+2026-04-17 11:29:33,451 [INFO] main.drivers.HinsHybrid: Hybrid Reader (Dispatcher) Started.
+2026-04-17 11:29:33,936 [INFO] Main: Pausing Reader for configuration sync...
+2026-04-17 11:29:33,938 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-04-17 11:29:34,239 [INFO] Main: Syncing Configuration...
+2026-04-17 11:29:35,244 [ERROR] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: [TIMEOUT] Cannot find 0xFA. Buffer size: 0
+2026-04-17 11:29:35,245 [WARNING] myLib.mySerial.Connector.myLib.mySerial.Connector: CMD 0x84 Attempt 1 failed: serial timeout: cannot find 0xFA sync
+2026-04-17 11:29:36,347 [ERROR] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: [TIMEOUT] Cannot find 0xFA. Buffer size: 0
+2026-04-17 11:29:36,349 [WARNING] myLib.mySerial.Connector.myLib.mySerial.Connector: CMD 0x84 Attempt 2 failed: serial timeout: cannot find 0xFA sync
+2026-04-17 11:29:37,454 [ERROR] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: [TIMEOUT] Cannot find 0xFA. Buffer size: 0
+2026-04-17 11:29:37,455 [WARNING] myLib.mySerial.Connector.myLib.mySerial.Connector: CMD 0x84 Attempt 3 failed: serial timeout: cannot find 0xFA sync
+2026-04-17 11:29:37,455 [ERROR] root: Configuration dump failed.
+2026-04-17 11:29:37,556 [INFO] Main: Resuming Hybrid Reader...
+2026-04-17 11:29:37,559 [INFO] main.drivers.HinsHybrid: Hybrid Reader (Dispatcher) Started.
+2026-04-17 11:29:43,211 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-04-17 11:29:43,214 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-04-17 11:29:43,320 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM19 is disconnected
+2026-04-17 11:29:56,184 [INFO] pigImu_Widget.pigImu_Widget: pigImu_Widget logger start
+2026-04-17 11:29:56,206 [INFO] myLib.myGui.graph.myLib.myGui.graph: myLib.myGui.graph logger start
+2026-04-17 11:29:56,868 [INFO] myLib.common.myLib.common: myLib.common logger start
+2026-04-17 11:29:56,869 [INFO] myLib.myGui.mygui_serial.myLib.myGui.mygui_serial: myLib.myGui.mygui_serial logger start
+2026-04-17 11:29:56,870 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: myLib.myGui.myLabel logger start
+2026-04-17 11:29:56,871 [INFO] myLib.myGui.myLineEdit.myLib.myGui.myLineEdit: myLib.myGui.myLineEdit logger start
+2026-04-17 11:29:56,871 [INFO] myLib.myGui.myCheckBox.myLib.myGui.myCheckBox: myLib.myGui.myCheckBox logger start
+2026-04-17 11:29:56,872 [INFO] myLib.myGui.myRadioButton.myLib.myGui.myRadioButton: myLib.myGui.myRadioButton logger start
+2026-04-17 11:29:56,873 [INFO] record_Log: record_Log logger start
+2026-04-17 11:29:56,884 [INFO] myLib.myGui.AttitudeIndicator.myLib.myGui.AttitudeIndicator: myLib.myGui.AttitudeIndicator logger start
+2026-04-17 11:29:56,886 [INFO] myLib.myGui.pig_menu_manager.myLib.myGui.pig_menu_manager: myLib.myGui.pig_menu_manager logger start
+2026-04-17 11:29:56,890 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: myLib.mySerial.Connector logger start
+2026-04-17 11:29:56,895 [INFO] drivers.hins_fog_imu.widgets.pig_parameters_widget.drivers.hins_fog_imu.widgets.pig_parameters_widget: drivers.hins_fog_imu.widgets.pig_parameters_widget logger start
+2026-04-17 11:29:56,896 [INFO] myLib.myGui.myComboBox.myLib.myGui.myComboBox: myLib.myGui.myComboBox logger start
+2026-04-17 11:29:56,897 [INFO] drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget.drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget: drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget logger start
+2026-04-17 11:29:56,898 [INFO] drivers.hins_fog_imu.widgets.pig_version_widget.drivers.hins_fog_imu.widgets.pig_version_widget: drivers.hins_fog_imu.widgets.pig_version_widget logger start
+2026-04-17 11:29:56,905 [INFO] myLib.crcCalculator.crcLib.myLib.crcCalculator.crcLib: myLib.crcCalculator.crcLib logger start
+2026-04-17 11:30:04,538 [INFO] Main: Port Selected: COM10
+2026-04-17 11:30:04,539 [INFO] Main: Port Selected: COM10
+2026-04-17 11:30:05,683 [INFO] Main: Port Selected: COM19
+2026-04-17 11:30:06,530 [INFO] Main: Connecting to COM19 at 230400...
+2026-04-17 11:30:06,570 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM19 is connected
+2026-04-17 11:30:06,572 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-04-17 11:30:06,572 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-04-17 11:30:06,573 [INFO] Main: Connection established. Synchronizing configuration...
+2026-04-17 11:30:06,574 [INFO] main.drivers.HinsHybrid: Hybrid Reader (Dispatcher) Started.
+2026-04-17 11:30:07,061 [INFO] Main: Pausing Reader for configuration sync...
+2026-04-17 11:30:07,064 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-04-17 11:30:07,366 [INFO] Main: Syncing Configuration...
+2026-04-17 11:30:07,435 [INFO] drivers.HinsFog: Software RCS updated: [0.0, -1.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0]
+2026-04-17 11:30:07,536 [INFO] Main: Resuming Hybrid Reader...
+2026-04-17 11:30:07,539 [INFO] main.drivers.HinsHybrid: Hybrid Reader (Dispatcher) Started.
+2026-04-17 11:30:24,222 [WARNING] myLib.mySerial.Connector.myLib.mySerial.Connector: CMD 0x82 Attempt 1 failed: serial timeout: want 10 bytes, got 2 bytes
+2026-04-17 11:31:39,274 [INFO] pigImu_Widget.pigImu_Widget: pigImu_Widget logger start
+2026-04-17 11:31:39,296 [INFO] myLib.myGui.graph.myLib.myGui.graph: myLib.myGui.graph logger start
+2026-04-17 11:31:39,942 [INFO] myLib.common.myLib.common: myLib.common logger start
+2026-04-17 11:31:39,943 [INFO] myLib.myGui.mygui_serial.myLib.myGui.mygui_serial: myLib.myGui.mygui_serial logger start
+2026-04-17 11:31:39,944 [INFO] myLib.myGui.myLabel.myLib.myGui.myLabel: myLib.myGui.myLabel logger start
+2026-04-17 11:31:39,945 [INFO] myLib.myGui.myLineEdit.myLib.myGui.myLineEdit: myLib.myGui.myLineEdit logger start
+2026-04-17 11:31:39,946 [INFO] myLib.myGui.myCheckBox.myLib.myGui.myCheckBox: myLib.myGui.myCheckBox logger start
+2026-04-17 11:31:39,946 [INFO] myLib.myGui.myRadioButton.myLib.myGui.myRadioButton: myLib.myGui.myRadioButton logger start
+2026-04-17 11:31:39,947 [INFO] record_Log: record_Log logger start
+2026-04-17 11:31:39,958 [INFO] myLib.myGui.AttitudeIndicator.myLib.myGui.AttitudeIndicator: myLib.myGui.AttitudeIndicator logger start
+2026-04-17 11:31:39,960 [INFO] myLib.myGui.pig_menu_manager.myLib.myGui.pig_menu_manager: myLib.myGui.pig_menu_manager logger start
+2026-04-17 11:31:39,965 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: myLib.mySerial.Connector logger start
+2026-04-17 11:31:39,970 [INFO] drivers.hins_fog_imu.widgets.pig_parameters_widget.drivers.hins_fog_imu.widgets.pig_parameters_widget: drivers.hins_fog_imu.widgets.pig_parameters_widget logger start
+2026-04-17 11:31:39,971 [INFO] myLib.myGui.myComboBox.myLib.myGui.myComboBox: myLib.myGui.myComboBox logger start
+2026-04-17 11:31:39,973 [INFO] drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget.drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget: drivers.hins_fog_imu.widgets.pig_W_A_calibration_parameter_widget logger start
+2026-04-17 11:31:39,973 [INFO] drivers.hins_fog_imu.widgets.pig_version_widget.drivers.hins_fog_imu.widgets.pig_version_widget: drivers.hins_fog_imu.widgets.pig_version_widget logger start
+2026-04-17 11:31:39,981 [INFO] myLib.crcCalculator.crcLib.myLib.crcCalculator.crcLib: myLib.crcCalculator.crcLib logger start
+2026-04-17 11:31:42,755 [INFO] Main: Port Selected: COM10
+2026-04-17 11:31:42,756 [INFO] Main: Port Selected: COM10
+2026-04-17 11:31:44,004 [INFO] Main: Port Selected: COM19
+2026-04-17 11:31:44,724 [INFO] Main: Connecting to COM19 at 230400...
+2026-04-17 11:31:44,764 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM19 is connected
+2026-04-17 11:31:44,766 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-04-17 11:31:44,766 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-04-17 11:31:44,766 [INFO] Main: Connection established. Synchronizing configuration...
+2026-04-17 11:31:44,768 [INFO] main.drivers.HinsHybrid: Hybrid Reader (Dispatcher) Started.
+2026-04-17 11:31:45,265 [INFO] Main: Pausing Reader for configuration sync...
+2026-04-17 11:31:45,266 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-04-17 11:31:45,568 [INFO] Main: Syncing Configuration...
+2026-04-17 11:31:45,638 [INFO] drivers.HinsFog: Software RCS updated: [0.0, -1.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0]
+2026-04-17 11:31:45,739 [INFO] Main: Resuming Hybrid Reader...
+2026-04-17 11:31:45,742 [INFO] main.drivers.HinsHybrid: Hybrid Reader (Dispatcher) Started.
+2026-04-17 11:31:52,444 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-04-17 11:31:54,221 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-04-17 11:31:54,222 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-04-17 11:31:54,330 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM19 is disconnected
+2026-04-17 11:31:55,141 [INFO] Main: Connecting to COM19 at 230400...
+2026-04-17 11:31:55,182 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM19 is connected
+2026-04-17 11:31:55,184 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-04-17 11:31:55,184 [INFO] drivers.HinsGnss: Connector set and input buffer flushed.
+2026-04-17 11:31:55,184 [INFO] Main: Connection established. Synchronizing configuration...
+2026-04-17 11:31:55,186 [INFO] main.drivers.HinsHybrid: Hybrid Reader (Dispatcher) Started.
+2026-04-17 11:31:55,671 [INFO] Main: Pausing Reader for configuration sync...
+2026-04-17 11:31:55,672 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-04-17 11:31:55,972 [INFO] Main: Syncing Configuration...
+2026-04-17 11:31:56,159 [WARNING] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: Found 0xFA after discarding 1488 bytes
+2026-04-17 11:31:57,169 [WARNING] myLib.mySerial.Connector.myLib.mySerial.Connector: CMD 0x84 Attempt 1 failed: serial timeout: want 20569 bytes, got 6465 bytes
+2026-04-17 11:31:57,356 [WARNING] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: Found 0xFA after discarding 521 bytes
+2026-04-17 11:31:58,370 [WARNING] myLib.mySerial.Connector.myLib.mySerial.Connector: CMD 0x84 Attempt 2 failed: serial timeout: want 55761 bytes, got 6513 bytes
+2026-04-17 11:31:58,508 [WARNING] myLib.mySerial.Connector.myLib.mySerial.Connector: DIAGNOSIS: Found 0xFA after discarding 240 bytes
+2026-04-17 11:31:59,368 [WARNING] myLib.mySerial.Connector.myLib.mySerial.Connector: CMD 0x84 Attempt 3 failed: checksum mismatch: calc=0x2149, recv(le)=0x14BD, recv(be)=0xBD14
+2026-04-17 11:31:59,369 [ERROR] root: Configuration dump failed.
+2026-04-17 11:31:59,470 [INFO] Main: Resuming Hybrid Reader...
+2026-04-17 11:31:59,473 [INFO] main.drivers.HinsHybrid: Hybrid Reader (Dispatcher) Started.
+2026-04-17 11:32:03,445 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-04-17 11:32:12,056 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-04-17 11:32:12,058 [INFO] main.drivers.HinsHybrid: [HinsHybrid] Thread stop requested.
+2026-04-17 11:32:12,162 [INFO] myLib.mySerial.Connector.myLib.mySerial.Connector: COM19 is disconnected
